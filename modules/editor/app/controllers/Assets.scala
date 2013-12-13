@@ -1,0 +1,2 @@
+package controllers.editor
+object Assets extends controllers.AssetsBuilder
