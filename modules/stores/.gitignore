@@ -8,3 +8,4 @@ dist
 /.idea_modules
 /.classpath
 /.settings
+.project

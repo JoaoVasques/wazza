@@ -11,6 +11,10 @@ libraryDependencies ++= Seq(
   "se.radley" %% "play-plugins-salat" % "1.4.0"
 )
 
+routesImport += "se.radley.plugin.salat.Binders._"
+
+templatesImport += "org.bson.types.ObjectId"
+
 // Projects
 lazy val home = project.in(file(".")).dependsOn(editor)
 
