@@ -7,7 +7,8 @@ version := "pre-alpha"
 libraryDependencies ++= Seq(
   jdbc,
   anorm,
-  cache
+  cache,
+  "org.reactivemongo" %% "play2-reactivemongo" % "0.9" exclude("org.scala-stm", "scala-stm_2.10.0") exclude("play", "*")
 )
 
 // Projects
