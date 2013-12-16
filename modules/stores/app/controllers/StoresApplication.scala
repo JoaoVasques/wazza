@@ -3,7 +3,7 @@ package controllers.stores
 import play.api._
 import play.api.mvc._
 
-object Application extends Controller {
+object StoresApplication extends Controller {
 
   def index = Action {
     Ok("Hello store")
