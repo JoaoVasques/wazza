@@ -8,8 +8,11 @@ libraryDependencies ++= Seq(
   jdbc,
   anorm,
   cache,
-  "se.radley" %% "play-plugins-salat" % "1.4.0"
+  "se.radley" %% "play-plugins-salat" % "1.4.0",
+  "com.github.mumoshu" %% "play2-memcached" % "0.3.0.2"
 )
+
+resolvers += "Spy Repository" at "http://files.couchbase.com/maven2" // required to resolve `spymemcached`, the plugin's dependency.
 
 routesImport += "se.radley.plugin.salat.Binders._"
 
