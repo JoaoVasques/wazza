@@ -1,4 +1,13 @@
-This is your new Play application
+Wazza
 =====================================
 
-This file will be packaged with your application, when using `play dist`.
+<h2>Running instructions</h2>
+
+At the moment, there are two main environments, development and production.
+
+For obvious reasons, we don't use the production environment only development. To run Wazza you must issue the following command
+inside the project's directory.
+
+	play -Dconfig.file=conf/dev/application_dev.conf ~run
+
+**TODO**
