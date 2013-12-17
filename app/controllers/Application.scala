@@ -4,6 +4,7 @@ import play.api._
 import play.api.mvc._
 import com.google.inject._
 import service._
+// import service.editor._ just to show how imports from other modules are done
 
 class Application @Inject()(translator: Translator) extends Controller {
 

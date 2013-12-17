@@ -1,5 +1,3 @@
-import play.Project._
-
 name := "Wazza"
 
 version := "pre-alpha"
@@ -21,11 +19,29 @@ routesImport += "se.radley.plugin.salat.Binders._"
 
 templatesImport += "org.bson.types.ObjectId"
 
+lazy val mySettings = Seq(
+    Keys.fork in run := true,
+    javaOptions in run += "-Dconfig.file=conf/dev/application_dev.conf"
+)
+
 // Projects
-lazy val home = project.in(file(".")).dependsOn(editor, stores).aggregate(editor, stores)
+lazy val home = project.in(file("."))
+                .aggregate(editor, stores)
+                .dependsOn(editor, stores)
+                .settings(mySettings: _*)
 
-lazy val editor = play.Project("editor", "pre-alpha", dependencies, path = file("modules/editor")).settings().dependsOn(stores)
+lazy val editor = play.Project("editor",
+                    version.toString,
+                    dependencies, path = file("modules/editor")
+                )
+                .settings(mySettings: _*)
 
-lazy val stores = play.Project("stores", "pre-alpha", dependencies, path = file("modules/stores"))
+lazy val stores = play.Project(
+                    "stores",
+                    version.toString,
+                    dependencies, path = file("modules/stores")
+                )
+                .dependsOn(editor)
+                .settings(mySettings: _*)
 
 play.Project.playScalaSettings
