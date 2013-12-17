@@ -6,7 +6,7 @@ import play.api.mvc._
 object StoresApplication extends Controller {
 
   def index = Action {
-    Ok("Hello store")
+    Ok(views.html.stores("stores"))
   }
 
 }
