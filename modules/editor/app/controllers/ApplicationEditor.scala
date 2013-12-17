@@ -6,7 +6,7 @@ import play.api.mvc._
 object ApplicationEditor extends Controller {
 
   def index = Action {
-    Ok("hello editor")
+    Ok(views.html.editor())
   }
 
 }
