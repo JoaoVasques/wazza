@@ -1,0 +1,19 @@
+@(title: String)(content: Html)
+
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>@title xpto</title>
+        <link rel="stylesheet" media="screen" href="@routes.WebJarAssets.at(WebJarAssets.locate("bootstrap.min.css"))">
+
+		<script src="@routes.WebJarAssets.at(WebJarAssets.locate("1.2.5/angular.min.js"))"></script>
+        <script src="@controllers.stores.routes.Assets.at("javascripts/stores/app.js")"></script>
+        <script src="@controllers.stores.routes.Assets.at("javascripts/stores/controllers.js")"></script>
+        <script src="@controllers.stores.routes.Assets.at("javascripts/stores/services.js")"></script>
+
+    </head>
+    <body>
+        @content
+    </body>
+</html>

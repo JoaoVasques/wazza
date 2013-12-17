@@ -8,7 +8,10 @@ lazy val dependencies = Seq(
   "se.radley" %% "play-plugins-salat" % "1.4.0",
   "com.github.mumoshu" %% "play2-memcached" % "0.3.0.2",
   "com.google.inject" % "guice" % "3.0",
-  "com.tzavellas" % "sse-guice" % "0.7.1"
+  "com.tzavellas" % "sse-guice" % "0.7.1",
+  "org.webjars" % "webjars-play_2.10" % "2.2.0",
+  "org.webjars" % "angularjs" % "1.2.5",
+  "org.webjars" % "bootstrap" % "3.0.3"
 )
 
 libraryDependencies ++= dependencies
