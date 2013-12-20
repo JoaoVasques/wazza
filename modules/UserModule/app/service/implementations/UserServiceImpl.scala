@@ -1,6 +1,7 @@
-package user.service
+package user.service.implementations
 
 import user.models._
+import user.service.definitions.UserService
 import com.mongodb.casbah.Imports._
 
 class UserServiceImpl extends UserService {

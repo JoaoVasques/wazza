@@ -1,4 +1,4 @@
-package user.service
+package user.service.definitions
 
 import user.models._
 
