@@ -2,13 +2,13 @@ package controllers.user
 
 import play.api._
 import play.api.mvc._
-import user.models._
+import user.service._
+import com.google.inject._
 
-object ApplicationUser extends Controller {
+class ApplicationUser @Inject()(userService: UserService) extends Controller {
 
   def index = Action {
-  	val xpto = User.findBy("email", "test")
-  	println(xpto)
+  	println(userService.findBy("", ""))
     Ok("Hello User")
   }
 

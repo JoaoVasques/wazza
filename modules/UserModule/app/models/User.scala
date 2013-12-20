@@ -19,15 +19,7 @@ case class User(
 object User extends ModelCompanion[User, ObjectId] {
 	val dao = new SalatDAO[User, ObjectId](collection = mongoCollection("users")) {}
 
-	def insertUser(user: User) = {
-		dao.insert(user)
-	}
-
-	def findBy(attribute: String, key: String): List[User] = {
-		dao.find(MongoDBObject(attribute -> key)).toList
-	}
-
-	def exists(email: String): Boolean = {
-		dao.findOne(MongoDBObject("email" -> email)).isEmpty
+	def getDAO(): SalatDAO[User, ObjectId] = {
+		dao
 	}
 }
