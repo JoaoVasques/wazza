@@ -1,0 +1,33 @@
+@(registrationForm: Form[models.user.User])
+
+
+@import helper._
+@import helper.twitterBootstrap._
+
+@userMain("xpto") {
+
+@helper.form(controllers.user.routes.RegistrationController.submitUser) {
+        <fieldset>
+            <legend>Create new company</legend>
+
+            @inputText(
+                registrationForm("email"),
+                '_label -> "Email"
+            )
+
+            @inputText(
+                registrationForm("password"),
+                '_label -> "Password"
+            )
+
+            @inputText(
+                registrationForm("company"),
+                '_label -> "Company"
+            )
+
+        </fieldset>
+        <div class="actions">
+            <input type="submit" class="btn btn-success" value="Create">
+        </div>
+    }
+}

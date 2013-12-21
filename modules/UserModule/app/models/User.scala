@@ -1,4 +1,4 @@
-package user.models
+package models.user
 
 import play.api.Play.current
 import java.util.Date

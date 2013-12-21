@@ -1,8 +1,8 @@
-package user.service.modules
+package service.user.modules
 
 import com.tzavellas.sse.guice.ScalaModule
-import user.service.definitions._
-import user.service.implementations._
+import service.user.definitions._
+import service.user.implementations._
 
 class UserModule extends ScalaModule {
   def configure() {

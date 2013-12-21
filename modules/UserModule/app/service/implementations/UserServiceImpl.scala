@@ -1,16 +1,13 @@
-package user.service.implementations
+package service.user.implementations
 
-import user.models._
-import user.service.definitions.UserService
+import models.user._
+import service.user.definitions.UserService
 import com.mongodb.casbah.Imports._
+import play.api.data.validation._
 
 class UserServiceImpl extends UserService {
 
-	val usersCollection = User.getDAO
-
-	def helloWorld() = {
-		println("hello")
-	}
+	private val usersCollection = User.getDAO
 
 	def insertUser(user: User) = {
 		usersCollection.insert(user)

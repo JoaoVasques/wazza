@@ -22,6 +22,10 @@ routesImport += "se.radley.plugin.salat.Binders._"
 
 templatesImport += "org.bson.types.ObjectId"
 
+templatesImport += "models.user._"
+
+templatesImport += "controllers.user._"
+
 lazy val mySettings = Seq(
     Keys.fork in run := true,
     javaOptions in run += "-Dconfig.file=conf/dev/application_dev.conf"

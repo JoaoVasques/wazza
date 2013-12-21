@@ -4,6 +4,7 @@
 
 # Home page
 GET     /                           @controllers.Application.index
+POST 	/dummy 						@controllers.Application.dummySubmit
 
 # Modules
 ->  /editor  editor.Routes
