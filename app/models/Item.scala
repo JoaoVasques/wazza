@@ -98,13 +98,9 @@ case class AppleDurationProperties(
 	marketingIncentiveDuration: Date
 )
 
-case class ItemProductType()
-
 object Item extends ModelCompanion[Item, ObjectId] {
 
-	val dao = new SalatDAO[Item, ObjectId](mongoCollection("items")){}
+	val dao = new SalatDAO[Item, ObjectId](mongoCollection("applications")){}
 
-	def getDAO() = {
-		dao
-	}
+	def getDAO = dao
 }
