@@ -1,25 +1,33 @@
 body
 {
+        font-family: Telex, sans-serif;
     margin: 0px;
     padding: 0px;
     height: 100%;
     padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
-    //background-color: rgb(200, 200, 200);
+}
+
+.logo {
+    box-sizing: content-box;
+  width: 106px; /* Width of new image */
+  height: 48px; /* Height of new image */
+  background: url(/assets/images/logo.png) no-repeat;
+  background-size: cover;
 }
 
 .navbar-collapse {
-    font-family: Telex, sans-serif;
+
     text-decoration: none solid rgb(245, 245, 245);
 
   background-color: #4682B4; /* fallback color, place your own */
 
   /* Gradients for modern browsers, replace as you see fit */
-  background-image: -moz-linear-gradient(top, #333333, #222222);
-  background-image: -ms-linear-gradient(top, #333333, #222222);
-  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#333333), to(#222222));
-  background-image: -webkit-linear-gradient(top, #333333, #222222);
-  background-image: -o-linear-gradient(top, #333333, #222222);
-  background-image: linear-gradient(top, #333333, #222222);
+  background-image: -moz-linear-gradient(left, #393939, #222222);
+  background-image: -ms-linear-gradient(left, #393939, #222222);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#393939), to(#222222));
+  background-image: -webkit-linear-gradient(left, #393939, #222222);
+  background-image: -o-linear-gradient(left, #393939, #222222);
+  background-image: linear-gradient(left, #393939, #222222);
   background-repeat: repeat-x;
 
   /* IE8-9 gradient filter */
