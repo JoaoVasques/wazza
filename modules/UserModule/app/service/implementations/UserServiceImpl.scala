@@ -18,6 +18,6 @@ class UserServiceImpl extends UserService {
 	}
 
 	def exists(email: String): Boolean = {
-		usersCollection.findOne(MongoDBObject("email" -> email)).isEmpty
+		! usersCollection.findOne(MongoDBObject("email" -> email)).isEmpty
 	}
 }
