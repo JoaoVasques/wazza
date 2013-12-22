@@ -1,0 +1,13 @@
+@(title: String)(content: Html)
+
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>Wazza - @title</title>
+        <link rel="stylesheet" media="screen" href="@routes.WebJarAssets.at(WebJarAssets.locate("bootstrap.min.css"))">
+    </head>
+    <body>
+        @content
+    </body>
+</html>

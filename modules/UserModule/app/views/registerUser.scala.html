@@ -1,0 +1,45 @@
+@(registrationForm: Form[models.user.User])
+
+@import helper._
+@import helper.twitterBootstrap._
+
+@userMain("Registration") {
+
+<div class="container">
+    <div class="row-fluid">
+        <div class="span9">
+            @helper.form(action = controllers.user.routes.RegistrationController.submitUser) {
+                    <fieldset>
+                        <legend>Create new company</legend>
+
+                        @inputText(
+                            registrationForm("name"),
+                            '_label -> "Name",
+                            '_error -> registrationForm("name").error.map(_.withMessage("Please insert a name"))
+                        )
+
+                        @inputText(
+                            registrationForm("company"),
+                            '_label -> "Company"
+                        )
+
+                        @inputText(
+                            registrationForm("email"),
+                            '_label -> "Email",
+                            '_error -> registrationForm("email").error.map(_.withMessage("Invalid email"))
+                        )
+
+                        @inputText(
+                            registrationForm("password"),
+                            '_label -> "Password"
+                        )
+
+                    </fieldset>
+                    <div class="actions">
+                        <input type="submit" class="btn btn-success" value="Create">
+                    </div>
+                }
+        }
+        </div>
+    </div>
+</div>

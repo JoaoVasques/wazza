@@ -22,6 +22,10 @@ routesImport += "se.radley.plugin.salat.Binders._"
 
 templatesImport += "org.bson.types.ObjectId"
 
+templatesImport += "models.user._"
+
+templatesImport += "controllers.user._"
+
 lazy val mySettings = Seq(
     Keys.fork in run := true,
     javaOptions in run += "-Dconfig.file=conf/dev/application_dev.conf"
@@ -29,22 +33,40 @@ lazy val mySettings = Seq(
 
 // Projects
 lazy val home = project.in(file("."))
-                .aggregate(editor, stores)
-                .dependsOn(editor, stores)
+                .aggregate(editorModule, storesModule)
+                .dependsOn(editorModule, storesModule, userModule)
                 .settings(mySettings: _*)
 
-lazy val editor = play.Project("editor",
+lazy val editorModule = play.Project("editor",
                     version.toString,
-                    dependencies, path = file("modules/editor")
+                    dependencies,
+                    path = file("modules/EditorModule")
                 )
+                .dependsOn(userModule)
                 .settings(mySettings: _*)
 
-lazy val stores = play.Project(
-                    "stores",
+lazy val storesModule = play.Project("stores",
                     version.toString,
-                    dependencies, path = file("modules/stores")
+                    dependencies,
+                    path = file("modules/StoresModule")
                 )
-                .dependsOn(editor)
+                .dependsOn(editorModule, userModule)
                 .settings(mySettings: _*)
+
+lazy val userModule = play.Project("user",
+                    version.toString,
+                    dependencies,
+                    path = file("modules/UserModule")
+              )
+              .dependsOn(applicationModule)
+              .settings(mySettings: _*)
+
+lazy val applicationModule = play.Project("application",
+                    version.toString,
+                    dependencies,
+                    path = file("modules/ApplicationModule")
+              )
+              .settings(mySettings: _*)
+
 
 play.Project.playScalaSettings
