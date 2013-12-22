@@ -1,6 +1,6 @@
 body
 {
-        font-family: Telex, sans-serif;
+    font-family: Telex, sans-serif;
     text-decoration: none solid rgb(245, 245, 245);
     margin: 0px;
     padding: 0px;
@@ -16,27 +16,27 @@ body
 
 .logo {
     box-sizing: content-box;
-  width: 106px; /* Width of new image */
-  height: 48px; /* Height of new image */
-  background: url(/assets/images/logo.png) no-repeat;
-  background-size: cover;
+    width: 106px; /* Width of new image */
+    height: 48px; /* Height of new image */
+    background: url(/assets/images/logo.png) no-repeat;
+    background-size: cover;
 }
 
 .navbar-collapse {
 
     /*background-color: #4682B4; pretty blue */
 
-  /* Gradients for modern browsers, replace as you see fit */
-  background-image: -moz-linear-gradient(left, #393939, #222222);
-  background-image: -ms-linear-gradient(left, #393939, #222222);
-  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#393939), to(#222222));
-  background-image: -webkit-linear-gradient(left, #393939, #222222);
-  background-image: -o-linear-gradient(left, #393939, #222222);
-  background-image: linear-gradient(left, #393939, #222222);
-  background-repeat: repeat-x;
+    /* Gradients for modern browsers, replace as you see fit */
+    background-image: -moz-linear-gradient(left, #393939, #222222);
+    background-image: -ms-linear-gradient(left, #393939, #222222);
+    background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#393939), to(#222222));
+    background-image: -webkit-linear-gradient(left, #393939, #222222);
+    background-image: -o-linear-gradient(left, #393939, #222222);
+    background-image: linear-gradient(left, #393939, #222222);
+    background-repeat: repeat-x;
 
-  /* IE8-9 gradient filter */
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#393939', endColorstr='#222222', GradientType=0);
+    /* IE8-9 gradient filter */
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#393939', endColorstr='#222222', GradientType=0);
 }
 
 
