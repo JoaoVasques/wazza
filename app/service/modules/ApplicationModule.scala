@@ -7,5 +7,6 @@ import service.implementations._
 class ApplicationModule extends ScalaModule {
   def configure() {
     bind[ApplicationService].to[ApplicationServiceImpl]
+    bind[ItemService].to[ItemServiceImpl]
   }
 }

@@ -11,4 +11,6 @@ trait ApplicationService {
 	def exists(name: String): Boolean
 
 	def findBy(attribute: String, key: String): List[WazzaApplication]
+
+	def addItem(item: Item, applicationName: String): Boolean	
 }

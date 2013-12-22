@@ -1,14 +1,60 @@
 package service.implementations
 
 import service.definitions.ItemService
-import models.Item
+import service.definitions.ApplicationService
+import models._
+import com.google.inject._
 
-class ItemServiceImpl extends ItemService {
+class ItemServiceImpl @Inject()(applicationService: ApplicationService) extends ItemService {
 	
 	private val dao = Item.getDAO
 
-	def createItem() = {
+	def createGooglePlayItem(
+		applicationName: String,
+		id: String,
+		title: String,
+		name: String,
+		description: String,
+		typeOfCurrency: Int,
+		price: Double,
+		publishedState: String,
+		purchaseType: Int,
+		autoTranslate: Boolean,
+		autofill: Boolean,
+		language: String 
+	): Unit = {
 
+		val metadata = new GoogleMetadata(
+			id,
+			title,
+			description,
+			publishedState,
+			purchaseType,
+			autoTranslate,
+			List[GoogleTranslations](),
+			autofill,
+			language,
+			price
+		)
+
+		val item = new Item(
+			id,
+			name,
+			description,
+			0,
+			metadata,
+			new Currency(0, price)
+		)
+
+		applicationService.addItem(item, applicationName)
+	}
+
+	def createAppleItem() = {
+
+	}
+
+	private def createMetadata(): Unit = {
+		
 	}
 
 	def deleteItem(applicationId: String, itemId: String) = {

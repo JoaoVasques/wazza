@@ -11,13 +11,13 @@ import se.radley.plugin.salat._
 import MongoContext._
 
 case class Item(
-	@Key("id")id: String,
+	id: String,
 	name: String,
 	description: String,
 	store: Int,
-	metadata: ItemMetadata,
+	@Salat metadata: ItemMetadata,
 	currency: Currency,
-	purchaseInfo: PurchaseInfo
+	purchaseInfo: PurchaseInfo = new PurchaseInfo
 )
 
 case class Currency(
@@ -35,7 +35,6 @@ trait ItemMetadata {
 }
 
 case class GoogleMetadata(
-	override val osType: String,
 	override val id: String,
 	override val title: String,
 	override val description: String,
@@ -47,7 +46,7 @@ case class GoogleMetadata(
 	language: String,
 	price: Double
 
-) extends ItemMetadata
+)(implicit override val osType: String = "Google") extends ItemMetadata
 
 case class GoogleTranslations(
 	locale: String,
@@ -56,7 +55,6 @@ case class GoogleTranslations(
 )
 
 case class AppleMetadata(
-	override val osType: String,
 	override val id: String,
 	override val title: String,
 	override val description: String,
@@ -65,7 +63,7 @@ case class AppleMetadata(
 	pricingProperties: ApplePricingProperties,
 	durationProperties: AppleDurationProperties
 
-) extends ItemMetadata
+)(implicit override val osType: String = "Apple") extends ItemMetadata
 
 case class AppleProductProperties(
 	productType: Int, 
