@@ -15,8 +15,6 @@ class Application @Inject()(applicationService: ApplicationService, itemService:
 
   def runMiniTest() = {
   	val app = new WazzaApplication("Test-application")
-  	var exists = applicationService.exists("Test")
-  	println("exists: " + exists)
   	applicationService.insertApplication(app)
 
   	itemService.createGooglePlayItem(
@@ -33,9 +31,5 @@ class Application @Inject()(applicationService: ApplicationService, itemService:
   		true,
   		"language"
   	)
-
-  	// exists = applicationService.exists("Test")
-  	// println("[after]: exists: " + exists)
-  	// applicationService.deleteApplication("Test")
   }
 }

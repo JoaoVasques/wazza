@@ -10,7 +10,7 @@ import play.api.Play.current
 package object ApplicationMongoContext {
   implicit val context = {
     val context = new Context {
-      val name = "item"
+      val name = "application"
       override val typeHintStrategy = StringTypeHintStrategy(when = TypeHintFrequency.WhenNecessary, typeHint = "_t")
     }
     context.registerGlobalKeyOverride(remapThis = "id", toThisInstead = "_id")

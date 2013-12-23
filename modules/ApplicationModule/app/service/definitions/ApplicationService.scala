@@ -3,14 +3,23 @@ package service.application.definitions
 import models.application._
 
 trait ApplicationService {
-	
-	def insertApplication(application: WazzaApplication): Boolean		
+  
+  def insertApplication(application: WazzaApplication): Unit    
 
-	def deleteApplication(name: String): Unit
+  def deleteApplication(name: String): Unit
 
-	def exists(name: String): Boolean
+  def exists(name: String): Boolean
 
-	def findBy(attribute: String, key: String): List[WazzaApplication]
+  def findBy(attribute: String, key: String): List[WazzaApplication]
 
-	def addItem(item: Item, applicationName: String): Boolean	
+  /** Item operations **/
+
+  def addItem(item: Item, applicationName: String): Unit  
+
+  def getItem(itemId: String, applicationName: String): Option[Item]
+
+  def itemExists(itemId: String, applicationName: String): Boolean
+
+  def deleteItem(itemId: String, applicationName: String): Unit
+
 }

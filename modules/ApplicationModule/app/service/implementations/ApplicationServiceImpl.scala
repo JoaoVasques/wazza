@@ -9,17 +9,28 @@ import com.novus.salat.dao._
 import com.mongodb.casbah.Imports._
 import se.radley.plugin.salat._
 import ApplicationMongoContext._
+import play.api.libs.json.Json
+import play.api.libs.json.JsValue
 
 class ApplicationServiceImpl extends ApplicationService {
     
     private val dao = WazzaApplication.getDAO
 
-    def insertApplication(application: WazzaApplication): Boolean = {
+    implicit private def basicDBObjectToItem(obj: Option[JsValue]): Option[Item] = {
+        obj match {
+            case Some(item) => {
+                //TODO parse json and create Item
+                null
+            }
+            case None => None 
+        }
+    }
+
+    def insertApplication(application: WazzaApplication): Unit = {
         if(! exists(application.name)){
             dao.insert(application)
-            true
         } else {
-            false
+            // throw exception "application with the same id already exists"
         }
     }
 
@@ -38,11 +49,35 @@ class ApplicationServiceImpl extends ApplicationService {
         dao.find(MongoDBObject(attribute -> key)).toList
     }
 
-    def addItem(item: Item, applicationName: String): Boolean = {
-        dao.update(
-            MongoDBObject("name" -> applicationName),
-            MongoDBObject("$push" -> MongoDBObject("items" -> grater[Item].asDBObject(item)))
-        )
-        true
+    def addItem(item: Item, applicationName: String): Unit = {
+        if(exists(applicationName) && ! itemExists(item.id, applicationName)){
+            dao.update(
+                MongoDBObject("name" -> applicationName),
+                $push("items" -> grater[Item].asDBObject(item))
+            )
+        }
     }
+
+    def getItem(itemName: String, applicationName: String): Option[Item] = {
+        val listOfItems = dao.primitiveProjection[List[BasicDBObject]](MongoDBObject("items.name" -> itemName), "items")
+        listOfItems match {
+            case Some(_) => {
+                val set = listOfItems.head.toSet.map((el: BasicDBObject) => Json.parse(el.toString))
+                set.find((el: JsValue) => { 
+                     (el \ "name").as[String] == itemName 
+                })
+            }
+            case None => None
+        }
+    }
+
+    def itemExists(itemId: String, applicationName: String): Boolean = {
+        if(exists(applicationName)){
+            !dao.find(MongoDBObject("items.id" -> itemId)).isEmpty
+        } else {
+            false // throw exception "application does not exist"
+        }
+    }
+
+    def deleteItem(itemId: String, applicationName: String) = {}
 }

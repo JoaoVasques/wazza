@@ -19,11 +19,5 @@ trait ItemService {
 		language: String
 	): Unit
 
-	def createAppleItem(): Unit
-
-	def deleteItem(applicationId: String, itemId: String): Unit
-
-	def exists(applicationId: String, itemId: String): Boolean
-
-	def getItem(applicationId: String, itemId: String): Item
+	def createAppleItem(): Unit	
 }

@@ -15,7 +15,7 @@ case class Item(
 	name: String,
 	description: String,
 	store: Int,
-	@Salat metadata: ItemMetadata,
+	metadata: ItemMetadata,
 	currency: Currency,
 	purchaseInfo: PurchaseInfo = new PurchaseInfo
 )
@@ -27,15 +27,17 @@ case class Currency(
 
 case class PurchaseInfo()
 
+@Salat
 trait ItemMetadata {
 	def osType: String
-	def id: String
+	def itemId: String
 	def title: String
 	def description: String
 }
 
 case class GoogleMetadata(
-	override val id: String,
+	override val osType: String,
+	override val itemId: String,
 	override val title: String,
 	override val description: String,
 	publishedState: String,
@@ -46,7 +48,7 @@ case class GoogleMetadata(
 	language: String,
 	price: Double
 
-)(implicit val osType: String = "Google") extends ItemMetadata
+) extends ItemMetadata
 
 case class GoogleTranslations(
 	locale: String,
@@ -55,7 +57,7 @@ case class GoogleTranslations(
 )
 
 case class AppleMetadata(
-	override val id: String,
+	override val itemId: String,
 	override val title: String,
 	override val description: String,
 	productProperties: AppleProductProperties,
