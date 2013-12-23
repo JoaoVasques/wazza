@@ -1,6 +1,6 @@
-package service.definitions
+package service.application.definitions
 
-import models._
+import models.application._
 
 trait ItemService {
 

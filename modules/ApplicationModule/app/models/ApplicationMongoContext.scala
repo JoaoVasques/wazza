@@ -1,4 +1,4 @@
-package models
+package models.application
 
 import com.novus.salat.dao._
 import com.novus.salat.annotations._
@@ -7,7 +7,7 @@ import com.novus.salat.{TypeHintFrequency, StringTypeHintStrategy, Context}
 import play.api.Play
 import play.api.Play.current
 
-package object MongoContext {
+package object ApplicationMongoContext {
   implicit val context = {
     val context = new Context {
       val name = "item"

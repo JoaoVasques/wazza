@@ -1,8 +1,8 @@
-package service.implementations
+package service.application.implementations
 
-import service.definitions.ItemService
-import service.definitions.ApplicationService
-import models._
+import service.application.definitions.ItemService
+import service.application.definitions.ApplicationService
+import models.application._
 import com.google.inject._
 
 class ItemServiceImpl @Inject()(applicationService: ApplicationService) extends ItemService {

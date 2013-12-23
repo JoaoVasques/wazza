@@ -1,8 +1,8 @@
-package service.modules
+package service.application.modules
 
 import com.tzavellas.sse.guice.ScalaModule
-import service.definitions._
-import service.implementations._
+import service.application.definitions._
+import service.application.implementations._
 
 class AppModule extends ScalaModule {
   def configure() {
