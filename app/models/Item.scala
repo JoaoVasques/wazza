@@ -46,7 +46,7 @@ case class GoogleMetadata(
 	language: String,
 	price: Double
 
-)(implicit override val osType: String = "Google") extends ItemMetadata
+)(implicit val osType: String = "Google") extends ItemMetadata
 
 case class GoogleTranslations(
 	locale: String,
@@ -63,7 +63,7 @@ case class AppleMetadata(
 	pricingProperties: ApplePricingProperties,
 	durationProperties: AppleDurationProperties
 
-)(implicit override val osType: String = "Apple") extends ItemMetadata
+)(implicit val osType: String = "Apple") extends ItemMetadata
 
 case class AppleProductProperties(
 	productType: Int, 
