@@ -1,6 +1,7 @@
 package service.application.definitions
 
 import models.application._
+import scala.util.{Try}
 
 trait ItemService {
 
@@ -17,7 +18,7 @@ trait ItemService {
 		autoTranslate: Boolean,
 		autofill: Boolean,
 		language: String
-	): Unit
+	): Try[Item]
 
-	def createAppleItem(): Unit	
+	def createAppleItem(): Try[Item]	
 }

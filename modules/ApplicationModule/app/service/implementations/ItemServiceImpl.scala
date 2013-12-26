@@ -4,6 +4,7 @@ import service.application.definitions.ItemService
 import service.application.definitions.ApplicationService
 import models.application._
 import com.google.inject._
+import scala.util.{Try, Success, Failure}
 
 class ItemServiceImpl @Inject()(applicationService: ApplicationService) extends ItemService {
 	
@@ -22,16 +23,19 @@ class ItemServiceImpl @Inject()(applicationService: ApplicationService) extends 
 		autoTranslate: Boolean,
 		autofill: Boolean,
 		language: String 
-	): Unit = {
+	): Try[Item] = {
 
+		val trans1 = new GoogleTranslations("locale1", "title1", "description1")
+		val trans2 = new GoogleTranslations("locale2", "title2", "description2")
 		val metadata = new GoogleMetadata(
+			"Google",
 			id,
 			title,
 			description,
 			publishedState,
 			purchaseType,
 			autoTranslate,
-			List[GoogleTranslations](),
+			List[GoogleTranslations](trans1, trans2),
 			autofill,
 			language,
 			price
@@ -49,22 +53,9 @@ class ItemServiceImpl @Inject()(applicationService: ApplicationService) extends 
 		applicationService.addItem(item, applicationName)
 	}
 
-	def createAppleItem() = {
-
+	def createAppleItem(): Try[Item] = {
+		//TODO
+		null
 	}
-
-	private def createMetadata(): Unit = {
-		
-	}
-
-	def deleteItem(applicationId: String, itemId: String) = {
-
-	}
-
-	def exists(applicationId: String, itemId: String): Boolean = {
-		true
-	}
-
-	def getItem(applicationId: String, itemId: String): Item = null
 
 }

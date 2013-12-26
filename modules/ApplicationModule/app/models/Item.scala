@@ -11,7 +11,7 @@ import se.radley.plugin.salat._
 import ApplicationMongoContext._
 
 case class Item(
-  id: String,
+  @Key("_id") id: String,
   name: String,
   description: String,
   store: Int,

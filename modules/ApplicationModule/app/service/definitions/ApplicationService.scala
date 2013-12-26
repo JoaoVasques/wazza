@@ -1,12 +1,13 @@
 package service.application.definitions
 
 import models.application._
+import scala.util.Try
 
 trait ApplicationService {
   
-  def insertApplication(application: WazzaApplication): Unit    
+  def insertApplication(application: WazzaApplication): Try[WazzaApplication]
 
-  def deleteApplication(name: String): Unit
+  def deleteApplication(name: String): Try[WazzaApplication]
 
   def exists(name: String): Boolean
 
@@ -14,12 +15,12 @@ trait ApplicationService {
 
   /** Item operations **/
 
-  def addItem(item: Item, applicationName: String): Unit  
+  def addItem(item: Item, applicationName: String): Try[Item]
 
   def getItem(itemId: String, applicationName: String): Option[Item]
 
   def itemExists(itemId: String, applicationName: String): Boolean
 
-  def deleteItem(itemId: String, applicationName: String): Unit
+  def deleteItem(itemId: String, applicationName: String): Try[Item]
 
 }
