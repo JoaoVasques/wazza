@@ -33,7 +33,7 @@ lazy val mySettings = Seq(
 
 // Projects
 lazy val home = project.in(file("."))
-                .aggregate(editorModule, storesModule)
+                .aggregate(editorModule, storesModule, userModule, applicationModule)
                 .dependsOn(editorModule, storesModule, userModule, applicationModule)
                 .settings(mySettings: _*)
 
