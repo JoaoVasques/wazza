@@ -5,6 +5,7 @@ import service.application.definitions.ApplicationService
 import models.application._
 import com.google.inject._
 import scala.util.{Try, Success, Failure}
+import ItemContext._
 
 class ItemServiceImpl @Inject()(applicationService: ApplicationService) extends ItemService {
 	
@@ -12,7 +13,6 @@ class ItemServiceImpl @Inject()(applicationService: ApplicationService) extends 
 
 	def createGooglePlayItem(
 		applicationName: String,
-		id: String,
 		title: String,
 		name: String,
 		description: String,
@@ -29,7 +29,7 @@ class ItemServiceImpl @Inject()(applicationService: ApplicationService) extends 
 		val trans2 = new GoogleTranslations("locale2", "title2", "description2")
 		val metadata = new GoogleMetadata(
 			"Google",
-			id,
+			name,
 			title,
 			description,
 			publishedState,
@@ -42,10 +42,9 @@ class ItemServiceImpl @Inject()(applicationService: ApplicationService) extends 
 		)
 
 		val item = new Item(
-			id,
 			name,
 			description,
-			0,
+			GoogleStoreId,
 			metadata,
 			new Currency(0, price)
 		)

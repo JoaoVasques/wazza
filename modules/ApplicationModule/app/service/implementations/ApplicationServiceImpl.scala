@@ -53,7 +53,7 @@ class ApplicationServiceImpl extends ApplicationService {
     }
 
     def addItem(item: Item, applicationName: String): Try[Item] = {
-        if(exists(applicationName) && ! itemExists(item.id, applicationName)){
+        if(exists(applicationName) && ! itemExists(item.name, applicationName)){
             dao.update(
                 MongoDBObject("name" -> applicationName),
                 $push("items" -> grater[Item].asDBObject(item))
@@ -66,13 +66,13 @@ class ApplicationServiceImpl extends ApplicationService {
         }
     }
 
-    def getItem(itemName: String, applicationName: String): Option[Item] = {
-        val listOfItems = dao.primitiveProjection[List[BasicDBObject]](MongoDBObject("items.name" -> itemName), "items")
+    def getItem(itemId: String, applicationName: String): Option[Item] = {
+        val listOfItems = dao.primitiveProjection[List[BasicDBObject]](MongoDBObject("items._id" -> itemId), "items")
         listOfItems match {
             case Some(_) => {
                 val set = listOfItems.head.toSet.map((el: BasicDBObject) => Json.parse(el.toString))
                 set.find((el: JsValue) => { 
-                     (el \ "name").as[String] == itemName 
+                     (el \ "_id").as[String] == itemId 
                 })
             }
             case None => None

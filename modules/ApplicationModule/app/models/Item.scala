@@ -11,8 +11,7 @@ import se.radley.plugin.salat._
 import ApplicationMongoContext._
 
 case class Item(
-  @Key("_id") id: String,
-  name: String,
+  @Key("_id") name: String,
   description: String,
   store: Int,
   metadata: ItemMetadata,
@@ -105,15 +104,20 @@ object Item extends ModelCompanion[Item, ObjectId] {
 
 package object ItemContext {
 
-  private val googleMetadataType = "models.application.GoogleMetadata"
-  private val appleMetadataType = "models.application.AppleMetadata"
+  lazy val GoogleMetadataType = "models.application.GoogleMetadata"
+  lazy val AppleMetadataType = "models.application.AppleMetadata"
+
+  lazy val GoogleStoreId = 0
+  lazy val AppleStoreId = 1
+
+  lazy val VirtualCurrency = 0
+  lazy val RealWordCurrency = 1
 
   implicit def jsonToItem(obj: Option[JsValue]): Option[Item] = {
       obj match {
           case Some(item) => {
               Some(new Item(
                 (item \ "_id").as[String],
-                (item \ "name").as[String],
                 (item \ "description").as[String],
                 (item \ "store").as[Int],
                 (item \ "metadata"),
@@ -126,7 +130,7 @@ package object ItemContext {
 
   implicit def jsonToMetadata(obj: JsValue): ItemMetadata = {
     val metadataType = (obj \ "_t").as[String]
-    if(metadataType == googleMetadataType){
+    if(metadataType == GoogleMetadataType){
       new GoogleMetadata(
         (obj \ "osType").as[String],
         (obj \ "itemId").as[String],

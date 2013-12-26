@@ -7,7 +7,6 @@ trait ItemService {
 
 	def createGooglePlayItem(
 		applicationName: String,
-		id: String,
 		title: String,
 		name: String,
 		description: String,
