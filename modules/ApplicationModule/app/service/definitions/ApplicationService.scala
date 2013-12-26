@@ -10,7 +10,7 @@ trait ApplicationService {
 
   def exists(name: String): Boolean
 
-  def findBy(attribute: String, key: String): List[WazzaApplication]
+  def find(key: String): Option[WazzaApplication]
 
   /** Item operations **/
 

@@ -11,20 +11,11 @@ import se.radley.plugin.salat._
 import ApplicationMongoContext._
 import play.api.libs.json.Json
 import play.api.libs.json.JsValue
+import ItemContext._
 
 class ApplicationServiceImpl extends ApplicationService {
     
     private val dao = WazzaApplication.getDAO
-
-    implicit private def basicDBObjectToItem(obj: Option[JsValue]): Option[Item] = {
-        obj match {
-            case Some(item) => {
-                //TODO parse json and create Item
-                null
-            }
-            case None => None 
-        }
-    }
 
     def insertApplication(application: WazzaApplication): Unit = {
         if(! exists(application.name)){
@@ -36,17 +27,20 @@ class ApplicationServiceImpl extends ApplicationService {
 
     def deleteApplication(name: String): Unit = {
         if(exists(name)){
-            val application = findBy("name", name)
-            dao.remove(application.head)
+            val application = find(name).get
+            dao.remove(application)
         }
     }
 
     def exists(name: String): Boolean = {
-        ! dao.findOne(MongoDBObject("name" -> name)).isEmpty
+        find(name) match {
+            case Some(_) => true
+            case _ => false
+        }
     }
 
-    def findBy(attribute: String, key: String): List[WazzaApplication] = {
-        dao.find(MongoDBObject(attribute -> key)).toList
+    def find(key: String): Option[WazzaApplication] = {
+        dao.findOne(MongoDBObject("name" -> key))
     }
 
     def addItem(item: Item, applicationName: String): Unit = {

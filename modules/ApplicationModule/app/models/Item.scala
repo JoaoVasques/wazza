@@ -16,16 +16,13 @@ case class Item(
 	description: String,
 	store: Int,
 	metadata: ItemMetadata,
-	currency: Currency,
-	purchaseInfo: PurchaseInfo = new PurchaseInfo
+	currency: Currency
 )
 
 case class Currency(
 	typeOf: Int, //virtual or real money
 	value: Double
 )
-
-case class PurchaseInfo()
 
 @Salat
 trait ItemMetadata {
@@ -43,7 +40,7 @@ case class GoogleMetadata(
 	publishedState: String,
 	purchaseType: Int,
 	autoTranslate: Boolean,
-	locate: List[GoogleTranslations],
+	locale: List[GoogleTranslations],
 	autofill: Boolean,
 	language: String,
 	price: Double
@@ -103,4 +100,71 @@ object Item extends ModelCompanion[Item, ObjectId] {
 	val dao = new SalatDAO[Item, ObjectId](mongoCollection("applications")){}
 
 	def getDAO = dao
+}
+
+package object ItemContext {
+
+	private val googleMetadataType = "models.application.GoogleMetadata"
+	private val appleMetadataType = "models.application.AppleMetadata"
+
+  implicit def jsonToItem(obj: Option[JsValue]): Option[Item] = {
+      obj match {
+          case Some(item) => {
+              println(item)
+              Some(new Item(
+              	(item \ "_id").as[String],
+              	(item \ "name").as[String],
+              	(item \ "description").as[String],
+              	(item \ "store").as[Int],
+             		(item \ "metadata"),
+             		(item \ "currency")
+              ))
+          }
+          case None => None 
+      }
+  }
+
+  implicit def jsonToMetadata(obj: JsValue): ItemMetadata = {
+  	val metadataType = (obj \ "_t").as[String]
+  	if(metadataType == googleMetadataType){
+  		new GoogleMetadata(
+  			(obj \ "osType").as[String],
+  			(obj \ "itemId").as[String],
+  			(obj \ "title").as[String],
+  			(obj \ "description").as[String],
+  			(obj \ "publishedState").as[String],
+  			(obj \ "purchaseType").as[Int],
+  			(obj \ "autoTranslate").as[Boolean],
+  			(obj \ "locale"),
+  			(obj \ "autofill").as[Boolean],
+  			(obj \ "language").as[String],
+  			(obj \ "price").as[Double]
+  		)
+  	} else {
+  		//TODO: apple metadata
+			null
+  	}
+  }
+
+  implicit def jsonToCurrency(obj: JsValue): Currency = {
+  	new Currency(
+  		(obj \ "typeOf").as[Int],
+  		(obj \ "value").as[Double]
+  	)
+  }
+
+  implicit def jsonArrayToLocale(obj: JsValue): List[GoogleTranslations] = {
+  	obj match {
+  		case JsArray(array) => {
+  			array.map((element: JsValue) => {
+  				new GoogleTranslations(
+  						(element \ "locale").as[String],
+							(element \ "title").as[String],
+							(element \ "description").as[String]
+  				)
+  			}).toList
+  		}
+  		case _ => List[GoogleTranslations]()
+  	}
+  }
 }
