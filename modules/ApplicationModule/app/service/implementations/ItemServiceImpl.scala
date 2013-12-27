@@ -25,8 +25,6 @@ class ItemServiceImpl @Inject()(applicationService: ApplicationService) extends 
 		language: String 
 	): Try[Item] = {
 
-		val trans1 = new GoogleTranslations("locale1", "title1", "description1")
-		val trans2 = new GoogleTranslations("locale2", "title2", "description2")
 		val metadata = new GoogleMetadata(
 			"Google",
 			name,
@@ -35,7 +33,7 @@ class ItemServiceImpl @Inject()(applicationService: ApplicationService) extends 
 			publishedState,
 			purchaseType,
 			autoTranslate,
-			List[GoogleTranslations](trans1, trans2),
+			List[GoogleTranslations](),
 			autofill,
 			language,
 			price
@@ -46,15 +44,43 @@ class ItemServiceImpl @Inject()(applicationService: ApplicationService) extends 
 			description,
 			GoogleStoreId,
 			metadata,
-			new Currency(0, price)
+			new Currency(RealWordCurrency, price)
 		)
 
 		applicationService.addItem(item, applicationName)
 	}
 
-	def createAppleItem(): Try[Item] = {
-		//TODO
-		null
-	}
+	def createAppleItem(
+		applicationName: String,
+		title: String,
+		name: String,
+  	description: String,
+  	store: Int,
+  	productProperties: AppleProductProperties,
+	  languageProperties: AppleLanguageProperties,
+	  pricingProperties: ApplePricingProperties,
+	  durationProperties: AppleDurationProperties
+	): Try[Item] = {
 
+		val metadata = new AppleMetadata(
+			"Apple",
+			name,
+			title,
+			description,
+			productProperties,
+			languageProperties,
+			pricingProperties,
+			durationProperties
+		)
+
+		val item = new Item(
+			name,
+			description,
+			AppleStoreId,
+			metadata,
+			new Currency(RealWordCurrency, pricingProperties.price)
+		)
+
+		applicationService.addItem(item, applicationName)
+	}
 }

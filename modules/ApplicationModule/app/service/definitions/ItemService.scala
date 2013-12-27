@@ -19,5 +19,15 @@ trait ItemService {
 		language: String
 	): Try[Item]
 
-	def createAppleItem(): Try[Item]	
+	def createAppleItem(
+		applicationName: String,
+		title: String,
+		name: String,
+  	description: String,
+  	store: Int,
+  	productProperties: AppleProductProperties,
+	  languageProperties: AppleLanguageProperties,
+	  pricingProperties: ApplePricingProperties,
+	  durationProperties: AppleDurationProperties
+	): Try[Item]	
 }
