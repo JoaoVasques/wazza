@@ -4,6 +4,8 @@
 
 # Home page
 GET     /                             @controllers.application.AppController.index
+GET     /new                          @controllers.application.CRUDController.newApplication
+POST    /new                          @controllers.application.CRUDController.newApplicationSubmit
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               	controllers.user.Assets.at(path="/public", file)

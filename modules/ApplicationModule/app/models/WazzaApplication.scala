@@ -12,7 +12,17 @@ import ApplicationMongoContext._
 
 case class WazzaApplication(
 	name: String,
+  appUrl: String,
+  // image: String,
+  storeId: String,
+  packageName: String,
+  appType: Option[String],
+  sdk: SdkVariables,
 	items: List[Item] = List[Item]()
+)
+
+case class SdkVariables(
+  apiKey: String
 )
 
 object WazzaApplication extends ModelCompanion[WazzaApplication, ObjectId] {

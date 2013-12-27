@@ -11,7 +11,8 @@ lazy val dependencies = Seq(
   "com.tzavellas" % "sse-guice" % "0.7.1",
   "org.webjars" % "webjars-play_2.10" % "2.2.0",
   "org.webjars" % "angularjs" % "1.2.5",
-  "org.webjars" % "bootstrap" % "3.0.3"
+  "org.webjars" % "bootstrap" % "3.0.3",
+  "commons-validator" % "commons-validator" % "1.4.0"
 )
 
 libraryDependencies ++= dependencies
