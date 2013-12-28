@@ -10,6 +10,8 @@ import org.apache.commons.validator.routines.UrlValidator
 import service.application.definitions._
 import com.google.inject._
 import scala.util.{Success, Failure}
+import service.security.definitions._
+import SecretGeneratorServiceContext._
 
 /** Uncomment the following lines as needed **/
 /**
@@ -24,7 +26,7 @@ import play.api.cache._
 import play.api.libs.json._
 **/
 
-class CRUDController @Inject()(applicationService: ApplicationService) extends Controller {
+class CRUDController @Inject()(applicationService: ApplicationService, secretGeneratorService: SecretGeneratorService) extends Controller {
 
   protected case class ConstraintArgument(
     name: String,
@@ -38,6 +40,7 @@ class CRUDController @Inject()(applicationService: ApplicationService) extends C
                                 """^(([a-z])+.)+[A-Z]([A-Za-z])+$""",
                                 "Package name in invalid"
                               )
+
   private def textCheckConstraint(args: Seq[ConstraintArgument]): Constraint[String] = Constraint("", args)({
     text => {
       val arg = args.head
@@ -56,8 +59,7 @@ class CRUDController @Inject()(applicationService: ApplicationService) extends C
 
   private def urlCheckConstraint: Constraint[String] = Constraint("")({
     text => {
-      val urlValidator = new UrlValidator()
-      if(urlValidator.isValid(text)){
+      if(new UrlValidator().isValid(text)){
         Valid
       } else {
         Invalid("Url is invalid")
@@ -82,9 +84,11 @@ class CRUDController @Inject()(applicationService: ApplicationService) extends C
       "storeId" -> nonEmptyText,
       "packageName" -> nonEmptyText.verifying(textCheckConstraint(Seq(packageNameConstraint))),
       "appType" -> optional(text),
-      "sdk" -> mapping(
-        "apiKey" -> nonEmptyText
-      )(SdkVariables.apply)(SdkVariables.unapply),
+      "credentials" -> mapping(
+        "appId" -> ignored(secretGeneratorService.generateSecret(Id)),
+        "apiKey" -> ignored(secretGeneratorService.generateSecret(ApiKey)),
+        "sdkKey" -> ignored(secretGeneratorService.generateSecret(ApiKey))
+      )(Credentials.apply)(Credentials.unapply),
       "items" -> ignored(List[Item]())
     )(WazzaApplication.apply)(WazzaApplication.unapply)
   )

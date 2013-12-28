@@ -34,7 +34,7 @@ lazy val mySettings = Seq(
 
 // Projects
 lazy val home = project.in(file("."))
-                .aggregate(editorModule, storesModule, userModule, applicationModule)
+                .aggregate(editorModule, storesModule, userModule, applicationModule, securityModule)
                 .dependsOn(editorModule, storesModule, userModule, applicationModule)
                 .settings(mySettings: _*)
 
@@ -66,6 +66,14 @@ lazy val applicationModule = play.Project("application",
                     version.toString,
                     dependencies,
                     path = file("modules/ApplicationModule")
+              )
+              .dependsOn(securityModule)
+              .settings(mySettings: _*)
+
+lazy val securityModule = play.Project("security",
+                    version.toString,
+                    dependencies,
+                    path = file("modules/SecurityModule")
               )
               .settings(mySettings: _*)
 

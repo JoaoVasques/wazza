@@ -17,12 +17,14 @@ case class WazzaApplication(
   storeId: String,
   packageName: String,
   appType: Option[String],
-  sdk: SdkVariables,
+  credentials: Credentials,
 	items: List[Item] = List[Item]()
 )
 
-case class SdkVariables(
-  apiKey: String
+case class Credentials(
+  appId: String,
+  apiKey: String,
+  sdkKey: String
 )
 
 object WazzaApplication extends ModelCompanion[WazzaApplication, ObjectId] {

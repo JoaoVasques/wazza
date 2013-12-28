@@ -1,0 +1,47 @@
+@(applicationForm: Form[models.application.WazzaApplication])
+
+@import helper._
+@import helper.twitterBootstrap._
+
+<head>
+    <title>Wazza</title>
+    <link rel="stylesheet" media="screen" href="@routes.WebJarAssets.at(WebJarAssets.locate("bootstrap.min.css"))">
+</head>
+
+@newapplicationForm = {
+    @helper.form(action = controllers.application.routes.CRUDController.newApplicationSubmit) {
+      <fieldset>
+        @inputText(
+          applicationForm("name"),
+          '_label -> "Application Name"
+        )
+
+        @inputText(
+          applicationForm("appUrl"),
+          '_label -> "Application URL"
+        )
+
+        @inputText(
+          applicationForm("storeId"),
+          '_label -> "Store ID"
+        )
+
+        @inputText(
+          applicationForm("packageName"),
+          '_label -> "Application Package Name"
+        )
+
+      </fieldset>
+      <div class="actions">
+        <input type="submit" class="btn btn-success" value="Create">
+      </div>
+    }
+}
+
+<div class="container">
+  <div class="row-fluid">
+      <div class="span9">
+        @newapplicationForm
+      </div>
+  </div>
+</div>
