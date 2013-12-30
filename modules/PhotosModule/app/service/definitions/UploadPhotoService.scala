@@ -8,7 +8,7 @@ import scala.util.Try
 
 trait UploadPhotoService {
 
-  def upload(filePart: FilePart[_]): Try[Unit]
+  def upload(filePart: FilePart[_]): Try[String]
 
   def getPhoto(fileName: String): Unit
 }

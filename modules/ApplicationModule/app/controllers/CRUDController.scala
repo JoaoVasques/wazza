@@ -91,6 +91,7 @@ class CRUDController @Inject()(
     mapping(
       "name" -> nonEmptyText.verifying(applicationNameConstrait),
       "appUrl" -> nonEmptyText.verifying(urlCheckConstraint),
+      "imageName" -> ignored(""),
       "storeId" -> nonEmptyText,
       "packageName" -> nonEmptyText,//.verifying(textCheckConstraint(Seq(packageNameConstraint))),
       "appType" -> optional(text),
@@ -119,6 +120,7 @@ class CRUDController @Inject()(
             val uploadResult = uploadPhotoService.upload(image.get)
 
             if(uploadResult.isSuccess){
+              application.imageName = uploadResult.get
               applicationService.insertApplication(application)
               Redirect("/")
             } else {

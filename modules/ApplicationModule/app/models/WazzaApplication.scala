@@ -13,7 +13,7 @@ import ApplicationMongoContext._
 case class WazzaApplication(
 	name: String,
   appUrl: String,
-  // image: String,
+  var imageName: String,
   storeId: String,
   packageName: String,
   appType: Option[String],

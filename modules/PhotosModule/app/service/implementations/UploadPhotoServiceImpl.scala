@@ -12,7 +12,7 @@ class UploadPhotoServiceImpl extends UploadPhotoService {
 
   private val storage = Photo.photosStorage
 
-  def upload(filePart: FilePart[_]): Try[Unit] = {
+  def upload(filePart: FilePart[_]): Try[String] = {
     filePart.ref match {
       case TemporaryFile(file) => {
         val input = new FileInputStream(file)
@@ -20,7 +20,7 @@ class UploadPhotoServiceImpl extends UploadPhotoService {
           fh.filename = filePart.filename
           fh.contentType = filePart.contentType.get
         }
-        new Success
+        new Success(filePart.filename)
       }
       case _ => {
         new Failure(null)
