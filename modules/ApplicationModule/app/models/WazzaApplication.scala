@@ -31,4 +31,6 @@ object WazzaApplication extends ModelCompanion[WazzaApplication, ObjectId] {
 
 	val dao = new SalatDAO[WazzaApplication, ObjectId](mongoCollection("applications")){}
 	def getDAO = dao
+
+  lazy val applicationTypes = List("Apple", "Google")
 }

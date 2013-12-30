@@ -1,4 +1,4 @@
-@(applicationForm: Form[models.application.WazzaApplication])
+@(applicationForm: Form[models.application.WazzaApplication], appTypes: List[String])
 
 @import helper._
 @import helper.twitterBootstrap._
@@ -9,8 +9,19 @@
 </head>
 
 @newapplicationForm = {
-    @helper.form(action = controllers.application.routes.CRUDController.newApplicationSubmit) {
+    @helper.form(
+        action = controllers.application.routes.CRUDController.newApplicationSubmit,
+        'enctype -> "multipart/form-data"
+    ) {
       <fieldset>
+
+        @select(
+          applicationForm("appType"),
+          options = options(appTypes),
+          '_default -> "--- Choose a type ---",
+          '_label -> "Application type"
+        )
+
         @inputText(
           applicationForm("name"),
           '_label -> "Application Name"
@@ -29,6 +40,11 @@
         @inputText(
           applicationForm("packageName"),
           '_label -> "Application Package Name"
+        )
+
+        @inputFile(
+          applicationForm("image"),
+          '_label -> "Application logo"
         )
 
       </fieldset>

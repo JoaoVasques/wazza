@@ -12,6 +12,8 @@ import com.google.inject._
 import scala.util.{Success, Failure}
 import service.security.definitions._
 import SecretGeneratorServiceContext._
+import play.api.mvc.MultipartFormData._
+import service.photos.definitions._
 
 /** Uncomment the following lines as needed **/
 /**
@@ -26,7 +28,11 @@ import play.api.cache._
 import play.api.libs.json._
 **/
 
-class CRUDController @Inject()(applicationService: ApplicationService, secretGeneratorService: SecretGeneratorService) extends Controller {
+class CRUDController @Inject()(
+    applicationService: ApplicationService,
+    secretGeneratorService: SecretGeneratorService,
+    uploadPhotoService: UploadPhotoService
+  ) extends Controller {
 
   protected case class ConstraintArgument(
     name: String,
@@ -37,7 +43,7 @@ class CRUDController @Inject()(applicationService: ApplicationService, secretGen
   // regexp not working properly -.-
   val packageNameConstraint = new ConstraintArgument(
                                 "packagenamecheck",
-                                """^(([a-z])+.)+[A-Z]([A-Za-z])+$""",
+                                """/^(\w+\.)*[\w]+$/""",
                                 "Package name in invalid"
                               )
 
@@ -77,12 +83,16 @@ class CRUDController @Inject()(applicationService: ApplicationService, secretGen
     }
   }
 
+  private def handleFileUpload() = {
+      
+  }
+
   val applicationForm: Form[WazzaApplication] = Form(
     mapping(
       "name" -> nonEmptyText.verifying(applicationNameConstrait),
       "appUrl" -> nonEmptyText.verifying(urlCheckConstraint),
       "storeId" -> nonEmptyText,
-      "packageName" -> nonEmptyText.verifying(textCheckConstraint(Seq(packageNameConstraint))),
+      "packageName" -> nonEmptyText,//.verifying(textCheckConstraint(Seq(packageNameConstraint))),
       "appType" -> optional(text),
       "credentials" -> mapping(
         "appId" -> ignored(secretGeneratorService.generateSecret(Id)),
@@ -94,21 +104,31 @@ class CRUDController @Inject()(applicationService: ApplicationService, secretGen
   )
 
   def newApplication = Action { implicit request =>
-    Ok(views.html.newApplication(applicationForm))
+    Ok(views.html.newApplication(applicationForm, applicationService.getApplicationyTypes))
   }
 
   def newApplicationSubmit = Action { implicit request =>
     applicationForm.bindFromRequest.fold(
       errors => {
-        BadRequest(views.html.newApplication(errors))
+        BadRequest(views.html.newApplication(errors, applicationService.getApplicationyTypes))
       },
-      application => {
-        val result = applicationService.insertApplication(application)
-        
-        result match {
-          case Success(app) => Redirect("/")
-          case Failure(_) => BadRequest("/")
-        }
+      application => {        
+        val image = request.body.asMultipartFormData.get.file("image")
+        image match {
+          case Some(_) => {
+            val uploadResult = uploadPhotoService.upload(image.get)
+
+            if(uploadResult.isSuccess){
+              applicationService.insertApplication(application)
+              Redirect("/")
+            } else {
+              BadRequest("Upload failed..")
+            }
+          }
+          case None => {
+            BadRequest("NO IMAGE")
+          }
+        }      
       }
     )
   }

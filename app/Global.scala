@@ -7,6 +7,7 @@ import service.user.definitions._
 import service.user.implementations._
 import service.user.modules._
 import service.security.modules._
+import service.photos.modules._
 
 object Global extends GlobalSettings {
   
@@ -14,7 +15,8 @@ object Global extends GlobalSettings {
     Guice.createInjector(
       new AppModule,
       new UserModule,
-      new SecurityModule
+      new SecurityModule,
+      new PhotosModule
     )
   }
 
