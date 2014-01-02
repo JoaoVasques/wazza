@@ -85,6 +85,10 @@ class CRUDController @Inject()(
     Ok(views.html.newApplication(applicationForm, applicationService.getApplicationyTypes))
   }
 
+  private def generateBadRequestResponse(form: Form[WazzaApplication]): Result = {
+    BadRequest(views.html.newApplication(form, applicationService.getApplicationyTypes))
+  }
+
   def newApplicationSubmit = Action { implicit request =>
     applicationForm.bindFromRequest.fold(
       errors => {
@@ -93,8 +97,7 @@ class CRUDController @Inject()(
       application => {
 
         if(application.appType.get == "Android" && (!checkPackageNameFormat(application.packageName))){
-          val formWithErrors = applicationForm.withError("packageName", "package name is invalid")
-          BadRequest(views.html.newApplication(formWithErrors, applicationService.getApplicationyTypes))
+          generateBadRequestResponse(applicationForm.withError("packageName", "package name is invalid"))
         } else {
           val image = request.body.asMultipartFormData.get.file("image")
           image match {
@@ -106,8 +109,7 @@ class CRUDController @Inject()(
                 applicationService.insertApplication(application)
                 Redirect("/")
               } else {
-                val formWithErrors = applicationForm.withError("packageName", "package name is invalid")
-                BadRequest("Upload failed..")
+                generateBadRequestResponse(applicationForm.withError("image", "Image upload error. Please try again"))
               }
             }
             case None => {

@@ -31,19 +31,21 @@
         <div id="generalSection">
           @inputText(
             applicationForm("name"),
-            '_label -> "Application Name"
+            '_label -> "Application Name",
+            Symbol("ng-model") -> "applicationForm.name"
           )
 
           @inputRadioGroup(
             applicationForm("appType"),
             options = options(appTypes),
             '_label -> "Application type",
-            Symbol("ng-model") -> "applicationType"
+            Symbol("ng-model") -> "applicationForm.appType"
           )
 
           @inputText(
             applicationForm("appUrl"),
-            '_label -> "Application URL"
+            '_label -> "Application URL",
+            Symbol("ng-model") -> "applicationForm.url"
           )
 
           @inputFile(
@@ -55,19 +57,20 @@
         </fieldset>
         <legend>Store Info</legend>
 
-        <div id="androidSection"  ng-show="showStoreSection('Android')" ng-hide="hideStoreSection('iOS')">
+        <div id="androidSection" ng-show="store.Android">
           @inputText(
             applicationForm("packageName"),
-            '_label -> "Application Package Name"
+            '_label -> "Application Package Name",
+            Symbol("ng-model") -> "applicationForm.androidData.packageName"
           )
         </div>
 
-        <div id="iOSSection" ng-show="showStoreSection('iOS')" ng-hide="hideStoreSection('Android')">
+        <div id="iOSSection" ng-show="store.iOS">
           <p>TODO</p>
         </div>
 
       <div class="actions">
-        <input type="submit" class="btn btn-success" value="Create">
+        <input type="submit" class="btn btn-success" value="Create" ng-disabled="readyToSubmit">
       </div>
     }
 }
