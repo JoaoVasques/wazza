@@ -1,53 +1,71 @@
-@(applicationForm: Form[models.application.WazzaApplication], appTypes: List[String])
+@(applicationForm: Form[models.application.WazzaApplication],
+  appTypes: Map[String, String],
+  optionalParameters: Map[String, String] = Map[String,String]()
+)
 
 @import helper._
 @import helper.twitterBootstrap._
 
+<!doctype html>
+<html lang="en" ng-app="ApplicationModule">
 <head>
     <title>Wazza</title>
     <link rel="stylesheet" media="screen" href="@routes.WebJarAssets.at(WebJarAssets.locate("bootstrap.min.css"))">
+    
+    <script src="@routes.WebJarAssets.at(WebJarAssets.locate("1.2.5/angular.min.js"))"></script>
+
+    <script src="@controllers.application.routes.Assets.at("javascripts/application/appModule.js")"></script>
+    <script src="@controllers.application.routes.Assets.at("javascripts/application/controllers.js")"></script>
+    <script src="@controllers.application.routes.Assets.at("javascripts/application/service.js")"></script>
 </head>
 
 @newapplicationForm = {
     @helper.form(
         action = controllers.application.routes.CRUDController.newApplicationSubmit,
-        'enctype -> "multipart/form-data"
+        'enctype -> "multipart/form-data",
+        Symbol("ng-controller") -> "NewApplicationFormController"
     ) {
-      <fieldset>
+        <fieldset>
 
-        @select(
-          applicationForm("appType"),
-          options = options(appTypes),
-          '_default -> "--- Choose a type ---",
-          '_label -> "Application type"
-        )
+        <legend>General</legend>
+        <div id="generalSection">
+          @inputText(
+            applicationForm("name"),
+            '_label -> "Application Name"
+          )
 
-        @inputText(
-          applicationForm("name"),
-          '_label -> "Application Name"
-        )
+          @inputRadioGroup(
+            applicationForm("appType"),
+            options = options(appTypes),
+            '_label -> "Application type",
+            Symbol("ng-model") -> "applicationType"
+          )
 
-        @inputText(
-          applicationForm("appUrl"),
-          '_label -> "Application URL"
-        )
+          @inputText(
+            applicationForm("appUrl"),
+            '_label -> "Application URL"
+          )
 
-        @inputText(
-          applicationForm("storeId"),
-          '_label -> "Store ID"
-        )
+          @inputFile(
+            applicationForm("image"),
+            '_label -> "Application logo"
+          )
+        </div>
 
-        @inputText(
-          applicationForm("packageName"),
-          '_label -> "Application Package Name"
-        )
+        </fieldset>
+        <legend>Store Info</legend>
 
-        @inputFile(
-          applicationForm("image"),
-          '_label -> "Application logo"
-        )
+        <div id="androidSection"  ng-show="showStoreSection('Android')" ng-hide="hideStoreSection('iOS')">
+          @inputText(
+            applicationForm("packageName"),
+            '_label -> "Application Package Name"
+          )
+        </div>
 
-      </fieldset>
+        <div id="iOSSection" ng-show="showStoreSection('iOS')" ng-hide="hideStoreSection('Android')">
+          <p>TODO</p>
+        </div>
+
       <div class="actions">
         <input type="submit" class="btn btn-success" value="Create">
       </div>
@@ -61,3 +79,4 @@
       </div>
   </div>
 </div>
+</html>

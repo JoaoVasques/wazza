@@ -14,7 +14,6 @@ case class WazzaApplication(
 	name: String,
   appUrl: String,
   var imageName: String,
-  storeId: String,
   packageName: String,
   appType: Option[String],
   credentials: Credentials,
@@ -32,5 +31,5 @@ object WazzaApplication extends ModelCompanion[WazzaApplication, ObjectId] {
 	val dao = new SalatDAO[WazzaApplication, ObjectId](mongoCollection("applications")){}
 	def getDAO = dao
 
-  lazy val applicationTypes = List("Apple", "Google")
+  lazy val applicationTypes = Map("iOS" -> "iOS", "Android" -> "Android")
 }

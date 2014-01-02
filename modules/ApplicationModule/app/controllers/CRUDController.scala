@@ -14,6 +14,7 @@ import service.security.definitions._
 import SecretGeneratorServiceContext._
 import play.api.mvc.MultipartFormData._
 import service.photos.definitions._
+import play.api.i18n.Messages
 
 /** Uncomment the following lines as needed **/
 /**
@@ -34,34 +35,14 @@ class CRUDController @Inject()(
     uploadPhotoService: UploadPhotoService
   ) extends Controller {
 
-  protected case class ConstraintArgument(
-    name: String,
-    regexp: String,
-    errorMessage: String
-  )
-
   // regexp not working properly -.-
-  val packageNameConstraint = new ConstraintArgument(
-                                "packagenamecheck",
-                                """/^(\w+\.)*[\w]+$/""",
-                                "Package name in invalid"
-                              )
-
-  private def textCheckConstraint(args: Seq[ConstraintArgument]): Constraint[String] = Constraint("", args)({
-    text => {
-      val arg = args.head
-      val regexp = arg.regexp.r
-      val errors = text match {
-        case regexp() => Nil
-        case _ => Seq(ValidationError(arg.errorMessage))
-      }
-      if (errors.isEmpty) {
-        Valid
-      } else {
-        Invalid(errors)
-      }
+  private def checkPackageNameFormat(name: String): Boolean = {
+    val regexp = """/^(\w+\.)*[\w]+$/""".r
+    name match {
+      case regexp() => true
+      case _ => false
     }
-  })
+  } 
 
   private def urlCheckConstraint: Constraint[String] = Constraint("")({
     text => {
@@ -83,17 +64,12 @@ class CRUDController @Inject()(
     }
   }
 
-  private def handleFileUpload() = {
-      
-  }
-
   val applicationForm: Form[WazzaApplication] = Form(
     mapping(
       "name" -> nonEmptyText.verifying(applicationNameConstrait),
       "appUrl" -> nonEmptyText.verifying(urlCheckConstraint),
       "imageName" -> ignored(""),
-      "storeId" -> nonEmptyText,
-      "packageName" -> nonEmptyText,//.verifying(textCheckConstraint(Seq(packageNameConstraint))),
+      "packageName" -> text,
       "appType" -> optional(text),
       "credentials" -> mapping(
         "appId" -> ignored(secretGeneratorService.generateSecret(Id)),
@@ -101,7 +77,8 @@ class CRUDController @Inject()(
         "sdkKey" -> ignored(secretGeneratorService.generateSecret(ApiKey))
       )(Credentials.apply)(Credentials.unapply),
       "items" -> ignored(List[Item]())
-    )(WazzaApplication.apply)(WazzaApplication.unapply)
+    )
+    (WazzaApplication.apply)(WazzaApplication.unapply)
   )
 
   def newApplication = Action { implicit request =>
@@ -113,24 +90,31 @@ class CRUDController @Inject()(
       errors => {
         BadRequest(views.html.newApplication(errors, applicationService.getApplicationyTypes))
       },
-      application => {        
-        val image = request.body.asMultipartFormData.get.file("image")
-        image match {
-          case Some(_) => {
-            val uploadResult = uploadPhotoService.upload(image.get)
+      application => {
 
-            if(uploadResult.isSuccess){
-              application.imageName = uploadResult.get
-              applicationService.insertApplication(application)
-              Redirect("/")
-            } else {
-              BadRequest("Upload failed..")
+        if(application.appType.get == "Android" && (!checkPackageNameFormat(application.packageName))){
+          val formWithErrors = applicationForm.withError("packageName", "package name is invalid")
+          BadRequest(views.html.newApplication(formWithErrors, applicationService.getApplicationyTypes))
+        } else {
+          val image = request.body.asMultipartFormData.get.file("image")
+          image match {
+            case Some(_) => {
+              val uploadResult = uploadPhotoService.upload(image.get)
+
+              if(uploadResult.isSuccess){
+                application.imageName = uploadResult.get
+                applicationService.insertApplication(application)
+                Redirect("/")
+              } else {
+                val formWithErrors = applicationForm.withError("packageName", "package name is invalid")
+                BadRequest("Upload failed..")
+              }
+            }
+            case None => {
+              BadRequest("NO IMAGE")
             }
           }
-          case None => {
-            BadRequest("NO IMAGE")
-          }
-        }      
+        }
       }
     )
   }

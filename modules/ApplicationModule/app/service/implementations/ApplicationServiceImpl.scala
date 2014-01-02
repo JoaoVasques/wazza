@@ -52,7 +52,7 @@ class ApplicationServiceImpl extends ApplicationService {
         dao.findOne(MongoDBObject("name" -> key))
     }
 
-    def getApplicationyTypes: List[String] = {
+    def getApplicationyTypes: Map[String, String] = {
         WazzaApplication.applicationTypes
     }
 
