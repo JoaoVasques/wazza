@@ -37,7 +37,7 @@ class CRUDController @Inject()(
 
   // regexp not working properly -.-
   private def checkPackageNameFormat(name: String): Boolean = {
-    val regexp = """/^(\w+\.)*[\w]+$/""".r
+    val regexp = """[a-zA-Z][a-zA-Z0-9_]*(\.[a-zA-Z0-9_]+)*""".r
     name match {
       case regexp() => true
       case _ => false

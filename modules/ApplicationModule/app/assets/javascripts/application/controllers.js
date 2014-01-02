@@ -35,6 +35,7 @@ angular.module('ApplicationModule.controllers', ['ApplicationModule.services']).
       function(newVal, oldVal){
         $scope.readyToSubmit = readyToSubmitService.validate($scope.applicationForm);
       },
+
       true
     );
   }]
