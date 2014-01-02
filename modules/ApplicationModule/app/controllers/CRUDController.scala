@@ -14,7 +14,8 @@ import service.security.definitions._
 import SecretGeneratorServiceContext._
 import play.api.mvc.MultipartFormData._
 import service.photos.definitions._
-import play.api.i18n.Messages
+import java.text.CharacterIterator
+import java.text.StringCharacterIterator
 
 /** Uncomment the following lines as needed **/
 /**
@@ -35,14 +36,36 @@ class CRUDController @Inject()(
     uploadPhotoService: UploadPhotoService
   ) extends Controller {
 
-  // regexp not working properly -.-
   private def checkPackageNameFormat(name: String): Boolean = {
-    val regexp = """[a-zA-Z][a-zA-Z0-9_]*(\.[a-zA-Z0-9_]+)*""".r
-    name match {
-      case regexp() => true
-      case _ => false
+    if(name == null){
+      false
+    } else {
+      val parts = name.split("[\\.]")
+      if(parts.length == 0){
+        false
+      }
+
+      for( part <- parts) {
+        val iter = new StringCharacterIterator(part)
+        var c = iter.first
+
+        if((c == CharacterIterator.DONE) || 
+          (!Character.isJavaIdentifierStart(c) && !Character.isIdentifierIgnorable(c))
+        ){
+          false
+        }
+        
+        c = iter.next
+        while (c != CharacterIterator.DONE) {
+          if (!Character.isJavaIdentifierPart(c) && !Character.isIdentifierIgnorable(c)){
+            false
+          }
+          c = iter.next();
+        }
+      }
+      true
     }
-  } 
+  }
 
   private def urlCheckConstraint: Constraint[String] = Constraint("")({
     text => {
@@ -113,7 +136,8 @@ class CRUDController @Inject()(
               }
             }
             case None => {
-              BadRequest("NO IMAGE")
+              applicationService.insertApplication(application)
+              Redirect("/")
             }
           }
         }
