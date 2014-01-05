@@ -1,8 +1,8 @@
-@(appTypes: Map[String, String],optionalParameters: Map[String, String] = Map[String,String]())
+@(appTypes: List[String])
 
-@inputText(name: String, required: Boolean) = {
-  <div>
-    <input type="text" placeholder=@name data-ng-model="applicationForm.@name" @if(required){required}/>
+@inputText(placeholderName: String, name: String, required: Boolean, show: String = null) = {
+  <div @if(show != null){ng-show=@show}>
+    <input type="text" placeholder=@placeholderName data-ng-model="applicationForm.@name" @if(required){required}/>
     <span class="help-inline" ng-show="formErrors.@name != ''" ng-bind="formErrors.@name"/>
     <br>
   </div>
@@ -21,9 +21,9 @@
   ng-controller="NewApplicationFormController"
   ng-submit="createApplication(applicationForm)">
     <legend>General</legend>
-      @inputText("name", true)
-      @inputText("appUrl", true)
-      @inputText("packageName", false)
-      @radioButtons(List("Android","iOS"),"appType")
+      @inputText("Name", "name", true)
+      @inputText("Url", "appUrl", true)
+      @radioButtons(appTypes, "appType")
+      @inputText("Package name", "packageName", false, "store.Android")
     <input type="submit" class="btn btn-success" value="Create">
 </form>

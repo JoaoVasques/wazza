@@ -13,7 +13,7 @@ trait ApplicationService {
 
   def find(key: String): Option[WazzaApplication]
 
-  def getApplicationyTypes: Map[String, String]
+  def getApplicationyTypes: List[String]
 
   /** Item operations **/
 
