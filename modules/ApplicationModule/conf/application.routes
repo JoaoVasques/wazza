@@ -2,10 +2,14 @@
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
 
-# Home page
+# Application routes
 GET     /                             @controllers.application.AppController.index
 GET     /new                          @controllers.application.CRUDController.newApplication
 POST    /new                          @controllers.application.CRUDController.newApplicationSubmit
+
+# Items routes
+GET     /item/new/:storeType          @controllers.application.ItemCRUDController.newItem(storeType)
+POST    /item/new/:applicationName    @controllers.application.ItemCRUDController.newItemSubmit(applicationName)
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               	controllers.application.Assets.at(path="/public", file)

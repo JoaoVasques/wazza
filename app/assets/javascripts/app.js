@@ -7,7 +7,12 @@ angular.module('Wazza', ['ngRoute', 'Wazza.controllers']).
       $routeProvider.when('/home', {
         templateUrl : '/app/new',
         controller : ''
-      });
+      })
+      .when('/item/create', {
+        templateUrl: '/app/item/new/Android',
+        controller: ''
+      })
+      ;
     }
   ])
 ;

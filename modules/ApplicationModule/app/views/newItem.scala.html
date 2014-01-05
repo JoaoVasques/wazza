@@ -1,0 +1,68 @@
+@(itemType: String, currencyTypes: List[String])
+
+@inputText(placeholderName: String, name: String, required: Boolean, show: String = null) = {
+  <label>@name</label>
+  <div class="form-group" @if(show != null){ng-show=@show}>
+    <input type="text" placeholder=@placeholderName data-ng-model="itemForm.@name" @if(required){required}/>
+    <span class="help-inline" ng-show="itemFormErrors.@name != ''" ng-bind="itemFormErrors.@name"/>
+    <br>
+  </div>
+}
+
+@textArea(labelName: String, description: String, required: Boolean) = {
+  <label>@labelName</label>
+  <div class="form-group">
+    <textarea data-ng-model="itemForm.@description" class="form-control" rows="3" @if(required){required}></textarea>
+  </div>
+}
+
+@currency() = {
+  <label>Currency</label>
+  <div class="form-group">
+      @for(currency <- currencyTypes){
+        <input type="radio" ng-model="itemForm.currencyType" value="@currency" required>@currency<br/>
+      }
+      <label for="new-item-price">Price</label>
+      <input id="new-item-price" type="number" data-ng-model="itemForm.price" required/>
+    </div>
+  </div>
+}
+
+@androidMetadata = {
+  <div class="form-group">
+    @inputText("item id", "itemId", true)
+  </div>
+
+  <div class="form-group">
+    <input type="radio" ng-model="itemForm.purchaseType" value="managePerUser" required>Managed per user account</br>
+    <input type="radio" ng-model="itemForm.purchaseType" value="unmanaged" required>Unmanaged</br>
+  </div>
+}
+
+@iOsMetadata = {
+  
+}
+
+@createItemForm(metadata: Html) = {
+  <form
+    class="form-vertical"
+    enctype="multipart/form-data"
+    ng-controller="NewItemController"
+    ng-submit="createItem()">
+    <legend>New item</legend>
+    @inputText("Item name", "name", true)
+    @textArea("Description", "description", false)
+    @metadata
+    @currency
+    <input type="submit" class="btn btn-success" value="Create">
+  </form>
+}
+
+@itemType match {
+  case "Android" => {
+    @createItemForm(androidMetadata)
+  }
+  case "iOS" => {
+    @createItemForm(iOsMetadata)
+  }
+}
