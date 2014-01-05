@@ -1,16 +1,32 @@
 // application module
 
 angular.module('ApplicationModule.controllers', ['ApplicationModule.services']).
-  controller('NewApplicationFormController', ['$scope', 'readyToSubmitService', function($scope, readyToSubmitService) {
+  controller(
+    'NewApplicationFormController',
+    ['$scope', '$location','createNewApplicationService', function($scope, $location, createNewApplicationService) {
 
     $scope.applicationForm = {
       "name": "",
       "appType": "",
-      "url": "",
-      "androidData": {
-        "packageName": ""
-      }
+      "appUrl": "",
+      "packageName": ""
     };
+
+    $scope.formErrors = {};
+
+    $scope.createApplication = function(formData){
+      createNewApplicationService.send(formData)
+        .then(
+          function(result){
+            $scope.formErrors = {};
+            $location.path('/');
+          },
+          function(errors){
+            angular.extend($scope.formErrors, errors.data.errors);
+          }
+        );
+    };
+
     $scope.readyToSubmit = true;
     $scope.store = {
       "Android": false,
@@ -33,10 +49,10 @@ angular.module('ApplicationModule.controllers', ['ApplicationModule.services']).
       },
 
       function(newVal, oldVal){
-        $scope.readyToSubmit = readyToSubmitService.validate($scope.applicationForm);
+        $scope.readyToSubmit = createNewApplicationService.validate($scope.applicationForm);
       },
 
       true
     );
-  }]
-);
+  }])
+;

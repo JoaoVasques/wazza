@@ -16,6 +16,7 @@ import play.api.mvc.MultipartFormData._
 import service.photos.definitions._
 import java.text.CharacterIterator
 import java.text.StringCharacterIterator
+import play.api.libs.json._
 
 /** Uncomment the following lines as needed **/
 /**
@@ -105,41 +106,43 @@ class CRUDController @Inject()(
   )
 
   def newApplication = Action { implicit request =>
-    Ok(views.html.newApplication(applicationForm, applicationService.getApplicationyTypes))
+    Ok(views.html.newApplication(applicationService.getApplicationyTypes))
   }
 
-  private def generateBadRequestResponse(form: Form[WazzaApplication]): Result = {
-    BadRequest(views.html.newApplication(form, applicationService.getApplicationyTypes))
+  private def generateBadRequestResponse(errors: Form[WazzaApplication]): Result = {
+    BadRequest(Json.obj("errors" -> errors.errorsAsJson))
   }
 
-  def newApplicationSubmit = Action { implicit request =>
+  def newApplicationSubmit = Action(parse.json) { implicit request =>
     applicationForm.bindFromRequest.fold(
       errors => {
-        BadRequest(views.html.newApplication(errors, applicationService.getApplicationyTypes))
+        generateBadRequestResponse(errors)
       },
       application => {
-
+        println(application)
         if(application.appType.get == "Android" && (!checkPackageNameFormat(application.packageName))){
           generateBadRequestResponse(applicationForm.withError("packageName", "package name is invalid"))
         } else {
-          val image = request.body.asMultipartFormData.get.file("image")
-          image match {
-            case Some(_) => {
-              val uploadResult = uploadPhotoService.upload(image.get)
+          applicationService.insertApplication(application)
+          Ok
+        //   val image = request.body.asMultipartFormData.get.file("image")
+        //   image match {
+        //     case Some(_) => {
+        //       val uploadResult = uploadPhotoService.upload(image.get)
 
-              if(uploadResult.isSuccess){
-                application.imageName = uploadResult.get
-                applicationService.insertApplication(application)
-                Redirect("/")
-              } else {
-                generateBadRequestResponse(applicationForm.withError("image", "Image upload error. Please try again"))
-              }
-            }
-            case None => {
-              applicationService.insertApplication(application)
-              Redirect("/")
-            }
-          }
+        //       if(uploadResult.isSuccess){
+        //         application.imageName = uploadResult.get
+        //         applicationService.insertApplication(application)
+        //         Redirect("/")
+        //       } else {
+        //         generateBadRequestResponse(applicationForm.withError("image", "Image upload error. Please try again"))
+        //       }
+        //     }
+        //     case None => {
+        //       applicationService.insertApplication(application)
+        //       Redirect("/")
+        //     }
+        //   }
         }
       }
     )

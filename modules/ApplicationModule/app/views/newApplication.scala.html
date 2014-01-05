@@ -1,85 +1,29 @@
-@(applicationForm: Form[models.application.WazzaApplication],
-  appTypes: Map[String, String],
-  optionalParameters: Map[String, String] = Map[String,String]()
-)
+@(appTypes: Map[String, String],optionalParameters: Map[String, String] = Map[String,String]())
 
-@import helper._
-@import helper.twitterBootstrap._
-
-<!doctype html>
-<html lang="en" ng-app="ApplicationModule">
-<head>
-    <title>Wazza</title>
-    <link rel="stylesheet" media="screen" href="@routes.WebJarAssets.at(WebJarAssets.locate("bootstrap.min.css"))">
-    
-    <script src="@routes.WebJarAssets.at(WebJarAssets.locate("1.2.5/angular.min.js"))"></script>
-
-    <script src="@controllers.application.routes.Assets.at("javascripts/application/appModule.js")"></script>
-    <script src="@controllers.application.routes.Assets.at("javascripts/application/controllers.js")"></script>
-    <script src="@controllers.application.routes.Assets.at("javascripts/application/service.js")"></script>
-</head>
-
-@newapplicationForm = {
-    @helper.form(
-        action = controllers.application.routes.CRUDController.newApplicationSubmit,
-        'enctype -> "multipart/form-data",
-        Symbol("ng-controller") -> "NewApplicationFormController"
-    ) {
-        <fieldset>
-
-        <legend>General</legend>
-        <div id="generalSection">
-          @inputText(
-            applicationForm("name"),
-            '_label -> "Application Name",
-            Symbol("ng-model") -> "applicationForm.name"
-          )
-
-          @inputRadioGroup(
-            applicationForm("appType"),
-            options = options(appTypes),
-            '_label -> "Application type",
-            Symbol("ng-model") -> "applicationForm.appType"
-          )
-
-          @inputText(
-            applicationForm("appUrl"),
-            '_label -> "Application URL",
-            Symbol("ng-model") -> "applicationForm.url"
-          )
-
-          @inputFile(
-            applicationForm("image"),
-            '_label -> "Application logo"
-          )
-        </div>
-
-        </fieldset>
-        <legend>Store Info</legend>
-
-        <div id="androidSection" ng-show="store.Android">
-          @inputText(
-            applicationForm("packageName"),
-            '_label -> "Application Package Name",
-            Symbol("ng-model") -> "applicationForm.androidData.packageName"
-          )
-        </div>
-
-        <div id="iOSSection" ng-show="store.iOS">
-          <p>TODO</p>
-        </div>
-
-      <div class="actions">
-        <input type="submit" class="btn btn-success" value="Create" ng-disabled="readyToSubmit">
-      </div>
-    }
+@inputText(name: String, required: Boolean) = {
+  <div>
+    <input type="text" placeholder=@name data-ng-model="applicationForm.@name" @if(required){required}/>
+    <span class="help-inline" ng-show="formErrors.@name != ''" ng-bind="formErrors.@name"/>
+    <br>
+  </div>
 }
 
-<div class="container">
-  <div class="row-fluid">
-      <div class="span9">
-        @newapplicationForm
-      </div>
-  </div>
-</div>
-</html>
+@radioButtons(names: List[String], model: String) = {
+  @for(name <- names){
+    <input type="radio" ng-model="applicationForm.@model" value="@name">@name<br/>
+  }
+  <br>
+}
+
+<form
+  class="form-vertical"
+  enctype="multipart/form-data"
+  ng-controller="NewApplicationFormController"
+  ng-submit="createApplication(applicationForm)">
+    <legend>General</legend>
+      @inputText("name", true)
+      @inputText("appUrl", true)
+      @inputText("packageName", false)
+      @radioButtons(List("Android","iOS"),"appType")
+    <input type="submit" class="btn btn-success" value="Create">
+</form>

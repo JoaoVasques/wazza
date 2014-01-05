@@ -1,7 +1,7 @@
 // application module
 
 angular.module('ApplicationModule.services', [])
-  .factory('readyToSubmitService', function() {
+  .factory('createNewApplicationService', ['$http', '$q', function($http, $q) {
     return {
       validate: function(formData){
         if (formData.name != "" &&
@@ -17,6 +17,14 @@ angular.module('ApplicationModule.services', [])
         } else {
           return true;
         }
+      },
+
+      send: function(data){
+        var request = $http.post("/app/new", data);
+        var deferred = $q.defer();
+        deferred.resolve(request);
+        return deferred.promise;
       }
     };
-});
+  }])
+;
