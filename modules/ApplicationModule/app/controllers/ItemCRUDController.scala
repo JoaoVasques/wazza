@@ -8,6 +8,7 @@ import models.application._
 import com.google.inject._
 import service.application.definitions._
 import play.api.data.format.Formats._
+import play.api.libs.json._
 /** Uncomment the following lines as needed **/
 /**
 import play.api.Play.current
@@ -59,5 +60,8 @@ class ItemCRUDController @Inject()(
 
   }
 
-  def newItemSubmit(applicationName: String) = TODO
+  def newItemSubmit(applicationName: String) = Action(parse.multipartFormData) { implicit request =>
+    println(request.body)
+    Ok
+  }
 }

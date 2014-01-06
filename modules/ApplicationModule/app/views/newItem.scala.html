@@ -1,11 +1,20 @@
 @(itemType: String, currencyTypes: List[String])
 
 @inputText(placeholderName: String, name: String, required: Boolean, show: String = null) = {
-  <label>@name</label>
   <div class="form-group" @if(show != null){ng-show=@show}>
+    <label>@placeholderName</label>
+    <br>
     <input type="text" placeholder=@placeholderName data-ng-model="itemForm.@name" @if(required){required}/>
     <span class="help-inline" ng-show="itemFormErrors.@name != ''" ng-bind="itemFormErrors.@name"/>
     <br>
+  </div>
+}
+
+@inputPrice(name: String, show: String = null) = {
+  <div class="form-group">
+    <label>Price</label>
+    <br>
+    <input type="number" data-ng-model="itemForm.price">
   </div>
 }
 
@@ -16,31 +25,32 @@
   </div>
 }
 
+@selectVirtualCurrencies = {
+  <select ng-model="vCurrency" ng-options="c.name for c in virtualCurrencies"
+}
+
 @currency() = {
   <label>Currency</label>
   <div class="form-group">
-      @for(currency <- currencyTypes){
-        <input type="radio" ng-model="itemForm.currencyType" value="@currency" required>@currency<br/>
-      }
-      <label for="new-item-price">Price</label>
-      <input id="new-item-price" type="number" data-ng-model="itemForm.price" required/>
+      <select ng-model="itemForm.currencyType" ng-options="c for c in currencyOptions" required></select>
+      @inputText("Item id", "id", false, "showCurrencyInputs.real")
+      @inputPrice("Price", "showCurrencyInputs.real")
     </div>
   </div>
 }
 
 @androidMetadata = {
-  <div class="form-group">
-    @inputText("item id", "itemId", true)
-  </div>
 
-  <div class="form-group">
-    <input type="radio" ng-model="itemForm.purchaseType" value="managePerUser" required>Managed per user account</br>
-    <input type="radio" ng-model="itemForm.purchaseType" value="unmanaged" required>Unmanaged</br>
-  </div>
 }
 
 @iOsMetadata = {
   
+}
+
+@images = {
+  <div class="form-group">
+    <input type="file" file-model="myFile"/>
+  </div>
 }
 
 @createItemForm(metadata: Html) = {
@@ -50,10 +60,11 @@
     ng-controller="NewItemController"
     ng-submit="createItem()">
     <legend>New item</legend>
-    @inputText("Item name", "name", true)
+    @inputText("name", "Name", true)
     @textArea("Description", "description", false)
     @metadata
     @currency
+    @images
     <input type="submit" class="btn btn-success" value="Create">
   </form>
 }

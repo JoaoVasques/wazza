@@ -1,3 +1,3 @@
 'use strict';
 
-angular.module('ItemModule', ['ItemModule.controllers']);
+angular.module('ItemModule', ['ItemModule.controllers', 'ItemModule.directives']);
