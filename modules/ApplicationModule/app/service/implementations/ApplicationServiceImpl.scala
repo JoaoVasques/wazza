@@ -18,14 +18,16 @@ class ApplicationServiceImpl extends ApplicationService {
     
     private val dao = WazzaApplication.getDAO
 
+    def createFailure[A](error: String): Failure[A] = {
+        new Failure(new Exception(error))
+    }
+
     def insertApplication(application: WazzaApplication): Try[WazzaApplication] = {
         if(! exists(application.name)){
             dao.insert(application)
             new Success(application)
         } else {
-            new Failure(
-                new Exception("Application with the name " + application.name +  " already exists")
-            )
+            createFailure[WazzaApplication]("Application with the name " + application.name +  " already exists")
         }
     }
 
@@ -35,9 +37,7 @@ class ApplicationServiceImpl extends ApplicationService {
             dao.remove(application)
             new Success(application)
         } else {
-            new Failure(
-                new Exception("Application " + name + " does not exists")
-            )
+            createFailure[WazzaApplication]("Application " + name + " does not exists")
         }
     }
 
@@ -57,16 +57,18 @@ class ApplicationServiceImpl extends ApplicationService {
     }
 
     def addItem(item: Item, applicationName: String): Try[Item] = {
-        if(exists(applicationName) && ! itemExists(item.name, applicationName)){
-            dao.update(
-                MongoDBObject("name" -> applicationName),
-                $push("items" -> grater[Item].asDBObject(item))
-            )
-            new Success(item)
+        if(! exists(applicationName) ){
+            createFailure[Item]("Application does not exist")
         } else {
-            new Failure(
-                new Exception("Duplicated item")
-            )
+            if(itemExists(item.name, applicationName)){
+                createFailure[Item]("Item already exists")
+            } else {
+                dao.update(
+                    MongoDBObject("name" -> applicationName),
+                    $push("items" -> grater[Item].asDBObject(item))
+                )
+                new Success(item)
+            } 
         }
     }
 
@@ -83,9 +85,13 @@ class ApplicationServiceImpl extends ApplicationService {
         }
     }
 
-    def itemExists(itemId: String, applicationName: String): Boolean = {
+    def itemExists(keyValue: String, applicationName: String, key: String = "name"): Boolean = {
         if(exists(applicationName)){
-            !dao.find(MongoDBObject("items._id" -> itemId)).isEmpty
+            if(key == "name"){
+              !dao.find(MongoDBObject("items._id" -> keyValue)).isEmpty
+            } else {
+                !dao.find(MongoDBObject("items.metadata.itemId" -> keyValue)).isEmpty
+            }
         } else {
             false
         }
@@ -100,9 +106,7 @@ class ApplicationServiceImpl extends ApplicationService {
             )
             new Success(item)
         } else {
-            new Failure(
-                new Exception("Item with id " + itemId + " does not exist in application " + applicationName)
-            )
+            createFailure[Item]("Item with id " + itemId + " does not exist in application " + applicationName)
         }
     }
 }

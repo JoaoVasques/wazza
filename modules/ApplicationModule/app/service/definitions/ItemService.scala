@@ -2,12 +2,12 @@ package service.application.definitions
 
 import models.application._
 import scala.util.{Try}
+import play.api.mvc.{MultipartFormData}
 
 trait ItemService {
 
 	def createGooglePlayItem(
 		applicationName: String,
-		title: String,
 		name: String,
 		description: String,
 		typeOfCurrency: Int,
@@ -23,11 +23,21 @@ trait ItemService {
 		applicationName: String,
 		title: String,
 		name: String,
+		itemId: String,
   	description: String,
   	store: Int,
   	productProperties: AppleProductProperties,
 	  languageProperties: AppleLanguageProperties,
 	  pricingProperties: ApplePricingProperties,
 	  durationProperties: AppleDurationProperties
-	): Try[Item]	
+	): Try[Item]
+
+	def createItemFromMultipartData(data: MultipartFormData[_], applicationName: String): Try[Item]
+
+	def validateId(id: String): Boolean
+
+	def getCurrencyTypes(): Map[String, Int]
+
+	protected def generateId(idType: Int, name: String, purchaseType: Int): String
+		
 }

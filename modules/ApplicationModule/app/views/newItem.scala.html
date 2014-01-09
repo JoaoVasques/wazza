@@ -14,7 +14,7 @@
   <div class="form-group">
     <label>Price</label>
     <br>
-    <input type="number" data-ng-model="itemForm.price">
+    <input type="number" data-ng-model="itemForm.currency.value">
   </div>
 }
 
@@ -32,8 +32,7 @@
 @currency() = {
   <label>Currency</label>
   <div class="form-group">
-      <select ng-model="itemForm.currencyType" ng-options="c for c in currencyOptions" required></select>
-      @inputText("Item id", "id", false, "showCurrencyInputs.real")
+      <select ng-model="itemForm.currency.typeOf" ng-options="c for c in currencyOptions" required></select>
       @inputPrice("Price", "showCurrencyInputs.real")
     </div>
   </div>
@@ -57,10 +56,9 @@
   <form
     class="form-vertical"
     enctype="multipart/form-data"
-    ng-controller="NewItemController"
     ng-submit="createItem()">
     <legend>New item</legend>
-    @inputText("name", "Name", true)
+    @inputText("Name", "name", true)
     @textArea("Description", "description", false)
     @metadata
     @currency

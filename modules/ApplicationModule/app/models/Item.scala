@@ -104,14 +104,20 @@ object Item extends ModelCompanion[Item, ObjectId] {
 
 package object ItemContext {
 
+  // Stores Info
+  lazy val GoogleStoreId = 0
+  lazy val AppleStoreId = 1
   lazy val GoogleMetadataType = "models.application.GoogleMetadata"
   lazy val AppleMetadataType = "models.application.AppleMetadata"
 
-  lazy val GoogleStoreId = 0
-  lazy val AppleStoreId = 1
-
+  // Currency Types
   lazy val VirtualCurrency = 0
   lazy val RealWordCurrency = 1
+
+  // Purchase Types
+  lazy val ManagedProduct = 0
+  lazy val Subscription = 1
+  lazy val UnManaged = 2
 
   implicit def jsonToItem(obj: Option[JsValue]): Option[Item] = {
       obj match {

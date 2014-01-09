@@ -21,7 +21,7 @@ trait ApplicationService {
 
   def getItem(itemId: String, applicationName: String): Option[Item]
 
-  def itemExists(itemId: String, applicationName: String): Boolean
+  def itemExists(keyValue: String, applicationName: String, key: String = "name"): Boolean
 
   def deleteItem(itemId: String, applicationName: String): Try[Item]
 
