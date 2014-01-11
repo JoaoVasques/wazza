@@ -12,21 +12,7 @@ class UploadPhotoServiceImpl extends UploadPhotoService {
 
   private val storage = Photo.photosStorage
 
-  def upload(filePart: FilePart[_]): Try[String] = {
-    filePart.ref match {
-      case TemporaryFile(file) => {
-        val input = new FileInputStream(file)
-        storage(input){ fh =>
-          fh.filename = filePart.filename
-          fh.contentType = filePart.contentType.get
-        }
-        new Success(filePart.filename)
-      }
-      case _ => {
-        new Failure(null)
-      }
-    }
-  }
+  def upload(filePart: FilePart[_]): Try[String] = null
 
   def getPhoto(fileName: String): Unit = {}
 }
