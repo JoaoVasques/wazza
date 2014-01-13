@@ -25,4 +25,14 @@ trait ApplicationService {
 
   def deleteItem(itemId: String, applicationName: String): Try[Item]
 
+  /** Virtual currency operations **/
+
+  def addVirtualCurrency(currency: VirtualCurrency, applicationName: String): Try[VirtualCurrency]
+
+  def deleteVirtualCurrency(currencyName: String, applicationName: String): Try[VirtualCurrency]
+
+  def getVirtualCurrency(currencyName: String): Option[VirtualCurrency]
+
+  def virtualCurrencyExists(currencyName: String, applicationName: String): Boolean
+
 }

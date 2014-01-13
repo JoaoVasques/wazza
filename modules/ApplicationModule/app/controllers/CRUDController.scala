@@ -100,7 +100,8 @@ class CRUDController @Inject()(
         "apiKey" -> ignored(secretGeneratorService.generateSecret(ApiKey)),
         "sdkKey" -> ignored(secretGeneratorService.generateSecret(ApiKey))
       )(Credentials.apply)(Credentials.unapply),
-      "items" -> ignored(List[Item]())
+      "items" -> ignored(List[Item]()),
+      "virtualCurrencies"-> ignored(List[VirtualCurrency]())
     )
     (WazzaApplication.apply)(WazzaApplication.unapply)
   )

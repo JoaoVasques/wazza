@@ -5,7 +5,7 @@ import service.application.definitions.ApplicationService
 import models.application._
 import com.google.inject._
 import scala.util.{Try, Success, Failure}
-import ItemContext._
+import InAppPurchaseContext._
 import play.api.mvc.{MultipartFormData}
 import play.api.libs.json._
 import scala.collection.mutable.ListBuffer
@@ -47,7 +47,7 @@ class ItemServiceImpl @Inject()(applicationService: ApplicationService) extends 
 			description,
 			GoogleStoreId,
 			metadata,
-			new Currency(RealWordCurrency, price)
+			new Currency(RealWordCurrencyType, price)
 		)
 
 		applicationService.addItem(item, applicationName)
@@ -82,7 +82,7 @@ class ItemServiceImpl @Inject()(applicationService: ApplicationService) extends 
 			description,
 			AppleStoreId,
 			metadata,
-			new Currency(RealWordCurrency, pricingProperties.price)
+			new Currency(RealWordCurrencyType, pricingProperties.price)
 		)
 
 		applicationService.addItem(item, applicationName)
@@ -90,15 +90,18 @@ class ItemServiceImpl @Inject()(applicationService: ApplicationService) extends 
 
 	def createItemFromMultipartData(formData: MultipartFormData[_], applicationName: String): Try[Item] = {
 
+		def generateJsonError(key: String, message: String): JsValue = {
+			Json.obj(key -> Json.obj("message" -> message, "visible" -> true))
+		}
+
 		var errors = ListBuffer[JsValue]()
 		val data = formData.dataParts
-
 		var itemData = Map[String,JsValue]()
 
 		data get "name" match {
 			case Some(name) => {
 				if(applicationService.itemExists(name.head, "application name")){
-					errors += Json.obj("name" -> "An item alreayd exists with this name")
+					errors += generateJsonError("name", "An item already exists with this name")
 				}
 			}
 			case None => errors += Json.obj("name" -> "Please insert a name")
@@ -106,19 +109,19 @@ class ItemServiceImpl @Inject()(applicationService: ApplicationService) extends 
 
 		data get "metadata" match {
 			case Some(m) => itemData += ("metadata" -> Json.parse(m.head))
-			case None => errors += Json.obj("metadata" -> "Missing metadata information")
+			case None => errors += generateJsonError("metadata", "Missing metadata information")
 		}
 
 		data get "currency" match {
 			case Some(currency) => {
 				val value = (Json.parse(currency.head) \ "value").as[Double]
 				if(value <= 0.0){
-					errors += Json.obj("currency" -> "Price must be greater than zero")
+					errors += generateJsonError("currency", "Price must be greater than zero")
 				} else {
 					itemData += ("currency" -> Json.parse(currency.head))
 				}
 			}
-			case None => errors += Json.obj("currency" -> "Missing currency information")
+			case None => errors += generateJsonError("currency", "Missing currency information")
 		}
 
 		if(errors.size > 0){
@@ -142,7 +145,7 @@ class ItemServiceImpl @Inject()(applicationService: ApplicationService) extends 
 	def validateId(id: String): Boolean = true //TODO
 
 	def getCurrencyTypes(): Map[String, Int] = {
-		Map("Real" -> RealWordCurrency, "Virtual" -> VirtualCurrency)
+		Map("Real" -> RealWordCurrencyType, "Virtual" -> RealWordCurrencyType)
 	}
 
 	protected def generateId(idType: Int, name: String, purchaseType: Int): String = {

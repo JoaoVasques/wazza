@@ -1,7 +1,9 @@
 // item module
 
 angular.module('ItemModule.controllers', ['ItemModule.services', 'angularFileUpload']).
-  controller('NewItemController', ['$scope', '$upload', 'createNewItemService', '$routeParams', function ($scope, $upload, createNewItemService, $routeParams) {
+  controller('NewItemController',[
+    '$scope', '$upload', 'createNewItemService', '$routeParams', '$location',
+    function ($scope, $upload, createNewItemService, $routeParams, $location) {
 
     $scope.currencyOptions = ["Real","Virtual"];
 
@@ -36,6 +38,8 @@ angular.module('ItemModule.controllers', ['ItemModule.services', 'angularFileUpl
         }
       };
       $scope.showCurrencyInputs.real = true;
+      $scope.errors = false;
+      $scope.formErrors = [];
     };
     $scope.bootstrapModule();
 
@@ -49,20 +53,29 @@ angular.module('ItemModule.controllers', ['ItemModule.services', 'angularFileUpl
       }
     });
 
+    $scope.handleSuccess = function(){
+      $scope.errors = false;
+      $scope.formErrors = [];
+      $location.path("/home");
+    }
+
+    $scope.handleErrors = function(errors){
+      $scope.errors = true;
+      _.each(angular.fromJson(errors.data.errors), function(error){
+        $scope.formErrors.push(error);
+      });
+    }
+
     $scope.createItem = function(){
       createNewItemService.send($scope.itemForm, $scope.myFile)
         .then(
           function(){
-            console.log("success");
-            //TODO: handle success
+            $scope.handleSuccess();
           },
           function(errors){
-            console.log("error");
-            console.log(errors);
-            //TODO: handle error
+            $scope.handleErrors(errors);
           }
         );
     };
-
   }])
 ;

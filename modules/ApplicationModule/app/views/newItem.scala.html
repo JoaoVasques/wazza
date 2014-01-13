@@ -1,11 +1,11 @@
-@(itemType: String, currencyTypes: List[String])
+@(itemType: String, currencyTypes: List[String], virtualCurrencies: List[models.application.VirtualCurrency])
 
 @inputText(placeholderName: String, name: String, required: Boolean, show: String = null) = {
   <div class="form-group" @if(show != null){ng-show=@show}>
     <label>@placeholderName</label>
     <br>
     <input type="text" placeholder=@placeholderName data-ng-model="itemForm.@name" @if(required){required}/>
-    <span class="help-inline" ng-show="itemFormErrors.@name != ''" ng-bind="itemFormErrors.@name"/>
+    <span class="help-inline" ng-show="formErrors.@(name).visible" ng-bind="formErrors.@(name).message"/>
     <br>
   </div>
 }
@@ -14,7 +14,8 @@
   <div class="form-group">
     <label>Price</label>
     <br>
-    <input type="number" data-ng-model="itemForm.currency.value">
+    <input type="number" min="0" data-ng-model="itemForm.currency.value" required>
+    <span class="help-inline" ng-show="formErrors.currency.visible" ng-bind="formErrors.currency.message"/>
   </div>
 }
 
@@ -53,10 +54,7 @@
 }
 
 @createItemForm(metadata: Html) = {
-  <form
-    class="form-vertical"
-    enctype="multipart/form-data"
-    ng-submit="createItem()">
+  <form class="form-vertical" enctype="multipart/form-data" ng-submit="createItem()">
     <legend>New item</legend>
     @inputText("Name", "name", true)
     @textArea("Description", "description", false)
@@ -64,6 +62,7 @@
     @currency
     @images
     <input type="submit" class="btn btn-success" value="Create">
+    <div class="alert alert-danger" ng-show="errors">There were errors with your submission</div>
   </form>
 }
 

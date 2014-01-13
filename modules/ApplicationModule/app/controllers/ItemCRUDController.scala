@@ -60,7 +60,7 @@ class ItemCRUDController @Inject()(
   
   def newItem(storeType: String) = Action { implicit request =>
     if(applicationService.getApplicationyTypes.contains(storeType)){
-      Ok(views.html.newItem(storeType, List("Real", "Virtual")))
+      Ok(views.html.newItem(storeType, List("Real", "Virtual"), Nil))
     } else {
       BadRequest(Json.obj("errors" -> "Unknown store type"))
     }
@@ -70,7 +70,9 @@ class ItemCRUDController @Inject()(
     val result = itemService.createItemFromMultipartData(request.body, applicationName)
     result match {
       case Success(item) => Ok
-      case Failure(errors) => BadRequest(Json.obj("errors" -> errors.getMessage))
+      case Failure(errors) => {
+        BadRequest(Json.obj("errors" -> errors.getMessage))
+      }
     }
   }
 }

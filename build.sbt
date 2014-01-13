@@ -13,7 +13,8 @@ lazy val dependencies = Seq(
   "org.webjars" % "angularjs" % "1.2.6",
   "org.webjars" % "bootstrap" % "3.0.3",
   "commons-validator" % "commons-validator" % "1.4.0",
-  "com.github.nscala-time" %% "nscala-time" % "0.6.0"
+  "com.github.nscala-time" %% "nscala-time" % "0.6.0",
+  "org.webjars" % "underscorejs" % "1.5.2-1"
 )
 
 libraryDependencies ++= dependencies

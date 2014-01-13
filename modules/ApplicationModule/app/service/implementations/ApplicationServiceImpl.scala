@@ -11,7 +11,7 @@ import se.radley.plugin.salat._
 import ApplicationMongoContext._
 import play.api.libs.json.Json
 import play.api.libs.json.JsValue
-import ItemContext._
+import InAppPurchaseContext._
 import scala.util.{Try, Success, Failure}
 
 class ApplicationServiceImpl extends ApplicationService {
@@ -55,6 +55,35 @@ class ApplicationServiceImpl extends ApplicationService {
     def getApplicationyTypes: List[String] = {
         WazzaApplication.applicationTypes
     }
+
+    /**
+    * TODO
+    **/
+    private def addDocumentToArray[T <: ApplicationList](doc: T, value: String, applicationName: String): Try[T] = {
+        if(! exists(applicationName)){
+            createFailure[T]("Application does not exist")
+        } else {
+            if(existsDocumentInArray(doc.attributeName, doc.elementId, value, applicationName)){
+                createFailure[T]("Already exists")
+            } else {
+                // dao.update(
+                //     MongoDBObject("name" -> applicationName),
+                //     $push(doc.attributeName -> grater[T].asDBObject(doc))
+                // )
+                new Success(doc)
+            }
+        }
+    }
+
+    /**
+    * TODO
+    **/
+    private def deleteDocumentFromArray[T <: ApplicationList](documentId: String): Try[T] = null
+
+    /**
+    * TODO
+    **/
+    private def existsDocumentInArray(applicationAttribute: String, key: String, value: String, applicationName: String): Boolean = true
 
     def addItem(item: Item, applicationName: String): Try[Item] = {
         if(! exists(applicationName) ){
@@ -109,4 +138,26 @@ class ApplicationServiceImpl extends ApplicationService {
             createFailure[Item]("Item with id " + itemId + " does not exist in application " + applicationName)
         }
     }
+
+    def addVirtualCurrency(currency: VirtualCurrency, applicationName: String): Try[VirtualCurrency] = {
+        if(!exists(applicationName)){
+            createFailure[VirtualCurrency]("Application does not exist")
+        } else {
+            if(virtualCurrencyExists(currency.name, applicationName)){
+                createFailure[VirtualCurrency]("A currency with the same name already exists")
+            } else {
+                dao.update(
+                    MongoDBObject("name" -> applicationName),
+                    $push("virtualCurrencies" -> grater[VirtualCurrency].asDBObject(currency))
+                )
+                new Success(currency)
+            }
+        }
+    }
+  
+    def deleteVirtualCurrency(currencyName: String, applicationName: String): Try[VirtualCurrency] = null
+
+    def getVirtualCurrency(currencyName: String): Option[VirtualCurrency] = null
+
+    def virtualCurrencyExists(currencyName: String, applicationName: String): Boolean = false
 }
