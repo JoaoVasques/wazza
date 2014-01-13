@@ -1,0 +1,31 @@
+@(appTypes: List[String])
+
+@inputText(placeholderName: String, name: String, required: Boolean, show: String = null) = {
+  <div class="form-group" @if(show != null){ng-show=@show}>
+    <input type="text" placeholder=@placeholderName data-ng-model="applicationForm.@name" @if(required){required}/>
+    <span class="help-inline" ng-show="formErrors.@name != ''" ng-bind="formErrors.@name"/>
+    <br>
+  </div>
+}
+
+@radioButtons(names: List[String], model: String) = {
+  <label>Application type</label>
+  <div class="form-group">
+    @for(name <- names){
+      <input type="radio" ng-model="applicationForm.@model" value="@name">@name<br/>
+    }
+  </div>
+}
+
+<form
+  class="form-vertical"
+  enctype="multipart/form-data"
+  ng-controller="NewApplicationFormController"
+  ng-submit="createApplication(applicationForm)">
+    <legend>General</legend>
+      @inputText("Name", "name", true)
+      @inputText("Url", "appUrl", true)
+      @radioButtons(appTypes, "appType")
+      @inputText("Package name", "packageName", false, "store.Android")
+    <input type="submit" class="btn btn-success" value="Create">
+</form>

@@ -1,19 +1,46 @@
-@(title: String)(content: Html)
+@(title: String)
 
 <!DOCTYPE html>
 
-<html>
+<html ng-app="Wazza">
     <head>
         <title>@title</title>
         <link rel="stylesheet" media="screen" href="@routes.WebJarAssets.at(WebJarAssets.locate("bootstrap.min.css"))">
         <link rel="shortcut icon" type="image/png" href="@routes.Assets.at("images/favicon.png")">
 
-        <script src="@routes.WebJarAssets.at(WebJarAssets.locate("1.2.5/angular.min.js"))"></script>
+        <script src="@routes.WebJarAssets.at(WebJarAssets.locate("1.2.6/angular.js"))"></script>
+        <script src="@routes.WebJarAssets.at(WebJarAssets.locate("1.2.6/angular-route.js"))"></script>
         <script src="@routes.Assets.at("javascripts/app.js")"></script>
         <script src="@routes.Assets.at("javascripts/services.js")"></script>
         <script src="@routes.Assets.at("javascripts/controllers.js")"></script>
+
+
+        <script src="@controllers.application.routes.Assets.at("javascripts/application/appModule.js")"></script>
+        <script src="@controllers.application.routes.Assets.at("javascripts/application/controllers.js")"></script>
+        <script src="@controllers.application.routes.Assets.at("javascripts/application/service.js")"></script>
+
     </head>
     <body>
-        @content
+    <nav class="navbar navbar-default" role="navigation">
+      <!-- Brand and toggle get grouped for better mobile display -->
+      <div class="navbar-header">
+        <a class="navbar-brand" href="#">Wazza</a>
+      </div>
+
+      <!-- Collect the nav links, forms, and other content for toggling -->
+      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+        <ul class="nav navbar-nav">
+          <li><a ng-href='#/home'>New Application</a></li>
+        </ul>
+      </div><!-- /.navbar-collapse -->
+    </nav>
+
+    <div class="container">
+      <div class="row">
+        <div class="span12">
+          <div ng-view></div>
+        </div>
+      </div>
+    </div>
     </body>
 </html>

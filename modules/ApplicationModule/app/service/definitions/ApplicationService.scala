@@ -13,6 +13,8 @@ trait ApplicationService {
 
   def find(key: String): Option[WazzaApplication]
 
+  def getApplicationyTypes: List[String]
+
   /** Item operations **/
 
   def addItem(item: Item, applicationName: String): Try[Item]

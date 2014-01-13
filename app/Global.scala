@@ -6,13 +6,17 @@ import service.application.modules._
 import service.user.definitions._
 import service.user.implementations._
 import service.user.modules._
+import service.security.modules._
+import service.photos.modules._
 
 object Global extends GlobalSettings {
   
   private lazy val injector = {
     Guice.createInjector(
       new AppModule,
-      new UserModule
+      new UserModule,
+      new SecurityModule,
+      new PhotosModule
     )
   }
 

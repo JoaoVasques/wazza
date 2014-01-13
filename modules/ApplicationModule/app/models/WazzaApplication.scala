@@ -12,11 +12,24 @@ import ApplicationMongoContext._
 
 case class WazzaApplication(
 	name: String,
+  appUrl: String,
+  var imageName: String,
+  packageName: String,
+  appType: Option[String],
+  credentials: Credentials,
 	items: List[Item] = List[Item]()
+)
+
+case class Credentials(
+  appId: String,
+  apiKey: String,
+  sdkKey: String
 )
 
 object WazzaApplication extends ModelCompanion[WazzaApplication, ObjectId] {
 
 	val dao = new SalatDAO[WazzaApplication, ObjectId](mongoCollection("applications")){}
 	def getDAO = dao
+
+  lazy val applicationTypes = List("iOS", "Android")
 }

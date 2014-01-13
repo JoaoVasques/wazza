@@ -52,6 +52,10 @@ class ApplicationServiceImpl extends ApplicationService {
         dao.findOne(MongoDBObject("name" -> key))
     }
 
+    def getApplicationyTypes: List[String] = {
+        WazzaApplication.applicationTypes
+    }
+
     def addItem(item: Item, applicationName: String): Try[Item] = {
         if(exists(applicationName) && ! itemExists(item.name, applicationName)){
             dao.update(
