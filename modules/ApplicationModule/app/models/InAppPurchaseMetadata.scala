@@ -8,6 +8,7 @@ import com.novus.salat.annotations._
 import com.novus.salat.dao._
 import com.mongodb.casbah.Imports._
 import se.radley.plugin.salat._
+import scala.reflect.runtime.universe._
 
 @Salat
 trait InAppPurchaseMetadata {
@@ -81,6 +82,36 @@ case class AppleDurationProperties(
   marketingIncentiveDuration: Date
 )
 
+object InAppPurchaseMetadata {
+
+  def buildJson(metadata: InAppPurchaseMetadata): JsValue = {
+    metadata match {
+      case google: GoogleMetadata => {
+        Json.obj(
+          "osType" -> google.osType,
+          "itemId" -> google.itemId,
+          "title" -> google.title,
+          "description" -> google.description,
+          "publicationName" -> google.publishedState,
+          "purchaseType" -> google.purchaseType,
+          "autoTranslate" -> google.autoTranslate,
+          "locale" -> Json.toJson(google.locale.map((el: GoogleTranslations) => {
+            Json.obj("locale" -> el.locale, "title" -> el.title, "description" -> el.description)
+          })),
+          "autofill" -> google.autofill,
+          "language" -> google.language,
+          "price" -> google.price
+        )
+      }
+      case apple: AppleMetadata => {
+        //TODO
+        Json.obj()
+      }
+      case _ => null
+    }
+  }
+}
+
 package object InAppPurchaseContext {
 
   // Stores Info
@@ -97,21 +128,6 @@ package object InAppPurchaseContext {
   lazy val ManagedProduct = 0
   lazy val Subscription = 1
   lazy val UnManaged = 2
-
-  implicit def jsonToItem(obj: Option[JsValue]): Option[Item] = {
-      obj match {
-          case Some(item) => {
-              Some(new Item(
-                (item \ "_id").as[String],
-                (item \ "description").as[String],
-                (item \ "store").as[Int],
-                (item \ "metadata"),
-                (item \ "currency")
-              ))
-          }
-          case None => None 
-      }
-  }
 
   implicit def jsonToMetadata(obj: JsValue): InAppPurchaseMetadata = {
     val metadataType = (obj \ "_t").as[String]

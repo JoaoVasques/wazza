@@ -31,7 +31,9 @@ trait ApplicationService {
 
   def deleteVirtualCurrency(currencyName: String, applicationName: String): Try[VirtualCurrency]
 
-  def getVirtualCurrency(currencyName: String): Option[VirtualCurrency]
+  def getVirtualCurrency(currencyName: String, applicationName: String): Option[VirtualCurrency]
+
+  def getVirtualCurrencies(applicationName: String): List[VirtualCurrency]
 
   def virtualCurrencyExists(currencyName: String, applicationName: String): Boolean
 

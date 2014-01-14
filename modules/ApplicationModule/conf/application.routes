@@ -11,6 +11,9 @@ POST    /new                          @controllers.application.CRUDController.ne
 GET     /item/new/:storeType          @controllers.application.ItemCRUDController.newItem(storeType)
 POST    /item/new/:applicationName    @controllers.application.ItemCRUDController.newItemSubmit(applicationName)
 
+#API endpoints
+GET     /api/virtualcurrencies/all/:applicationName        @controllers.application.APIController.getVirtualCurrencies(applicationName)
+
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               	controllers.application.Assets.at(path="/public", file)
 GET     /webjars/*file              	controllers.WebJarAssets.at(file)

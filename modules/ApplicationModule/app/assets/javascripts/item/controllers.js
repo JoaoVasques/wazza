@@ -2,8 +2,8 @@
 
 angular.module('ItemModule.controllers', ['ItemModule.services', 'angularFileUpload']).
   controller('NewItemController',[
-    '$scope', '$upload', 'createNewItemService', '$routeParams', '$location',
-    function ($scope, $upload, createNewItemService, $routeParams, $location) {
+    '$scope', '$upload', 'createNewItemService', '$routeParams', '$location', 'getVirtualCurrenciesService',
+    function ($scope, $upload, createNewItemService, $routeParams, $location, getVirtualCurrenciesService) {
 
     $scope.currencyOptions = ["Real","Virtual"];
 
@@ -40,6 +40,15 @@ angular.module('ItemModule.controllers', ['ItemModule.services', 'angularFileUpl
       $scope.showCurrencyInputs.real = true;
       $scope.errors = false;
       $scope.formErrors = [];
+      getVirtualCurrenciesService.execute("dummy")
+        .then(
+          function(success){
+            console.log(success);
+          },
+          function(errors){
+            console.log(errors);
+          }
+        );
     };
     $scope.bootstrapModule();
 

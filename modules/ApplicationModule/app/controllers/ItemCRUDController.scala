@@ -60,7 +60,7 @@ class ItemCRUDController @Inject()(
   
   def newItem(storeType: String) = Action { implicit request =>
     if(applicationService.getApplicationyTypes.contains(storeType)){
-      Ok(views.html.newItem(storeType, List("Real", "Virtual"), Nil))
+      Ok(views.html.newItem(storeType, List("Real", "Virtual")))
     } else {
       BadRequest(Json.obj("errors" -> "Unknown store type"))
     }

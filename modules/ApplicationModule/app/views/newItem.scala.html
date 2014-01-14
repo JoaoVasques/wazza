@@ -1,4 +1,4 @@
-@(itemType: String, currencyTypes: List[String], virtualCurrencies: List[models.application.VirtualCurrency])
+@(itemType: String, currencyTypes: List[String])
 
 @inputText(placeholderName: String, name: String, required: Boolean, show: String = null) = {
   <div class="form-group" @if(show != null){ng-show=@show}>

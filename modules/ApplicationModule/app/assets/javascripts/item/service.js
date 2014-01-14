@@ -21,5 +21,19 @@ angular.module('ItemModule.services', []).
         return deferred.promise;
       }
     }
+  }]).
+  factory('getVirtualCurrenciesService', ['$http','$q', function ($http, $q) {
+    return {
+      execute: function(applicationName){
+        var request = $http({
+          url: '/app/api/virtualcurrencies/all/' + applicationName,
+          method: 'GET'
+        });
+
+        var deferred = $q.defer();
+        deferred.resolve(request);
+        return deferred.promise;
+      }
+    };
   }])
 ;
