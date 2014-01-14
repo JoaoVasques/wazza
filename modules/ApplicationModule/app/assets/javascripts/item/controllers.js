@@ -6,17 +6,14 @@ angular.module('ItemModule.controllers', ['ItemModule.services', 'angularFileUpl
     function ($scope, $upload, createNewItemService, $routeParams, $location, getVirtualCurrenciesService) {
 
     $scope.currencyOptions = ["Real","Virtual"];
-
     $scope.showCurrencyInputs = {
       "real": true,
       "virtual": false
     };
 
-    $scope.virtualCurrencies = ["1","2"]; //TODO fetch from DB - not mandatory for now
-
     $scope.bootstrapModule = function(){
       $scope.itemForm = {
-        "applicationName": $routeParams.applicationId,
+        "applicationName": encodeURI($routeParams.applicationId),
         "name": "",
         "description": "",
         "store": 1,
@@ -34,33 +31,55 @@ angular.module('ItemModule.controllers', ['ItemModule.services', 'angularFileUpl
         },
         "currency": {
           "typeOf": "Real",
-          "value": 0.0
+          "value": 0.0,
+          "virtualCurrency": ""
         }
       };
       $scope.showCurrencyInputs.real = true;
       $scope.errors = false;
       $scope.formErrors = [];
-      getVirtualCurrenciesService.execute("dummy")
+      $scope.moneyCurrency = "$"; /*+ TODO: in the future get this via API **/
+      $scope.currentCurrency = "$";
+      $scope.virtualCurrencies = [];
+      getVirtualCurrenciesService.execute($scope.itemForm.applicationName)
         .then(
           function(success){
-            console.log(success);
+            $scope.handleVirtualCurrencyRequestSuccess(success);
           },
-          function(errors){
-            console.log(errors);
+          function(error){
+            $scope.handleVirtualCurrencyRequestError(error);
           }
         );
+      $scope.$watch('itemForm.currency.typeOf', function(newValue, oldValue, scope){
+        if (newValue == "Real") {
+          $scope.showCurrencyInputs.real = true;
+          $scope.showCurrencyInputs.virtual = false;
+        } else {
+          $scope.showCurrencyInputs.real = false;
+          $scope.showCurrencyInputs.virtual = true;
+        }
+      });
     };
     $scope.bootstrapModule();
 
-    $scope.$watch('itemForm.currency.typeOf', function(newValue, oldValue, scope){
-      if (newValue == "Real") {
-        $scope.showCurrencyInputs.real = true;
-        $scope.showCurrencyInputs.virtual = false;
-      } else {
-        $scope.showCurrencyInputs.real = false;
-        $scope.showCurrencyInputs.virtual = true;
+    $scope.handleVirtualCurrencyRequestSuccess = function(success){
+      _.each(success.data, function(value, key, list){
+        $scope.virtualCurrencies.push(value.name);
+      });
+
+      /**Removes virtual currency option if application has not virtual currencies **/
+      if(_.size($scope.virtualCurrencies) == 0) {
+        $scope.currencyOptions = _.filter($scope.currencyOptions, function(value){
+          return value != "Virtual";
+        });
       }
-    });
+    };
+
+    $scope.handleVirtualCurrencyRequestError = function(error){
+      $scope.currencyOptions = _.filter($scope.currencyOptions, function(value){
+          return value != "Virtual";
+      });
+    };
 
     $scope.handleSuccess = function(){
       $scope.errors = false;

@@ -12,9 +12,9 @@
 
 @inputPrice(name: String, show: String = null) = {
   <div class="form-group">
-    <label>Price</label>
+    <label data-ng-model="currentCurrency">Price - {{currentCurrency}}</label>
     <br>
-    <input type="number" min="0" data-ng-model="itemForm.currency.value" required>
+    <input type="number" min="0" data-ng-model="itemForm.currency.value" required></input>
     <span class="help-inline" ng-show="formErrors.currency.visible" ng-bind="formErrors.currency.message"/>
   </div>
 }
@@ -27,13 +27,17 @@
 }
 
 @selectVirtualCurrencies = {
-  <select ng-model="vCurrency" ng-options="c.name for c in virtualCurrencies"
+  <div id="virtualCurrenciesSection" class="form-group" ng-show="showCurrencyInputs.virtual">
+    <label>Virtual currencies</label>
+    <select ng-model="itemForm.currency.virtualCurrency" ng-options="c for c in virtualCurrencies"></select>
+  </div>
 }
 
 @currency() = {
   <label>Currency</label>
   <div class="form-group">
       <select ng-model="itemForm.currency.typeOf" ng-options="c for c in currencyOptions" required></select>
+      @selectVirtualCurrencies
       @inputPrice("Price", "showCurrencyInputs.real")
     </div>
   </div>
@@ -49,7 +53,7 @@
 
 @images = {
   <div class="form-group">
-    <input type="file" file-model="myFile"/>
+    <input type="file" file-model="myFile" required/>
   </div>
 }
 
@@ -57,7 +61,7 @@
   <form class="form-vertical" enctype="multipart/form-data" ng-submit="createItem()">
     <legend>New item</legend>
     @inputText("Name", "name", true)
-    @textArea("Description", "description", false)
+    @textArea("Description", "description", true)
     @metadata
     @currency
     @images

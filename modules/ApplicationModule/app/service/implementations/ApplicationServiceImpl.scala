@@ -23,9 +23,16 @@ class ApplicationServiceImpl extends ApplicationService with ApplicationErrors{
         new Failure(new Exception(error))
     }
 
+    //TODO: remove when testing is done
+    private def addDummyVC(applicationName: String) = {
+        val vc = new VirtualCurrency("dummy-vc", 2.0, InAppPurchaseMetadata.buildDummy)
+        this.addVirtualCurrency(vc, applicationName)
+    }
+
     def insertApplication(application: WazzaApplication): Try[WazzaApplication] = {
         if(! exists(application.name)){
             dao.insert(application)
+            this.addDummyVC(application.name)
             new Success(application)
         } else {
             createFailure[WazzaApplication](ApplicationWithNameExistsError(application.name))
@@ -169,7 +176,7 @@ class ApplicationServiceImpl extends ApplicationService with ApplicationErrors{
     }
 
     def getVirtualCurrencies(applicationName: String): List[VirtualCurrency] = {
-        val list = dao.primitiveProjection[List[BasicDBObject]](MongoDBObject(), "virtualCurrencies")
+        val list = dao.primitiveProjection[List[BasicDBObject]](MongoDBObject("name" -> applicationName), "virtualCurrencies")
         list match {
             case Some(_) => {
                 list.head.toSet.map((el: BasicDBObject) => Json.parse(el.toString))

@@ -84,6 +84,10 @@ case class AppleDurationProperties(
 
 object InAppPurchaseMetadata {
 
+  def buildDummy() = {
+    new GoogleMetadata("","","", "", "", 0, false, Nil, false, "",0)
+  }
+
   def buildJson(metadata: InAppPurchaseMetadata): JsValue = {
     metadata match {
       case google: GoogleMetadata => {
