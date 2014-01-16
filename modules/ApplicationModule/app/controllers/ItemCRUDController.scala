@@ -10,6 +10,9 @@ import service.application.definitions._
 import play.api.data.format.Formats._
 import play.api.libs.json._
 import scala.util.{Try, Success, Failure}
+import scala.concurrent._
+import ExecutionContext.Implicits.global
+import models.aws._
 /** Uncomment the following lines as needed **/
 /**
 import play.api.Play.current
@@ -57,22 +60,28 @@ class ItemCRUDController @Inject()(
   //     item => Some(item.name,item.description,item.store,item.metadata,item.currency)
   //   }
   // )
+
+  private def generateErrors(value: String) = {
+    BadRequest(Json.obj("errors" -> value))
+  }
   
   def newItem(storeType: String) = Action { implicit request =>
     if(applicationService.getApplicationyTypes.contains(storeType)){
       Ok(views.html.newItem(storeType, List("Real", "Virtual")))
     } else {
-      BadRequest(Json.obj("errors" -> "Unknown store type"))
+      generateErrors("Unknown store type")
     }
   }
 
-  def newItemSubmit(applicationName: String) = Action(parse.multipartFormData) { implicit request =>
+  def newItemSubmit(applicationName: String) = Action.async(parse.multipartFormData) { implicit request =>
     val result = itemService.createItemFromMultipartData(request.body, applicationName)
-    result match {
-      case Success(item) => Ok
-      case Failure(errors) => {
-        BadRequest(Json.obj("errors" -> errors.getMessage))
-      }
+
+    result map {data =>
+      //TODO: check try value...
+      Ok
+    } recover {
+      case err: S3Failed => generateErrors("Problem uploading image to server")
+      case err: Exception => generateErrors((if(err.getMessage != null) err.getMessage else err.getCause.getMessage))
     }
   }
 }

@@ -3,6 +3,8 @@ package service.application.definitions
 import models.application._
 import scala.util.{Try}
 import play.api.mvc.{MultipartFormData}
+import java.io.File
+import scala.concurrent._
 
 trait ItemService {
 
@@ -17,8 +19,9 @@ trait ItemService {
 		purchaseType: Int,
 		autoTranslate: Boolean,
 		autofill: Boolean,
-		language: String
-	): Try[Item]
+		language: String,
+		file: File
+	): Future[Try[Item]]
 
 	def createAppleItem(
 		applicationName: String,
@@ -33,7 +36,7 @@ trait ItemService {
 	  durationProperties: AppleDurationProperties
 	): Try[Item]
 
-	def createItemFromMultipartData(data: MultipartFormData[_], applicationName: String): Try[Item]
+	def createItemFromMultipartData(data: MultipartFormData[_], applicationName: String): Future[Try[Item]]
 
 	def getCurrencyTypes(): Map[String, Int]
 

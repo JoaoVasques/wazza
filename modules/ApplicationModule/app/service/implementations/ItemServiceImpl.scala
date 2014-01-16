@@ -11,6 +11,11 @@ import play.api.libs.json._
 import scala.collection.mutable.ListBuffer
 import com.github.nscala_time.time.Imports._
 import service.aws.definitions._
+import play.api.libs.Files._
+import java.io.File
+import play.api.mvc.MultipartFormData._
+import scala.concurrent._
+import ExecutionContext.Implicits.global
 
 class ItemServiceImpl @Inject()(
 	applicationService: ApplicationService,
@@ -30,8 +35,11 @@ class ItemServiceImpl @Inject()(
 		purchaseType: Int,
 		autoTranslate: Boolean,
 		autofill: Boolean,
-		language: String
-	): Try[Item] = {
+		language: String,
+		file: File
+	): Future[Try[Item]] = {
+
+		val promise = Promise[Try[Item]]
 
 		val metadata = new GoogleMetadata(
 			"Google",
@@ -55,7 +63,17 @@ class ItemServiceImpl @Inject()(
 			new Currency(typeOfCurrency, price, virtualCurrency)
 		)
 
-		applicationService.addItem(item, applicationName)
+		val imageUploadResult = uploadFileService.upload(file)
+
+		imageUploadResult map { result =>
+			applicationService.addItem(item, applicationName)
+		} recover {
+			case error => {
+				promise.failure(error)
+			}
+		}
+
+		promise.future
 	}
 
 	//TODO
@@ -94,8 +112,7 @@ class ItemServiceImpl @Inject()(
 		applicationService.addItem(item, applicationName)
 	}
 
-	def createItemFromMultipartData(formData: MultipartFormData[_], applicationName: String): Try[Item] = {
-
+	def createItemFromMultipartData(formData: MultipartFormData[_], applicationName: String): Future[Try[Item]] = {
 		def generateJsonError(key: String, message: String): JsValue = {
 			Json.obj(key -> Json.obj("message" -> message, "visible" -> true))
 		}
@@ -131,7 +148,9 @@ class ItemServiceImpl @Inject()(
 		}
 
 		if(errors.size > 0){
-			Failure(new Exception(JsArray(errors).toString))
+			val promise = Promise[Try[Item]]
+			promise.failure(new Exception(JsArray(errors).toString))
+			promise.future
 		} else {
 			createGooglePlayItem(
 				applicationName,
@@ -144,7 +163,8 @@ class ItemServiceImpl @Inject()(
 				(itemData("metadata") \ "purchaseType").as[Int],
 				(itemData("metadata") \ "autoTranslate").as[Boolean],
 				(itemData("metadata") \ "autofill").as[Boolean],
-				(itemData("metadata") \ "language").as[String]
+				(itemData("metadata") \ "language").as[String],
+				formData.files.head
 			)
 		}
 	}
@@ -163,4 +183,10 @@ class ItemServiceImpl @Inject()(
 			case _ => null
 		}
 	}
+
+  private implicit def extractFile(filePart: FilePart[_]): File = {
+    filePart.ref match {
+       case TemporaryFile(file) => file
+    }
+  }
 }
