@@ -23,13 +23,13 @@ trait ApplicationService {
 
   def itemExists(keyValue: String, applicationName: String, key: String = "name"): Boolean
 
-  def deleteItem(itemId: String, applicationName: String): Try[Item]
+  def deleteItem(itemId: String, applicationName: String): Try[Unit]
 
   /** Virtual currency operations **/
 
   def addVirtualCurrency(currency: VirtualCurrency, applicationName: String): Try[VirtualCurrency]
 
-  def deleteVirtualCurrency(currencyName: String, applicationName: String): Try[VirtualCurrency]
+  def deleteVirtualCurrency(currencyName: String, applicationName: String): Try[Unit]
 
   def getVirtualCurrency(currencyName: String, applicationName: String): Option[VirtualCurrency]
 

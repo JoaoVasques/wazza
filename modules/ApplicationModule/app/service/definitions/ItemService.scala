@@ -11,6 +11,7 @@ trait ItemService {
 		name: String,
 		description: String,
 		typeOfCurrency: Int,
+		virtualCurrency: Option[String],
 		price: Double,
 		publishedState: String,
 		purchaseType: Int,
@@ -33,8 +34,6 @@ trait ItemService {
 	): Try[Item]
 
 	def createItemFromMultipartData(data: MultipartFormData[_], applicationName: String): Try[Item]
-
-	def validateId(id: String): Boolean
 
 	def getCurrencyTypes(): Map[String, Int]
 

@@ -10,8 +10,12 @@ import play.api.mvc.{MultipartFormData}
 import play.api.libs.json._
 import scala.collection.mutable.ListBuffer
 import com.github.nscala_time.time.Imports._
+import service.aws.definitions._
 
-class ItemServiceImpl @Inject()(applicationService: ApplicationService) extends ItemService {
+class ItemServiceImpl @Inject()(
+	applicationService: ApplicationService,
+	uploadFileService: UploadFileService
+) extends ItemService {
 	
 	private val dao = Item.getDAO
 
@@ -20,6 +24,7 @@ class ItemServiceImpl @Inject()(applicationService: ApplicationService) extends 
 		name: String,
 		description: String,
 		typeOfCurrency: Int,
+		virtualCurrency: Option[String],
 		price: Double,
 		publishedState: String,
 		purchaseType: Int,
@@ -47,12 +52,13 @@ class ItemServiceImpl @Inject()(applicationService: ApplicationService) extends 
 			description,
 			GoogleStoreId,
 			metadata,
-			new Currency(RealWordCurrencyType, price)
+			new Currency(typeOfCurrency, price, virtualCurrency)
 		)
 
 		applicationService.addItem(item, applicationName)
 	}
 
+	//TODO
 	def createAppleItem(
 		applicationName: String,
 		title: String,
@@ -82,7 +88,7 @@ class ItemServiceImpl @Inject()(applicationService: ApplicationService) extends 
 			description,
 			AppleStoreId,
 			metadata,
-			new Currency(RealWordCurrencyType, pricingProperties.price)
+			new Currency(RealWordCurrencyType, pricingProperties.price, null)
 		)
 
 		applicationService.addItem(item, applicationName)
@@ -132,6 +138,7 @@ class ItemServiceImpl @Inject()(applicationService: ApplicationService) extends 
 				(data get "name").get.head,
 				(data get "description").get.head,
 				(getCurrencyTypes get (itemData("currency") \ "typeOf").as[String]).get,
+				(itemData("currency") \ "virtualCurrency").asOpt[String],
 				(itemData("currency") \ "value").as[Double],
 				(itemData("metadata") \ "publishedState").as[String],
 				(itemData("metadata") \ "purchaseType").as[Int],
@@ -142,10 +149,8 @@ class ItemServiceImpl @Inject()(applicationService: ApplicationService) extends 
 		}
 	}
 
-	def validateId(id: String): Boolean = true //TODO
-
 	def getCurrencyTypes(): Map[String, Int] = {
-		Map("Real" -> RealWordCurrencyType, "Virtual" -> RealWordCurrencyType)
+		Map("Real" -> RealWordCurrencyType, "Virtual" -> VirtualCurrencyType)
 	}
 
 	protected def generateId(idType: Int, name: String, purchaseType: Int): String = {

@@ -166,7 +166,8 @@ package object InAppPurchaseContext {
   implicit def jsonToCurrency(obj: JsValue): Currency = {
     new Currency(
       (obj \ "typeOf").as[Int],
-      (obj \ "value").as[Double]
+      (obj \ "value").as[Double],
+      (obj \ "virtualCurrency").asOpt[String]
     )
   }
 

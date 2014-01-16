@@ -98,17 +98,15 @@ class ApplicationServiceImpl extends ApplicationService with ApplicationErrors{
         key: String,
         value: String,
         applicationName: String
-    ): Try[T] = {
+    ): Try[Unit] = {
         if(existsDocumentInArray(applicationAttribute, key, value, applicationName)){
-            val doc = getDocumentInArray(applicationAttribute, key, value, applicationName)
             dao.update(
                 MongoDBObject("name" -> applicationName),
                 $pull(applicationAttribute -> MongoDBObject(key -> value))
             )
-            null
-            // new Success()
+            Success()
         } else {
-            createFailure[T]("Does not exist")
+            createFailure[Unit]("Does not exist")
         }
     }
 
@@ -159,7 +157,7 @@ class ApplicationServiceImpl extends ApplicationService with ApplicationErrors{
         }
     }
 
-    def deleteItem(itemId: String, applicationName: String): Try[Item] = {
+    def deleteItem(itemId: String, applicationName: String): Try[Unit] = {
         deleteDocumentFromArray[Item]("items", "_id", itemId, applicationName)
     }
 
@@ -167,7 +165,7 @@ class ApplicationServiceImpl extends ApplicationService with ApplicationErrors{
         addDocumentToArray[VirtualCurrency](currency, currency.name, applicationName)
     }
   
-    def deleteVirtualCurrency(currencyName: String, applicationName: String): Try[VirtualCurrency] = {
+    def deleteVirtualCurrency(currencyName: String, applicationName: String): Try[Unit] = {
         deleteDocumentFromArray[VirtualCurrency]("virtualCurrencies", "name", currencyName, applicationName)
     }
 

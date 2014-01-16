@@ -54,9 +54,17 @@ angular.module('ItemModule.controllers', ['ItemModule.services', 'angularFileUpl
         if (newValue == "Real") {
           $scope.showCurrencyInputs.real = true;
           $scope.showCurrencyInputs.virtual = false;
+          $scope.itemForm.currency.virtualCurrency = "";
+          $scope.currentCurrency = "$"
         } else {
           $scope.showCurrencyInputs.real = false;
           $scope.showCurrencyInputs.virtual = true;
+        }
+      });
+
+      $scope.$watch('itemForm.currency.virtualCurrency', function(newValue, oldValue, scope) {
+        if (newValue != "") {
+          $scope.currentCurrency = newValue;
         }
       });
     };

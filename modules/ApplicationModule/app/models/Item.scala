@@ -23,7 +23,8 @@ case class Item(
 
 case class Currency(
   typeOf: Int, //virtual or real money
-  value: Double
+  value: Double,
+  virtualCurrency: Option[String]
 )
 
 object Item extends ModelCompanion[Item, ObjectId] {
@@ -34,16 +35,16 @@ object Item extends ModelCompanion[Item, ObjectId] {
 
   implicit def buildFromJson(obj: Option[JsValue]): Option[Item] = {
     obj match {
-        case Some(item) => {
-            Some(new Item(
-              (item \ "_id").as[String],
-              (item \ "description").as[String],
-              (item \ "store").as[Int],
-              (item \ "metadata"),
-              (item \ "currency")
-            ))
-        }
-        case None => None 
+      case Some(item) => {
+        Some(new Item(
+          (item \ "_id").as[String],
+          (item \ "description").as[String],
+          (item \ "store").as[Int],
+          (item \ "metadata"),
+          (item \ "currency")
+        ))
+      }
+      case None => None 
     }
   }
 }
