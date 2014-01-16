@@ -77,8 +77,10 @@ class ItemCRUDController @Inject()(
     val result = itemService.createItemFromMultipartData(request.body, applicationName)
 
     result map {data =>
-      //TODO: check try value...
-      Ok
+      data match {
+        case Success(s) => Ok
+        case Failure(f) => generateErrors(f.getMessage)
+      }
     } recover {
       case err: S3Failed => generateErrors("Problem uploading image to server")
       case err: Exception => generateErrors((if(err.getMessage != null) err.getMessage else err.getCause.getMessage))
