@@ -120,7 +120,6 @@ class CRUDController @Inject()(
         generateBadRequestResponse(errors)
       },
       application => {
-        println(application)
         if(application.appType.get == "Android" && (!checkPackageNameFormat(application.packageName))){
           generateBadRequestResponse(applicationForm.withError("packageName", "package name is invalid"))
         } else {

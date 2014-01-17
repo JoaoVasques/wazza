@@ -17,6 +17,7 @@ case class Item(
   store: Int,
   metadata: InAppPurchaseMetadata,
   currency: Currency,
+  var imageInfo: ImageInfo = null,
   override val elementId: String = "_id",
   override val attributeName: String = "items"
 ) extends ApplicationList
@@ -25,6 +26,10 @@ case class Currency(
   typeOf: Int, //virtual or real money
   value: Double,
   virtualCurrency: Option[String]
+)
+
+case class ImageInfo(
+  url: String
 )
 
 object Item extends ModelCompanion[Item, ObjectId] {

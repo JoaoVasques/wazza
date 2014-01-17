@@ -63,10 +63,11 @@ class ItemServiceImpl @Inject()(
 			new Currency(typeOfCurrency, price, virtualCurrency)
 		)
 
-		val imageUploadResult = uploadFileService.upload(file)
+		val imageUploadResult = uploadFileService.upload(file, name)
 
-		imageUploadResult map { result =>
-			applicationService.addItem(item, applicationName)
+		imageUploadResult map { imageUrl =>
+			item.imageInfo = new ImageInfo(imageUrl)
+			promise.success(applicationService.addItem(item, applicationName))
 		} recover {
 			case error => {
 				promise.failure(error)
