@@ -23,17 +23,10 @@ class ApplicationServiceImpl extends ApplicationService with ApplicationErrors{
         new Failure(new Exception(error))
     }
 
-    //TODO: remove when testing is done
-    private def addDummyVC(applicationName: String) = {
-        val vc = new VirtualCurrency("dummy-vc", 2.0, InAppPurchaseMetadata.buildDummy)
-        this.addVirtualCurrency(vc, applicationName)
-    }
-
     def insertApplication(application: WazzaApplication): Try[WazzaApplication] = {
         if(! exists(application.name)){
             dao.insert(application)
-            this.addDummyVC(application.name)
-            new Success(application)
+            Success(application)
         } else {
             createFailure[WazzaApplication](ApplicationWithNameExistsError(application.name))
         }
@@ -90,9 +83,6 @@ class ApplicationServiceImpl extends ApplicationService with ApplicationErrors{
         }
     }
 
-    /**
-    * TODO
-    **/
     private def deleteDocumentFromArray[T <: ApplicationList](
         applicationAttribute: String,
         key: String,

@@ -33,6 +33,10 @@ angular.module('ItemModule.controllers', ['ItemModule.services', 'angularFileUpl
           "typeOf": "Real",
           "value": 0.0,
           "virtualCurrency": ""
+        },
+        "imageInfo": {
+          "name": "",
+          "url": ""
         }
       };
       $scope.showCurrencyInputs.real = true;
@@ -70,6 +74,18 @@ angular.module('ItemModule.controllers', ['ItemModule.services', 'angularFileUpl
     };
     $scope.bootstrapModule();
 
+    $scope.onFileSelect = function(files) {
+      createNewItemService.uploadPhoto(_.first(files))
+        .then(
+          function(success){
+            $scope.handlePhotoUploadSuccess(success);
+          },
+          function(errors){
+            console.log(errors);
+          }
+        );
+    }
+
     $scope.handleVirtualCurrencyRequestSuccess = function(success){
       _.each(success.data, function(value, key, list){
         $scope.virtualCurrencies.push(value.name);
@@ -87,6 +103,12 @@ angular.module('ItemModule.controllers', ['ItemModule.services', 'angularFileUpl
       $scope.currencyOptions = _.filter($scope.currencyOptions, function(value){
           return value != "Virtual";
       });
+    };
+
+    $scope.handlePhotoUploadSuccess = function(success) {
+      console.log(success.data);
+      $scope.itemForm.imageInfo.url = success.data.url;
+      $scope.itemForm.imageInfo.name = success.data.fileName;
     };
 
     $scope.handleSuccess = function(){

@@ -13,6 +13,10 @@ import scala.util.{Try, Success, Failure}
 import scala.concurrent._
 import ExecutionContext.Implicits.global
 import models.aws._
+import service.aws.definitions.{UploadFileService}
+import play.api.libs.Files._
+import java.io.File
+import play.api.mvc.MultipartFormData._
 /** Uncomment the following lines as needed **/
 /**
 import play.api.Play.current
@@ -28,38 +32,9 @@ import play.api.libs.json._
 
 class ItemCRUDController @Inject()(
     applicationService: ApplicationService,
-    itemService: ItemService
+    itemService: ItemService,
+    uploadFileService: UploadFileService
   ) extends Controller {
-
-  // It's giving a weird compilation error on the unapply method. Deal with this later
-  // val googlePlayForm: Form[Item] = Form(
-  //   mapping(
-  //     "name" -> nonEmptyText,
-  //     "description" -> nonEmptyText,
-  //     "store" -> number,
-  //     "metadata" -> mapping(
-  //       "osType" -> ignored("Android"),
-  //       "itemId" -> nonEmptyText,
-  //       "title" -> ignored(""),
-  //       "description" -> ignored(""),
-  //       "publishedState" -> ignored(""),
-  //       "purchaseType" -> number,
-  //       "autoTranslate" -> ignored(false),
-  //       "locale" -> ignored(List[GoogleTranslations]()),
-  //       "autofill" -> ignored(false),
-  //       "language" -> ignored(""),
-  //       "price" -> of[Double]
-  //     )(GoogleMetadata.apply)(GoogleMetadata.unapply),
-  //     "currency" -> mapping(
-  //       "typeOf" -> number,
-  //       "value" -> of[Double]
-  //     )(Currency.apply)(Currency.unapply)
-  //   )
-  //   (Item.apply)
-  //   {
-  //     item => Some(item.name,item.description,item.store,item.metadata,item.currency)
-  //   }
-  // )
 
   private def generateErrors(value: String) = {
     BadRequest(Json.obj("errors" -> value))
@@ -84,6 +59,24 @@ class ItemCRUDController @Inject()(
     } recover {
       case err: S3Failed => generateErrors("Problem uploading image to server")
       case err: Exception => generateErrors((if(err.getMessage != null) err.getMessage else err.getCause.getMessage))
+    }
+  }
+
+  def uploadImage() = Action.async(parse.multipartFormData) { implicit request =>
+    val imageUploadResult = uploadFileService.upload(request.body.files.head)
+
+    imageUploadResult map { photoResult =>
+      Ok(photoResult.toJson)
+    } recover {
+      case error => {
+        generateErrors(error.getCause.getMessage)
+      }
+    }
+  }
+
+  private implicit def extractFile(filePart: FilePart[_]): File = {
+    filePart.ref match {
+       case TemporaryFile(file) => file
     }
   }
 }

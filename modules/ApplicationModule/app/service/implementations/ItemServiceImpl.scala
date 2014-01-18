@@ -36,7 +36,8 @@ class ItemServiceImpl @Inject()(
 		autoTranslate: Boolean,
 		autofill: Boolean,
 		language: String,
-		file: File
+		imageName: String,
+		imageUrl: String
 	): Future[Try[Item]] = {
 
 		val promise = Promise[Try[Item]]
@@ -60,20 +61,11 @@ class ItemServiceImpl @Inject()(
 			description,
 			GoogleStoreId,
 			metadata,
-			new Currency(typeOfCurrency, price, virtualCurrency)
+			new Currency(typeOfCurrency, price, virtualCurrency),
+			imageInfo = new ImageInfo(imageName, imageUrl)
 		)
 
-		val imageUploadResult = uploadFileService.upload(file, name)
-
-		imageUploadResult map { imageUrl =>
-			item.imageInfo = new ImageInfo(imageUrl)
-			promise.success(applicationService.addItem(item, applicationName))
-		} recover {
-			case error => {
-				promise.failure(error)
-			}
-		}
-
+		promise.success(applicationService.addItem(item, applicationName))
 		promise.future
 	}
 
@@ -107,7 +99,8 @@ class ItemServiceImpl @Inject()(
 			description,
 			AppleStoreId,
 			metadata,
-			new Currency(RealWordCurrencyType, pricingProperties.price, null)
+			new Currency(RealWordCurrencyType, pricingProperties.price, null),
+			new ImageInfo("","")
 		)
 
 		applicationService.addItem(item, applicationName)
@@ -128,7 +121,7 @@ class ItemServiceImpl @Inject()(
 					errors += generateJsonError("name", "An item already exists with this name")
 				}
 			}
-			case None => errors += Json.obj("name" -> "Please insert a name")
+			case None => errors += generateJsonError("name", "Please insert a name")
 		}
 
 		data get "metadata" match {
@@ -148,6 +141,11 @@ class ItemServiceImpl @Inject()(
 			case None => errors += generateJsonError("currency", "Missing currency information")
 		}
 
+		data get "imageInfo" match {
+			case Some(info) => itemData += ("imageInfo" -> Json.parse(info.head))
+			case None => errors += generateJsonError("imageInfo", "No image info")
+		}
+		
 		if(errors.size > 0){
 			val promise = Promise[Try[Item]]
 			promise.failure(new Exception(JsArray(errors).toString))
@@ -165,7 +163,8 @@ class ItemServiceImpl @Inject()(
 				(itemData("metadata") \ "autoTranslate").as[Boolean],
 				(itemData("metadata") \ "autofill").as[Boolean],
 				(itemData("metadata") \ "language").as[String],
-				formData.files.head
+				(itemData("imageInfo") \ "name").as[String],
+				(itemData("imageInfo") \ "url").as[String]
 			)
 		}
 	}

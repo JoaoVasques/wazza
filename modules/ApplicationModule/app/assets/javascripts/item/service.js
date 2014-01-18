@@ -5,7 +5,7 @@ angular.module('ItemModule.services', []).
     return {
       send: function(formData, file){
         var request = $upload.upload({
-            url: '/app/item/new/' + formData.applicationName, //TODO: get application name/id
+            url: '/app/item/new/' + formData.applicationName,
             method: 'POST',
             data: formData,
             file: file
@@ -14,6 +14,17 @@ angular.module('ItemModule.services', []).
             //fileFormDataName: myFile,
             /* customize how data is added to formData. See #40#issuecomment-28612000 for example */
             //formDataAppender: function(formData, key, val){} 
+        });
+
+        var deferred = $q.defer();
+        deferred.resolve(request);
+        return deferred.promise;
+      },
+      uploadPhoto: function(file) {
+        var request = $upload.upload({
+          url: '/app/item/uploadimage ',
+          method: 'POST',
+          file: file
         });
 
         var deferred = $q.defer();

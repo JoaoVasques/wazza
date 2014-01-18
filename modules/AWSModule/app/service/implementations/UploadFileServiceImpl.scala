@@ -50,8 +50,8 @@ class UploadFileServiceImpl extends UploadFileService {
     }
   }
 
-  private def generateFileName(itemName: String, file: File): String = {
-    (new HexBinaryAdapter()).marshal(MessageDigest.getInstance("SHA-1").digest((itemName + file.getName).getBytes()))
+  private def generateFileName(file: File): String = {
+    (new HexBinaryAdapter()).marshal(MessageDigest.getInstance("SHA-1").digest(file.getName.getBytes()))
   }
 
   private def generateS3ObjectURL(bucketName: String, fileName: String, s3Client: AmazonS3Client): String = {
@@ -64,19 +64,19 @@ class UploadFileServiceImpl extends UploadFileService {
     s3Client.generatePresignedUrl(request).toString
   }
 
-  def upload(file: File, itemName: String): Future[String] = {
-    val promise = Promise[String]
+  def upload(file: File): Future[UploadPhotoResult] = {
+    val promise = Promise[UploadPhotoResult]
 
     Future {
       PhotosBucket match {
         case Success(bucket) => {
           try {
               val s3Client = getS3Client(bucket).get
-              val fileName = generateFileName(itemName, file)
+              val fileName = generateFileName(file)
               val request = new PutObjectRequest(bucket,fileName, new FileInputStream(file), new ObjectMetadata())
               request.withCannedAcl(CannedAccessControlList.PublicRead)
               s3Client.putObject(request)
-              promise.success(generateS3ObjectURL(bucket, fileName, s3Client))
+              promise.success(new UploadPhotoResult(fileName, generateS3ObjectURL(bucket, fileName, s3Client)))
             } catch {
               case err: AmazonServiceException if err.getStatusCode == Status.NOT_FOUND => promise.failure(new S3NotFound(bucket, file.getName))
               case err: Throwable => promise.failure(new S3Failed(err))

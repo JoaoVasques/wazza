@@ -17,7 +17,7 @@ case class Item(
   store: Int,
   metadata: InAppPurchaseMetadata,
   currency: Currency,
-  var imageInfo: ImageInfo = null,
+  imageInfo: ImageInfo,
   override val elementId: String = "_id",
   override val attributeName: String = "items"
 ) extends ApplicationList
@@ -29,6 +29,7 @@ case class Currency(
 )
 
 case class ImageInfo(
+  name: String,
   url: String
 )
 
@@ -46,10 +47,18 @@ object Item extends ModelCompanion[Item, ObjectId] {
           (item \ "description").as[String],
           (item \ "store").as[Int],
           (item \ "metadata"),
-          (item \ "currency")
+          (item \ "currency"),
+          (item \ "imageInfo")
         ))
       }
       case None => None 
     }
+  }
+
+  implicit def imageInfoFromJson(json: JsValue): ImageInfo = {
+    new ImageInfo(
+      (json \ "name").as[String],
+      (json \ "url").as[String]
+    )
   }
 }

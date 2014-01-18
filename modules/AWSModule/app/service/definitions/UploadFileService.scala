@@ -4,6 +4,7 @@ import scala.util.{Try, Success, Failure}
 import scala.concurrent._
 import play.api.Play
 import java.io.File
+import models.aws._
 
 trait UploadFileService {
 
@@ -12,6 +13,6 @@ trait UploadFileService {
       case _ => Failure(new Exception("AWS Credentials do not exist"))
   }
 
-  def upload(file: File, itemName: String): Future[String]
+  def upload(file: File): Future[UploadPhotoResult]
 
 }

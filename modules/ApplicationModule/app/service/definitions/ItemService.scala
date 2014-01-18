@@ -20,7 +20,8 @@ trait ItemService {
 		autoTranslate: Boolean,
 		autofill: Boolean,
 		language: String,
-		file: File
+		imageName: String,
+		imageUrl: String
 	): Future[Try[Item]]
 
 	def createAppleItem(
