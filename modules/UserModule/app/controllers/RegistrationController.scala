@@ -11,14 +11,15 @@ import com.google.inject._
 
 class RegistrationController @Inject()(userService: UserService) extends Controller {
 
-	val registrationForm : Form[User] = Form(
+	val registrationForm : Form[WazzaUser] = Form(
 		mapping(
 			"id" -> ignored(new ObjectId),
 			"name" -> nonEmptyText,
 			"email" -> (nonEmptyText verifying email.constraints.head),
 			"password" -> nonEmptyText,
-			"company" -> nonEmptyText
-		)(User.apply)(User.unapply) verifying("User already exists", fields => fields match {
+			"company" -> nonEmptyText,
+			"permission" -> ignored("Administrator")
+		)(WazzaUser.apply)(WazzaUser.unapply) verifying("User already exists", fields => fields match {
 			case userData => userService.validateUser(userData.email)
 		})
 	)

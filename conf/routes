@@ -3,7 +3,9 @@
 # ~~~~
 
 # Home page
-GET     /                           @controllers.Application.index
+GET     /                     @controllers.Application.index
+GET     /login                @controllers.Application.login
+POST    /login                @controllers.Application.authenticate
 
 # Modules
 ->  /editor  editor.Routes

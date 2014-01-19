@@ -5,8 +5,8 @@
 angular.module('Wazza', ['ngRoute', 'Wazza.controllers', 'ItemModule']).
   config([ '$routeProvider', '$locationProvider' , function($routeProvider, $locationProvider) {
     $routeProvider
-      .when('/xpto', {
-        templateUrl: '/splash',
+      .when('/', {
+        templateUrl: '/login',
         controller: ''
       })
       .when('/home', {
