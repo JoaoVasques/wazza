@@ -1,15 +1,24 @@
 
-angular.module('Wazza.controllers', ['ApplicationModule', 'ItemModule', 'Wazza.services'])
+angular.module('Wazza.controllers', ['ApplicationModule', 'Wazza.services', 'ItemModule'])
 
-.controller('LoginController', ['$scope', 'submitLoginCredentialsService', function ($scope, submitLoginCredentialsService) {
+.controller('LoginController',
+  ['$scope', '$location', 'submitLoginCredentialsService',
+  function ($scope, $location, submitLoginCredentialsService) {
   console.log("login controller");
 
   $scope.bootstrapModule = function(){
     $scope.loginForm = {
       "email": "",
-      "password": ""
+      "password": "",
+      "css": "form-group"
+    };
+    $scope.errors = {
+      "content": "",
+      "show": false,
+      "css": "has-error"
     };
   };
+  $scope.bootstrapModule();
 
   $scope.handleLoginSuccess = function(success){
     console.log("success");
@@ -17,8 +26,9 @@ angular.module('Wazza.controllers', ['ApplicationModule', 'ItemModule', 'Wazza.s
   };
 
   $scope.handleLoginFailure = function(error){
-    console.log("error");
-    console.log(error);
+    $scope.errors.content = error.data.errors;
+    $scope.errors.show = true;
+    $scope.loginForm.css = $scope.loginForm.css + " " + $scope.errors.css;
   };
 
   $scope.signIn = function(){
@@ -29,7 +39,7 @@ angular.module('Wazza.controllers', ['ApplicationModule', 'ItemModule', 'Wazza.s
           $scope.handleLoginSuccess(success);
         },
         function(error){
-          $scope.handleLoginSuccess(error);
+          $scope.handleLoginFailure(error);
         }
       );
   };

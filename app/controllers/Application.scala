@@ -33,7 +33,11 @@ class Application @Inject()(
   }
 
   def authenticate = Action.async(parse.json){implicit request =>
-    println(request.body)
-    Future(Ok)
+    loginForm.bindFromRequest.fold(
+      formWithErrors => Future {
+          BadRequest(Json.obj("errors" -> formWithErrors.errors.head.message))
+      },
+      user => gotoLoginSucceeded(user.get.email)
+    )
   }
 }

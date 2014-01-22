@@ -8,6 +8,9 @@ import models.user._
 import com.mongodb.casbah.Imports._
 import service.user.definitions._
 import com.google.inject._
+import scala.concurrent.{ExecutionContext, Future}
+import ExecutionContext.Implicits.global
+import play.api.libs.json._
 
 class RegistrationController @Inject()(userService: UserService) extends Controller {
 
@@ -19,7 +22,7 @@ class RegistrationController @Inject()(userService: UserService) extends Control
 			"password" -> nonEmptyText,
 			"company" -> nonEmptyText,
 			"permission" -> ignored("Administrator")
-		)(WazzaUser.apply)(WazzaUser.unapply) verifying("User already exists", fields => fields match {
+		)(WazzaUser.apply)(WazzaUser.unapply) verifying("User with this email already exists", fields => fields match {
 			case userData => userService.validateUser(userData.email)
 		})
 	)
@@ -28,14 +31,17 @@ class RegistrationController @Inject()(userService: UserService) extends Control
 		Ok(views.html.registerUser(registrationForm))
 	}
 
-	def submitUser = Action { implicit request =>
+	def submitUser = Action.async(parse.json) { implicit request =>
+		println(request.body)
 		registrationForm.bindFromRequest.fold(
-			errors => {
-				BadRequest(views.html.registerUser(errors))
+			formErrors => Future {
+				BadRequest(Json.obj("errors" -> formErrors.errors.head.message))
 			},
-			user => {
-				userService.insertUser(user)
-				Redirect("/")
+			user => Future {
+				println(user)
+				// userService.insertUser(user)
+				// Redirect("/")
+				Ok("ola")
 			}
 		)
 	}
