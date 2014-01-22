@@ -16,7 +16,6 @@ lazy val dependencies = Seq(
   "com.github.nscala-time" %% "nscala-time" % "0.6.0",
   "org.webjars" % "underscorejs" % "1.5.2-1",
   "com.amazonaws" % "aws-java-sdk" % "1.6.12",
-  "jp.t2v" %% "play2-auth" % "0.11.0",
   "org.mindrot" % "jbcrypt" % "0.3m"
 )
 
