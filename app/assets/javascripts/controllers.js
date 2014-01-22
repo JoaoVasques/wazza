@@ -1,9 +1,9 @@
 
-angular.module('Wazza.controllers', ['ApplicationModule', 'Wazza.services', 'ItemModule'])
+angular.module('Wazza.controllers', ['ApplicationModule', 'Wazza.services', 'ItemModule', 'ngCookies'])
 
 .controller('LoginController',
-  ['$scope', '$location', 'submitLoginCredentialsService',
-  function ($scope, $location, submitLoginCredentialsService) {
+  ['$scope', '$location', '$cookieStore', '$cookies', 'submitLoginCredentialsService',
+  function ($scope, $location, $cookieStore, $cookies, submitLoginCredentialsService) {
   console.log("login controller");
 
   $scope.bootstrapModule = function(){
@@ -21,8 +21,9 @@ angular.module('Wazza.controllers', ['ApplicationModule', 'Wazza.services', 'Ite
   $scope.bootstrapModule();
 
   $scope.handleLoginSuccess = function(success){
-    console.log("success");
-    console.log(success);
+    $cookies['PLAY2AUTH_SESS_ID'] = success.data.authToken;
+    $cookieStore.put('PLAY2AUTH_SESS_ID', success.data.authToken);
+    $location.path("/xpto");
   };
 
   $scope.handleLoginFailure = function(error){
