@@ -3,7 +3,7 @@ package service.security.definitions
 import play.api.cache.Cache
 import play.api.Play._
 
-class TokenStoreServiceImpl extends TokenStoreService{
+class TokenStoreServiceCacheImpl extends TokenStoreService{
 
   def put(token: TokenId, userId: UserId, timeoutInSeconds: Int) = {
     Cache.set(token, userId, timeoutInSeconds)

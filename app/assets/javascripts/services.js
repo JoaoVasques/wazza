@@ -8,5 +8,16 @@ angular.module('Wazza.services', []).
         return deferred.promise;
       }
     };
+  }]).
+
+  factory('redirectToDashboardService', ['$http', '$q', function($http, $q) {
+    return {
+      execute: function(){
+        var request = $http.get("/homedashboard");
+        var deferred = $q.defer();
+        deferred.resolve(request);
+        return deferred.promise;
+      }
+    };
   }])
 ;

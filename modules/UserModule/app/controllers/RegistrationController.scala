@@ -11,38 +11,46 @@ import com.google.inject._
 import scala.concurrent.{ExecutionContext, Future}
 import ExecutionContext.Implicits.global
 import play.api.libs.json._
+import service.security.definitions.{TokenManagerService}
+import controllers.security._
 
-class RegistrationController @Inject()(userService: UserService) extends Controller {
+class RegistrationController @Inject()(
+  userService: UserService,
+  tokenService: TokenManagerService
+) extends Controller with Security {
 
-	val registrationForm : Form[WazzaUser] = Form(
-		mapping(
-			"id" -> ignored(new ObjectId),
-			"name" -> nonEmptyText,
-			"email" -> (nonEmptyText verifying email.constraints.head),
-			"password" -> nonEmptyText,
-			"company" -> nonEmptyText,
-			"permission" -> ignored("Administrator")
-		)(WazzaUser.apply)(WazzaUser.unapply) verifying("User with this email already exists", fields => fields match {
-			case userData => userService.validateUser(userData.email)
-		})
-	)
+  val registrationForm : Form[WazzaUser] = Form(
+    mapping(
+      "id" -> ignored(new ObjectId),
+      "name" -> nonEmptyText,
+      "email" -> (nonEmptyText verifying email.constraints.head),
+      "password" -> nonEmptyText,
+      "company" -> nonEmptyText,
+      "permission" -> ignored("Administrator")
+    )(WazzaUser.apply)(WazzaUser.unapply) verifying("User with this email already exists", fields => fields match {
+      case userData => userService.validateUser(userData.email)
+    })
+  )
 
-	def registerUser = Action {
-		Ok(views.html.registerUser(registrationForm))
-	}
+  def registerUser = Action {
+    Ok(views.html.registerUser(registrationForm))
+  }
 
-	def submitUser = Action.async(parse.json) { implicit request =>
-		println(request.body)
-		registrationForm.bindFromRequest.fold(
-			formErrors => Future {
-				BadRequest(Json.obj("errors" -> formErrors.errors.head.message))
-			},
-			user => Future {
-				println(user)
-				// userService.insertUser(user)
-				// Redirect("/")
-				Ok("ola")
-			}
-		)
-	}
+  def submitUser = Action.async(parse.json) { implicit request =>
+    println(request.body)
+    registrationForm.bindFromRequest.fold(
+      formErrors => Future {
+        BadRequest(Json.obj("errors" -> formErrors.errors.head.message))
+      },
+      user => Future {
+        val token = tokenService.startNewSession(user.email)
+        userService.insertUser(user)
+        Ok(Json.obj(
+          "authToken" -> token,
+          "userId" -> user.email,
+          "url" -> "/home"// TODO routes.Application.test().url
+        )).withToken(token)
+      }
+    )
+  }
 }

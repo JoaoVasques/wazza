@@ -65,6 +65,7 @@ lazy val userModule = play.Project("user",
                     dependencies,
                     path = file("modules/UserModule")
               )
+              .dependsOn(securityModule)
               .settings(mySettings: _*)
 
 lazy val applicationModule = play.Project("application",
@@ -80,7 +81,6 @@ lazy val securityModule = play.Project("security",
                     dependencies,
                     path = file("modules/SecurityModule")
               )
-              .dependsOn(userModule)
               .settings(mySettings: _*)
 
 lazy val photosModule = play.Project("photos",

@@ -1,11 +1,11 @@
 'use strict';
 
-angular.module('UserModule', ['UserModule.services', 'UserModule.directives'])
+angular.module('UserModule', ['UserModule.services', 'UserModule.directives', 'SecurityModule'])
 
 //TODO: refactor this -> move to user's controllers module
 .controller('UserRegistrationController',
-  ['$scope', 'createNewUserAccountService',
-  function ($scope, createNewUserAccountService) {
+  ['$scope', '$location', 'createNewUserAccountService', 'cookiesManagerService', '$rootScope',
+  function ($scope, $location, createNewUserAccountService, cookiesManagerService, $rootScope) {
   
   $scope.bootstrapModule = function(){
     $scope.userForm = {
@@ -14,7 +14,6 @@ angular.module('UserModule', ['UserModule.services', 'UserModule.directives'])
       "password": "",
       "company": ""
     };
-    //TODO: needs some refactoring here..
     $scope.passwordConfirmation = "";
     $scope.errors = {
       "content": "",
@@ -32,7 +31,9 @@ angular.module('UserModule', ['UserModule.services', 'UserModule.directives'])
   $scope.bootstrapModule();
 
   $scope.handleUserCreationSuccess = function(success) {
-    //TODO
+    cookiesManagerService.set('PLAY2AUTH_SESS_ID', success.data.authToken);
+    $rootScope.$broadcast("LoginSuccess", {});
+    $location.path(success.data.url);
   };
 
   $scope.handleUserCreationFailure = function(error){
@@ -66,6 +67,5 @@ angular.module('UserModule', ['UserModule.services', 'UserModule.directives'])
       );
     }
   };
-
 }])
 ;

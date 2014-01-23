@@ -8,6 +8,6 @@ class SecurityModule extends ScalaModule {
   def configure() {
     bind[SecretGeneratorService].to[SecretGeneratorServiceImpl]
     bind[TokenManagerService].to[TokenManagerServiceImpl]
-    bind[TokenStoreService].to[TokenStoreServiceImpl]
+    bind[TokenStoreService].to[TokenStoreServiceCacheImpl]
   }
 }

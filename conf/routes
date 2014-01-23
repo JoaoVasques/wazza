@@ -4,9 +4,10 @@
 
 # Home page
 GET     /                     @controllers.Application.index
-GET     /login                @controllers.Application.login
-POST    /login                @controllers.Application.authenticate
-GET     /test                 @controllers.Application.test
+GET     /login                @controllers.LoginLogoutController.login
+POST    /login                @controllers.LoginLogoutController.authenticate
+POST    /logout               @controllers.LoginLogoutController.logout
+GET     /homedashboard        @controllers.Application.home
 
 # Modules
 ->  /editor  editor.Routes
