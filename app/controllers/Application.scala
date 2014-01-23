@@ -14,8 +14,6 @@ class Application extends Controller with Security{
   }
 
   def home = HasToken() { token => userId => implicit request =>
-    println(token)
-    println(userId)
     Ok("TODO")
   }
 }

@@ -37,7 +37,6 @@ class RegistrationController @Inject()(
   }
 
   def submitUser = Action.async(parse.json) { implicit request =>
-    println(request.body)
     registrationForm.bindFromRequest.fold(
       formErrors => Future {
         BadRequest(Json.obj("errors" -> formErrors.errors.head.message))

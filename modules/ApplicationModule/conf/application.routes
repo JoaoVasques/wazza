@@ -3,7 +3,6 @@
 # ~~~~
 
 # Application routes
-GET     /                             @controllers.application.AppController.index
 GET     /new                          @controllers.application.CRUDController.newApplication
 POST    /new                          @controllers.application.CRUDController.newApplicationSubmit
 
