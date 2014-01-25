@@ -26,7 +26,8 @@ class RegistrationController @Inject()(
       "email" -> (nonEmptyText verifying email.constraints.head),
       "password" -> nonEmptyText,
       "company" -> nonEmptyText,
-      "permission" -> ignored("Administrator")
+      "permission" -> ignored("Administrator"),
+      "applications" -> ignored(List[String]())
     )(WazzaUser.apply)(WazzaUser.unapply) verifying("User with this email already exists", fields => fields match {
       case userData => userService.validateUser(userData.email)
     })

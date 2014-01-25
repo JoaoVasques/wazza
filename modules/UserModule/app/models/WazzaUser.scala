@@ -15,7 +15,8 @@ case class WazzaUser(
  @Key("email") email: String,
  var password: String,
  company: String,
- permission: String = "Administrator"
+ permission: String = "Administrator",
+ applications: List[String]
 )
 
 object WazzaUser extends ModelCompanion[WazzaUser, ObjectId] {

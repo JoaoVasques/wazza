@@ -14,6 +14,7 @@ import play.api.libs.json.JsValue
 import InAppPurchaseContext._
 import scala.util.{Try, Success, Failure}
 import scala.reflect.runtime.universe._
+import com.mongodb.casbah.commons.{MongoDBList}
 
 class ApplicationServiceImpl extends ApplicationService with ApplicationErrors{
     
@@ -139,6 +140,16 @@ class ApplicationServiceImpl extends ApplicationService with ApplicationErrors{
         getDocumentInArray("items", "_id", itemId, applicationName)
     }
 
+    def getItems(applicationName: String, skip: Int): List[Item] = {
+        // warning: this is inefficient because it loads all items from DB. For now, just works... to be fixed later
+        val list = dao.primitiveProjections[MongoDBList](MongoDBObject("name" -> applicationName), "items").take(skip)
+        list.head.map{el =>
+            el match {
+                case x: BasicDBObject => Json.parse(x.toString)
+            }            
+        }.toList
+    }
+
     def itemExists(keyValue: String, applicationName: String, key: String = "name"): Boolean = {
         if(key == "name"){
             existsDocumentInArray("items", "._id", keyValue, applicationName)
@@ -175,5 +186,21 @@ class ApplicationServiceImpl extends ApplicationService with ApplicationErrors{
 
     def virtualCurrencyExists(currencyName: String, applicationName: String): Boolean = {
         existsDocumentInArray("virtualCurrencies", "name", currencyName, applicationName)
+    }
+
+    implicit def convertListJsonToItem(jsonList: List[JsValue]): List[Item] = {
+        jsonList.map {el =>
+            new Item(
+                (el \ "_id").as[String],
+                (el \ "description").as[String],
+                (el \ "store").as[Int],
+                (el \ "metadata"),
+                (el \ "currency"),
+                new ImageInfo(
+                    (el \ "name").as[String],
+                    (el \ "url").as[String]
+                )
+            )
+        }
     }
 }
