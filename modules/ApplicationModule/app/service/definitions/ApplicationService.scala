@@ -4,7 +4,7 @@ import models.application._
 import scala.util.Try
 
 trait ApplicationService {
-  
+
   def insertApplication(application: WazzaApplication): Try[WazzaApplication]
 
   def deleteApplication(name: String): Try[WazzaApplication]
@@ -20,6 +20,8 @@ trait ApplicationService {
   def addItem(item: Item, applicationName: String): Try[Item]
 
   def getItem(itemId: String, applicationName: String): Option[Item]
+
+  def getItems(applicationName: String, skip: Int): List[Item]
 
   def itemExists(keyValue: String, applicationName: String, key: String = "name"): Boolean
 

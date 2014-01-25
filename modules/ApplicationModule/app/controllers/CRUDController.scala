@@ -17,6 +17,12 @@ import service.photos.definitions._
 import java.text.CharacterIterator
 import java.text.StringCharacterIterator
 import play.api.libs.json._
+import scala.concurrent.{ExecutionContext, Future}
+import ExecutionContext.Implicits.global
+import controllers.security._
+import service.security.definitions.{TokenManagerService}
+import service.application.definitions._
+import service.user.definitions._
 
 /** Uncomment the following lines as needed **/
 /**
@@ -34,8 +40,8 @@ import play.api.libs.json._
 class CRUDController @Inject()(
     applicationService: ApplicationService,
     secretGeneratorService: SecretGeneratorService,
-    uploadPhotoService: UploadPhotoService
-  ) extends Controller {
+    userService: UserService
+  ) extends Controller with Security {
 
   private def checkPackageNameFormat(name: String): Boolean = {
     if(name == null){
@@ -106,7 +112,7 @@ class CRUDController @Inject()(
     (WazzaApplication.apply)(WazzaApplication.unapply)
   )
 
-  def newApplication = Action { implicit request =>
+  def newApplication = HasToken() { token => userId => implicit request =>
     Ok(views.html.newApplication(applicationService.getApplicationyTypes))
   }
 
@@ -114,35 +120,30 @@ class CRUDController @Inject()(
     BadRequest(Json.obj("errors" -> errors.errorsAsJson))
   }
 
-  def newApplicationSubmit = Action(parse.json) { implicit request =>
+  def newApplicationSubmit = HasToken(parse.json) { token => userId => implicit request =>
+    println("new application submit")
     applicationForm.bindFromRequest.fold(
       errors => {
+        println("errors")
         generateBadRequestResponse(errors)
       },
       application => {
+        println("oki doki")
+        println(application)
         if(application.appType.get == "Android" && (!checkPackageNameFormat(application.packageName))){
           generateBadRequestResponse(applicationForm.withError("packageName", "package name is invalid"))
         } else {
-          applicationService.insertApplication(application)
-          Ok
-        //   val image = request.body.asMultipartFormData.get.file("image")
-        //   image match {
-        //     case Some(_) => {
-        //       val uploadResult = uploadPhotoService.upload(image.get)
-
-        //       if(uploadResult.isSuccess){
-        //         application.imageName = uploadResult.get
-        //         applicationService.insertApplication(application)
-        //         Redirect("/")
-        //       } else {
-        //         generateBadRequestResponse(applicationForm.withError("image", "Image upload error. Please try again"))
-        //       }
-        //     }
-        //     case None => {
-        //       applicationService.insertApplication(application)
-        //       Redirect("/")
-        //     }
-        //   }
+          val result = applicationService.insertApplication(application)
+          result match {
+            case Success(app) => {
+              userService.addApplication(userId, app.name)
+              Redirect("/dashboard")
+            }
+            case Failure(f) => {
+              println(f)
+              BadRequest(f.getMessage)
+            }
+          }
         }
       }
     )

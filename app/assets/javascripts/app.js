@@ -10,7 +10,7 @@ angular.module('Wazza', ['ngRoute', 'Wazza.controllers', 'ItemModule', 'UserModu
         controller: 'LoginController'
       })
       .when('/home', {
-        templateUrl: '/homedashboard',
+        templateUrl: '/dashboard',
         controller: ''
       })
       .when('/register', {

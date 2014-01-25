@@ -1,0 +1,24 @@
+@(
+  exist: Boolean,
+  applicationName: String,
+  credentials: models.application.Credentials,
+  virtualCurrencies: List[models.application.VirtualCurrency],
+  items: List[models.application.Item]
+)
+
+<h1>Hello dashboard</h1>
+
+
+@if(exist){
+  <p>exist</p>
+  @applicationName
+
+  @for(item <- items) {
+    <p>item.name</p>
+  }
+
+} else {
+  <h2>No applications :(</h2>
+  <button class="btn btn-lg btn-success btn-block" value="Create new application">
+
+}
