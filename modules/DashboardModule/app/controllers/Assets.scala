@@ -1,2 +1,2 @@
-package controllers.editor
+package controllers.dashboard
 object Assets extends controllers.AssetsBuilder

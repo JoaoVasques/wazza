@@ -13,7 +13,7 @@ angular.module('Wazza.services', []).
   factory('redirectToDashboardService', ['$http', '$q', function($http, $q) {
     return {
       execute: function(){
-        var request = $http.get("/homedashboard");
+        var request = $http.get("/dashboard");
         var deferred = $q.defer();
         deferred.resolve(request);
         return deferred.promise;
