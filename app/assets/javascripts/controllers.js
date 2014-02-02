@@ -56,21 +56,32 @@ angular.module('Wazza.controllers', ['ApplicationModule', 'Wazza.services', 'Ite
 }])
 
 .controller('NavBarController',[
-  '$scope', 'cookiesManagerService', '$http', '$location',
-  function ($scope, cookiesManagerService, $http, $location) {
+  '$scope', 'cookiesManagerService', '$http', '$location', '$rootScope',
+  function ($scope, cookiesManagerService, $http, $location, $rootScope) {
 
     $scope.bootstrapModule = function(){
       $scope.sessionOn = false;
+      $scope.showNavBar = false;
+      $scope.currentApplication = "";
+      $scope.$on("UPDATED_APPLICATION_NAME", function(event, data){
+        $scope.currentApplication = data.value.textContent;
+      })
     };
     $scope.bootstrapModule();
 
     $scope.$on("LoginSuccess", function(event, data){
       $scope.sessionOn = true;
+      $scope.showNavBar = true;
+    });
+
+    $scope.$on("LOGOUT_EVENT", function(event, data){
+      $scope.sessionOn = false;
+      $scope.showNavBar = false;
+      $location.path(data.data);
     });
 
     $scope.handleLogoutSuccess = function(data){
-      $scope.sessionOn = false;
-      $location.path(data.data);
+      $rootScope.$broadcast('LOGOUT_EVENT', {data: data.data});
     };
 
     $scope.handleLogoutFailure = function(error){
@@ -90,4 +101,20 @@ angular.module('Wazza.controllers', ['ApplicationModule', 'Wazza.services', 'Ite
       );
     };
 }])
+
+.controller('SideBarController', [
+  '$scope',
+  function ($scope) {
+    $scope.showSideBar = false;
+
+    /** Add watchers **/
+    $scope.$on("LoginSuccess", function(event, data){
+      $scope.showSideBar = true;
+    });
+
+    $scope.$on("LOGOUT_EVENT", function(event, data){
+      $scope.showSideBar = false;
+    });
+}])
+
 ;

@@ -2,8 +2,8 @@
 
 angular.module('ItemModule.controllers', ['ItemModule.services', 'angularFileUpload']).
   controller('NewItemController',[
-    '$scope', '$upload', 'createNewItemService', '$routeParams', '$location', 'getVirtualCurrenciesService',
-    function ($scope, $upload, createNewItemService, $routeParams, $location, getVirtualCurrenciesService) {
+    '$scope', '$upload', 'createNewItemService', '$routeParams', '$location', 'getVirtualCurrenciesService', 'uploadPhotoService',
+    function ($scope, $upload, createNewItemService, $routeParams, $location, getVirtualCurrenciesService, uploadPhotoService) {
 
     $scope.currencyOptions = ["Real","Virtual"];
     $scope.showCurrencyInputs = {
@@ -13,7 +13,7 @@ angular.module('ItemModule.controllers', ['ItemModule.services', 'angularFileUpl
 
     $scope.bootstrapModule = function(){
       $scope.itemForm = {
-        "applicationName": encodeURI($routeParams.applicationId),
+        "applicationName": "hello world", //TODO
         "name": "",
         "description": "",
         "store": 1,
@@ -35,7 +35,7 @@ angular.module('ItemModule.controllers', ['ItemModule.services', 'angularFileUpl
           "virtualCurrency": ""
         },
         "imageInfo": {
-          "name": "",
+          "imageName": "",
           "url": ""
         }
       };
@@ -75,7 +75,7 @@ angular.module('ItemModule.controllers', ['ItemModule.services', 'angularFileUpl
     $scope.bootstrapModule();
 
     $scope.onFileSelect = function(files) {
-      createNewItemService.uploadPhoto(_.first(files))
+      uploadPhotoService.execute(_.first(files))
         .then(
           function(success){
             $scope.handlePhotoUploadSuccess(success);
@@ -106,7 +106,6 @@ angular.module('ItemModule.controllers', ['ItemModule.services', 'angularFileUpl
     };
 
     $scope.handlePhotoUploadSuccess = function(success) {
-      console.log(success.data);
       $scope.itemForm.imageInfo.url = success.data.url;
       $scope.itemForm.imageInfo.name = success.data.fileName;
     };
