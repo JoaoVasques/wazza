@@ -7,12 +7,13 @@ GET     /new                          @controllers.application.CRUDController.ne
 POST    /new                          @controllers.application.CRUDController.newApplicationSubmit
 
 # Items routes
-GET     /item/new/:storeType          @controllers.application.ItemCRUDController.newItem(storeType)
+GET     /item/new/                    @controllers.application.ItemCRUDController.newItem
 POST    /item/new/:applicationName    @controllers.application.ItemCRUDController.newItemSubmit(applicationName)
 POST    /item/uploadimage             @controllers.application.ItemCRUDController.uploadImage
 
 #API endpoints
 GET     /api/virtualcurrencies/all/:applicationName        @controllers.application.APIController.getVirtualCurrencies(applicationName)
+GET     /api/item/get/:applicationName/:offset             @controllers.application.APIController.getItems(applicationName, offset: Int)
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               	controllers.application.Assets.at(path="/public", file)

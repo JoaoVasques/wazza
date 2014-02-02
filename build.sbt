@@ -16,7 +16,8 @@ lazy val dependencies = Seq(
   "com.github.nscala-time" %% "nscala-time" % "0.6.0",
   "org.webjars" % "underscorejs" % "1.5.2-1",
   "com.amazonaws" % "aws-java-sdk" % "1.6.12",
-  "org.mindrot" % "jbcrypt" % "0.3m"
+  "org.mindrot" % "jbcrypt" % "0.3m",
+  "org.webjars" % "angular-ui-bootstrap" % "0.10.0"
 )
 
 libraryDependencies ++= dependencies

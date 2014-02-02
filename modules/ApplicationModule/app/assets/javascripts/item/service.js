@@ -19,8 +19,13 @@ angular.module('ItemModule.services', []).
         var deferred = $q.defer();
         deferred.resolve(request);
         return deferred.promise;
-      },
-      uploadPhoto: function(file) {
+      }
+    }
+  }]).
+
+  factory('uploadPhotoService', ['$upload', '$q', function ($upload, $q) {
+    return {
+      execute: function(file){
         var request = $upload.upload({
           url: '/app/item/uploadimage ',
           method: 'POST',
@@ -31,8 +36,9 @@ angular.module('ItemModule.services', []).
         deferred.resolve(request);
         return deferred.promise;
       }
-    }
+    };
   }]).
+
   factory('getVirtualCurrenciesService', ['$http','$q', function ($http, $q) {
     return {
       execute: function(applicationName){

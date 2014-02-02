@@ -39,13 +39,10 @@ class ItemCRUDController @Inject()(
   private def generateErrors(value: String) = {
     BadRequest(Json.obj("errors" -> value))
   }
-  
-  def newItem(storeType: String) = Action { implicit request =>
-    if(applicationService.getApplicationyTypes.contains(storeType)){
-      Ok(views.html.newItem(storeType, List("Real", "Virtual")))
-    } else {
-      generateErrors("Unknown store type")
-    }
+
+  //TODO: add security
+  def newItem = Action { implicit request =>
+    Ok(views.html.newItem(List("Real", "Virtual")))
   }
 
   def newItemSubmit(applicationName: String) = Action.async(parse.multipartFormData) { implicit request =>
@@ -54,11 +51,20 @@ class ItemCRUDController @Inject()(
     result map {data =>
       data match {
         case Success(s) => Ok
-        case Failure(f) => generateErrors(f.getMessage)
+        case Failure(f) => {
+          println(f.getMessage)
+          generateErrors(f.getMessage)
+        }
       }
     } recover {
-      case err: S3Failed => generateErrors("Problem uploading image to server")
-      case err: Exception => generateErrors((if(err.getMessage != null) err.getMessage else err.getCause.getMessage))
+      case err: S3Failed => {
+        println("s3 error")
+        generateErrors("Problem uploading image to server")
+      }
+      case err: Exception => {
+        println("exception: " + err.getCause.getMessage)
+        generateErrors((if(err.getMessage != null) err.getMessage else err.getCause.getMessage))
+      }
     }
   }
 
