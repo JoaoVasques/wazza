@@ -140,14 +140,12 @@ class ApplicationServiceImpl extends ApplicationService with ApplicationErrors{
         getDocumentInArray("items", "_id", itemId, applicationName)
     }
 
-    def getItems(applicationName: String, skip: Int): List[Item] = {
+    def getItems(applicationName: String, offset: Int = 0): List[Item] = {
         // warning: this is inefficient because it loads all items from DB. For now, just works... to be fixed later
-        val list = dao.primitiveProjections[MongoDBList](MongoDBObject("name" -> applicationName), "items").take(skip)
-        list.head.map{el =>
-            el match {
-                case x: BasicDBObject => Json.parse(x.toString)
-            }            
-        }.toList
+        this.find(applicationName) match {
+            case Some(application) => application.items.drop(offset).take(ItemBatch)
+            case None => Nil
+        }
     }
 
     def itemExists(keyValue: String, applicationName: String, key: String = "name"): Boolean = {

@@ -12,6 +12,9 @@ import scala.util.{Try, Success, Failure}
 import models.application._
 import scala.concurrent._
 import ExecutionContext.Implicits.global
+import service.security.definitions.{TokenManagerService}
+import play.api.libs.json._
+import controllers.security.{Security}
 
 /** Uncomment the following lines as needed **/
 /**
@@ -28,7 +31,7 @@ import play.api.libs.json._
 
 class APIController @Inject()(
     applicationService: ApplicationService
-  ) extends Controller {
+  ) extends Controller with Security {
 
   def getVirtualCurrencies(applicationName: String) = Action.async { implicit request =>
     Future {
@@ -36,5 +39,12 @@ class APIController @Inject()(
         VirtualCurrency.buildJson(vc)
       }))      
     }.map(res => Ok(res))
+  }
+
+  def getItems(applicationName: String, offset: Int) = HasToken() {token => userId => implicit request =>
+    val items = applicationService.getItems(applicationName, offset)
+    Ok(new JsArray(items map {item =>
+      Json.parse(Item.toCompactJson(item))
+    }))
   }
 }

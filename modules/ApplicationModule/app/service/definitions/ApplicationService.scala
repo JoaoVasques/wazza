@@ -5,6 +5,8 @@ import scala.util.Try
 
 trait ApplicationService {
 
+  protected lazy val ItemBatch = 10
+
   def insertApplication(application: WazzaApplication): Try[WazzaApplication]
 
   def deleteApplication(name: String): Try[WazzaApplication]
@@ -21,7 +23,7 @@ trait ApplicationService {
 
   def getItem(itemId: String, applicationName: String): Option[Item]
 
-  def getItems(applicationName: String, skip: Int): List[Item]
+  def getItems(applicationName: String, offset: Int = 0): List[Item]
 
   def itemExists(keyValue: String, applicationName: String, key: String = "name"): Boolean
 

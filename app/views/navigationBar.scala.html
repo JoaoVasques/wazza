@@ -1,4 +1,4 @@
-<nav class="navbar navbar-default" role="navigation" ng-controller="NavBarController">
+<nav class="navbar navbar-default" role="navigation" ng-controller="NavBarController" ng-show="showNavBar">
   <!-- Brand and toggle get grouped for better mobile display -->
   <div class="navbar-header">
     <a class="navbar-brand" href="/">Wazza</a>
@@ -8,7 +8,7 @@
   <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
     <ul class="nav navbar-nav">
       <li><a ng-show="sessionOn" ng-href='/newapp'>New Application</a></li>
-      <li><a ng-show="sessionOn" ng-href='/item/create/1'>New Item</a></li>
+      <li><a ng-show="sessionOn" id="currentApplication">{{currentApplication}}</a></li>
     </ul>
     <ul class="nav navbar-nav navbar-right">
       <li><a ng-show="sessionOn" ng-click="logout()">Logout</a></li>
