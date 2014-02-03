@@ -13,6 +13,10 @@ angular.module('Wazza', ['ngRoute', 'Wazza.controllers', 'ItemModule', 'UserModu
         templateUrl: '/dashboard',
         controller: 'DashboardController'
       })
+      .when('/analytics', {
+        templateUrl: '/dashboard/analytics',
+        controller: ''
+      })      
       .when('/register', {
         templateUrl: '/user/register',
         controller: 'UserRegistrationController'

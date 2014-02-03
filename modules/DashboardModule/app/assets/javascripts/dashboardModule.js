@@ -3,8 +3,8 @@
 angular.module('DashboardModule', ['ui.bootstrap'])
 
 .controller('DashboardController', [
-  '$scope', '$location', '$rootScope','FetchItemsService', 'BootstrapDashboardService', '$modal',
-  function ($scope, $location, $rootScope, FetchItemsService, BootstrapDashboardService, $modal) {
+  '$scope', '$location', '$rootScope','FetchItemsService', 'BootstrapDashboardService', '$modal', 'DeleteItemService',
+  function ($scope, $location, $rootScope, FetchItemsService, BootstrapDashboardService, $modal, DeleteItemService) {
 
   $scope.bootstrapSuccessCallback = function(data){
     angular.extend($scope.credentials, data.data.credentials);
@@ -14,6 +14,10 @@ angular.module('DashboardModule', ['ui.bootstrap'])
     _.each(data.data.items, function(i){
       $scope.items.push(i);
     });
+  }
+
+  $scope.bootstrapFailureCallback = function(errorData){
+    console.log(errorData);
   }
 
   var ModalInstanceCtrl = function ($scope, $modalInstance, items) {
@@ -48,18 +52,6 @@ angular.module('DashboardModule', ['ui.bootstrap'])
     }, function () {});
   };
 
-  //TODO
-  $scope.bootstrapFailureCallback = function(errorData){
-    console.log(errorData);
-  }
-
-  $scope.init = function(){
-    BootstrapDashboardService.execute()
-    .then(
-      $scope.bootstrapSuccessCallback,
-      $scope.bootstrapFailureCallback);
-  };
-
   $scope.bootstrapModule = function(){
     $scope.applicationName = "hello world"; //TODO
     $scope.credentials = {};
@@ -67,13 +59,36 @@ angular.module('DashboardModule', ['ui.bootstrap'])
     $scope.items = [];
     $scope.isCollapsed = true;
     $rootScope.$broadcast("UPDATED_APPLICATION_NAME", {value: $scope.applicationName});
-    $scope.init();
+    $scope.$on("ITEM_SEARCH_EVENT", function(event, data){
+      $scope.itemSearch = data.name;
+    });
+    BootstrapDashboardService.execute()
+    .then(
+      $scope.bootstrapSuccessCallback,
+      $scope.bootstrapFailureCallback);
   };
   $scope.bootstrapModule();
 
   $scope.addItem = function(){
     $location.path("/item/create");
   };
+
+  $scope.itemDeleteSucessCallback = function(data){
+    $scope.items = _.without($scope.items, _.findWhere($scope.items, {_id: data.data}));
+  }
+
+  /** TODO: show error message **/
+  $scope.itemDeleteFailureCallback = function(data){
+  }
+
+  $scope.deleteItem = function(id, image){
+    DeleteItemService(id, $scope.applicationName, image)
+    .then(
+      function(data){$scope.itemDeleteSucessCallback(data)},
+      function(data){$scope.itemDeleteFailureCallback(data)}
+    );
+  };
+
 }])
 
 .factory('FetchItemsService', ['$http','$q', function ($http, $q) {
@@ -106,4 +121,16 @@ angular.module('DashboardModule', ['ui.bootstrap'])
   };
 }])
 
+.factory('DeleteItemService', ['$http','$q', function ($http, $q) {
+  return function(id, name, imageName){
+    var request = $http.post("/app/item/delete/" + id, {
+      appName: name,
+      image: imageName
+    });
+
+    var deferred = $q.defer();
+    deferred.resolve(request);
+    return deferred.promise;
+  };
+}])
 ;

@@ -10,7 +10,6 @@ import play.api.mvc.{MultipartFormData}
 import play.api.libs.json._
 import scala.collection.mutable.ListBuffer
 import com.github.nscala_time.time.Imports._
-import service.aws.definitions._
 import play.api.libs.Files._
 import java.io.File
 import play.api.mvc.MultipartFormData._
@@ -19,8 +18,7 @@ import ExecutionContext.Implicits.global
 import scala.language.implicitConversions
 
 class ItemServiceImpl @Inject()(
-	applicationService: ApplicationService,
-	uploadFileService: UploadFileService
+	applicationService: ApplicationService
 ) extends ItemService {
 	
 	private val dao = Item.getDAO
