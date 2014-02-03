@@ -89,6 +89,10 @@ angular.module('Wazza.controllers', ['ApplicationModule', 'Wazza.services', 'Ite
       /** todo **/
     };
 
+    $scope.sendItemSearchEvent = function(){
+      $rootScope.$broadcast("ITEM_SEARCH_EVENT", {name: $scope.itemName});
+    };
+
     $scope.logout = function(){
       $http.post("/logout")
       .then(
@@ -103,8 +107,8 @@ angular.module('Wazza.controllers', ['ApplicationModule', 'Wazza.services', 'Ite
 }])
 
 .controller('SideBarController', [
-  '$scope',
-  function ($scope) {
+  '$scope', '$location',
+  function ($scope, $location) {
     $scope.showSideBar = false;
 
     /** Add watchers **/

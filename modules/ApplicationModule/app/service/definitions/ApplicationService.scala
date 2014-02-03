@@ -2,6 +2,7 @@ package service.application.definitions
 
 import models.application._
 import scala.util.Try
+import scala.concurrent._
 
 trait ApplicationService {
 
@@ -27,7 +28,7 @@ trait ApplicationService {
 
   def itemExists(keyValue: String, applicationName: String, key: String = "name"): Boolean
 
-  def deleteItem(itemId: String, applicationName: String): Try[Unit]
+  def deleteItem(itemId: String, applicationName: String, imageName: String): Future[Unit]
 
   /** Virtual currency operations **/
 

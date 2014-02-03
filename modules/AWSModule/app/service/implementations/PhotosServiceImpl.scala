@@ -19,7 +19,7 @@ import java.security.MessageDigest
 import javax.xml.bind.annotation.adapters.HexBinaryAdapter
 import com.github.nscala_time.time.Imports._
 
-class UploadFileServiceImpl extends UploadFileService {
+class PhotosServiceImpl extends PhotosService {
 
   private def generateFileName(file: File): String = {
     (new HexBinaryAdapter()).marshal(MessageDigest.getInstance("SHA-1").digest(file.getName.getBytes()))
@@ -55,6 +55,29 @@ class UploadFileServiceImpl extends UploadFileService {
         }
         case Failure(failure) => promise.failure(failure)
       }
+    }
+
+    promise.future
+  }
+
+  def delete(imageName: String): Future[Unit] = {
+    val promise = Promise[Unit]
+
+    Future {
+      PhotosBucket match {
+        case Success(bucket) => {
+          try {
+            val s3Client = getS3Client(bucket).get
+            val request = new DeleteObjectRequest(bucket, imageName)
+            s3Client.deleteObject(request)
+            promise.success()
+          } catch {
+              case err: AmazonServiceException if err.getStatusCode == Status.NOT_FOUND => promise.failure(new S3NotFound(bucket, imageName))
+              case err: Throwable => promise.failure(new S3Failed(err))
+          }
+        }
+        case Failure(failure) => promise.failure(failure)
+      }   
     }
 
     promise.future

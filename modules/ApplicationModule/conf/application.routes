@@ -10,6 +10,7 @@ POST    /new                          @controllers.application.CRUDController.ne
 GET     /item/new/                    @controllers.application.ItemCRUDController.newItem
 POST    /item/new/:applicationName    @controllers.application.ItemCRUDController.newItemSubmit(applicationName)
 POST    /item/uploadimage             @controllers.application.ItemCRUDController.uploadImage
+POST    /item/delete/:itemId          @controllers.application.ItemCRUDController.deleteItem(itemId)
 
 #API endpoints
 GET     /api/virtualcurrencies/all/:applicationName        @controllers.application.APIController.getVirtualCurrencies(applicationName)

@@ -6,8 +6,10 @@ import play.api.Play
 import java.io.File
 import models.aws._
 
-trait UploadFileService extends PhotosData {
+trait PhotosService extends PhotosData {
 
   def upload(file: File): Future[UploadPhotoResult]
+
+  def delete(name: String): Future[Unit]
 
 }
