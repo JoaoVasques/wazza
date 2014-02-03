@@ -15,8 +15,14 @@ import InAppPurchaseContext._
 import scala.util.{Try, Success, Failure}
 import scala.reflect.runtime.universe._
 import com.mongodb.casbah.commons.{MongoDBList}
+import com.google.inject._
+import service.aws.definitions.{PhotosService}
+import scala.concurrent._
+import ExecutionContext.Implicits.global
 
-class ApplicationServiceImpl extends ApplicationService with ApplicationErrors{
+class ApplicationServiceImpl @Inject()(
+    photoService: PhotosService
+) extends ApplicationService with ApplicationErrors{
     
     private val dao = WazzaApplication.getDAO
 
@@ -141,7 +147,7 @@ class ApplicationServiceImpl extends ApplicationService with ApplicationErrors{
     }
 
     def getItems(applicationName: String, offset: Int = 0): List[Item] = {
-        // warning: this is inefficient because it loads all items from DB. For now, just works... to be fixed later
+        // WARNING: this is inefficient because it loads all items from DB. For now, just works... to be fixed later
         this.find(applicationName) match {
             case Some(application) => application.items.drop(offset).take(ItemBatch)
             case None => Nil
@@ -156,8 +162,21 @@ class ApplicationServiceImpl extends ApplicationService with ApplicationErrors{
         }
     }
 
-    def deleteItem(itemId: String, applicationName: String): Try[Unit] = {
-        deleteDocumentFromArray[Item]("items", "_id", itemId, applicationName)
+    def deleteItem(itemId: String, applicationName: String, imageName: String): Future[Unit] = {
+        val promise = Promise[Unit]
+        val result = deleteDocumentFromArray[Item]("items", "_id", itemId, applicationName)
+        result match {
+            case Success(_) => {
+                println(imageName)
+                photoService.delete(imageName) map {res =>
+                    promise.success()
+                } recover {
+                    case err: Exception => promise.failure(err)
+                }
+            }
+            case Failure(failure) => promise.failure(failure)
+        }
+        promise.future
     }
 
     def addVirtualCurrency(currency: VirtualCurrency, applicationName: String): Try[VirtualCurrency] = {

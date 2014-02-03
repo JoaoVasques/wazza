@@ -65,4 +65,8 @@ class DashboardController @Inject()(
     }
   }
 
+  def analyticsSection = HasToken() {token => userId => implicit request =>
+    Ok(views.html.analytics())
+  }
+
 }
