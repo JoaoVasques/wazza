@@ -44,6 +44,7 @@ class DashboardController @Inject()(
   def bootstrapDashboard() = HasToken() {token => userId => implicit request =>
     val applications = userService.getApplications(userId)
     if(applications.isEmpty){
+      //TODO: do not send bad request but a note saying that we dont have applications. then redirect to new application page
       BadRequest
     } else {
       val application = applicationService.find(applications.head).get
@@ -59,6 +60,9 @@ class DashboardController @Inject()(
           }),
           "items" -> new JsArray(applicationService.getItems(application.name) map {item =>
             Json.parse(Item.toCompactJson(item))
+          }),
+          "applications" -> new JsArray(applications map {el =>
+            Json.obj("name" -> el)
           })
         )
       )

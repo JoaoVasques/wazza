@@ -1,11 +1,23 @@
 'use strict';
 
-angular.module('UserModule', ['UserModule.services', 'UserModule.directives', 'SecurityModule'])
+angular.module('UserModule', ['UserModule.services', 'UserModule.directives', 'SecurityModule', 'Wazza.services'])
 
 //TODO: refactor this -> move to user's controllers module
 .controller('UserRegistrationController',
-  ['$scope', '$location', 'createNewUserAccountService', 'cookiesManagerService', '$rootScope',
-  function ($scope, $location, createNewUserAccountService, cookiesManagerService, $rootScope) {
+  ['$scope',
+  '$location',
+  'createNewUserAccountService',
+  'cookiesManagerService',
+  '$rootScope',
+  'LoginLogoutService',
+  function (
+    $scope,
+    $location,
+    createNewUserAccountService,
+    cookiesManagerService,
+    $rootScope,
+    LoginLogoutService
+  ) {
   
   $scope.bootstrapModule = function(){
     $scope.userForm = {
@@ -32,7 +44,7 @@ angular.module('UserModule', ['UserModule.services', 'UserModule.directives', 'S
 
   $scope.handleUserCreationSuccess = function(success) {
     cookiesManagerService.set('PLAY2AUTH_SESS_ID', success.data.authToken);
-    $rootScope.$broadcast("LoginSuccess", {});
+    LoginLogoutService.login();
     $location.path(success.data.url);
   };
 

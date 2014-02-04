@@ -1,9 +1,25 @@
 // item module
 
-angular.module('ItemModule.controllers', ['ItemModule.services', 'angularFileUpload']).
+angular.module('ItemModule.controllers', ['ItemModule.services', 'angularFileUpload', 'DashboardModule']).
   controller('NewItemController',[
-    '$scope', '$upload', 'createNewItemService', '$routeParams', '$location', 'getVirtualCurrenciesService', 'uploadPhotoService',
-    function ($scope, $upload, createNewItemService, $routeParams, $location, getVirtualCurrenciesService, uploadPhotoService) {
+    '$scope',
+    '$upload',
+    'createNewItemService',
+    '$routeParams',
+    '$location',
+    'getVirtualCurrenciesService',
+    'uploadPhotoService',
+    'ApplicationStateService',
+    function (
+      $scope,
+      $upload,
+      createNewItemService,
+      $routeParams,
+      $location,
+      getVirtualCurrenciesService,
+      uploadPhotoService,
+      ApplicationStateService
+    ) {
 
     $scope.currencyOptions = ["Real","Virtual"];
     $scope.showCurrencyInputs = {
@@ -13,7 +29,7 @@ angular.module('ItemModule.controllers', ['ItemModule.services', 'angularFileUpl
 
     $scope.bootstrapModule = function(){
       $scope.itemForm = {
-        "applicationName": "hello world", //TODO
+        "applicationName": ApplicationStateService.applicationName,
         "name": "",
         "description": "",
         "store": 1,
@@ -47,12 +63,8 @@ angular.module('ItemModule.controllers', ['ItemModule.services', 'angularFileUpl
       $scope.virtualCurrencies = [];
       getVirtualCurrenciesService.execute($scope.itemForm.applicationName)
         .then(
-          function(success){
-            $scope.handleVirtualCurrencyRequestSuccess(success);
-          },
-          function(error){
-            $scope.handleVirtualCurrencyRequestError(error);
-          }
+          $scope.handleVirtualCurrencyRequestSuccess,
+          $scope.handleVirtualCurrencyRequestError
         );
       $scope.$watch('itemForm.currency.typeOf', function(newValue, oldValue, scope){
         if (newValue == "Real") {
@@ -77,12 +89,8 @@ angular.module('ItemModule.controllers', ['ItemModule.services', 'angularFileUpl
     $scope.onFileSelect = function(files) {
       uploadPhotoService.execute(_.first(files))
         .then(
-          function(success){
-            $scope.handlePhotoUploadSuccess(success);
-          },
-          function(errors){
-            console.log(errors);
-          }
+          $scope.handlePhotoUploadSuccess,
+          $scope.handlePhotoUploadError
         );
     }
 
@@ -110,6 +118,11 @@ angular.module('ItemModule.controllers', ['ItemModule.services', 'angularFileUpl
       $scope.itemForm.imageInfo.name = success.data.fileName;
     };
 
+    $scope.handlePhotoUploadError = function(error) {
+      /** TODO **/
+      console.log(error);
+    }
+
     $scope.handleSuccess = function(){
       $scope.errors = false;
       $scope.formErrors = [];
@@ -126,12 +139,8 @@ angular.module('ItemModule.controllers', ['ItemModule.services', 'angularFileUpl
     $scope.createItem = function(){
       createNewItemService.send($scope.itemForm, $scope.myFile)
         .then(
-          function(){
-            $scope.handleSuccess();
-          },
-          function(errors){
-            $scope.handleErrors(errors);
-          }
+          $scope.handleSuccess,
+          $scope.handleErrors
         );
     };
   }])
