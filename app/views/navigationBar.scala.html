@@ -2,12 +2,20 @@
 <div>
   <ul class="nav navbar-nav">
   <li class="dropdown" ng-controller="DashboardController">
-      <a href="#" class="dropdown-toggle glyphicon glyphicon-plus" data-toggle="dropdown"><b class="caret"></b></a>
+      <a href="#" class="dropdown-toggle glyphicon" data-toggle="dropdown">Add<b class="caret"></b></a>
       <ul class="dropdown-menu">
-        <li><a href="#" ng-click="addItem()">Add Virtual Currency</a></li>
-        <li><a href="#" ng-click="open()">Add In-app Purchase</a></li>
+        <li><a href="#" ng-click="addItem()">Virtual Currency</a></li>
+        <li><a href="#" ng-click="open()">In-app Purchase</a></li>
       </ul>
   </li>
+  <!--
+  <li class="dropdown" ng-controller="DashboardController">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown">Change Application<b class="caret"></b></a>
+      <ul class="dropdown-menu" ng-repeat="application in applications">
+        <li><a href="#">{{application}}</a></li>
+      </ul>
+  </li>
+  -->
   </ul>
   <div class="col-sm-3 col-md-3">
       <form class="navbar-form" role="search" ng-submit="">
@@ -23,17 +31,14 @@
 <nav class="navbar navbar-default" role="navigation" ng-controller="NavBarController" ng-show="showNavBar">
   <!-- Brand and toggle get grouped for better mobile display -->
   <div class="navbar-header">
-    <a class="navbar-brand" href="/home">Wazza</a>
+    <a class="navbar-brand">{{applicationName}}</a>
   </div>
 
   <!-- Collect the nav links, forms, and other content for toggling -->
   <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-    <ul class="nav navbar-nav">
-      <li><a ng-show="sessionOn" ng-href='/newapp'>New Application</a></li>
-      <li><a ng-show="sessionOn" id="currentApplication">{{currentApplication}}</a></li>
-    </ul>
     @dashboardSection
     <ul class="nav navbar-nav navbar-right">
+      <li><a ng-show="sessionOn" ng-href='/newapp'>New Application</a></li>
       <li><a ng-show="sessionOn" class="glyphicon glyphicon-log-out" ng-click="logout()"></a></li>
     </ul>
   </div>

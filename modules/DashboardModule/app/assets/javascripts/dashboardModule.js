@@ -1,19 +1,46 @@
 'use strict';
 
-angular.module('DashboardModule', ['ui.bootstrap'])
+angular.module('DashboardModule', ['ui.bootstrap', 'ItemModule.services'])
 
 .controller('DashboardController', [
-  '$scope', '$location', '$rootScope','FetchItemsService', 'BootstrapDashboardService', '$modal', 'DeleteItemService',
-  function ($scope, $location, $rootScope, FetchItemsService, BootstrapDashboardService, $modal, DeleteItemService) {
+  '$scope',
+  '$location',
+  '$rootScope',
+  'FetchItemsService',
+  'BootstrapDashboardService',
+  '$modal',
+  'DeleteItemService',
+  'ApplicationStateService',
+  'ItemSearchService',
+  function (
+    $scope,
+    $location,
+    $rootScope,
+    FetchItemsService,
+    BootstrapDashboardService,
+    $modal,
+    DeleteItemService,
+    ApplicationStateService,
+    ItemSearchService
+    ) {
 
   $scope.bootstrapSuccessCallback = function(data){
+    var push = function(origin, destination) {
+      _.each(origin, function(el){
+        destination.push(el);
+      });
+    };
+
     angular.extend($scope.credentials, data.data.credentials);
-    _.each(data.data.virtualCurrencies, function(vc){
-      $scope.virtualCurrencies.push(vc);
-    });
-    _.each(data.data.items, function(i){
-      $scope.items.push(i);
-    });
+    push(data.data.virtualCurrencies, $scope.virtualCurrencies);
+    push(data.data.items, $scope.items);
+    push(
+      _.map(data.data.applications, function(element){
+        return element.name;
+      }),
+      $scope.applications
+    );
+    ApplicationStateService.updateApplicationName(_.first(data.data.applications).name);
   }
 
   $scope.bootstrapFailureCallback = function(errorData){
@@ -53,14 +80,17 @@ angular.module('DashboardModule', ['ui.bootstrap'])
   };
 
   $scope.bootstrapModule = function(){
-    $scope.applicationName = "hello world"; //TODO
+    $scope.applicationName = "";
+    $scope.applications = [];
     $scope.credentials = {};
     $scope.virtualCurrencies = [];
     $scope.items = [];
     $scope.isCollapsed = true;
-    $rootScope.$broadcast("UPDATED_APPLICATION_NAME", {value: $scope.applicationName});
-    $scope.$on("ITEM_SEARCH_EVENT", function(event, data){
-      $scope.itemSearch = data.name;
+    $scope.$on("ITEM_SEARCH_EVENT", function(){
+      $scope.itemSearch = ItemSearchService.searchData
+    });
+    $scope.$on("APPLICATION_NAME_UPDATED", function(){
+      $scope.applicationName = ApplicationStateService.applicationName;
     });
     BootstrapDashboardService.execute()
     .then(
@@ -84,45 +114,49 @@ angular.module('DashboardModule', ['ui.bootstrap'])
   $scope.deleteItem = function(id, image){
     DeleteItemService(id, $scope.applicationName, image)
     .then(
-      function(data){$scope.itemDeleteSucessCallback(data)},
-      function(data){$scope.itemDeleteFailureCallback(data)}
+      $scope.itemDeleteSucessCallback,
+      $scope.itemDeleteFailureCallback
     );
   };
 
 }])
 
 .factory('FetchItemsService', ['$http','$q', function ($http, $q) {
-  return {
-    execute: function(appName, offset){
-      var request = $http({
-        url: '/app/api/item/get/' + appName + '/' + offset,
-        method: 'GET'
-      });
+  var service = {};
 
-      var deferred = $q.defer();
-      deferred.resolve(request);
-      return deferred.promise;
-    }
+  service.execute = function(appName, offset){
+    var request = $http({
+      url: '/app/api/item/get/' + appName + '/' + offset,
+      method: 'GET'
+    });
+
+    var deferred = $q.defer();
+    deferred.resolve(request);
+    return deferred.promise;
   };
+
+  return service;
 }])
 
 .factory('BootstrapDashboardService', ['$http','$q', function ($http, $q) {
-  return {
-    execute: function(){
-      var request = $http({
-        url: '/dashboard/bootstrap',
-        method: 'GET'
-      });
+  var service = {};
 
-      var deferred = $q.defer();
-      deferred.resolve(request);
-      return deferred.promise;
-    }
+  service.execute = function(){
+    var request = $http({
+      url: '/dashboard/bootstrap',
+      method: 'GET'
+    });
+
+    var deferred = $q.defer();
+    deferred.resolve(request);
+    return deferred.promise;
   };
+
+  return service;
 }])
 
 .factory('DeleteItemService', ['$http','$q', function ($http, $q) {
-  return function(id, name, imageName){
+  var service = function(id, name, imageName){
     var request = $http.post("/app/item/delete/" + id, {
       appName: name,
       image: imageName
@@ -132,5 +166,26 @@ angular.module('DashboardModule', ['ui.bootstrap'])
     deferred.resolve(request);
     return deferred.promise;
   };
+
+  return service;
 }])
+
+.factory('ApplicationStateService', ['$rootScope', function ($rootScope) {
+  var service = {};
+  service.applicationName = "";
+  service.applicationsList = [];
+
+  service.updateApplicationName = function(newName){
+    service.applicationName = newName;
+    $rootScope.$broadcast("APPLICATION_NAME_UPDATED");
+  };
+
+  service.updateApplicationsList = function(newList){
+    service.appplicationsList = newList;
+    $rootScope.$broadcast("APPLICATIONS_LIST_UPDATED");
+  };
+
+  return service;
+}])
+
 ;

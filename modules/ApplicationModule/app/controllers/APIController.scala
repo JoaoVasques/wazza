@@ -15,6 +15,7 @@ import ExecutionContext.Implicits.global
 import service.security.definitions.{TokenManagerService}
 import play.api.libs.json._
 import controllers.security.{Security}
+import service.user.definitions.{UserService}
 
 /** Uncomment the following lines as needed **/
 /**
@@ -30,7 +31,8 @@ import play.api.libs.json._
 **/
 
 class APIController @Inject()(
-    applicationService: ApplicationService
+    applicationService: ApplicationService,
+    userService: UserService
   ) extends Controller with Security {
 
   def getVirtualCurrencies(applicationName: String) = Action.async { implicit request =>
