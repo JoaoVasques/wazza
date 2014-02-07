@@ -9,6 +9,7 @@ import com.novus.salat.dao._
 import com.mongodb.casbah.Imports._
 import se.radley.plugin.salat._
 import scala.reflect.runtime.universe._
+import scala.language.implicitConversions
 
 @Salat
 trait InAppPurchaseMetadata {

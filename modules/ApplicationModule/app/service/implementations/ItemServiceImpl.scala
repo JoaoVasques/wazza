@@ -16,6 +16,7 @@ import java.io.File
 import play.api.mvc.MultipartFormData._
 import scala.concurrent._
 import ExecutionContext.Implicits.global
+import scala.language.implicitConversions
 
 class ItemServiceImpl @Inject()(
 	applicationService: ApplicationService,

@@ -17,6 +17,7 @@ import service.aws.definitions.{UploadFileService}
 import play.api.libs.Files._
 import java.io.File
 import play.api.mvc.MultipartFormData._
+import scala.language.implicitConversions
 /** Uncomment the following lines as needed **/
 /**
 import play.api.Play.current
