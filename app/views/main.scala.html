@@ -1,8 +1,8 @@
-@(title: String)(content: Html)
+@(title: String)
 
 <!DOCTYPE html>
 
-<html>
+<html ng-app="Wazza">
   <head>
     <title>@title</title>
     <link rel="stylesheet" media="screen" href="@routes.WebJarAssets.at(WebJarAssets.locate("bootstrap.min.css"))">
@@ -13,7 +13,8 @@
     <script src='@routes.WebJarAssets.at(WebJarAssets.locate("jquery.min.js"))' ></script>
     <script src='@routes.WebJarAssets.at(WebJarAssets.locate("bootstrap.js"))' ></script>
 
-    <script src="@routes.WebJarAssets.at(WebJarAssets.locate("1.2.5/angular.min.js"))"></script>
+    <script src="@routes.WebJarAssets.at(WebJarAssets.locate("1.2.6/angular.js"))"></script>
+    <script src="@routes.WebJarAssets.at(WebJarAssets.locate("1.2.6/angular-route.js"))"></script>
     <script src="@routes.Assets.at("javascripts/app.js")"></script>
     <script src="@routes.Assets.at("javascripts/services.js")"></script>
     <script src="@routes.Assets.at("javascripts/controllers.js")"></script>
@@ -46,6 +47,7 @@
              <li><a href="stores/apple">Apple</a></li>
              <li><a href="stores/android">Android</a></li>
              <li><a href="stores/amazon">Amazon</a></li>
+             <li><a ng-href='#/home'>New Application</a></li>
            </ul>
          </li>
          <li><a href="#items">Items</a></li>
@@ -64,7 +66,7 @@
 
 
   <section id="main">
-    @content
+    content
   </section>
 
 
@@ -96,4 +98,5 @@
 </div><!-- /.modal -->
 
   </body>
+
 </html>
