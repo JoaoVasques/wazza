@@ -121,15 +121,11 @@ class CRUDController @Inject()(
   }
 
   def newApplicationSubmit = HasToken(parse.json) { token => userId => implicit request =>
-    println("new application submit")
     applicationForm.bindFromRequest.fold(
       errors => {
-        println("errors")
         generateBadRequestResponse(errors)
       },
       application => {
-        println("oki doki")
-        println(application)
         if(application.appType.get == "Android" && (!checkPackageNameFormat(application.packageName))){
           generateBadRequestResponse(applicationForm.withError("packageName", "package name is invalid"))
         } else {

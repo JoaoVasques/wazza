@@ -19,6 +19,7 @@ import com.google.inject._
 import service.aws.definitions.{PhotosService}
 import scala.concurrent._
 import ExecutionContext.Implicits.global
+import scala.language.implicitConversions
 
 class ApplicationServiceImpl @Inject()(
     photoService: PhotosService
@@ -62,6 +63,10 @@ class ApplicationServiceImpl @Inject()(
 
     def getApplicationyTypes: List[String] = {
         WazzaApplication.applicationTypes
+    }
+
+    def getApplicationCountries(appName: String): List[String] = {
+        List("PT")
     }
 
     private def addDocumentToArray[T <: ApplicationList](doc: T, value: String, applicationName: String): Try[T] = {
@@ -167,7 +172,6 @@ class ApplicationServiceImpl @Inject()(
         val result = deleteDocumentFromArray[Item]("items", "_id", itemId, applicationName)
         result match {
             case Success(_) => {
-                println(imageName)
                 photoService.delete(imageName) map {res =>
                     promise.success()
                 } recover {
