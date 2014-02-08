@@ -14,7 +14,7 @@ import scala.language.implicitConversions
 import play.api.libs.functional.syntax._
 
 case class PurchaseInfo(
-  @Key("_id") id: String,
+  id: String,
   applicationName: String,
   itemId: String,
   price: Double,
@@ -32,9 +32,4 @@ object LocationInfo {
     (__ \ "latitude").read[Double] and
       (__ \ "longitude").read[Double]
   )(LocationInfo.apply _)
-}
-
-object PurchaseInfo extends ModelCompanion[PurchaseInfo, ObjectId] {
-  val dao = new SalatDAO[PurchaseInfo, ObjectId](mongoCollection("purchases")){}
-  def getDAO = dao
 }
