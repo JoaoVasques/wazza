@@ -17,6 +17,8 @@ import service.aws.definitions.{PhotosService}
 import play.api.libs.Files._
 import java.io.File
 import play.api.mvc.MultipartFormData._
+import play.api.libs.iteratee.Enumerator
+import scala.language.implicitConversions
 /** Uncomment the following lines as needed **/
 /**
 import play.api.Play.current
@@ -49,12 +51,17 @@ class ItemCRUDController @Inject()(
 
     result map {data =>
       data match {
-        case Success(s) => Ok
+        case Success(s) => {
+          val file = itemService.generateMetadataFile(s)
+          Ok.sendFile(
+            content = file,
+            fileName = _ => s"$s.name.csv"
+          )
+        }
         case Failure(f) => generateErrors(f.getMessage)
       }
     } recover {
       case err: S3Failed => {
-        println("s3 error")
         generateErrors("Problem uploading image to server")
       }
       case err: Exception => {

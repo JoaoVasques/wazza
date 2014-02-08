@@ -18,6 +18,8 @@ trait ApplicationService {
 
   def getApplicationyTypes: List[String]
 
+  def getApplicationCountries(appName: String): List[String]
+
   /** Item operations **/
 
   def addItem(item: Item, applicationName: String): Try[Item]

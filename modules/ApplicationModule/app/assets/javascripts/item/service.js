@@ -65,5 +65,38 @@ angular.module('ItemModule.services', []).
     };
 
     return service;
+  }]).
+
+  factory('GetLanguagesService', [function () {
+    var service = {};
+    service.languages = {
+      "Portuguese": "pt_PT",
+      "Chinese":    "zh_TW",
+      "Italian":    "it_IT",
+      "Czech":      "cs_CZ",
+      "Japanese":   "ja_JP",
+      "Danish":     "da_DK",
+      "Korean":     "ko_KR",
+      "Dutch":      "nl_NL",
+      "Norwegian":  "no_NO",
+      "English":    "en_US",
+      "Polish":     "pl_PL",
+      "French":     "fr_FR",
+      "Finnish":    "fi_FI",
+      "Russian":    "ru_RU",
+      "German":     "de_DE",
+      "Spanish":    "es_ES",
+      "Hebrew":     "iw_IL",
+      "Swedish":    "sv_SE",
+      "Hindi":      "hi_IN"
+    };
+
+    service.languageOptions = function(){
+      return _.map(service.languages, function(value, key){
+        return key;
+      });
+    };
+
+    return service;
   }])
 ;
