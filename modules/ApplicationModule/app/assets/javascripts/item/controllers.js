@@ -10,6 +10,7 @@ angular.module('ItemModule.controllers', ['ItemModule.services', 'angularFileUpl
     'getVirtualCurrenciesService',
     'uploadPhotoService',
     'ApplicationStateService',
+    'GetLanguagesService',
     function (
       $scope,
       $upload,
@@ -18,7 +19,8 @@ angular.module('ItemModule.controllers', ['ItemModule.services', 'angularFileUpl
       $location,
       getVirtualCurrenciesService,
       uploadPhotoService,
-      ApplicationStateService
+      ApplicationStateService,
+      GetLanguagesService
     ) {
 
     $scope.currencyOptions = ["Real","Virtual"];
@@ -38,11 +40,11 @@ angular.module('ItemModule.controllers', ['ItemModule.services', 'angularFileUpl
           "title": "",
           "description": "",
           "publishedState": "published",
-          "purchaseType": 0,
-          "autoTranslate": true,
+          "purchaseType": "managed_by_publisher",
+          "autoTranslate": false,
           "locale": [],
-          "autofill": true,
-          "language": "English", //TODO: get default lang
+          "autofill": false,
+          "language": "", //TODO: get default lang
           "price": 0.0
         },
         "currency": {
@@ -66,6 +68,7 @@ angular.module('ItemModule.controllers', ['ItemModule.services', 'angularFileUpl
           $scope.handleVirtualCurrencyRequestSuccess,
           $scope.handleVirtualCurrencyRequestError
         );
+      $scope.itemForm.metadata.language = _.first(GetLanguagesService.languageOptions());
       $scope.$watch('itemForm.currency.typeOf', function(newValue, oldValue, scope){
         if (newValue == "Real") {
           $scope.showCurrencyInputs.real = true;
@@ -123,7 +126,13 @@ angular.module('ItemModule.controllers', ['ItemModule.services', 'angularFileUpl
       console.log(error);
     }
 
-    $scope.handleSuccess = function(){
+    $scope.handleSuccess = function(data){
+      console.log(data);
+      var hiddenElement = document.createElement('a');
+      hiddenElement.href = 'data:attachment/csv,' + encodeURI(data.data);
+      hiddenElement.target = '_blank';
+      hiddenElement.download = 'myFile.csv';
+      hiddenElement.click();
       $scope.errors = false;
       $scope.formErrors = [];
       $location.path("/home");

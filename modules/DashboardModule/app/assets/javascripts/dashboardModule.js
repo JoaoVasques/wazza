@@ -23,7 +23,7 @@ angular.module('DashboardModule', ['ui.bootstrap', 'ItemModule.services'])
     ApplicationStateService,
     ItemSearchService
     ) {
-
+      
   $scope.bootstrapSuccessCallback = function(data){
     var push = function(origin, destination) {
       _.each(origin, function(el){
@@ -187,5 +187,5 @@ angular.module('DashboardModule', ['ui.bootstrap', 'ItemModule.services'])
 
   return service;
 }])
-
 ;
+

@@ -1,6 +1,5 @@
 package models.application
 
-import play.api.Play.current
 import play.api.libs.json._
 import java.util.Date
 import com.novus.salat._
@@ -25,14 +24,19 @@ case class GoogleMetadata(
   override val title: String,
   override val description: String,
   publishedState: String,
-  purchaseType: Int,
+  purchaseType: String,
   autoTranslate: Boolean,
   locale: List[GoogleTranslations],
   autofill: Boolean,
   language: String,
-  price: Double
+  price: Double,
+  countries: List[CountryInfo]
 
 ) extends InAppPurchaseMetadata
+
+case class CountryInfo(
+  name: String
+)
 
 case class GoogleTranslations(
   locale: String,
@@ -85,10 +89,6 @@ case class AppleDurationProperties(
 
 object InAppPurchaseMetadata {
 
-  def buildDummy() = {
-    new GoogleMetadata("","","", "", "", 0, false, Nil, false, "",0)
-  }
-
   def buildJson(metadata: InAppPurchaseMetadata): JsValue = {
     metadata match {
       case google: GoogleMetadata => {
@@ -115,6 +115,28 @@ object InAppPurchaseMetadata {
       case _ => null
     }
   }
+
+  val LanguageCodes = Map(
+    "Chinese" ->    "zh_TW",
+    "Italian" ->    "it_IT",
+    "Czech" ->      "cs_CZ",
+    "Japanese" ->   "ja_JP",
+    "Danish" ->     "da_DK",
+    "Korean" ->     "ko_KR",
+    "Dutch" ->      "nl_NL",
+    "Norwegian" ->  "no_NO",
+    "English" ->    "en_US",
+    "Polish" ->     "pl_PL",
+    "French" ->     "fr_FR",
+    "Portuguese" -> "pt_PT",
+    "Finnish" ->    "fi_FI",
+    "Russian" ->    "ru_RU",
+    "German" ->     "de_DE",
+    "Spanish" ->    "es_ES",
+    "Hebrew" ->     "iw_IL",
+    "Swedish" ->    "sv_SE",
+    "Hindi" ->      "hi_IN"
+  )
 }
 
 package object InAppPurchaseContext {
@@ -143,12 +165,13 @@ package object InAppPurchaseContext {
         (obj \ "title").as[String],
         (obj \ "description").as[String],
         (obj \ "publishedState").as[String],
-        (obj \ "purchaseType").as[Int],
+        (obj \ "purchaseType").as[String],
         (obj \ "autoTranslate").as[Boolean],
         (obj \ "locale"),
         (obj \ "autofill").as[Boolean],
         (obj \ "language").as[String],
-        (obj \ "price").as[Double]
+        (obj \ "price").as[Double],
+        (obj \ "country")
       )
     } else {
       new AppleMetadata(
@@ -184,6 +207,19 @@ package object InAppPurchaseContext {
         }).toList
       }
       case _ => List[GoogleTranslations]()
+    }
+  }
+
+  implicit def jsonArrayToCountryInfo(obj: JsValue): List[CountryInfo] = {
+    obj match {
+      case JsArray(array) => {
+        array.map((el: JsValue) => {
+          new CountryInfo(
+            (el \ "name").as[String]
+          )
+        }).toList
+      }
+      case _ => List[CountryInfo]()
     }
   }
 

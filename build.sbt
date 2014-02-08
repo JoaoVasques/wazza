@@ -24,8 +24,6 @@ libraryDependencies ++= dependencies
 
 resolvers += "Spy Repository" at "http://files.couchbase.com/maven2" // required to resolve `spymemcached`, the plugin's dependency.
 
-routesImport += "se.radley.plugin.salat.Binders._"
-
 templatesImport += "org.bson.types.ObjectId"
 
 templatesImport += "models.user._"
@@ -41,8 +39,8 @@ lazy val mySettings = Seq(
 
 // Projects
 lazy val home = project.in(file("."))
-                .aggregate(dashboardModule, userModule, applicationModule, securityModule, photosModule, awsModule)
-                .dependsOn(dashboardModule, userModule, applicationModule, securityModule, photosModule, awsModule)
+                .aggregate(dashboardModule, userModule, applicationModule, securityModule, photosModule, awsModule, apiModule)
+                .dependsOn(dashboardModule, userModule, applicationModule, securityModule, photosModule, awsModule, apiModule)
                 .settings(mySettings: _*)
 
 lazy val dashboardModule = play.Project("dashboard",
@@ -88,6 +86,14 @@ lazy val awsModule = play.Project("aws",
                     dependencies,
                     path = file("modules/AWSModule")
               )
+              .settings(mySettings: _*)
+
+lazy val apiModule = play.Project("api",
+                    version.toString,
+                    dependencies,
+                    path = file("modules/ApiModule")
+              )
+              .dependsOn(securityModule, awsModule, userModule, applicationModule)
               .settings(mySettings: _*)
 
 play.Project.playScalaSettings
