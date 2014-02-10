@@ -11,19 +11,28 @@ import se.radley.plugin.salat._
 import PurchaseMongoContext._
 import InAppPurchaseContext._
 import scala.language.implicitConversions
+import play.api.libs.functional.syntax._
 
 case class PurchaseInfo(
   @Key("_id") id: String,
+  applicationName: String,
   itemId: String,
   price: Double,
   time: String,
-  location: LocationInfo
+  location: Option[LocationInfo]
 )
 
 case class LocationInfo(
   latitude: Double,
   longitude: Double
 )
+
+object LocationInfo {
+  implicit val locationJsonRead  = (
+    (__ \ "latitude").read[Double] and
+      (__ \ "longitude").read[Double]
+  )(LocationInfo.apply _)
+}
 
 object PurchaseInfo extends ModelCompanion[PurchaseInfo, ObjectId] {
   val dao = new SalatDAO[PurchaseInfo, ObjectId](mongoCollection("purchases")){}
