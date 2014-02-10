@@ -119,7 +119,7 @@ class ApplicationServiceImpl @Inject()(
         applicationName: String
     ): Boolean = {
         if(exists(applicationName)){
-            !dao.find(MongoDBObject(s"$applicationAttribute.$key" -> value)).isEmpty
+          !dao.find(MongoDBObject(s"$applicationAttribute.$key" -> value)).isEmpty
         } else {
             false
         }
@@ -161,7 +161,7 @@ class ApplicationServiceImpl @Inject()(
 
     def itemExists(keyValue: String, applicationName: String, key: String = "name"): Boolean = {
         if(key == "name"){
-            existsDocumentInArray("items", "._id", keyValue, applicationName)
+            existsDocumentInArray("items", "_id", keyValue, applicationName)
         } else {
             existsDocumentInArray("items", "metadata.itemId", keyValue, applicationName)
         }
