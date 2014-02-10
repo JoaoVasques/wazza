@@ -21,8 +21,20 @@ trait ApplicationService {
 
   def getItem(itemId: String, applicationName: String): Option[Item]
 
-  def itemExists(itemId: String, applicationName: String): Boolean
+  def itemExists(keyValue: String, applicationName: String, key: String = "name"): Boolean
 
-  def deleteItem(itemId: String, applicationName: String): Try[Item]
+  def deleteItem(itemId: String, applicationName: String): Try[Unit]
+
+  /** Virtual currency operations **/
+
+  def addVirtualCurrency(currency: VirtualCurrency, applicationName: String): Try[VirtualCurrency]
+
+  def deleteVirtualCurrency(currencyName: String, applicationName: String): Try[Unit]
+
+  def getVirtualCurrency(currencyName: String, applicationName: String): Option[VirtualCurrency]
+
+  def getVirtualCurrencies(applicationName: String): List[VirtualCurrency]
+
+  def virtualCurrencyExists(currencyName: String, applicationName: String): Boolean
 
 }

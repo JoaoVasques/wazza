@@ -11,13 +11,14 @@ import se.radley.plugin.salat._
 import ApplicationMongoContext._
 
 case class WazzaApplication(
-	name: String,
+  name: String,
   appUrl: String,
   var imageName: String,
   packageName: String,
   appType: Option[String],
   credentials: Credentials,
-	items: List[Item] = List[Item]()
+  items: List[Item] = List[Item](),
+  virtualCurrencies: List[VirtualCurrency] = List[VirtualCurrency]()
 )
 
 case class Credentials(
@@ -28,8 +29,8 @@ case class Credentials(
 
 object WazzaApplication extends ModelCompanion[WazzaApplication, ObjectId] {
 
-	val dao = new SalatDAO[WazzaApplication, ObjectId](mongoCollection("applications")){}
-	def getDAO = dao
+  val dao = new SalatDAO[WazzaApplication, ObjectId](mongoCollection("applications")){}
+  def getDAO = dao
 
   lazy val applicationTypes = List("iOS", "Android")
 }

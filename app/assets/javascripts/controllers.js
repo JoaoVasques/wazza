@@ -1,2 +1,2 @@
 
-angular.module('Wazza.controllers', ['ApplicationModule']);
+angular.module('Wazza.controllers', ['ApplicationModule', 'ItemModule']);
