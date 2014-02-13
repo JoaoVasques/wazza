@@ -16,19 +16,6 @@ class MongoDatabaseServiceTest  extends Specification {
   private val databaseService = Guice.createInjector(new PersistenceModule).getInstance(classOf[DatabaseService])
   private val uri = "mongodb://localhost:27017/wazza-test"
 
-  private def setup() = {
-
-    databaseService.hello()
-    databaseService.init(databaseService.UserCollection)
-    val user = Json.obj("email" -> "test@gmail.com", "name" -> "test", "applications" -> List[JsObject]())
-    println(databaseService.get("email", "joao@usewazza.com"))
-    databaseService.insert(user)
-    databaseService.update("email", "test@gmail.com", "name", "changedName")
-    println(databaseService.get("email", "test@gmail.com"))
-    databaseService.addElementToArray[JsObject]("email", "test@gmail.com", "applications", Json.obj("x" -> "app test"))
-
-  }
-
   "MongoDB Basic operations" should {
     running(FakeApplication()) {
       databaseService.init(uri, "users")
