@@ -49,6 +49,7 @@ trait DatabaseService {
     m: T
   ): Try[Unit]
 
+  def dropCollection(): Unit
 }
 
 
