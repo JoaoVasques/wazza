@@ -5,12 +5,10 @@ import com.mongodb.casbah.MongoClient
 import com.mongodb.casbah.MongoClientURI
 import com.mongodb.casbah.MongoCollection
 import com.mongodb.casbah.MongoCursor
-import com.mongodb.casbah.MongoDB
 import com.mongodb.casbah.commons.MongoDBObject
 import com.mongodb.util.JSON
 import play.api.Play
 import play.api.libs.json._
-import scala.Tuple2
 import scala.util.Failure
 import scala.util.Success
 import scala.util.Try
@@ -92,7 +90,12 @@ class MongoDatabaseService extends DatabaseService {
     this.collection.remove(model)
   }
 
-  def update(key: String, keyValue: String, valueKey: String, newValue: Any): Try[Unit] = {
+  def update(
+    key: String,
+    keyValue: String,
+    valueKey: String,
+    newValue: Any
+  ): Try[Unit] = {
     val query = MongoDBObject(key -> keyValue)
     val update = $set(valueKey -> newValue)
     this.collection.update(query, update)
@@ -102,14 +105,24 @@ class MongoDatabaseService extends DatabaseService {
     Array operations
   **/
 
-  def existsInArray[T <: Any](docIdKey: String, docIdValue: String, arrayKey: String, elementValue: T): Boolean = {
+  def existsInArray[T <: Any](
+    docIdKey: String,
+    docIdValue: String,
+    arrayKey: String,
+    elementValue: T
+  ): Boolean = {
     this.getElementFromArray[T](docIdKey, docIdValue, arrayKey, elementValue) match {
       case Some(_) => true
       case None => false
     }
   }
  
-  def getElementFromArray[T <: Any](docIdKey: String, docIdValue: String, arrayKey: String, elementValue: T): Option[JsValue] = {
+  def getElementFromArray[T <: Any](
+    docIdKey: String,
+    docIdValue: String,
+    arrayKey: String,
+    elementValue: T
+  ): Option[JsValue] = {
 
     val element = elementValue match {
       case j: JsObject => {
@@ -130,7 +143,12 @@ class MongoDatabaseService extends DatabaseService {
     }
   }
 
-  def addElementToArray[T <: Any](docIdKey: String, docIdValue: Any, arrayKey: String, m: T): Try[Unit] = {
+  def addElementToArray[T <: Any](
+    docIdKey: String,
+    docIdValue: Any,
+    arrayKey: String,
+    m: T
+  ): Try[Unit] = {
     val query = MongoDBObject(docIdKey -> docIdValue)
 
     val model = m match {
@@ -144,7 +162,12 @@ class MongoDatabaseService extends DatabaseService {
     this.collection.update(query, update)
   }
 
-  def deleteElementFromArray[T <: Any](docIdKey: String, docIdValue: Any, arrayKey: String, m: T): Try[Unit]  = {
+  def deleteElementFromArray[T <: Any](
+    docIdKey: String,
+    docIdValue: Any,
+    arrayKey: String,
+    m: T
+  ): Try[Unit] = {
     val query = MongoDBObject(docIdKey -> docIdValue)
 
     val model = m match {

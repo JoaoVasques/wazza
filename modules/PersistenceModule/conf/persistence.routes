@@ -1,3 +1,0 @@
-# test routes
-
-GET /     @controllers.persistence.TestController.test
