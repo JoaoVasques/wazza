@@ -2,98 +2,138 @@
 
 <!DOCTYPE html>
 
+@javascripts = {
+<script src="@routes.WebJarAssets.at(WebJarAssets.locate("1.2.6/angular.js"))"></script>
+<script src="@routes.WebJarAssets.at(WebJarAssets.locate("1.2.6/angular-route.js"))"></script>
+<script src="@routes.WebJarAssets.at(WebJarAssets.locate("1.2.6/angular-cookies.min.js"))"></script>
+<script src="@routes.WebJarAssets.at(WebJarAssets.locate("underscore-min.js"))"></script>
+
+<script src='@routes.WebJarAssets.at(WebJarAssets.locate("bootstrap.js"))' ></script>
+<script src='@routes.WebJarAssets.at(WebJarAssets.locate("jquery.min.js"))' ></script>
+
+<script src="@routes.Assets.at("javascripts/angular-file-upload.min.js")"></script>
+<script src="@routes.Assets.at("javascripts/angular-file-upload-html5-shim.min.js")"></script>
+<script src="@routes.Assets.at("javascripts/app.js")"></script>
+<script src="@routes.Assets.at("javascripts/services.js")"></script>
+<script src="@routes.Assets.at("javascripts/controllers.js")"></script>
+
+<script src="@controllers.application.routes.Assets.at("javascripts/application/appModule.js")"></script>
+<script src="@controllers.application.routes.Assets.at("javascripts/application/controllers.js")"></script>
+<script src="@controllers.application.routes.Assets.at("javascripts/application/service.js")"></script>
+
+<script src="@controllers.application.routes.Assets.at("javascripts/item/itemModule.js")"></script>
+<script src="@controllers.application.routes.Assets.at("javascripts/item/controllers.js")"></script>
+<script src="@controllers.application.routes.Assets.at("javascripts/item/service.js")"></script>
+<script src="@controllers.application.routes.Assets.at("javascripts/item/directives.js")"></script>
+
+<script src="@controllers.user.routes.Assets.at("javascripts/userModule.js")"></script>
+<script src="@controllers.user.routes.Assets.at("javascripts/controllers.js")"></script>
+<script src="@controllers.user.routes.Assets.at("javascripts/service.js")"></script>
+<script src="@controllers.user.routes.Assets.at("javascripts/directives.js")"></script>
+
+<script src="@controllers.security.routes.Assets.at("javascripts/securityModule.js")"></script>
+<script src="@controllers.security.routes.Assets.at("javascripts/services.js")"></script>
+}
+
+@stylesheets = {
+<link rel="stylesheet" media="screen" href="@routes.WebJarAssets.at(WebJarAssets.locate("bootstrap.min.css"))">
+<link rel="shortcut icon" type="image/png" href="@routes.Assets.at("images/favicon.png")">
+<link rel="stylesheet" type="text/css" media="screen" href="@routes.Assets.at("stylesheets/main.css")"> 
+}
+
 <html ng-app="Wazza">
 <head>
-    <title>@title</title>
-    <link rel="stylesheet" media="screen" href="@routes.WebJarAssets.at(WebJarAssets.locate("bootstrap.min.css"))">
-
-    <link rel="shortcut icon" type="image/png" href="@routes.Assets.at("images/favicon.png")">
-    <link rel="stylesheet" type="text/css" media="screen" href="@routes.Assets.at("stylesheets/main.css")"> 
-    <script src="@routes.WebJarAssets.at(WebJarAssets.locate("1.2.6/angular.js"))"></script>
-    <script src="@routes.WebJarAssets.at(WebJarAssets.locate("1.2.6/angular-route.js"))"></script>
-    <script src='@routes.WebJarAssets.at(WebJarAssets.locate("jquery.min.js"))' ></script>
-    <script src='@routes.WebJarAssets.at(WebJarAssets.locate("bootstrap.js"))' ></script>
-
-
-    <script src="@routes.Assets.at("javascripts/app.js")"></script>
-    <script src="@routes.Assets.at("javascripts/services.js")"></script>
-    <script src="@routes.Assets.at("javascripts/controllers.js")"></script>
+  <title>@title</title>
+  @stylesheets
+  @javascripts
 </head>
+
 <body>
 
-    <nav class="navbar navbar-inverse navbar-default navbar-fixed-top" role="navigation">
-        <!-- Brand and toggle get grouped for better mobile display -->
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-left logo" href="#"></a>
-            <p class="navbar-text">In App purchases made simple.</p>
-        </div>
+  <nav class="navbar navbar-inverse navbar-default navbar-fixed-top" role="navigation">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-left logo" href="#"></a>
+      <p class="navbar-text">In App purchases made simple.</p>
 
-        <!-- Collect the nav links, forms, and other content for toggling -->
-        <div class="collapse navbar-collapse" id=".navbar-collapse">
-            <ul class="nav navbar-nav">
-                <li class="active"><a href="#">Dashboard</a></li>
-                <li class="dropdown">
-                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                        Stores <span class="caret"></span>
-                    </a>
-                    <ul class="dropdown-menu">
-                     <li><a href="stores/apple">Apple</a></li>
-                     <li><a href="stores/android">Android</a></li>
-                     <li><a href="stores/amazon">Amazon</a></li>
-                     <li><a ng-href='#/home'>New Application</a></li>
-                 </ul>
-             </li>
-             <li><a href="#items">Items</a></li>
+    </div>
+
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id=".navbar-collapse">
+      <ul class="nav navbar-nav">
+        <li class="active"><a href="#">Dashboard</a></li>
+        <li class="dropdown">
+          <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+            Stores <span class="caret"></span>
+          </a>
+          <ul class="dropdown-menu">
+           <li><a href="stores/apple">Apple</a></li>
+           <li><a href="stores/android">Android</a></li>
+           <li><a href="stores/amazon">Amazon</a></li>
+           <li><a ng-href='#/home'>New Application</a></li>
          </ul>
-         <!-- leftovers: search box-->
-         <ul class="nav navbar-nav navbar-right">
-            <li>
-                <a href="#contact" data-toggle="modal" data-target="#contacts">Contacts</a>
-            </li>
-            <li>
-                <a href="#about">About</a>
-            </li>
-        </ul>
-    </div><!-- /.navbar-collapse -->
+       </li>
+       <li><a href="#items">Items</a></li>
+     </ul>
+     <!-- leftovers: search box-->
+     <ul class="nav navbar-nav navbar-right">
+      <li>
+        <a href="#contact" data-toggle="modal" data-target="#contacts">Contacts</a>
+      </li>
+      <li>
+        <a href="#about">About</a>
+      </li>
+    </ul>
+  </div><!-- /.navbar-collapse -->
 </nav>
 
 
 <section id="main">
-    content
+
+  @views.html.navigationBar.render()
+  <div class="container">
+    <div class="row">
+      <div class="span12">
+        <div ng-view></div>
+      </div>
+    </div>
+  </div>
+
+  content
 </section>
 
 
 <!-- Modal -->
 <div class="modal fade" id="contacts" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 class="modal-title" id="myModalLabel">Contacts</h4>
-            </div>
-            <div class="modal-body">
-                <address>
-                    <strong>Wazza, Inc.</strong><br>
-                    Somewhere over the Rainbow<br>
-                    Lisbon, Earth<br>
-                </address>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="myModalLabel">Contacts</h4>
+      </div>
+      <div class="modal-body">
+        <address>
+          <strong>Wazza, Inc.</strong><br>
+          Somewhere over the Rainbow<br>
+          Lisbon, Earth<br>
+        </address>
 
-                <address>
-                    <strong>Support</strong><br>
-                    <a href="mailto:#">support@@usewazza.com</a>
-                </address>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            </div>
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
+        <address>
+          <strong>Support</strong><br>
+          <a href="mailto:#">support@@usewazza.com</a>
+        </address>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 
 </body>

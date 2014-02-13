@@ -9,13 +9,15 @@ import se.radley.plugin.salat._
 
 trait UserService {
 
-	def insertUser(user: User)
+	def insertUser(user: WazzaUser)
 
-	def findBy(attribute: String, key: String): List[User]
+	def findBy(attribute: String, key: String): Option[WazzaUser]
 
 	def exists(email: String): Boolean
 
 	def validateUser(email: String): Boolean = {
 		! exists(email)
 	}
+
+  def authenticate(email: String, password: String): Option[WazzaUser]
 }

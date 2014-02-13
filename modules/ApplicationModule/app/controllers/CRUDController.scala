@@ -100,7 +100,8 @@ class CRUDController @Inject()(
         "apiKey" -> ignored(secretGeneratorService.generateSecret(ApiKey)),
         "sdkKey" -> ignored(secretGeneratorService.generateSecret(ApiKey))
       )(Credentials.apply)(Credentials.unapply),
-      "items" -> ignored(List[Item]())
+      "items" -> ignored(List[Item]()),
+      "virtualCurrencies"-> ignored(List[VirtualCurrency]())
     )
     (WazzaApplication.apply)(WazzaApplication.unapply)
   )
@@ -119,7 +120,6 @@ class CRUDController @Inject()(
         generateBadRequestResponse(errors)
       },
       application => {
-        println(application)
         if(application.appType.get == "Android" && (!checkPackageNameFormat(application.packageName))){
           generateBadRequestResponse(applicationForm.withError("packageName", "package name is invalid"))
         } else {

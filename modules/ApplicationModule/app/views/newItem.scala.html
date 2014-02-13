@@ -1,0 +1,81 @@
+@(itemType: String, currencyTypes: List[String])
+
+@inputText(placeholderName: String, name: String, required: Boolean, show: String = null) = {
+  <div class="form-group" @if(show != null){ng-show=@show}>
+    <label>@placeholderName</label>
+    <br>
+    <input type="text" placeholder=@placeholderName data-ng-model="itemForm.@name" @if(required){required}/>
+    <span class="help-inline" ng-show="formErrors.@(name).visible" ng-bind="formErrors.@(name).message"/>
+    <br>
+  </div>
+}
+
+@inputPrice(name: String, show: String = null) = {
+  <div class="form-group">
+    <label data-ng-model="currentCurrency">Price - {{currentCurrency}}</label>
+    <br>
+    <input type="number" min="0" data-ng-model="itemForm.currency.value" required></input>
+    <span class="help-inline" ng-show="formErrors.currency.visible" ng-bind="formErrors.currency.message"/>
+  </div>
+}
+
+@textArea(labelName: String, description: String, required: Boolean) = {
+  <label>@labelName</label>
+  <div class="form-group">
+    <textarea data-ng-model="itemForm.@description" class="form-control" rows="3" @if(required){required}></textarea>
+  </div>
+}
+
+@selectVirtualCurrencies = {
+  <div id="virtualCurrenciesSection" class="form-group" ng-show="showCurrencyInputs.virtual">
+    <label>Virtual currencies</label>
+    <select ng-model="itemForm.currency.virtualCurrency" ng-options="c for c in virtualCurrencies"></select>
+  </div>
+}
+
+@currency() = {
+  <label>Currency</label>
+  <div class="form-group">
+      <select ng-model="itemForm.currency.typeOf" ng-options="c for c in currencyOptions" required></select>
+      @selectVirtualCurrencies
+      @inputPrice("Price", "showCurrencyInputs.real")
+    </div>
+  </div>
+}
+
+@androidMetadata = {
+
+}
+
+@iOsMetadata = {
+  
+}
+
+@images = {
+  <div class="form-group">
+    <img id="item-logo-thumbnail" ng-src="{{itemForm.imageInfo.url}}" class="img-thumbnail" style="height: 200px">
+    <input type="file" file-model="myFile" ng-file-select="onFileSelect($files)" required/>
+  </div>
+}
+
+@createItemForm(metadata: Html) = {
+  <form class="form-vertical" enctype="multipart/form-data" ng-submit="createItem()">
+    <legend>New item</legend>
+    @inputText("Name", "name", true)
+    @textArea("Description", "description", true)
+    @metadata
+    @currency
+    @images
+    <input type="submit" class="btn btn-success" value="Create">
+    <div class="alert alert-danger" ng-show="errors">There were errors with your submission</div>
+  </form>
+}
+
+@itemType match {
+  case "Android" => {
+    @createItemForm(androidMetadata)
+  }
+  case "iOS" => {
+    @createItemForm(iOsMetadata)
+  }
+}

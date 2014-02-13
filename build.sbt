@@ -12,7 +12,11 @@ lazy val dependencies = Seq(
   "org.webjars" % "webjars-play_2.10" % "2.2.0",
   "org.webjars" % "angularjs" % "1.2.6",
   "org.webjars" % "bootstrap" % "3.0.3",
-  "commons-validator" % "commons-validator" % "1.4.0"
+  "commons-validator" % "commons-validator" % "1.4.0",
+  "com.github.nscala-time" %% "nscala-time" % "0.6.0",
+  "org.webjars" % "underscorejs" % "1.5.2-1",
+  "com.amazonaws" % "aws-java-sdk" % "1.6.12",
+  "org.mindrot" % "jbcrypt" % "0.3m"
 )
 
 libraryDependencies ++= dependencies
@@ -27,6 +31,8 @@ templatesImport += "models.user._"
 
 templatesImport += "controllers.user._"
 
+scalacOptions ++= Seq("-feature")
+
 lazy val mySettings = Seq(
     Keys.fork in run := true,
     javaOptions in run += "-Dconfig.file=conf/dev/application_dev.conf"
@@ -34,8 +40,8 @@ lazy val mySettings = Seq(
 
 // Projects
 lazy val home = project.in(file("."))
-                .aggregate(editorModule, storesModule, userModule, applicationModule, securityModule, photosModule)
-                .dependsOn(editorModule, storesModule, userModule, applicationModule, securityModule, photosModule)
+                .aggregate(editorModule, storesModule, userModule, applicationModule, securityModule, photosModule, awsModule)
+                .dependsOn(editorModule, storesModule, userModule, applicationModule, securityModule, photosModule, awsModule)
                 .settings(mySettings: _*)
 
 lazy val editorModule = play.Project("editor",
@@ -59,7 +65,7 @@ lazy val userModule = play.Project("user",
                     dependencies,
                     path = file("modules/UserModule")
               )
-              .dependsOn(applicationModule)
+              .dependsOn(securityModule)
               .settings(mySettings: _*)
 
 lazy val applicationModule = play.Project("application",
@@ -67,7 +73,7 @@ lazy val applicationModule = play.Project("application",
                     dependencies,
                     path = file("modules/ApplicationModule")
               )
-              .dependsOn(securityModule, photosModule)
+              .dependsOn(securityModule, photosModule, awsModule, userModule)
               .settings(mySettings: _*)
 
 lazy val securityModule = play.Project("security",
@@ -81,6 +87,13 @@ lazy val photosModule = play.Project("photos",
                     version.toString,
                     dependencies,
                     path = file("modules/PhotosModule")
+              )
+              .settings(mySettings: _*)
+
+lazy val awsModule = play.Project("aws",
+                    version.toString,
+                    dependencies,
+                    path = file("modules/AWSModule")
               )
               .settings(mySettings: _*)
 

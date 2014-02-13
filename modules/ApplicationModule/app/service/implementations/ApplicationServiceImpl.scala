@@ -11,21 +11,24 @@ import se.radley.plugin.salat._
 import ApplicationMongoContext._
 import play.api.libs.json.Json
 import play.api.libs.json.JsValue
-import ItemContext._
+import InAppPurchaseContext._
 import scala.util.{Try, Success, Failure}
+import scala.reflect.runtime.universe._
 
-class ApplicationServiceImpl extends ApplicationService {
+class ApplicationServiceImpl extends ApplicationService with ApplicationErrors{
     
     private val dao = WazzaApplication.getDAO
+
+    def createFailure[A](error: String): Failure[A] = {
+        new Failure(new Exception(error))
+    }
 
     def insertApplication(application: WazzaApplication): Try[WazzaApplication] = {
         if(! exists(application.name)){
             dao.insert(application)
-            new Success(application)
+            Success(application)
         } else {
-            new Failure(
-                new Exception("Application with the name " + application.name +  " already exists")
-            )
+            createFailure[WazzaApplication](ApplicationWithNameExistsError(application.name))
         }
     }
 
@@ -35,9 +38,7 @@ class ApplicationServiceImpl extends ApplicationService {
             dao.remove(application)
             new Success(application)
         } else {
-            new Failure(
-                new Exception("Application " + name + " does not exists")
-            )
+            createFailure[WazzaApplication]("Application " + name + " does not exists")
         }
     }
 
@@ -56,53 +57,123 @@ class ApplicationServiceImpl extends ApplicationService {
         WazzaApplication.applicationTypes
     }
 
-    def addItem(item: Item, applicationName: String): Try[Item] = {
-        if(exists(applicationName) && ! itemExists(item.name, applicationName)){
-            dao.update(
-                MongoDBObject("name" -> applicationName),
-                $push("items" -> grater[Item].asDBObject(item))
-            )
-            new Success(item)
+    private def addDocumentToArray[T <: ApplicationList](doc: T, value: String, applicationName: String): Try[T] = {
+        if(! exists(applicationName)){
+            createFailure[T](DoesNotExistError)
         } else {
-            new Failure(
-                new Exception("Duplicated item")
-            )
+            if(existsDocumentInArray(doc.attributeName, doc.elementId, value, applicationName)){
+                createFailure[T](AlreadyExistsError)
+            } else {
+                doc match {
+                    case item: Item => {
+                        dao.update(
+                            MongoDBObject("name" -> applicationName),
+                            $push(item.attributeName -> grater[Item].asDBObject(item))
+                        )
+                    } 
+                    case virtualCurrency: VirtualCurrency => {
+                        dao.update(
+                            MongoDBObject("name" -> applicationName),
+                            $push(virtualCurrency.attributeName -> grater[VirtualCurrency].asDBObject(virtualCurrency))
+                        )
+                    }
+                }
+                new Success(doc)
+            }
         }
     }
 
-    def getItem(itemId: String, applicationName: String): Option[Item] = {
-        val listOfItems = dao.primitiveProjection[List[BasicDBObject]](MongoDBObject("items._id" -> itemId), "items")
-        listOfItems match {
+    private def deleteDocumentFromArray[T <: ApplicationList](
+        applicationAttribute: String,
+        key: String,
+        value: String,
+        applicationName: String
+    ): Try[Unit] = {
+        if(existsDocumentInArray(applicationAttribute, key, value, applicationName)){
+            dao.update(
+                MongoDBObject("name" -> applicationName),
+                $pull(applicationAttribute -> MongoDBObject(key -> value))
+            )
+            Success()
+        } else {
+            createFailure[Unit]("Does not exist")
+        }
+    }
+
+    private def existsDocumentInArray(
+        applicationAttribute: String,
+        key: String,
+        value: String,
+        applicationName: String
+    ): Boolean = {
+        if(exists(applicationName)){
+            !dao.find(MongoDBObject(s"$applicationAttribute.$key" -> value)).isEmpty
+        } else {
+            false
+        }
+    }
+
+    private def getDocumentInArray(
+        applicationAttribute: String,
+        key: String,
+        value: String,
+        applicationName: String
+    ): Option[JsValue] = {
+        val list = dao.primitiveProjection[List[BasicDBObject]](MongoDBObject(s"$applicationAttribute.$key" -> value), applicationAttribute)
+        list match {
             case Some(_) => {
-                val set = listOfItems.head.toSet.map((el: BasicDBObject) => Json.parse(el.toString))
+                val set = list.head.toSet.map((el: BasicDBObject) => Json.parse(el.toString))
                 set.find((el: JsValue) => { 
-                     (el \ "_id").as[String] == itemId 
+                    (el \ key).as[String] == value 
                 })
             }
             case None => None
         }
     }
 
-    def itemExists(itemId: String, applicationName: String): Boolean = {
-        if(exists(applicationName)){
-            !dao.find(MongoDBObject("items._id" -> itemId)).isEmpty
+    def addItem(item: Item, applicationName: String): Try[Item] = {
+        addDocumentToArray[Item](item, item.name, applicationName)
+    }
+
+    def getItem(itemId: String, applicationName: String): Option[Item] = {
+        getDocumentInArray("items", "_id", itemId, applicationName)
+    }
+
+    def itemExists(keyValue: String, applicationName: String, key: String = "name"): Boolean = {
+        if(key == "name"){
+            existsDocumentInArray("items", "._id", keyValue, applicationName)
         } else {
-            false
+            existsDocumentInArray("items", "metadata.itemId", keyValue, applicationName)
         }
     }
 
-    def deleteItem(itemId: String, applicationName: String): Try[Item] = {
-        if(itemExists(itemId, applicationName)){
-            val item = getItem(itemId, applicationName).get
-            dao.update(
-                MongoDBObject("name" -> applicationName),
-                $pull("items" -> MongoDBObject("_id" -> itemId))
-            )
-            new Success(item)
-        } else {
-            new Failure(
-                new Exception("Item with id " + itemId + " does not exist in application " + applicationName)
-            )
+    def deleteItem(itemId: String, applicationName: String): Try[Unit] = {
+        deleteDocumentFromArray[Item]("items", "_id", itemId, applicationName)
+    }
+
+    def addVirtualCurrency(currency: VirtualCurrency, applicationName: String): Try[VirtualCurrency] = {
+        addDocumentToArray[VirtualCurrency](currency, currency.name, applicationName)
+    }
+  
+    def deleteVirtualCurrency(currencyName: String, applicationName: String): Try[Unit] = {
+        deleteDocumentFromArray[VirtualCurrency]("virtualCurrencies", "name", currencyName, applicationName)
+    }
+
+    def getVirtualCurrency(currencyName: String, applicationName: String): Option[VirtualCurrency] = {
+        getDocumentInArray("virtualCurrencies", "name", currencyName, applicationName)
+    }
+
+    def getVirtualCurrencies(applicationName: String): List[VirtualCurrency] = {
+        val list = dao.primitiveProjection[List[BasicDBObject]](MongoDBObject("name" -> applicationName), "virtualCurrencies")
+        list match {
+            case Some(_) => {
+                list.head.toSet.map((el: BasicDBObject) => Json.parse(el.toString))
+            }
+            case None => Nil
         }
+    }
+
+    def virtualCurrencyExists(currencyName: String, applicationName: String): Boolean = {
+        existsDocumentInArray("virtualCurrencies", "name", currencyName, applicationName)
     }
 }

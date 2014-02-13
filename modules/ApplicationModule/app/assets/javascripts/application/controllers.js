@@ -3,7 +3,7 @@
 angular.module('ApplicationModule.controllers', ['ApplicationModule.services']).
   controller(
     'NewApplicationFormController',
-    ['$scope', '$location','createNewApplicationService', function($scope, $location, createNewApplicationService) {
+    ['$scope', '$location','createNewApplicationService', '$route', function($scope, $location, createNewApplicationService, $route) {
 
     $scope.applicationForm = {
       "name": "",
