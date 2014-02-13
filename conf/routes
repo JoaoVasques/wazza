@@ -4,6 +4,7 @@
 
 # Home page
 GET     /                           @controllers.Application.index
+GET		/dashboard					@controllers.Application.dashboard
 
 # Modules
 ->  /editor  editor.Routes
