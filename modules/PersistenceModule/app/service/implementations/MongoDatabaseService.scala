@@ -201,5 +201,10 @@ class MongoDatabaseService extends DatabaseService {
     val update = $set((arrayKey+".$." + elementId) -> model)
     this.collection.update(query, update)
   }
+
+  /** Database operations **/
+  def dropCollection(): Unit = {
+    collection.drop()
+  }
 }
 
