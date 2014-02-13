@@ -1,15 +1,29 @@
 
-angular.module('Wazza.controllers', ['ApplicationModule', 'Wazza.services', 'ItemModule', 'ngCookies', 'SecurityModule'])
+angular.module('Wazza.controllers', ['ApplicationModule', 'Wazza.services', 'ItemModule', 'ngCookies', 'SecurityModule', 'DashboardModule'])
 
 .controller('LoginController',[
-  '$scope', '$location', 'submitLoginCredentialsService', 'cookiesManagerService', '$rootScope', 'redirectToDashboardService',
-  function ($scope, $location, submitLoginCredentialsService, cookiesManagerService, $rootScope, redirectToDashboardService) {
+  '$scope',
+  '$location',
+  'submitLoginCredentialsService',
+  'cookiesManagerService',
+  '$rootScope',
+  'redirectToDashboardService',
+  'LoginLogoutService',
+  function (
+    $scope,
+    $location,
+    submitLoginCredentialsService,
+    cookiesManagerService,
+    $rootScope, 
+    redirectToDashboardService,
+    LoginLogoutService
+    ) {
 
   $scope.canRedirectToDashboard = function(){
     redirectToDashboardService.execute().
       then(
         function(){
-          $rootScope.$broadcast("LoginSuccess", {});
+          LoginLogoutService.login();
           $location.path("/home");
         }
       );
@@ -32,7 +46,7 @@ angular.module('Wazza.controllers', ['ApplicationModule', 'Wazza.services', 'Ite
 
   $scope.handleLoginSuccess = function(success){
     cookiesManagerService.set('PLAY2AUTH_SESS_ID', success.data.authToken);
-    $rootScope.$broadcast("LoginSuccess", {});
+    LoginLogoutService.login();
     $location.path(success.data.url);
   };
 
@@ -45,49 +59,87 @@ angular.module('Wazza.controllers', ['ApplicationModule', 'Wazza.services', 'Ite
   $scope.signIn = function(){
     submitLoginCredentialsService.execute($scope.loginForm).
       then(
-        function(success){
-          $scope.handleLoginSuccess(success);
-        },
-        function(error){
-          $scope.handleLoginFailure(error);
-        }
+        $scope.handleLoginSuccess,
+        $scope.handleLoginFailure
       );
   };
 }])
 
 .controller('NavBarController',[
-  '$scope', 'cookiesManagerService', '$http', '$location',
-  function ($scope, cookiesManagerService, $http, $location) {
+  '$scope',
+  'cookiesManagerService',
+  '$http',
+  '$location',
+  '$rootScope',
+  'LoginLogoutService',
+  'ItemSearchService',
+  'ApplicationStateService',
+  function (
+    $scope,
+    cookiesManagerService,
+    $http,
+    $location,
+    $rootScope,
+    LoginLogoutService,
+    ItemSearchService,
+    ApplicationStateService
+  ) {
 
     $scope.bootstrapModule = function(){
       $scope.sessionOn = false;
+      $scope.showNavBar = false;
+      $scope.applicationName = "";
+      $scope.$on("APPLICATION_NAME_UPDATED", function(){
+        $scope.applicationName = ApplicationStateService.applicationName;
+      });
+      $scope.$on("LOGIN_SUCCESS", function(event, data){
+        $scope.sessionOn = true;
+        $scope.showNavBar = true;
+      });
+
+      $scope.$on("LOGOUT_SUCCESS", function(event, url){
+        $scope.sessionOn = false;
+        $scope.showNavBar = false;
+        $location.path(url.value);
+      });
     };
     $scope.bootstrapModule();
 
-    $scope.$on("LoginSuccess", function(event, data){
-      $scope.sessionOn = true;
-    });
-
-    $scope.handleLogoutSuccess = function(data){
-      $scope.sessionOn = false;
-      $location.path(data.data);
-    };
-
-    $scope.handleLogoutFailure = function(error){
-      console.log("logout failure..");
-      /** todo **/
+    $scope.sendItemSearchEvent = function(){
+      ItemSearchService.updateSearchData($scope.itemName);
     };
 
     $scope.logout = function(){
-      $http.post("/logout")
-      .then(
-        function(success){
-          $scope.handleLogoutSuccess(success);
-        },
-        function(error){
-          $scope.handleLogoutFailure(error);
-        }
-      );
+      LoginLogoutService.logout();
     };
 }])
+
+.controller('SideBarController', [
+  '$scope',
+  '$location',
+  'ApplicationStateService',
+  function (
+    $scope,
+    $location,
+    ApplicationStateService
+  ) {
+    $scope.showSideBar = false;
+    $scope.applicationName = ""
+
+    $scope.bootstrapModule = function(){
+      $scope.$on("LOGIN_SUCCESS", function(event, data){
+        $scope.showSideBar = true;
+      });
+
+      $scope.$on("LOGOUT_SUCCESS", function(event, data){
+        $scope.showSideBar = false;
+      });
+
+      $scope.$on("APPLICATION_NAME_UPDATED", function(){
+        $scope.applicationName = ApplicationStateService.applicationName;
+      });
+    };
+    $scope.bootstrapModule();
+}])
+
 ;

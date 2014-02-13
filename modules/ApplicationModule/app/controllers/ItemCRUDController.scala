@@ -13,10 +13,12 @@ import scala.util.{Try, Success, Failure}
 import scala.concurrent._
 import ExecutionContext.Implicits.global
 import models.aws._
-import service.aws.definitions.{UploadFileService}
+import service.aws.definitions.{PhotosService}
 import play.api.libs.Files._
 import java.io.File
 import play.api.mvc.MultipartFormData._
+import play.api.libs.iteratee.Enumerator
+import scala.language.implicitConversions
 /** Uncomment the following lines as needed **/
 /**
 import play.api.Play.current
@@ -27,25 +29,21 @@ import java.util.concurrent._
 import scala.concurrent.stm._
 import akka.util.duration._
 import play.api.cache._
-import play.api.libs.json._
 **/
 
 class ItemCRUDController @Inject()(
     applicationService: ApplicationService,
     itemService: ItemService,
-    uploadFileService: UploadFileService
+    photosService: PhotosService
   ) extends Controller {
 
   private def generateErrors(value: String) = {
     BadRequest(Json.obj("errors" -> value))
   }
-  
-  def newItem(storeType: String) = Action { implicit request =>
-    if(applicationService.getApplicationyTypes.contains(storeType)){
-      Ok(views.html.newItem(storeType, List("Real", "Virtual")))
-    } else {
-      generateErrors("Unknown store type")
-    }
+
+  //TODO: add security
+  def newItem = Action { implicit request =>
+    Ok(views.html.newItem(List("Real", "Virtual")))
   }
 
   def newItemSubmit(applicationName: String) = Action.async(parse.multipartFormData) { implicit request =>
@@ -53,17 +51,28 @@ class ItemCRUDController @Inject()(
 
     result map {data =>
       data match {
-        case Success(s) => Ok
+        case Success(s) => {
+          val file = itemService.generateMetadataFile(s)
+          Ok.sendFile(
+            content = file,
+            fileName = _ => s"$s.name.csv"
+          )
+        }
         case Failure(f) => generateErrors(f.getMessage)
       }
     } recover {
-      case err: S3Failed => generateErrors("Problem uploading image to server")
-      case err: Exception => generateErrors((if(err.getMessage != null) err.getMessage else err.getCause.getMessage))
+      case err: S3Failed => {
+        generateErrors("Problem uploading image to server")
+      }
+      case err: Exception => {
+        println("exception: " + err.getCause.getMessage)
+        generateErrors((if(err.getMessage != null) err.getMessage else err.getCause.getMessage))
+      }
     }
   }
 
   def uploadImage() = Action.async(parse.multipartFormData) { implicit request =>
-    val imageUploadResult = uploadFileService.upload(request.body.files.head)
+    val imageUploadResult = photosService.upload(request.body.files.head)
 
     imageUploadResult map { photoResult =>
       Ok(photoResult.toJson)
@@ -71,6 +80,17 @@ class ItemCRUDController @Inject()(
       case error => {
         generateErrors(error.getCause.getMessage)
       }
+    }
+  }
+
+  def deleteItem(itemId: String) = Action.async(parse.json) { implicit request =>
+    val applicationName = (request.body \ "appName").as[String]
+    val imageName = (request.body \ "image").as[String]
+    val result = applicationService.deleteItem(itemId, applicationName, imageName)
+    result map {res =>
+      Ok(itemId)
+    } recover {
+      case err: Exception => generateErrors("Problem deleting item")
     }
   }
 

@@ -1,0 +1,13 @@
+@(
+  itemId: String,
+  publishState: String,
+  purchaseType: String,
+  autoTranslate: Boolean,
+  locale: List[models.application.GoogleTranslations],
+  title: String,
+  description: String,
+  autofill: Boolean,
+  countries: List[String],
+  price: Int
+)
+@itemId,@publishState,@purchaseType,@autoTranslate,@for(l <- locale){@l.locale;@l.title;@l.description;},@if(!autofill){FALSE}else{TODO},@if(countries.size == 1){@countries.head}else{for(country <- countries){country,}};@price

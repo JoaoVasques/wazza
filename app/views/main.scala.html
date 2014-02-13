@@ -3,6 +3,7 @@
 <!DOCTYPE html>
 
 @javascripts = {
+<<<<<<< HEAD
 <script src="@routes.WebJarAssets.at(WebJarAssets.locate("1.2.6/angular.js"))"></script>
 <script src="@routes.WebJarAssets.at(WebJarAssets.locate("1.2.6/angular-route.js"))"></script>
 <script src="@routes.WebJarAssets.at(WebJarAssets.locate("1.2.6/angular-cookies.min.js"))"></script>
@@ -10,6 +11,11 @@
 
 <script src='@routes.WebJarAssets.at(WebJarAssets.locate("bootstrap.js"))' ></script>
 <script src='@routes.WebJarAssets.at(WebJarAssets.locate("jquery.min.js"))' ></script>
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+
+<script src="@routes.WebJarAssets.at(WebJarAssets.locate("0.10.0/ui-bootstrap.min.js"))"></script>
+<script src="@routes.WebJarAssets.at(WebJarAssets.locate("0.10.0/ui-bootstrap-tpls.min.js"))"></script>
 
 <script src="@routes.Assets.at("javascripts/angular-file-upload.min.js")"></script>
 <script src="@routes.Assets.at("javascripts/angular-file-upload-html5-shim.min.js")"></script>
@@ -33,12 +39,19 @@
 
 <script src="@controllers.security.routes.Assets.at("javascripts/securityModule.js")"></script>
 <script src="@controllers.security.routes.Assets.at("javascripts/services.js")"></script>
+
+
+  @views.html.dashboardJavascripts.render()
+
 }
 
 @stylesheets = {
 <link rel="stylesheet" media="screen" href="@routes.WebJarAssets.at(WebJarAssets.locate("bootstrap.min.css"))">
 <link rel="shortcut icon" type="image/png" href="@routes.Assets.at("images/favicon.png")">
 <link rel="stylesheet" type="text/css" media="screen" href="@routes.Assets.at("stylesheets/main.css")"> 
+  <link rel="stylesheet" href="@routes.Assets.at("stylesheets/item.css")" type="text/css">
+  <link rel="stylesheet" href="@routes.Assets.at("stylesheets/sidebar.css")" type="text/css">
+
 }
 
 <html ng-app="Wazza">
@@ -96,16 +109,23 @@
 
 <section id="main">
 
-  @views.html.navigationBar.render()
-  <div class="container">
-    <div class="row">
-      <div class="span12">
-        <div ng-view></div>
+    <div id="wrapper">
+      @views.html.sidebar.render()
+      @views.html.navigationBar.render()
+      <div id="page-content-wrapper">
+        <div class="page-content inset">
+          <div class="row">
+              <div class="col-md-12">
+                <div ng-view></div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
 
   content
+
+
 </section>
 
 
@@ -137,5 +157,12 @@
 </div><!-- /.modal -->
 
 </body>
+
+<script type="text/javascript">
+  $("#menu-toggle").click(function(e) {
+          e.preventDefault();
+          $("#wrapper").toggleClass("active");
+  });
+</script>
 
 </html>

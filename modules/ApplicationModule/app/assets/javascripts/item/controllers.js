@@ -1,9 +1,27 @@
 // item module
 
-angular.module('ItemModule.controllers', ['ItemModule.services', 'angularFileUpload']).
+angular.module('ItemModule.controllers', ['ItemModule.services', 'angularFileUpload', 'DashboardModule']).
   controller('NewItemController',[
-    '$scope', '$upload', 'createNewItemService', '$routeParams', '$location', 'getVirtualCurrenciesService',
-    function ($scope, $upload, createNewItemService, $routeParams, $location, getVirtualCurrenciesService) {
+    '$scope',
+    '$upload',
+    'createNewItemService',
+    '$routeParams',
+    '$location',
+    'getVirtualCurrenciesService',
+    'uploadPhotoService',
+    'ApplicationStateService',
+    'GetLanguagesService',
+    function (
+      $scope,
+      $upload,
+      createNewItemService,
+      $routeParams,
+      $location,
+      getVirtualCurrenciesService,
+      uploadPhotoService,
+      ApplicationStateService,
+      GetLanguagesService
+    ) {
 
     $scope.currencyOptions = ["Real","Virtual"];
     $scope.showCurrencyInputs = {
@@ -13,7 +31,7 @@ angular.module('ItemModule.controllers', ['ItemModule.services', 'angularFileUpl
 
     $scope.bootstrapModule = function(){
       $scope.itemForm = {
-        "applicationName": encodeURI($routeParams.applicationId),
+        "applicationName": ApplicationStateService.applicationName,
         "name": "",
         "description": "",
         "store": 1,
@@ -22,11 +40,11 @@ angular.module('ItemModule.controllers', ['ItemModule.services', 'angularFileUpl
           "title": "",
           "description": "",
           "publishedState": "published",
-          "purchaseType": 0,
-          "autoTranslate": true,
+          "purchaseType": "managed_by_publisher",
+          "autoTranslate": false,
           "locale": [],
-          "autofill": true,
-          "language": "English", //TODO: get default lang
+          "autofill": false,
+          "language": "", //TODO: get default lang
           "price": 0.0
         },
         "currency": {
@@ -35,7 +53,7 @@ angular.module('ItemModule.controllers', ['ItemModule.services', 'angularFileUpl
           "virtualCurrency": ""
         },
         "imageInfo": {
-          "name": "",
+          "imageName": "",
           "url": ""
         }
       };
@@ -47,13 +65,10 @@ angular.module('ItemModule.controllers', ['ItemModule.services', 'angularFileUpl
       $scope.virtualCurrencies = [];
       getVirtualCurrenciesService.execute($scope.itemForm.applicationName)
         .then(
-          function(success){
-            $scope.handleVirtualCurrencyRequestSuccess(success);
-          },
-          function(error){
-            $scope.handleVirtualCurrencyRequestError(error);
-          }
+          $scope.handleVirtualCurrencyRequestSuccess,
+          $scope.handleVirtualCurrencyRequestError
         );
+      $scope.itemForm.metadata.language = _.first(GetLanguagesService.languageOptions());
       $scope.$watch('itemForm.currency.typeOf', function(newValue, oldValue, scope){
         if (newValue == "Real") {
           $scope.showCurrencyInputs.real = true;
@@ -75,14 +90,10 @@ angular.module('ItemModule.controllers', ['ItemModule.services', 'angularFileUpl
     $scope.bootstrapModule();
 
     $scope.onFileSelect = function(files) {
-      createNewItemService.uploadPhoto(_.first(files))
+      uploadPhotoService.execute(_.first(files))
         .then(
-          function(success){
-            $scope.handlePhotoUploadSuccess(success);
-          },
-          function(errors){
-            console.log(errors);
-          }
+          $scope.handlePhotoUploadSuccess,
+          $scope.handlePhotoUploadError
         );
     }
 
@@ -106,12 +117,22 @@ angular.module('ItemModule.controllers', ['ItemModule.services', 'angularFileUpl
     };
 
     $scope.handlePhotoUploadSuccess = function(success) {
-      console.log(success.data);
       $scope.itemForm.imageInfo.url = success.data.url;
       $scope.itemForm.imageInfo.name = success.data.fileName;
     };
 
-    $scope.handleSuccess = function(){
+    $scope.handlePhotoUploadError = function(error) {
+      /** TODO **/
+      console.log(error);
+    }
+
+    $scope.handleSuccess = function(data){
+      console.log(data);
+      var hiddenElement = document.createElement('a');
+      hiddenElement.href = 'data:attachment/csv,' + encodeURI(data.data);
+      hiddenElement.target = '_blank';
+      hiddenElement.download = 'myFile.csv';
+      hiddenElement.click();
       $scope.errors = false;
       $scope.formErrors = [];
       $location.path("/home");
@@ -127,12 +148,8 @@ angular.module('ItemModule.controllers', ['ItemModule.services', 'angularFileUpl
     $scope.createItem = function(){
       createNewItemService.send($scope.itemForm, $scope.myFile)
         .then(
-          function(){
-            $scope.handleSuccess();
-          },
-          function(errors){
-            $scope.handleErrors(errors);
-          }
+          $scope.handleSuccess,
+          $scope.handleErrors
         );
     };
   }])

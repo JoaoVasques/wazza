@@ -6,6 +6,7 @@ import scala.concurrent.{ExecutionContext, Future}
 import ExecutionContext.Implicits.global
 import controllers.security._
 import service.security.definitions.{TokenManagerService}
+import com.google.inject._
 
 class Application extends Controller with Security{
 
@@ -15,9 +16,5 @@ class Application extends Controller with Security{
 
   def dashboard = Action {
   	Ok(views.html.dashboard("Your new application is ready."))
-  }
-
-  def home = HasToken() { token => userId => implicit request =>
-    Ok("TODO")
   }
 }

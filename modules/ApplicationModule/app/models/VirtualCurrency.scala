@@ -10,6 +10,7 @@ import com.mongodb.casbah.Imports._
 import se.radley.plugin.salat._
 import ApplicationMongoContext._
 import InAppPurchaseContext._
+import scala.language.implicitConversions
 
 case class VirtualCurrency(
   name: String,

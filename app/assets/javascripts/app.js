@@ -2,7 +2,7 @@
 
 
 // Declare app level module which depends on filters, and services
-angular.module('Wazza', ['ngRoute', 'Wazza.controllers', 'ItemModule', 'UserModule', 'SecurityModule']).
+angular.module('Wazza', ['ngRoute', 'Wazza.controllers', 'ItemModule', 'UserModule', 'SecurityModule', 'DashboardModule']).
   config([ '$routeProvider', '$locationProvider' , function($routeProvider, $locationProvider) {
     $routeProvider
       .when('/', {
@@ -10,9 +10,13 @@ angular.module('Wazza', ['ngRoute', 'Wazza.controllers', 'ItemModule', 'UserModu
         controller: 'LoginController'
       })
       .when('/home', {
-        templateUrl: '/homedashboard',
-        controller: ''
+        templateUrl: '/dashboard',
+        controller: 'DashboardController'
       })
+      .when('/analytics', {
+        templateUrl: '/dashboard/analytics',
+        controller: ''
+      })      
       .when('/register', {
         templateUrl: '/user/register',
         controller: 'UserRegistrationController'
@@ -21,8 +25,8 @@ angular.module('Wazza', ['ngRoute', 'Wazza.controllers', 'ItemModule', 'UserModu
         templateUrl : '/app/new',
         controller : ''
       })
-      .when('/item/create/:applicationId', {
-        templateUrl: '/app/item/new/Android',
+      .when('/item/create', {
+        templateUrl: '/app/item/new/',
         controller: 'NewItemController'
       });
 
