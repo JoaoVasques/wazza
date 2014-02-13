@@ -18,7 +18,7 @@ class MongoDatabaseServiceTest  extends Specification {
 
   "MongoDB Basic operations" should {
     running(FakeApplication()) {
-      databaseService.init(uri, "users")
+      databaseService.init(uri, "persistence")
       val user = Json.obj("email" -> "test@gmail.com", "name" -> "test", "applications" -> List[JsObject]())
 
       "Insert" in  {
@@ -103,6 +103,7 @@ class MongoDatabaseServiceTest  extends Specification {
           el
         )
 
+        databaseService.dropCollection()
         res must equalTo(true)
       }
     }
