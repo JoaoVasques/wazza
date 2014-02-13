@@ -32,13 +32,23 @@ trait DatabaseService {
     Array operations
   **/
 
-  def existsInArray(docIdKey: String, docIdValue: String, arrayKey: String, elementKey: String, elementValue: String): Boolean
+  def existsInArray[T <: Any](docIdKey: String, docIdValue: String, arrayKey: String, elementValue: T): Boolean
 
-  def getElementFromArray(docIdKey: String, docIdValue: String, arrayKey: String, elementKey: String, elementValue: Any): Option[JsValue]
+  def getElementFromArray[T <: Any](docIdKey: String, docIdValue: String, arrayKey: String, elementValue: T): Option[JsValue]
 
   def addElementToArray[T <: Any](docIdKey: String, docIdValue: Any, arrayKey: String, model: T): Try[Unit]
 
   def deleteElementFromArray[T <: Any](docIdKey: String, docIdValue: Any, arrayKey: String, m: T): Try[Unit]
 
+  def updateElementOnArray[T <: Any](
+    docIdKey: String,
+    docIdValue: String,
+    arrayKey: String,
+    elementId: String,
+    elementIdValue: String,
+    m: T
+  ): Try[Unit]
+
 }
+
 

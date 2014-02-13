@@ -102,21 +102,25 @@ class MongoDatabaseService extends DatabaseService {
     Array operations
   **/
 
-  def existsInArray(docIdKey: String, docIdValue: String, arrayKey: String, elementKey: String, elementValue: String): Boolean = {
-    this.getElementFromArray(docIdKey, docIdValue, arrayKey, elementKey, elementValue) match {
+  def existsInArray[T <: Any](docIdKey: String, docIdValue: String, arrayKey: String, elementValue: T): Boolean = {
+    this.getElementFromArray[T](docIdKey, docIdValue, arrayKey, elementValue) match {
       case Some(_) => true
       case None => false
     }
   }
  
-  def getElementFromArray(docIdKey: String, docIdValue: String, arrayKey: String, elementKey: String, elementValue: Any): Option[JsValue] = {
+  def getElementFromArray[T <: Any](docIdKey: String, docIdValue: String, arrayKey: String, elementValue: T): Option[JsValue] = {
 
     val element = elementValue match {
-      case j: JsObject => convertJsonToDBObject(j)
-      case _ => elementValue
+      case j: JsObject => {
+       arrayKey $in List(convertJsonToDBObject(j))
+      }
+      case s: String => {
+        arrayKey $in List(s)
+      }
     }
 
-    val query = MongoDBObject(docIdKey -> docIdValue, s"$arrayKey.$elementKey" -> element)
+    val query = element ++ MongoDBObject(docIdKey -> docIdValue)
     val projection = MongoDBObject(arrayKey -> 1)
     this.collection.findOne(query, projection) match {
       case Some(obj) => {
@@ -151,6 +155,27 @@ class MongoDatabaseService extends DatabaseService {
     }
 
     val update = $pull(arrayKey -> model)
+    this.collection.update(query, update)
+  }
+
+  def updateElementOnArray[T <: Any](
+    docIdKey: String,
+    docIdValue: String,
+    arrayKey: String,
+    elementId: String,
+    elementIdValue: String,
+    m: T
+  ): Try[Unit] = {
+
+    val model = m match {
+      case j: JsObject => {
+        convertJsonToDBObject(j)
+      }
+      case _ => m
+    }
+
+    val query = MongoDBObject(docIdKey -> docIdValue, s"$arrayKey.$elementId" -> elementIdValue)
+    val update = $set((arrayKey+".$." + elementId) -> model)
     this.collection.update(query, update)
   }
 }

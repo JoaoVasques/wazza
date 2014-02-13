@@ -77,13 +77,29 @@ class MongoDatabaseServiceTest  extends Specification {
           case Failure(_) => false
         }
 
-        val r = databaseService.existsInArray("email", "test@gmail.com", "applications", "name", "app test")
+        val r = databaseService.existsInArray[JsObject]("email", "test@gmail.com", "applications", el)
         res must equalTo(true)
         r must equalTo(true)
       }
 
+      "Update" in {
+        val res = databaseService.updateElementOnArray[String](
+         "email",
+          "test@gmail.com",
+          "applications",
+          "name",
+          "app test",
+          "app test 3"
+        ) match {
+          case Success(_) => true
+          case Failure(_) => false
+        }
+
+        res must equalTo(true)
+      }
+
       "Delete" in {
-        val res = databaseService.deleteElementFromArray(
+        val res = databaseService.deleteElementFromArray[JsObject](
           "email",
           "test@gmail.com",
           "applications",
@@ -93,11 +109,14 @@ class MongoDatabaseServiceTest  extends Specification {
           case Failure(_) => false
         }
 
-        res must equalTo(true)
-      }
+        val element = databaseService.getElementFromArray[JsObject](
+          "email",
+          "test@gmail.com",
+          "applications",
+          el
+        )
 
-      "Update" in {
-        true must equalTo(true)
+        res must equalTo(true)
       }
     }
   }
