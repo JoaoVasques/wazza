@@ -8,7 +8,7 @@ import scala.util.Failure
 import scala.util.Success
 import com.google.inject._
 import service.persistence.implementations.MongoDatabaseService
-import service.user.implementations.UserService2Impl
+import service.user.implementations.{UserServiceImpl}
 import models.user.{User}
 
 class  UserServiceTest extends Specification { 
@@ -27,7 +27,7 @@ class  UserServiceTest extends Specification {
       val uri = "mongodb://localhost:27017/wazza-test"
       val mongoDBService = new MongoDatabaseService
       mongoDBService.init(uri, "users")
-      val userService = new UserService2Impl(mongoDBService)
+      val userService = new UserServiceImpl(mongoDBService)
 
       "Insert and Find" in {
         val user = new User(

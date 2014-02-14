@@ -23,6 +23,13 @@ class ApplicationServiceImpl @Inject()(
 
     databaseService.init(databaseService.ApplicationCollection)
 
+    private implicit def convertItemToJsObject(item: Item): JsObject = {
+      Json.toJson(item) match {
+        case i: JsObject => i
+        case _ => null //throw excpetion later on..
+      }
+    }
+
     def createFailure[A](error: String): Failure[A] = {
         new Failure(new Exception(error))
     }
@@ -42,7 +49,7 @@ class ApplicationServiceImpl @Inject()(
       if(databaseService.exists(WazzaApplication.Key, application.name)) {
         databaseService.delete(application)
       } else {
-        createFailure[Unit]("Application " + application.name + " does not exists")
+        createFailure[Unit](s"Application ${application.name}  does not exists")
       }
     }
 
@@ -70,10 +77,7 @@ class ApplicationServiceImpl @Inject()(
         WazzaApplication.Key,
         applicationName,
         WazzaApplication.ItemsId,
-        Json.toJson(item) match {
-          case i: JsObject => i
-          case _ => null //throw excpetion later on..
-        }
+        item
       ) match {
         case Success(_) => Success(item)
         case Failure(f) => Failure(f)
@@ -88,7 +92,10 @@ class ApplicationServiceImpl @Inject()(
         itemId
       ) match {
         case Some(i) => {
-          i.validate[Item].fol
+          i.validate[Item].fold(
+            valid = (it => Some(it)),
+            invalid = (_ => None)
+          )
         }
         case None => None
       }
@@ -102,36 +109,52 @@ class ApplicationServiceImpl @Inject()(
         }
     }
 
-    def itemExists(keyValue: String, applicationName: String, key: String = "name"): Boolean = {
-      false
+    def itemExists(itemName: String, applicationName: String): Boolean = {
+      this.getItem(itemName, applicationName) match {
+        case Some(_) => true
+        case _ => false
+      }
     }
 
     def deleteItem(itemId: String, applicationName: String, imageName: String): Future[Unit] = {
-        val promise = Promise[Unit]
-        /**val result = deleteDocumentFromArra("items", "_id", itemId, applicationName)
-        result match {
+      val promise = Promise[Unit]
+      val item = this.getItem(itemId, applicationName) match {
+        case Some(item) => {
+          databaseService.deleteElementFromArray(
+            WazzaApplication.Key,
+            applicationName,
+            WazzaApplication.ItemsId,
+            item
+          ) match {
             case Success(_) => {
-                photoService.delete(imageName) map {res =>
-                    promise.success()
-                } recover {
-                    case err: Exception => promise.failure(err)
-                }
+              photoService.delete(imageName) map {res =>
+                promise.success()
+              } recover {
+                case err: Exception => promise.failure(err)
+              }
             }
-            case Failure(failure) => promise.failure(failure)
-        }**/
-        promise.future
+            case Failure(f) => promise.failure(f)
+          }
+        }
+        case _ => promise.failure(new Exception("Item does not exist"))
+      }
+      promise.future
     }
+
+  /**
+    TO BE IMPLEMENTED
+  **/
 
     def addVirtualCurrency(currency: VirtualCurrency, applicationName: String): Try[VirtualCurrency] = {
       null
     }
   
     def deleteVirtualCurrency(currencyName: String, applicationName: String): Try[Unit] = {
-        null
+      null
     }
 
     def getVirtualCurrency(currencyName: String, applicationName: String): Option[VirtualCurrency] = {
-        null
+      null
     }
 
     def getVirtualCurrencies(applicationName: String): List[VirtualCurrency] = {
@@ -139,6 +162,6 @@ class ApplicationServiceImpl @Inject()(
     }
 
     def virtualCurrencyExists(currencyName: String, applicationName: String): Boolean = {
-        false
+      false
     }
 }
