@@ -37,27 +37,14 @@ class  UserServiceTest extends Specification {
           UserData.company,
           UserData.applications
         )
-
-        val res = userService.insertUser(user) match {
-          case Success(_) => true
-          case Failure(_) => false
-        }
-
-        val exists = userService.exists(UserData.email)
-
-        ( res && exists)  must equalTo(true)
+        userService.insertUser(user) must equalTo(Success())
+        userService.exists(UserData.email) must equalTo(true)
       }
 
       "Applications operations" in {
-
         val applicationId = "Application 1"
-        val res = userService.addApplication(UserData.email, applicationId) match {
-          case Success(_) => true
-          case Failure(_) => false
-        }
-
-        val exists = userService.getApplications(UserData.email).contains(applicationId)
-        (res && exists) must equalTo(true)
+        userService.addApplication(UserData.email, applicationId) must equalTo(Success())
+        userService.getApplications(UserData.email) must equalTo(List(applicationId))
       }
 
       "User authentication" in {
