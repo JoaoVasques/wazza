@@ -2,8 +2,8 @@ package controllers.api
 
 import com.google.inject._
 import models.application.Item
-import models.application.{PurchaseInfo}
-import models.application.{LocationInfo}
+import models.application.LocationInfo
+import models.application.PurchaseInfo
 import play.api._
 import play.api.libs.json.JsError
 import play.api.libs.json.JsSuccess

@@ -1,35 +1,46 @@
 package service.application.implementations
 
-import com.mongodb.casbah.commons.MongoDBObject
-import models.application.PurchaseInfo
+import play.api.libs.json._
+import play.api.libs.functional.syntax._
 import service.application.definitions.{PurchaseService}
-import com.novus.salat._
-import com.novus.salat.dao._
-import com.mongodb.casbah.Imports._
-import se.radley.plugin.salat._
-import scala.util.{Try, Success, Failure}
+import models.application.{PurchaseInfo}
+import scala.util.Try
+import com.google.inject._
+import service.persistence.definitions.DatabaseService
 
-class PurchaseServiceImpl extends PurchaseService {
+class PurchaseServiceImpl @Inject()(
+  databaseService: DatabaseService
+) extends PurchaseService {
 
-  private val dao = PurchaseInfo.getDAO
+  private val PurchaseId = "id"
+
+  databaseService.init(PurchaseInfo.PurchaseCollection)
 
   def save(info: PurchaseInfo): Try[Unit] = {
-    if(exist(info.itemId)) {
-      Failure(new Exception("Purchase already exists"))
-    } else {
-     dao.insert(info)
-     new Success()
-    }
+    databaseService.insert(Json.toJson(info))
   }
 
   def get(id: String): Option[PurchaseInfo] = {
-    dao.findOne(MongoDBObject("_id" -> id))
+    databaseService.get(PurchaseId, id) match {
+      case Some(purchase) => {
+        purchase.validate[PurchaseInfo].fold(
+          valid = (p => Some(p)),
+          invalid = (_ => None)
+        )
+      }
+      case None => None
+    }
   }
 
   def exist(id: String): Boolean = {
-    get(id) match {
+    this.get(id) match {
       case Some(_) => true
       case None => false
     }
   }
+
+  def delete(info: PurchaseInfo): Try[Unit] = {
+    databaseService.delete(Json.toJson(info))
+  }
 }
+
