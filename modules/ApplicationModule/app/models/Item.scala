@@ -1,27 +1,9 @@
 package models.application
 
-import play.api.Play.current
 import play.api.libs.json._
-import java.util.Date
-import com.novus.salat._
-import com.novus.salat.annotations._
-import com.novus.salat.dao._
-import com.mongodb.casbah.Imports._
-import se.radley.plugin.salat._
-import ApplicationMongoContext._
-import InAppPurchaseContext._
 import scala.language.implicitConversions
-
-case class Item(
-  @Key("_id") name: String,
-  description: String,
-  store: Int,
-  metadata: InAppPurchaseMetadata,
-  currency: Currency,
-  imageInfo: ImageInfo,
-  override val elementId: String = "_id",
-  override val attributeName: String = "items"
-) extends ApplicationList
+import play.api.libs.functional.syntax._
+import InAppPurchaseContext._
 
 case class Currency(
   typeOf: Int, //virtual or real money
@@ -29,27 +11,82 @@ case class Currency(
   virtualCurrency: Option[String]
 )
 
+object Currency {
+
+  implicit val reader = (
+    (__ \ "typeOf").read[Int] and
+    (__ \ "value").read[Double] and
+    (__ \ "virtualCurrency").readNullable[String]
+  )(Currency.apply _)
+
+  implicit val writer = (
+    (__ \ "typeOf").write[Int] and
+    (__ \ "value").write[Double] and
+    (__ \ "virtualCurrency").writeNullable[String]
+  )(unlift(Currency.unapply))
+}
+
 case class ImageInfo(
   name: String,
   url: String
 )
 
-object Item extends ModelCompanion[Item, ObjectId] {
+object ImageInfo {
 
-  val dao = new SalatDAO[Item, ObjectId](mongoCollection("applications")){}
+  implicit val reader = (
+    (__ \ "name").read[String] and
+    (__ \ "url").read[String]
+  )(ImageInfo.apply _)
 
-  def getDAO = dao
+  implicit val writer = (
+    (__ \ "name").write[String] and
+    (__ \ "url").write[String]
+  )(unlift(ImageInfo.unapply))
+}
 
+case class Item(
+  name: String,
+  description: String,
+  store: Int,
+  metadata: InAppPurchaseMetadata,
+  currency: Currency,
+  imageInfo: ImageInfo
+)
+
+object Item  {
+
+  lazy val ElementId = "name"
+  lazy val AttributeName = "items"
+
+  implicit val reader = (
+    (__ \ "name").read[String] and
+    (__ \ "description").read[String] and
+    (__ \ "store").read[Int] and
+    (__ \ "metadata").read[InAppPurchaseMetadata] and
+    (__ \ "currency").read[Currency] and
+    (__ \ "imageInfo").read[ImageInfo]
+  )(Item.apply _)
+
+  implicit val writer = (
+    (__ \ "name").write[String] and
+      (__ \ "description").write[String] and
+      (__ \ "store").write[Int] and
+      (__ \ "metadata").write[InAppPurchaseMetadata] and
+      (__ \ "currency").write[Currency] and
+      (__ \ "imageInfo").write[ImageInfo]
+
+  )(unlift(Item.unapply))
+    
+  /**
   implicit def buildFromJson(obj: Option[JsValue]): Option[Item] = {
     obj match {
       case Some(item) => {
         Some(new Item(
-          (item \ "_id").as[String],
           (item \ "description").as[String],
           (item \ "store").as[Int],
           (item \ "metadata"),
-          (item \ "currency"),
-          (item \ "imageInfo")
+          (item \ "currency").validate[Currency],
+          (item \ "imageInfo").validate[ImageInfo]
         ))
       }
       case None => None 
@@ -62,4 +99,6 @@ object Item extends ModelCompanion[Item, ObjectId] {
       (json \ "url").as[String]
     )
   }
+    * */
 }
+

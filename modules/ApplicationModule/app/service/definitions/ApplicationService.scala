@@ -10,7 +10,7 @@ trait ApplicationService {
 
   def insertApplication(application: WazzaApplication): Try[WazzaApplication]
 
-  def deleteApplication(name: String): Try[WazzaApplication]
+  def deleteApplication(name: WazzaApplication): Try[Unit]
 
   def exists(name: String): Boolean
 
