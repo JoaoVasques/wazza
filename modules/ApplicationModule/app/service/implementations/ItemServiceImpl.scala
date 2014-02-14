@@ -24,7 +24,6 @@ class ItemServiceImpl @Inject()(
 	applicationService: ApplicationService
 ) extends ItemService {
 	
-	private val dao = Item.getDAO
 	private lazy val MultiplyDelta = 1000000
 
 	def createGooglePlayItem(
@@ -238,10 +237,11 @@ class ItemServiceImpl @Inject()(
        case TemporaryFile(file) => file
     }
   }
-
+/**
   private implicit def convertStringListToCountryInfo(lst: List[String]): List[CountryInfo] = {
   	lst.map((el: String) => {
   		new CountryInfo(el)
   	})
   }
+  **/
 }
