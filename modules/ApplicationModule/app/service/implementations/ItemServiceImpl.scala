@@ -237,11 +237,5 @@ class ItemServiceImpl @Inject()(
        case TemporaryFile(file) => file
     }
   }
-/**
-  private implicit def convertStringListToCountryInfo(lst: List[String]): List[CountryInfo] = {
-  	lst.map((el: String) => {
-  		new CountryInfo(el)
-  	})
-  }
-  **/
 }
+
