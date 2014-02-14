@@ -1,22 +1,36 @@
 package models.application
 
-import play.api.libs.json._
 import java.util.Date
-import com.novus.salat._
-import com.novus.salat.annotations._
-import com.novus.salat.dao._
-import com.mongodb.casbah.Imports._
-import se.radley.plugin.salat._
-import scala.reflect.runtime.universe._
+import play.api.Play.current
+import play.api.libs.json._
 import scala.language.implicitConversions
 import play.api.libs.functional.syntax._
 
-@Salat
 trait InAppPurchaseMetadata {
   def osType: String
   def itemId: String
   def title: String
   def description: String
+}
+
+case class GoogleTranslations(
+  locale: String,
+  title: String,
+  description: String
+)
+
+object GoogleTranslations {
+  implicit val reader = (
+    (__ \ "locale").read[String] and
+    (__ \ "title").read[String] and
+    (__ \ "description").read[String]
+  )(GoogleTranslations.apply _)
+
+  implicit val write = (
+    (__ \ "locale").write[String] and
+    (__ \ "title").write[String] and
+    (__ \ "description").write[String]
+  )(unlift(GoogleTranslations.unapply))
 }
 
 case class GoogleMetadata(
@@ -31,19 +45,43 @@ case class GoogleMetadata(
   autofill: Boolean,
   language: String,
   price: Double,
-  countries: List[CountryInfo]
+  countries: List[String]
 
 ) extends InAppPurchaseMetadata
 
-case class CountryInfo(
-  name: String
-)
+object GoogleMetadata {
 
-case class GoogleTranslations(
-  locale: String,
-  title: String,
-  description: String
-)
+  implicit val reader = (
+    (__ \ "name").read[String] and
+    (__ \ "itemId").read[String] and
+    (__ \ "title").read[String] and
+    (__ \ "description").read[String] and
+    (__ \ "publishedState").read[String] and
+    (__ \ "purchaseType").read[String] and
+    (__ \ "autoTranslate").read[Boolean] and
+    (__ \ "locale").read[List[GoogleTranslations]] and
+    (__ \ "autofill").read[Boolean] and
+    (__ \ "language").read[String] and
+    (__ \ "price").read[Double] and
+    (__ \ "countries").read[List[String]]
+  )(GoogleMetadata.apply _)
+
+  implicit val writer = (
+    (__ \ "name").write[String] and
+    (__ \ "itemId").write[String] and
+    (__ \ "title").write[String] and
+    (__ \ "description").write[String] and
+    (__ \ "publishedState").write[String] and
+    (__ \ "purchaseType").write[String] and
+    (__ \ "autoTranslate").write[Boolean] and
+    (__ \ "locale").write[List[GoogleTranslations]] and
+    (__ \ "autofill").write[Boolean] and
+    (__ \ "language").write[String] and
+    (__ \ "price").write[Double] and
+    (__ \ "countries").write[List[String]]
+  )(unlift(GoogleMetadata.unapply))
+
+}
 
 case class AppleMetadata(
   override val osType: String,
@@ -90,6 +128,26 @@ case class AppleDurationProperties(
 
 object InAppPurchaseMetadata {
 
+  lazy val Android = "android"
+  lazy val IOS = "ios" 
+
+  implicit object metadataWrite extends Writes[InAppPurchaseMetadata] {
+    def writes(iap: InAppPurchaseMetadata) = iap match {
+      case google: GoogleMetadata => Json.toJson(iap)
+      case apple: AppleMetadata => null
+    }
+  }
+  
+  implicit object metadataRead extends Reads[InAppPurchaseMetadata] {
+    def reads(json: JsValue) = {
+      (json \ "osType").as[String] match {
+        case Android => json.validate[GoogleMetadata]
+        case IOS => null
+      }
+    }
+  }
+
+  /**
   def buildJson(metadata: InAppPurchaseMetadata): JsValue = {
     metadata match {
       case google: GoogleMetadata => {
@@ -116,6 +174,7 @@ object InAppPurchaseMetadata {
       case _ => null
     }
   }
+  **/
 
   val LanguageCodes = Map(
     "Chinese" ->    "zh_TW",
@@ -142,6 +201,8 @@ object InAppPurchaseMetadata {
 
 package object InAppPurchaseContext {
 
+  import java.util.Date
+
   // Stores Info
   lazy val GoogleStoreId = 0
   lazy val AppleStoreId = 1
@@ -156,7 +217,7 @@ package object InAppPurchaseContext {
   lazy val ManagedProduct = 0
   lazy val Subscription = 1
   lazy val UnManaged = 2
-
+/**
   implicit def jsonToMetadata(obj: JsValue): InAppPurchaseMetadata = {
     val metadataType = (obj \ "_t").as[String]
     if(metadataType == GoogleMetadataType){
@@ -172,7 +233,7 @@ package object InAppPurchaseContext {
         (obj \ "autofill").as[Boolean],
         (obj \ "language").as[String],
         (obj \ "price").as[Double],
-        (obj \ "country")
+        (obj \ "country").as[List[String]]
       )
     } else {
       new AppleMetadata(
@@ -187,6 +248,7 @@ package object InAppPurchaseContext {
       )
     }
   }
+  *
 
   implicit def jsonToCurrency(obj: JsValue): Currency = {
     new Currency(
@@ -211,6 +273,7 @@ package object InAppPurchaseContext {
     }
   }
 
+  
   implicit def jsonArrayToCountryInfo(obj: JsValue): List[CountryInfo] = {
     obj match {
       case JsArray(array) => {
@@ -259,4 +322,5 @@ package object InAppPurchaseContext {
       (obj \ "marketingIncentiveDuration").as[Date]
     )
   }
+  **/
 }

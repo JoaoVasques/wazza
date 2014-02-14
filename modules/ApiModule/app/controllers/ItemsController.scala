@@ -38,7 +38,7 @@ class ItemsController @Inject()(
   def getItemDetails(id: String, applicationName: String) = Action {implicit request =>
     val res = applicationService.getItem(id, applicationName)
     Ok(Json.obj(
-      "item" -> res.map{item => Json.parse(Item.toCompactJson(item))}
+      "item" -> ""// res.map{item => Json.parse(Item.toCompactJson(item))}
     ))
   }
   
