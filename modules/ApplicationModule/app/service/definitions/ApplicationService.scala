@@ -10,7 +10,7 @@ trait ApplicationService {
 
   def insertApplication(application: WazzaApplication): Try[WazzaApplication]
 
-  def deleteApplication(name: String): Try[WazzaApplication]
+  def deleteApplication(name: WazzaApplication): Try[Unit]
 
   def exists(name: String): Boolean
 
@@ -28,7 +28,7 @@ trait ApplicationService {
 
   def getItems(applicationName: String, offset: Int = 0): List[Item]
 
-  def itemExists(keyValue: String, applicationName: String, key: String = "name"): Boolean
+  def itemExists(item: String, applicationName: String): Boolean
 
   def deleteItem(itemId: String, applicationName: String, imageName: String): Future[Unit]
 

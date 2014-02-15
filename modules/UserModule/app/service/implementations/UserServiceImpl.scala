@@ -1,52 +1,68 @@
 package service.user.implementations
 
-import models.user._
-import service.user.definitions.UserService
-import com.mongodb.casbah.Imports._
-import play.api.data.validation._
+import models.user.{User}
 import org.mindrot.jbcrypt.BCrypt
-import scala.util.{Try, Success, Failure}
+import play.api.libs.json.Json
+import scala.util.Failure
+import scala.util.Try
+import service.user.definitions.{UserService}
+import com.google.inject._
+import service.persistence.definitions.{DatabaseService}
 
-class UserServiceImpl extends UserService {
+class UserServiceImpl @Inject()(
+  databaseService: DatabaseService
+) extends UserService {
 
-	private val usersCollection = WazzaUser.getDAO
+  databaseService.init("users")
 
-	def insertUser(user: WazzaUser) = {
-		user.password = BCrypt.hashpw(user.password, BCrypt.gensalt())
-		usersCollection.insert(user)
-	}
+  private val UserId = "email"
+  private val ApplicationsField = "applications"
 
-	def findBy(attribute: String, key: String): Option[WazzaUser] = {
-		usersCollection.findOne(MongoDBObject(attribute -> key))
-	}
+  def insertUser(user: User): Try[Unit] = {
+    user.password = BCrypt.hashpw(user.password, BCrypt.gensalt())
+    databaseService.insert(Json.toJson(user))
+  }
 
-	def exists(email: String): Boolean = {
-		! usersCollection.findOne(MongoDBObject("email" -> email)).isEmpty
-	}
+  def find(email: String): Option[User] = {
+    databaseService.get(UserId, email) match {
+      case Some(user) => {
+        user.validate[User].fold(
+          valid = (u => Some(u)),
+          invalid = (_ => None)
+        )
+      }
+      case None => None
+    }
+  }
 
-	def getApplications(email: String): List[String] = {
-		val maybeUser = findBy("email", email)
-		maybeUser match {
-			case Some(user) => user.applications
-			case None => Nil
-		}
-	}
+  def exists(email: String): Boolean = {
+    databaseService.exists(UserId, email)
+  }
 
-	def addApplication(email: String, applicationId: String): Try[Unit] = {
-		if(! exists(email)){
-			new Failure(new Exception("User does not exists"))
-		} else {
-			usersCollection.update(
-				MongoDBObject("email" -> email),
-				$push("applications" -> applicationId)
-			)
-			new Success
-		}
-	}
+  def deleteUser(user: User): Try[Unit] = {
+    databaseService.delete(Json.toJson(user))
+  }
 
-	def authenticate(email: String, password: String): Option[WazzaUser] = {
-		findBy("email", email).filter {
-			user => BCrypt.checkpw(password, user.password)
-		}
-	}
+  def addApplication(email: String, applicationId: String): Try[Unit] = {
+    if(! exists(email)) {
+      new Failure(new Exception("User does not exists"))
+    } else {
+      databaseService.addElementToArray[String](UserId, email, ApplicationsField, applicationId)
+    }
+  }
+
+  def getApplications(email: String): List[String] = {
+    this.find(email) match {
+      case Some(user) => user.applications
+      case None => Nil
+    }
+  }
+
+  def authenticate(email: String, password: String): Option[User] = {
+    this.find(email).filter {
+      user => BCrypt.checkpw(password, user.password)
+    }
+  }
 }
+
+

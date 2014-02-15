@@ -1,6 +1,6 @@
 package test.application
 
-import models.application.{LocationInfo2, PurchaseInfo2}
+import models.application.{LocationInfo, PurchaseInfo}
 import org.specs2.mutable._
 import play.api.test._
 import play.api.test.Helpers._
@@ -8,7 +8,7 @@ import play.mvc.Controller
 import scala.util.Failure
 import scala.util.Success
 import com.google.inject._
-import service.application.implementations.{PurchaseServiceImpl2}
+import service.application.implementations.{PurchaseServiceImpl}
 import service.persistence.implementations.{MongoDatabaseService}
 
 class PurchaseServiceTest extends Specification {
@@ -19,20 +19,20 @@ class PurchaseServiceTest extends Specification {
     val itemId = "itemId"
     val price = 1.99
     val time = "today"
-    val location = new LocationInfo2(1,2)
+    val location = new LocationInfo(1,2)
   }
 
-  private def initPurchaseService(): PurchaseServiceImpl2 = {
+  private def initPurchaseService(): PurchaseServiceImpl = {
     val uri = "mongodb://localhost:27017/wazza-test"
     val mongoDbService = new MongoDatabaseService
-    mongoDbService.init(uri, PurchaseInfo2.PurchaseCollection)
-    new PurchaseServiceImpl2(mongoDbService)
+    mongoDbService.init(uri, PurchaseInfo.PurchaseCollection)
+    new PurchaseServiceImpl(mongoDbService)
   }
 
   "Purchase Operations" should {
     running(FakeApplication()) {
       val purchaseService = initPurchaseService
-      val purchase = new PurchaseInfo2(
+      val purchase = new PurchaseInfo(
         PurchaseData.id,
         PurchaseData.applicationName,
         PurchaseData.itemId,

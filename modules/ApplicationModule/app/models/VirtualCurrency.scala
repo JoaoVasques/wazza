@@ -3,29 +3,31 @@ package models.application
 import play.api.Play.current
 import play.api.libs.json._
 import java.util.Date
-import com.novus.salat._
-import com.novus.salat.annotations._
-import com.novus.salat.dao._
-import com.mongodb.casbah.Imports._
-import se.radley.plugin.salat._
 import ApplicationMongoContext._
 import InAppPurchaseContext._
 import scala.language.implicitConversions
+import play.api.libs.functional.syntax._
 
 case class VirtualCurrency(
   name: String,
   price: Double,
-  inAppPurchaseMetadata: InAppPurchaseMetadata,
-  override val elementId: String = "name",
-  override val attributeName: String = "virtualCurrencies"
-) extends ApplicationList
+  inAppPurchaseMetadata: InAppPurchaseMetadata
+)
 
-object VirtualCurrency extends ModelCompanion[VirtualCurrency, ObjectId] {
+object VirtualCurrency {
 
-  val dao = new SalatDAO[VirtualCurrency, ObjectId](mongoCollection("applications")){}
+  implicit val reader = (
+    (__ \ "name").read[String] and
+    (__ \ "price").read[Double] and
+    (__ \ "inAppPurchaseMetadata").read[InAppPurchaseMetadata]
+  )(VirtualCurrency.apply _)
 
-  def getDAO = dao
-
+  implicit val writer = (
+    (__ \ "name").write[String] and
+    (__ \ "price").write[Double] and
+    (__ \ "inAppPurchaseMetadata").write[InAppPurchaseMetadata]
+  )(unlift(VirtualCurrency.unapply))
+/**
   def buildJson(vc: VirtualCurrency): JsValue = {
     Json.obj(
       "name" -> vc.name,
@@ -58,4 +60,5 @@ object VirtualCurrency extends ModelCompanion[VirtualCurrency, ObjectId] {
       )
     }).toList
   }
+  **/
 }
