@@ -129,12 +129,14 @@ case class AppleDurationProperties(
 object InAppPurchaseMetadata {
 
   lazy val Android = "android"
-  lazy val IOS = "ios" 
+  lazy val IOS = "ios"
 
   implicit object metadataWrite extends Writes[InAppPurchaseMetadata] {
-    def writes(iap: InAppPurchaseMetadata) = iap match {
-      case google: GoogleMetadata => Json.toJson(iap)
-      case apple: AppleMetadata => null
+    def writes(iap: InAppPurchaseMetadata) = {
+      iap match {
+        case google: GoogleMetadata => Json.toJson(google)
+        case apple: AppleMetadata => null
+      }
     }
   }
   
@@ -146,7 +148,7 @@ object InAppPurchaseMetadata {
       }
     }
   }
-
+  
   /**
   def buildJson(metadata: InAppPurchaseMetadata): JsValue = {
     metadata match {
@@ -217,110 +219,5 @@ package object InAppPurchaseContext {
   lazy val ManagedProduct = 0
   lazy val Subscription = 1
   lazy val UnManaged = 2
-/**
-  implicit def jsonToMetadata(obj: JsValue): InAppPurchaseMetadata = {
-    val metadataType = (obj \ "_t").as[String]
-    if(metadataType == GoogleMetadataType){
-      new GoogleMetadata(
-        (obj \ "osType").as[String],
-        (obj \ "itemId").as[String],
-        (obj \ "title").as[String],
-        (obj \ "description").as[String],
-        (obj \ "publishedState").as[String],
-        (obj \ "purchaseType").as[String],
-        (obj \ "autoTranslate").as[Boolean],
-        (obj \ "locale"),
-        (obj \ "autofill").as[Boolean],
-        (obj \ "language").as[String],
-        (obj \ "price").as[Double],
-        (obj \ "country").as[List[String]]
-      )
-    } else {
-      new AppleMetadata(
-        (obj \ "osType").as[String],
-        (obj \ "itemId").as[String],
-        (obj \ "title").as[String],
-        (obj \ "description").as[String],
-        (obj \ "productProperties"),
-        (obj \ "languageProperties"),
-        (obj \ "pricingProperties"),
-        (obj \ "languageProperties")
-      )
-    }
-  }
-  *
 
-  implicit def jsonToCurrency(obj: JsValue): Currency = {
-    new Currency(
-      (obj \ "typeOf").as[Int],
-      (obj \ "value").as[Double],
-      (obj \ "virtualCurrency").asOpt[String]
-    )
-  }
-
-  implicit def jsonArrayToLocale(obj: JsValue): List[GoogleTranslations] = {
-    obj match {
-      case JsArray(array) => {
-        array.map((element: JsValue) => {
-          new GoogleTranslations(
-              (element \ "locale").as[String],
-              (element \ "title").as[String],
-              (element \ "description").as[String]
-          )
-        }).toList
-      }
-      case _ => List[GoogleTranslations]()
-    }
-  }
-
-  
-  implicit def jsonArrayToCountryInfo(obj: JsValue): List[CountryInfo] = {
-    obj match {
-      case JsArray(array) => {
-        array.map((el: JsValue) => {
-          new CountryInfo(
-            (el \ "name").as[String]
-          )
-        }).toList
-      }
-      case _ => List[CountryInfo]()
-    }
-  }
-
-  implicit def jsonToAppleProductProperties(obj: JsValue): AppleProductProperties = {
-    new AppleProductProperties(
-      (obj \ "productType").as[Int],
-      (obj \ "status").as[String],
-      (obj \ "reviewNotes").as[String]
-    )
-  }
-
-  implicit def jsonToAppleLanguageProperties(obj: JsValue): AppleLanguageProperties = {
-    new AppleLanguageProperties(
-      (obj \ "language").as[String],
-      (obj \ "display").as[String],
-      (obj \ "description").as[String],
-      (obj \ "publicationName").as[String]
-    )
-  }
-
-  implicit def jsonToApplePricingProperties(obj: JsValue): ApplePricingProperties = {
-    new ApplePricingProperties(
-      (obj \ "clearedForSale").as[Boolean],
-      (obj \ "price").as[Double],
-      new PricingAvailability(
-        (obj \ "pricingAvailability" \ "begin").as[Date],
-        (obj \ "pricingAvailability" \ "end").as[Date]
-      )
-    )
-  }
-
-  implicit def jsonToAppleDurationProperties(obj: JsValue): AppleDurationProperties = {
-    new AppleDurationProperties(
-      (obj \ "autoRenewalDuration").as[Date],
-      (obj \ "freeTrialDuration").as[Date],
-      (obj \ "marketingIncentiveDuration").as[Date]
-    )
-  }
-  **/
 }
