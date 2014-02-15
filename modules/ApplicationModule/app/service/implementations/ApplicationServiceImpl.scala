@@ -30,9 +30,18 @@ class ApplicationServiceImpl @Inject()(
       }
     }
 
-    def createFailure[A](error: String): Failure[A] = {
-        new Failure(new Exception(error))
-    }
+   def createFailure[A](error: String): Failure[A] = {
+     new Failure(new Exception(error))
+   }
+
+  
+   def getApplicationyTypes: List[String] = {
+     WazzaApplication.applicationTypes
+   }
+
+   def getApplicationCountries(appName: String): List[String] = {
+     List("PT")
+   }
 
     def insertApplication(application: WazzaApplication): Try[WazzaApplication] = {
       if(! databaseService.exists(WazzaApplication.Key, application.name)) {
@@ -62,14 +71,6 @@ class ApplicationServiceImpl @Inject()(
 
     def find(name: String): Option[WazzaApplication] = {
       databaseService.get(WazzaApplication.Key, name)
-    }
-
-    def getApplicationyTypes: List[String] = {
-        WazzaApplication.applicationTypes
-    }
-
-    def getApplicationCountries(appName: String): List[String] = {
-        List("PT")
     }
 
     def addItem(item: Item, applicationName: String): Try[Item] = {
