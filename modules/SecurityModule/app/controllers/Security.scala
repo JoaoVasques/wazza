@@ -30,6 +30,7 @@ trait Security { self: Controller =>
   val AuthTokenUrlKey = "auth"
 
   /** Checks that a token is either in the header or in the query string */
+  //TODO: add support to async
   def HasToken[A](p: BodyParser[A] = parse.anyContent)(f: String => String => Request[A] => Result): Action[A] =
     Action(p) { implicit request =>
       val maybeToken = request.headers.get(AuthTokenHeader).orElse(request.getQueryString(AuthTokenUrlKey))

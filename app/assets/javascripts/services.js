@@ -1,23 +1,51 @@
 angular.module('Wazza.services', []).
   factory('submitLoginCredentialsService', ['$http', '$q', function($http, $q) {
-    return {
-      execute: function(loginData){
-        var request = $http.post("/login", loginData);
-        var deferred = $q.defer();
-        deferred.resolve(request);
-        return deferred.promise;
-      }
+    var service = {};
+
+    service.execute = function(loginData){
+      var request = $http.post("/login", loginData);
+      var deferred = $q.defer();
+      deferred.resolve(request);
+      return deferred.promise;
     };
+    return service;
   }]).
 
   factory('redirectToDashboardService', ['$http', '$q', function($http, $q) {
-    return {
-      execute: function(){
-        var request = $http.get("/homedashboard");
-        var deferred = $q.defer();
-        deferred.resolve(request);
-        return deferred.promise;
-      }
+    var service = {};
+
+    service.execute = function() {
+      var request = $http.get("/dashboard");
+      var deferred = $q.defer();
+      deferred.resolve(request);
+      return deferred.promise;
     };
+
+    return service;
+  }
+  ]).
+
+  factory('LoginLogoutService', ['$rootScope', '$http', function ($rootScope, $http) {
+    var service = {};
+
+    service.login = function(){
+      $rootScope.$broadcast("LOGIN_SUCCESS");
+    };
+
+    service.logout = function(logoutData){
+
+      var handleLogoutSuccess = function(logoutData){
+        $rootScope.$broadcast("LOGOUT_SUCCESS", {value: logoutData.data});
+      };
+
+      var handleLogoutFailure = function(data){
+        $rootScope.$broadcast("LOGOUT_ERROR", {value: data});
+      };
+
+      $http.post("/logout")
+      .then(handleLogoutSuccess, handleLogoutFailure);
+    };
+  
+    return service;
   }])
 ;

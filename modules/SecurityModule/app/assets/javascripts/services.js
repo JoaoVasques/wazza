@@ -1,7 +1,3 @@
 'use strict';
 
-angular.module('SecurityModule.services', []).
-
-factory('name', [function () {
-  return 'TODO';
-}]);
+angular.module('SecurityModule.services', []);

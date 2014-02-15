@@ -2,9 +2,12 @@ package service.application.definitions
 
 import models.application._
 import scala.util.Try
+import scala.concurrent._
 
 trait ApplicationService {
-  
+
+  protected lazy val ItemBatch = 10
+
   def insertApplication(application: WazzaApplication): Try[WazzaApplication]
 
   def deleteApplication(name: String): Try[WazzaApplication]
@@ -15,15 +18,19 @@ trait ApplicationService {
 
   def getApplicationyTypes: List[String]
 
+  def getApplicationCountries(appName: String): List[String]
+
   /** Item operations **/
 
   def addItem(item: Item, applicationName: String): Try[Item]
 
   def getItem(itemId: String, applicationName: String): Option[Item]
 
+  def getItems(applicationName: String, offset: Int = 0): List[Item]
+
   def itemExists(keyValue: String, applicationName: String, key: String = "name"): Boolean
 
-  def deleteItem(itemId: String, applicationName: String): Try[Unit]
+  def deleteItem(itemId: String, applicationName: String, imageName: String): Future[Unit]
 
   /** Virtual currency operations **/
 
