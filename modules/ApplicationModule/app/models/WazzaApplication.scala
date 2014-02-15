@@ -12,7 +12,6 @@ case class Credentials(
 )
 
 object Credentials {
-
   implicit val reader = (
     (__ \ "appId").read[String] and
     (__ \ "apiKey").read[String] and
@@ -42,13 +41,38 @@ object WazzaApplication {
   lazy val ItemsId = "items"
   lazy val VirtualCurrenciesId = "virtualCurrencies"
   lazy val applicationTypes = List("iOS", "Android")
-
 }
 
 package object WazzaApplicationImplicits {
 
-  private def buildList[T](jsonArray: JsArray): List[T] = {
-    List[T]()
+  private abstract class ListBuilder[T] {
+    def build(jsonArray: JsArray): List[T]
+  }
+
+  private implicit object ItemListBuilder extends ListBuilder[Item] {
+    def build(jsonArray: JsArray): List[Item] = {
+      jsonArray.value.map{(item: JsValue) =>
+        item.validate[Item].fold(
+          valid = {i => i},
+          invalid = {_ => null}
+        )
+      }.toList
+    }
+  }
+
+  private implicit object VirtualCurrencyListBuilder extends ListBuilder[VirtualCurrency] {
+    def build(jsonArray: JsArray): List[VirtualCurrency] = {
+      jsonArray.value.map {(vc: JsValue) =>
+        vc.validate[VirtualCurrency].fold(
+          valid = {i => i},
+          invalid = {_ => null}
+        )
+      }.toList
+    }
+  }
+
+  private def buildList[T](jsonArray: JsArray)(implicit builder: ListBuilder[T]): List[T] = {
+    builder.build(jsonArray)
   }
 
   implicit def buildFromJson(json: JsValue): WazzaApplication = {
@@ -58,7 +82,7 @@ package object WazzaApplicationImplicits {
       (json \ "imageName").as[String],
       (json \ "packageName").as[String],
       (json \ "appType").asOpt[String],
-      json.validate[Credentials].get,
+      (json \ "credentials").validate[Credentials].get,
       buildList[Item]((json \ "items").as[JsArray]),
       buildList[VirtualCurrency]((json \ "items").as[JsArray])
     )
@@ -79,8 +103,12 @@ package object WazzaApplicationImplicits {
       "packageName" -> application.packageName,
       "appType" -> application.appType,
       "credentials" -> Json.toJson(application.credentials),
-      "items" -> "",
-      "virtualCurrencies" -> ""
+      "items" -> JsArray(application.items.map{item =>
+        Json.toJson(item)
+      }),
+      "virtualCurrencies" -> JsArray(application.virtualCurrencies.map {vc =>
+        Json.toJson(vc)
+      })
     )
   }
 }
