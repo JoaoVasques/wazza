@@ -1,6 +1,6 @@
 package service.application.definitions
 
-import models.application.PurchaseInfo
+import models.application.{PurchaseInfo}
 import scala.util.Try
 
 trait PurchaseService {
@@ -10,4 +10,7 @@ trait PurchaseService {
   def get(id: String): Option[PurchaseInfo]
 
   def exist(id: String): Boolean
+
+  def delete(info: PurchaseInfo): Try[Unit]
 }
+

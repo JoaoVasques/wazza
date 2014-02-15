@@ -1,26 +1,8 @@
 package models.application
 
-import play.api.Play.current
-import play.api.libs.json._
-import java.util.Date
-import com.novus.salat._
-import com.novus.salat.annotations._
-import com.novus.salat.dao._
-import com.mongodb.casbah.Imports._
-import se.radley.plugin.salat._
-import PurchaseMongoContext._
-import InAppPurchaseContext._
 import scala.language.implicitConversions
 import play.api.libs.functional.syntax._
-
-case class PurchaseInfo(
-  @Key("_id") id: String,
-  applicationName: String,
-  itemId: String,
-  price: Double,
-  time: String,
-  location: Option[LocationInfo]
-)
+import play.api.libs.json._
 
 case class LocationInfo(
   latitude: Double,
@@ -28,13 +10,46 @@ case class LocationInfo(
 )
 
 object LocationInfo {
-  implicit val locationJsonRead  = (
+  implicit val reader  = (
     (__ \ "latitude").read[Double] and
       (__ \ "longitude").read[Double]
   )(LocationInfo.apply _)
+
+  implicit val write = (
+    (__ \ "latitude").write[Double] and
+    (__ \ "longitude").write[Double]
+  )(unlift(LocationInfo.unapply))
 }
 
-object PurchaseInfo extends ModelCompanion[PurchaseInfo, ObjectId] {
-  val dao = new SalatDAO[PurchaseInfo, ObjectId](mongoCollection("purchases")){}
-  def getDAO = dao
+case class PurchaseInfo(
+  id: String,
+  applicationName: String,
+  itemId: String,
+  price: Double,
+  time: String,
+  location: Option[LocationInfo]
+)
+
+object PurchaseInfo {
+
+  lazy val PurchaseCollection = "purchases"
+
+  implicit val reader = (
+    (__ \ "id").read[String] and
+    (__ \ "name").read[String] and
+    (__ \ "itemId").read[String] and
+    (__ \ "price").read[Double] and
+    (__ \ "time").read[String] and
+    (__ \ "location").readNullable[LocationInfo]
+  )(PurchaseInfo.apply _)
+
+  implicit val writes = (
+    (__ \ "id").write[String] and
+    (__ \ "name").write[String] and
+    (__ \ "itemId").write[String] and
+    (__ \ "price").write[Double] and
+    (__ \ "time").write[String] and
+    (__ \ "location").writeNullable[LocationInfo]
+  )(unlift(PurchaseInfo.unapply))
 }
+

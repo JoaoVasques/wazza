@@ -56,10 +56,10 @@ class DashboardController @Inject()(
             "sdkKey" -> application.credentials.sdkKey
           ),
           "virtualCurrencies" -> new JsArray(application.virtualCurrencies map {vc =>
-            Json.parse(VirtualCurrency.toCompactJson(vc))
+            Json.parse("")//(VirtualCurrency.toCompactJson(vc))
           }),
           "items" -> new JsArray(applicationService.getItems(application.name) map {item =>
-            Json.parse(Item.toCompactJson(item))
+            Json.parse("")//(Item.toCompactJson(item))
           }),
           "applications" -> new JsArray(applications map {el =>
             Json.obj("name" -> el)
