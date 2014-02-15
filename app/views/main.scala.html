@@ -8,8 +8,8 @@
 <script src="@routes.WebJarAssets.at(WebJarAssets.locate("1.2.6/angular-cookies.min.js"))"></script>
 <script src="@routes.WebJarAssets.at(WebJarAssets.locate("underscore-min.js"))"></script>
 
-<script src='@routes.WebJarAssets.at(WebJarAssets.locate("bootstrap.js"))' ></script>
 <script src='@routes.WebJarAssets.at(WebJarAssets.locate("jquery.min.js"))' ></script>
+<script src='@routes.WebJarAssets.at(WebJarAssets.locate("bootstrap.js"))' ></script>
 
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 
@@ -39,18 +39,29 @@
 <script src="@controllers.security.routes.Assets.at("javascripts/securityModule.js")"></script>
 <script src="@controllers.security.routes.Assets.at("javascripts/services.js")"></script>
 
+<!-- Core Scripts - Include with every page -->
+<script src="@routes.Assets.at("js/plugins/metisMenu/jquery.metisMenu.js")"></script>
 
-  @views.html.dashboardJavascripts.render()
+<!-- Page-Level Plugin Scripts - Dashboard -->
+<script src="@routes.Assets.at("js/plugins/morris/raphael-2.1.0.min.js")"></script>
+<script src="@routes.Assets.at("js/plugins/morris/morris.js")"></script>
+
+<!-- SB Admin Scripts - Include with every page -->
+<script src="@routes.Assets.at("js/sb-admin.js")"></script>
+
+<!-- Page-Level Demo Scripts - Dashboard - Use for reference -->
+<script src="@routes.Assets.at("js/demo/dashboard-demo.js")"></script>
+
+@views.html.dashboardJavascripts.render()
 
 }
 
 @stylesheets = {
-<link rel="stylesheet" media="screen" href="@routes.WebJarAssets.at(WebJarAssets.locate("bootstrap.min.css"))">
+<link rel="stylesheet" href="@routes.WebJarAssets.at(WebJarAssets.locate("bootstrap.min.css"))" media="screen">
+<link rel="stylesheet" href="@routes.Assets.at("stylesheets/main.css")" type="text/css" media="screen" > 
+<link rel="stylesheet" href="@routes.Assets.at("stylesheets/item.css")" type="text/css">
+<link rel="stylesheet" href="@routes.Assets.at("stylesheets/sidebar.css")" type="text/css">
 <link rel="shortcut icon" type="image/png" href="@routes.Assets.at("images/favicon.png")">
-<link rel="stylesheet" type="text/css" media="screen" href="@routes.Assets.at("stylesheets/main.css")"> 
-  <link rel="stylesheet" href="@routes.Assets.at("stylesheets/item.css")" type="text/css">
-  <link rel="stylesheet" href="@routes.Assets.at("stylesheets/sidebar.css")" type="text/css">
-
 }
 
 <html ng-app="Wazza">
@@ -60,53 +71,92 @@
   @javascripts
 </head>
 
-<body>
+<body class="font-thin">
 
-  <nav class="navbar navbar-inverse navbar-default navbar-fixed-top" role="navigation">
-    <!-- Brand and toggle get grouped for better mobile display -->
-    <div class="navbar-header">
-      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-        <span class="sr-only">Toggle navigation</span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
-      <a class="navbar-left logo" href="#"></a>
-      <p class="navbar-text">In App purchases made simple.</p>
+ <div id="wrapper" style="color:#222">
 
-    </div>
-
-    <!-- Collect the nav links, forms, and other content for toggling -->
-    <div class="collapse navbar-collapse" id=".navbar-collapse">
-      <ul class="nav navbar-nav">
-        <li class="active"><a href="#">Dashboard</a></li>
-        <li class="dropdown">
-          <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-            Stores <span class="caret"></span>
-          </a>
-          <ul class="dropdown-menu">
-           <li><a href="stores/apple">Apple</a></li>
-           <li><a href="stores/android">Android</a></li>
-           <li><a href="stores/amazon">Amazon</a></li>
-           <li><a ng-href='#/home'>New Application</a></li>
-         </ul>
-       </li>
-       <li><a href="#items">Items</a></li>
-     </ul>
-     <!-- leftovers: search box-->
-     <ul class="nav navbar-nav navbar-right">
-      <li>
-        <a href="#contact" data-toggle="modal" data-target="#contacts">Contacts</a>
-      </li>
-      <li>
-        <a href="#about">About</a>
+  <nav class="navbar navbar-inverse navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
+    <a class="navbar-header navbar-brand" href="index.html"><img src="@routes.Assets.at("images/letter-logo.png")" alt="wazza logo" style="height:100%;" /></a>
+    <p class="navbar-text">In App purchases made simple.</p>
+    <ul class="nav navbar-top-links navbar-right" style="color:#999">
+      <!-- TODO: replace with ng-model user -->
+      Duarte Barbosa
+      <li class="dropdown">
+        <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+          <i class="fa fa-user fa-fw"></i>  <i class="fa fa-caret-down"></i>
+        </a>
+        <ul class="dropdown-menu dropdown-user">
+          <li><a href="#"><i class="fa fa-user fa-fw"></i> User Profile</a>
+          </li>
+          <li><a href="#"><i class="fa fa-gear fa-fw"></i> Settings</a>
+          </li>
+          <li class="divider"></li>
+          <li><a href="login.html"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
+          </li>
+        </ul>
       </li>
     </ul>
-  </div><!-- /.navbar-collapse -->
-</nav>
+  </nav>
 
+  <nav class="navbar-default navbar-inverse navbar-static-side" role="navigation">
+    <div class="sidebar-collapse">
+      <ul class="nav" id="side-menu">
+        <li>
+          <a href="index.html"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
+        </li>
+        <li>
+          <a href="#"><i class="fa fa-table fa-fw"></i> Inventory<span class="fa arrow"></span></a>
+          <ul class="nav nav-second-level">
+            <li>
+              <a href="#">Overview</a>
+            </li>
+            <li>
+              <a href="#">CRUD</a>
+            </li>
+            <li>
+              <a href="#">Virtual Currency</a>
+            </li>
+          </ul>
+        </li>
+        <li>
+          <a href="#"><i class="fa fa-edit fa-fw"></i> Stores<span class="fa arrow"></span></a>
+          <ul class="nav nav-second-level">
+            <li>
+              <a href="#">Android</a>
+            </li>
+            <li>
+              <a href="#">Apple</a>
+            </li>
+            <li>
+              <a href="#">Amazon</a>
+            </li>
+          </ul>
+        </li>
+        <li>
+          <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i> Analytics<span class="fa arrow"></span></a>
+          <ul class="nav nav-second-level">
+            <li>
+              <a href="#">Overview</a>
+            </li>
+          </ul>
+        </li>
+        <li>
+          <a href="#"><i class="fa fa-wrench fa-fw"></i> Settings</a>
+        </li>
+        <li>
+          <a href="#contact" data-toggle="modal" data-target="#contacts">Contacts</a>
+        </li>
+        <li>
+          <a href="#about">About</a>
+        </li>
+      </ul>
+      <!-- /#side-menu -->
+    </div>
+    <!-- /.sidebar-collapse -->
+  </nav>
+  <!-- /.navbar-static-side -->
 
-<section id="main">
+  <section id="main">
 
     <div id="wrapper">
       @views.html.sidebar.render()
@@ -114,18 +164,130 @@
       <div id="page-content-wrapper">
         <div class="page-content inset">
           <div class="row">
-              <div class="col-md-12">
-                <div ng-view></div>
+            <div class="col-md-12">
+              <div ng-view></div>
             </div>
           </div>
         </div>
       </div>
     </div>
 
-  content
+    content
 
 
-</section>
+  </section>
+
+  <div id="page-wrapper">
+    <div class="row">
+      <div class="col-lg-12">
+        <h1 class="page-header font-semibold">Dashboard</h1>
+      </div>
+      <!-- /.col-lg-12 -->
+    </div>
+    <!-- /.row -->
+    <div class="row">
+
+      <div class="col-lg-8">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <i class="fa fa-bell fa-fw"></i> Notifications Panel
+          </div>
+          <!-- /.panel-heading -->
+          <div class="panel-body">
+            <div class="list-group">
+              <a href="#" class="list-group-item">
+                <i class="fa fa-comment fa-fw"></i> Item #1337 from "Best Game Ever" needs attention.
+                <span class="pull-right text-muted small"><em>4 minutes ago</em>
+                </span>
+              </a>
+              <a href="#" class="list-group-item">
+                <i class="fa fa-shopping-cart fa-fw"></i> Increase revenue selling a limited run of Item #BIGBOOBS.
+                <span class="pull-right text-muted small"><em>12 minutes ago</em>
+                </span>
+              </a>
+              <a href="#" class="list-group-item">
+                <i class="fa fa-warning fa-fw"></i> Item #DEADBEEF at Apple Store is out of stock.
+                <span class="pull-right text-muted small"><em>27 minutes ago</em>
+                </span>
+              </a>
+              <a href="#" class="list-group-item">
+                <i class="fa fa-money fa-fw"></i> Configure "Best App ever" IAP.
+                <span class="pull-right text-muted small"><em>43 minutes ago</em>
+                </span>
+              </a>
+              <a href="#" class="list-group-item">
+                <i class="fa fa-bolt fa-fw"></i> Server Crashed!
+                <span class="pull-right text-muted small"><em>11:13 AM</em>
+                </span>
+              </a>
+              <a href="#" class="list-group-item">
+                <i class="fa fa-money fa-fw"></i> Payment Received
+                <span class="pull-right text-muted small"><em>Yesterday</em>
+                </span>
+              </a>
+            </div>
+            <!-- /.list-group -->
+            <a href="#" class="btn btn-default btn-block">View All Alerts</a>
+          </div>
+        </div>
+        <div class="panel panel-default" hidden>
+          <div class="panel-heading">
+            <i class="fa fa-bar-chart-o fa-fw"></i> Area Chart Example
+            <div class="pull-right">
+              <div class="btn-group">
+                <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
+                  Actions
+                  <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu pull-right" role="menu">
+                  <li><a href="#">Action</a>
+                  </li>
+                  <li><a href="#">Another action</a>
+                  </li>
+                  <li><a href="#">Something else here</a>
+                  </li>
+                  <li class="divider"></li>
+                  <li><a href="#">Separated link</a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="panel-body">
+            <div id="morris-area-chart"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-4">
+        <div class="panel panel-default">
+          <div class="input-group">
+            <input id="btn-input" type="text" class="form-control input-sm" placeholder="Type your query here..." />
+            <span class="input-group-btn">
+              <button class="btn btn-warning btn-sm" id="btn-chat">Search</button>
+            </span>
+          </div>
+        </div>
+
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <i class="fa fa-bar-chart-o fa-fw"></i> Revenue
+          </div>
+          <div class="panel-body">
+            <div id="morris-donut-chart"></div>
+            <a href="#" class="btn btn-default btn-block">View Details</a>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+</div>
 
 
 <!-- Modal -->
@@ -151,16 +313,16 @@
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
       </div>
-    </div><!-- /.modal-content -->
-  </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
+    </div>
+  </div>
+</div>
 
 </body>
 
 <script type="text/javascript">
   $("#menu-toggle").click(function(e) {
-          e.preventDefault();
-          $("#wrapper").toggleClass("active");
+    e.preventDefault();
+    $("#wrapper").toggleClass("active");
   });
 </script>
 
