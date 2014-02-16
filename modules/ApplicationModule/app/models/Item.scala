@@ -3,7 +3,6 @@ package models.application
 import play.api.libs.json._
 import scala.language.implicitConversions
 import play.api.libs.functional.syntax._
-import InAppPurchaseContext._
 
 case class Currency(
   typeOf: Int, //virtual or real money
@@ -58,39 +57,47 @@ object Item  {
   lazy val ElementId = "name"
   lazy val AttributeName = "items"
 
-  implicit val reader = (
-    (__ \ "name").read[String] and
-    (__ \ "description").read[String] and
-    (__ \ "store").read[Int] and
-    (__ \ "metadata").read[InAppPurchaseMetadata] and
-    (__ \ "currency").read[Currency] and
-    (__ \ "imageInfo").read[ImageInfo]
-  )(Item.apply _)
+  implicit def convertToJson(item: Item): JsValue = {
+    Json.obj(
+      "name" -> item.name,
+      "description" -> item.description,
+      "store" -> item.store,
+      "metadata" -> InAppPurchaseMetadata.buildJson(item.metadata),
+      "currency" -> Json.toJson(item.currency),
+      "imageInfo" -> Json.toJson(item.imageInfo)
+    )
+  }
 
-  implicit val writer = (
-    (__ \ "name").write[String] and
-      (__ \ "description").write[String] and
-      (__ \ "store").write[Int] and
-      (__ \ "metadata").write[InAppPurchaseMetadata] and
-      (__ \ "currency").write[Currency] and
-      (__ \ "imageInfo").write[ImageInfo]
+  implicit def buildFromJson(json: JsValue): Item = {
+    new Item(
+      (json \ "name").as[String],
+      (json \ "description").as[String],
+      (json \ "store").as[Int],
+      (json \ "metadata"),
+      (json \ "currency").validate[Currency].fold(
+        valid = {c => c},
+        invalid = {_ => null}
+      ),
+      (json \ "imageInfo").validate[ImageInfo].fold(
+        valid = {i => i},
+        invalid = {_ => null}
+      )
+    )
+  }
 
-  )(unlift(Item.unapply))
-    
-  /**
-  implicit def buildFromJson(obj: Option[JsValue]): Option[Item] = {
+  implicit def buildFromJsonOption(obj: Option[JsValue]): Option[Item] = {
     obj match {
       case Some(item) => {
-        Some(new Item(
-          (item \ "description").as[String],
-          (item \ "store").as[Int],
-          (item \ "metadata"),
-          (item \ "currency").validate[Currency],
-          (item \ "imageInfo").validate[ImageInfo]
-        ))
+        Some(this.buildFromJson(item))
       }
       case None => None 
     }
+  }
+
+  implicit def buildItemListFromJsArray(array: JsArray): List[Item] = {
+    array.value.map{(el: JsValue) =>
+      this.buildFromJson(el)
+    }.toList
   }
 
   implicit def imageInfoFromJson(json: JsValue): ImageInfo = {
@@ -99,6 +106,5 @@ object Item  {
       (json \ "url").as[String]
     )
   }
-    * */
 }
 

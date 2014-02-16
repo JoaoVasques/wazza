@@ -19,17 +19,7 @@ case class GoogleTranslations(
 )
 
 object GoogleTranslations {
-  implicit val reader = (
-    (__ \ "locale").read[String] and
-    (__ \ "title").read[String] and
-    (__ \ "description").read[String]
-  )(GoogleTranslations.apply _)
-
-  implicit val write = (
-    (__ \ "locale").write[String] and
-    (__ \ "title").write[String] and
-    (__ \ "description").write[String]
-  )(unlift(GoogleTranslations.unapply))
+  implicit val format = Json.format[GoogleTranslations]
 }
 
 case class GoogleMetadata(
@@ -50,36 +40,7 @@ case class GoogleMetadata(
 
 object GoogleMetadata {
 
-  implicit val reader = (
-    (__ \ "name").read[String] and
-    (__ \ "itemId").read[String] and
-    (__ \ "title").read[String] and
-    (__ \ "description").read[String] and
-    (__ \ "publishedState").read[String] and
-    (__ \ "purchaseType").read[String] and
-    (__ \ "autoTranslate").read[Boolean] and
-    (__ \ "locale").read[List[GoogleTranslations]] and
-    (__ \ "autofill").read[Boolean] and
-    (__ \ "language").read[String] and
-    (__ \ "price").read[Double] and
-    (__ \ "countries").read[List[String]]
-  )(GoogleMetadata.apply _)
-
-  implicit val writer = (
-    (__ \ "name").write[String] and
-    (__ \ "itemId").write[String] and
-    (__ \ "title").write[String] and
-    (__ \ "description").write[String] and
-    (__ \ "publishedState").write[String] and
-    (__ \ "purchaseType").write[String] and
-    (__ \ "autoTranslate").write[Boolean] and
-    (__ \ "locale").write[List[GoogleTranslations]] and
-    (__ \ "autofill").write[Boolean] and
-    (__ \ "language").write[String] and
-    (__ \ "price").write[Double] and
-    (__ \ "countries").write[List[String]]
-  )(unlift(GoogleMetadata.unapply))
-
+  implicit val format = Json.format[GoogleMetadata]
 }
 
 case class AppleMetadata(
@@ -130,26 +91,29 @@ object InAppPurchaseMetadata {
   lazy val Android = "android"
   lazy val IOS = "ios"
 
-  implicit object metadataWrite extends Writes[InAppPurchaseMetadata] {
-    def writes(iap: InAppPurchaseMetadata) = {
-      iap match {
-        case google: GoogleMetadata => Json.toJson(google)
-        case apple: AppleMetadata => null
-      }
-    }
-  }
-  
-  implicit object metadataRead extends Reads[InAppPurchaseMetadata] {
-    def reads(json: JsValue) = {
-      (json \ "osType").as[String] match {
-        case Android => json.validate[GoogleMetadata]
-        case IOS => null
-      }
-    }
-  }
-  
-  /**
-  def buildJson(metadata: InAppPurchaseMetadata): JsValue = {
+  val LanguageCodes = Map(
+    "Chinese" ->    "zh_TW",
+    "Italian" ->    "it_IT",
+    "Czech" ->      "cs_CZ",
+    "Japanese" ->   "ja_JP",
+    "Danish" ->     "da_DK",
+    "Korean" ->     "ko_KR",
+    "Dutch" ->      "nl_NL",
+    "Norwegian" ->  "no_NO",
+    "English" ->    "en_US",
+    "Polish" ->     "pl_PL",
+    "French" ->     "fr_FR",
+    "Portuguese" -> "pt_PT",
+    "Finnish" ->    "fi_FI",
+    "Russian" ->    "ru_RU",
+    "German" ->     "de_DE",
+    "Spanish" ->    "es_ES",
+    "Hebrew" ->     "iw_IL",
+    "Swedish" ->    "sv_SE",
+    "Hindi" ->      "hi_IN"
+  )
+
+  implicit def buildJson(metadata: InAppPurchaseMetadata): JsValue = {
     metadata match {
       case google: GoogleMetadata => {
         Json.obj(
@@ -175,29 +139,39 @@ object InAppPurchaseMetadata {
       case _ => null
     }
   }
-  **/
 
-  val LanguageCodes = Map(
-    "Chinese" ->    "zh_TW",
-    "Italian" ->    "it_IT",
-    "Czech" ->      "cs_CZ",
-    "Japanese" ->   "ja_JP",
-    "Danish" ->     "da_DK",
-    "Korean" ->     "ko_KR",
-    "Dutch" ->      "nl_NL",
-    "Norwegian" ->  "no_NO",
-    "English" ->    "en_US",
-    "Polish" ->     "pl_PL",
-    "French" ->     "fr_FR",
-    "Portuguese" -> "pt_PT",
-    "Finnish" ->    "fi_FI",
-    "Russian" ->    "ru_RU",
-    "German" ->     "de_DE",
-    "Spanish" ->    "es_ES",
-    "Hebrew" ->     "iw_IL",
-    "Swedish" ->    "sv_SE",
-    "Hindi" ->      "hi_IN"
-  )
+  private implicit def buildLocateFromJson(array: JsArray): List[GoogleTranslations] = {
+    array.value.map{(el: JsValue) =>
+      new GoogleTranslations(
+        (el \ "locale").as[String],
+        (el \ "title").as[String],
+        (el \ "description").as[String]
+      )
+    }.toList
+  }
+
+  implicit def buildFromJson(json: JsValue): InAppPurchaseMetadata = {
+    val metadataType = (json \ "osType").as[String]
+    metadataType match {
+      case Android => {
+        new GoogleMetadata(
+          (json \ "osType").as[String],
+          (json \ "itemId").as[String],
+          (json \ "title").as[String],
+          (json \ "description").as[String],
+          (json \ "publishedState").as[String],
+          (json \ "purchaseType").as[String],
+          (json \ "autoTranslate").as[Boolean],
+          (json \ "locale").as[JsArray],
+          (json \ "autofill").as[Boolean],
+          (json \ "language").as[String],
+          (json \ "price").as[Double],
+          (json \ "countries").as[List[String]]
+        )
+      }
+      case IOS => null //TODO
+    }
+  }
 }
 
 package object InAppPurchaseContext {
