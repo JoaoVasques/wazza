@@ -45,7 +45,7 @@ class ItemServiceImpl @Inject()(
 		val promise = Promise[Try[Item]]
 
 		val metadata = new GoogleMetadata(
-			"Google",
+			InAppPurchaseMetadata.Android,
 			generateId(GoogleStoreId, name, purchaseType),
 			name,
 			description,
@@ -87,7 +87,7 @@ class ItemServiceImpl @Inject()(
 	): Try[Item] = {
 
 		val metadata = new AppleMetadata(
-			"Apple",
+			InAppPurchaseMetadata.IOS,
 			name,
 			title,
 			description,
