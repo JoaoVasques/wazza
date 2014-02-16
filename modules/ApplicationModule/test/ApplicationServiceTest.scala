@@ -33,6 +33,7 @@ class ApplicationServiceTest extends Specification {
     val name = "item"
     val description = "item description"
     val store = 0
+    val translate = new GoogleTranslations("locale", "title", "description")
     val metadata = new GoogleMetadata(
       InAppPurchaseMetadata.Android,
       name,
@@ -41,7 +42,7 @@ class ApplicationServiceTest extends Specification {
       "published",
       "managed_by_publisher",
       false,
-      List[GoogleTranslations](),
+      List[GoogleTranslations](translate),
       false,
       "PT",
       1.99,
@@ -56,6 +57,7 @@ class ApplicationServiceTest extends Specification {
     val photosService = new PhotosServiceImpl
     val mongoDBService = new MongoDatabaseService
     mongoDBService.init(uri, "applicationsTest")
+    mongoDBService.dropCollection()
     new ApplicationServiceImpl(photosService, mongoDBService)
   }
 
@@ -93,11 +95,11 @@ class ApplicationServiceTest extends Specification {
       }
 
       "Insert item" in {
-        // re-add application        
+        // re-add application
         applicationService.insertApplication(application) must equalTo(Success(application))
         applicationService.addItem(item, application.name) must equalTo(Success(item))
-        //applicationService.getItem(item.name, application.name) must equalTo(Some(item))
-        //applicationService.itemExists(item.name, application.name) must equalTo(true)
+        applicationService.getItem(item.name, application.name) must equalTo(Some(item))
+        applicationService.itemExists(item.name, application.name) must equalTo(true)
       }
     }
   }

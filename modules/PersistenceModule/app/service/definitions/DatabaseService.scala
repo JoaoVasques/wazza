@@ -12,6 +12,8 @@ trait DatabaseService {
   lazy val UserCollection = "users"
   lazy val PurchasesCollection = "purchases"
 
+  def dropCollection(): Unit
+
   def init(collectionName: String): Try[Unit]
 
   def init(uri: String, collectionName: String)
@@ -36,6 +38,8 @@ trait DatabaseService {
 
   def getElementFromArray[T <: Any](docIdKey: String, docIdValue: String, arrayKey: String, elementValue: T): Option[JsValue]
 
+  def getElementsOfArray(docIdKey: String, docIdValue: String, arrayKey: String, limit: Option[Int]): List[JsValue]
+
   def addElementToArray[T <: Any](docIdKey: String, docIdValue: Any, arrayKey: String, model: T): Try[Unit]
 
   def deleteElementFromArray[T <: Any](docIdKey: String, docIdValue: Any, arrayKey: String, m: T): Try[Unit]
@@ -48,8 +52,6 @@ trait DatabaseService {
     elementIdValue: String,
     m: T
   ): Try[Unit]
-
-  def dropCollection(): Unit
 }
 
 

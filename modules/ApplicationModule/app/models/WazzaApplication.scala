@@ -23,6 +23,22 @@ object Credentials {
     (__ \ "apiKey").write[String] and
     (__ \ "sdkKey").write[String]
   )(unlift(Credentials.unapply))
+
+  implicit def toJson(credential: Credentials): JsValue = {
+    Json.obj(
+      "appId" -> credential.appId,
+      "apiKey" -> credential.apiKey,
+      "sdkKey" -> credential.sdkKey
+    )
+  }
+
+  implicit def fromJson(json: JsValue): Credentials = {
+    new Credentials(
+      (json \ "appId").as[String],
+      (json \ "apiKey").as[String],
+      (json \ "sdkKey").as[String]
+    )
+  }
 }
 
 case class WazzaApplication(
@@ -45,36 +61,6 @@ object WazzaApplication {
 
 package object WazzaApplicationImplicits {
 
-  private abstract class ListBuilder[T] {
-    def build(jsonArray: JsArray): List[T]
-  }
-
-  private implicit object ItemListBuilder extends ListBuilder[Item] {
-    def build(jsonArray: JsArray): List[Item] = {
-      jsonArray.value.map{(item: JsValue) =>
-        item.validate[Item].fold(
-          valid = {i => i},
-          invalid = {_ => null}
-        )
-      }.toList
-    }
-  }
-
-  private implicit object VirtualCurrencyListBuilder extends ListBuilder[VirtualCurrency] {
-    def build(jsonArray: JsArray): List[VirtualCurrency] = {
-      jsonArray.value.map {(vc: JsValue) =>
-        vc.validate[VirtualCurrency].fold(
-          valid = {i => i},
-          invalid = {_ => null}
-        )
-      }.toList
-    }
-  }
-
-  private def buildList[T](jsonArray: JsArray)(implicit builder: ListBuilder[T]): List[T] = {
-    builder.build(jsonArray)
-  }
-
   implicit def buildFromJson(json: JsValue): WazzaApplication = {
     new WazzaApplication(
       (json \ "name").as[String],
@@ -83,8 +69,8 @@ package object WazzaApplicationImplicits {
       (json \ "packageName").as[String],
       (json \ "appType").asOpt[String],
       (json \ "credentials").validate[Credentials].get,
-      buildList[Item]((json \ "items").as[JsArray]),
-      buildList[VirtualCurrency]((json \ "items").as[JsArray])
+      (json \ "items").as[JsArray],
+      (json \ "virtualCurrencies").as[JsArray]
     )
   }
 
@@ -104,10 +90,10 @@ package object WazzaApplicationImplicits {
       "appType" -> application.appType,
       "credentials" -> Json.toJson(application.credentials),
       "items" -> JsArray(application.items.map{item =>
-        Json.toJson(item)
-      }),
+        Item.convertToJson(item)
+      }.toSeq),
       "virtualCurrencies" -> JsArray(application.virtualCurrencies.map {vc =>
-        Json.toJson(vc)
+        VirtualCurrency.buildJson(vc)
       })
     )
   }
