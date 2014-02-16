@@ -24,15 +24,24 @@ class ApplicationServiceImpl @Inject()(
     databaseService.init(databaseService.ApplicationCollection)
 
     private implicit def convertItemToJsObject(item: Item): JsObject = {
-      Json.toJson(item) match {
+      Item.convertToJson(item) match {
         case i: JsObject => i
         case _ => null //throw excpetion later on..
       }
     }
 
-    def createFailure[A](error: String): Failure[A] = {
-        new Failure(new Exception(error))
-    }
+   def createFailure[A](error: String): Failure[A] = {
+     new Failure(new Exception(error))
+   }
+
+  
+   def getApplicationyTypes: List[String] = {
+     WazzaApplication.applicationTypes
+   }
+
+   def getApplicationCountries(appName: String): List[String] = {
+     List("PT")
+   }
 
     def insertApplication(application: WazzaApplication): Try[WazzaApplication] = {
       if(! databaseService.exists(WazzaApplication.Key, application.name)) {
@@ -64,14 +73,6 @@ class ApplicationServiceImpl @Inject()(
       databaseService.get(WazzaApplication.Key, name)
     }
 
-    def getApplicationyTypes: List[String] = {
-        WazzaApplication.applicationTypes
-    }
-
-    def getApplicationCountries(appName: String): List[String] = {
-        List("PT")
-    }
-
     def addItem(item: Item, applicationName: String): Try[Item] = {
       databaseService.addElementToArray[JsObject](
         WazzaApplication.Key,
@@ -91,12 +92,7 @@ class ApplicationServiceImpl @Inject()(
         WazzaApplication.ItemsId,
         itemId
       ) match {
-        case Some(i) => {
-          i.validate[Item].fold(
-            valid = (it => Some(it)),
-            invalid = (_ => None)
-          )
-        }
+        case Some(i) => Some(i)
         case None => None
       }
     }
@@ -141,24 +137,41 @@ class ApplicationServiceImpl @Inject()(
       promise.future
     }
 
-  /**
-    TO BE IMPLEMENTED
-  **/
-
     def addVirtualCurrency(currency: VirtualCurrency, applicationName: String): Try[VirtualCurrency] = {
-      null
+      databaseService.addElementToArray[JsObject](
+        WazzaApplication.Key,
+        applicationName,
+        WazzaApplication.VirtualCurrenciesId,
+        VirtualCurrency.buildJson(currency).as[JsObject]
+      ) match {
+        case Success(_) => Success(currency)
+        case Failure(f) => Failure(f)
+      }
     }
-  
+
+    //TODO
     def deleteVirtualCurrency(currencyName: String, applicationName: String): Try[Unit] = {
       null
     }
 
     def getVirtualCurrency(currencyName: String, applicationName: String): Option[VirtualCurrency] = {
-      null
+      databaseService.getElementFromArray[String](
+        WazzaApplication.Key,
+        applicationName,
+        WazzaApplication.VirtualCurrenciesId,
+        currencyName
+      )
     }
 
     def getVirtualCurrencies(applicationName: String): List[VirtualCurrency] = {
-      null
+      databaseService.getElementsOfArray(
+        WazzaApplication.Key,
+        applicationName,
+        WazzaApplication.VirtualCurrenciesId,
+        None
+      ).map{el =>
+        VirtualCurrency.buildFromJson(Some(el)).get
+      }
     }
 
     def virtualCurrencyExists(currencyName: String, applicationName: String): Boolean = {

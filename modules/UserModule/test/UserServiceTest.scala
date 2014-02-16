@@ -21,13 +21,18 @@ class  UserServiceTest extends Specification {
     val applications = List[String]()
   }
 
+  private def init() = {
+    val uri = "mongodb://localhost:27017/wazza-test"
+    val mongoDBService = new MongoDatabaseService
+    mongoDBService.init(uri, "users")
+    mongoDBService.dropCollection()
+    new UserServiceImpl(mongoDBService)
+  }
+
   "Basic User operations" should {
     running(FakeApplication()){
 
-      val uri = "mongodb://localhost:27017/wazza-test"
-      val mongoDBService = new MongoDatabaseService
-      mongoDBService.init(uri, "users")
-      val userService = new UserServiceImpl(mongoDBService)
+      val userService = this.init
 
       "Insert and Find" in {
         val user = new User(
@@ -58,7 +63,6 @@ class  UserServiceTest extends Specification {
           case None => true
         }
 
-        mongoDBService.dropCollection()
         (correct && wrong) must equalTo(true)
       }
     }

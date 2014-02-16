@@ -4,7 +4,6 @@ import models.application.{LocationInfo, PurchaseInfo}
 import org.specs2.mutable._
 import play.api.test._
 import play.api.test.Helpers._
-import play.mvc.Controller
 import scala.util.Failure
 import scala.util.Success
 import com.google.inject._

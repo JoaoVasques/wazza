@@ -23,7 +23,6 @@ class MongoDatabaseService extends DatabaseService {
   private def getMongoClient(): Try[MongoClient] = {
     Play.current.configuration.getConfig("mongodb.dev") match {
       case Some(config) => {
-        println(config)
         val uriStr = config.underlying.root.get("uri").render.filter(_ != '"')
         val uri = MongoClientURI(uriStr)
         this.databaseName = uriStr.split("/").last
@@ -31,6 +30,10 @@ class MongoDatabaseService extends DatabaseService {
       }
       case _ => Failure(new Exception("MongoDb credentials do not exist"))
     }
+  }
+
+  def dropCollection(): Unit = {
+    collection.drop()
   }
 
   def init(collectionName: String): Try[Unit] = {
@@ -143,6 +146,29 @@ class MongoDatabaseService extends DatabaseService {
     }
   }
 
+
+  def getElementsOfArray(
+    docIdKey: String,
+    docIdValue: String,
+    arrayKey: String,
+    limit: Option[Int]
+  ): List[JsValue] = {
+    val query = MongoDBObject(docIdKey -> docIdValue)
+    val projection = MongoDBObject(arrayKey -> 1)
+    limit match {
+      case Some(maxNumberElements) => {
+        this.collection.find(query, projection).limit(maxNumberElements).map{el =>
+          Json.parse(el.toString)
+        }.toList
+      }
+      case None => {
+        this.collection.find(query, projection).map{el =>
+          Json.parse(el.toString)
+        }.toList
+      }
+    }
+  }
+
   def addElementToArray[T <: Any](
     docIdKey: String,
     docIdValue: Any,
@@ -200,11 +226,6 @@ class MongoDatabaseService extends DatabaseService {
     val query = MongoDBObject(docIdKey -> docIdValue, s"$arrayKey.$elementId" -> elementIdValue)
     val update = $set((arrayKey+".$." + elementId) -> model)
     this.collection.update(query, update)
-  }
-
-  /** Database operations **/
-  def dropCollection(): Unit = {
-    collection.drop()
   }
 }
 
