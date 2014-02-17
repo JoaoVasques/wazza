@@ -80,8 +80,14 @@ class ApplicationServiceImpl @Inject()(
         WazzaApplication.ItemsId,
         item
       ) match {
-        case Success(_) => Success(item)
-        case Failure(f) => Failure(f)
+        case Success(_) => {
+          println("item: " + item)
+          Success(item)
+        }
+        case Failure(f) => {
+          println(f.getMessage)
+          Failure(f)
+        }
       }
     }
 
@@ -90,6 +96,7 @@ class ApplicationServiceImpl @Inject()(
         WazzaApplication.Key,
         applicationName,
         WazzaApplication.ItemsId,
+        Item.ElementId,
         itemId
       ) match {
         case Some(i) => Some(i)
@@ -159,6 +166,7 @@ class ApplicationServiceImpl @Inject()(
         WazzaApplication.Key,
         applicationName,
         WazzaApplication.VirtualCurrenciesId,
+        VirtualCurrency.Id,
         currencyName
       )
     }

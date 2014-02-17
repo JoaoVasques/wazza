@@ -98,8 +98,11 @@ class ApplicationServiceTest extends Specification {
         // re-add application
         applicationService.insertApplication(application) must equalTo(Success(application))
         applicationService.addItem(item, application.name) must equalTo(Success(item))
+      }
+
+      "Get Item" in {
         applicationService.getItem(item.name, application.name) must equalTo(Some(item))
-        applicationService.itemExists(item.name, application.name) must equalTo(true)
+        //applicationService.itemExists(item.name, application.name) must equalTo(true)
       }
     }
   }

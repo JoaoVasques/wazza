@@ -34,9 +34,9 @@ trait DatabaseService {
     Array operations
   **/
 
-  def existsInArray[T <: Any](docIdKey: String, docIdValue: String, arrayKey: String, elementValue: T): Boolean
+  def existsInArray[T <: Any](docIdKey: String, docIdValue: String, arrayKey: String, elementKey: String, elementValue: T): Boolean
 
-  def getElementFromArray[T <: Any](docIdKey: String, docIdValue: String, arrayKey: String, elementValue: T): Option[JsValue]
+  def getElementFromArray[T <: Any](docIdKey: String, docIdValue: String, arrayKey: String, elementKey: String, elementValue: T): Option[JsValue]
 
   def getElementsOfArray(docIdKey: String, docIdValue: String, arrayKey: String, limit: Option[Int]): List[JsValue]
 

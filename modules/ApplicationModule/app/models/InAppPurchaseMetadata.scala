@@ -121,7 +121,7 @@ object InAppPurchaseMetadata {
           "itemId" -> google.itemId,
           "title" -> google.title,
           "description" -> google.description,
-          "publicationName" -> google.publishedState,
+          "publishedState" -> google.publishedState,
           "purchaseType" -> google.purchaseType,
           "autoTranslate" -> google.autoTranslate,
           "locale" -> Json.toJson(google.locale.map((el: GoogleTranslations) => {
@@ -129,7 +129,8 @@ object InAppPurchaseMetadata {
           })),
           "autofill" -> google.autofill,
           "language" -> google.language,
-          "price" -> google.price
+          "price" -> google.price,
+          "countries" -> google.countries
         )
       }
       case apple: AppleMetadata => {
