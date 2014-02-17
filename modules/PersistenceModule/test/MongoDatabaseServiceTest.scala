@@ -22,23 +22,15 @@ class MongoDatabaseServiceTest  extends Specification {
       val user = Json.obj("email" -> "test@gmail.com", "name" -> "test", "applications" -> List[JsObject]())
 
       "Insert" in  {
-        val res = databaseService.insert(user) match {
-          case Success(_) => true
-          case Failure(_) => false
-        }
-        res must equalTo(true)
+        databaseService.insert(user) must equalTo(Success())
       }
 
       "Delete" in  {
-        val res = databaseService.delete(user) match {
-          case Success(_) => true
-          case Failure(_) => false
-        }
-        res must equalTo(true)
+        databaseService.delete(user) must equalTo(Success())
       }
       
       "Update" in  {
-        val res = databaseService.insert(user)
+        databaseService.insert(user)
         databaseService.update("email", "test@gmail.com", "name", "changedName")
         val u = databaseService.get("email", "test@gmail.com")
         databaseService.delete(user)
@@ -49,24 +41,16 @@ class MongoDatabaseServiceTest  extends Specification {
 
   "MongoDB Array operations" should {
     running(FakeApplication()) {
-      databaseService.init(uri, "users")
       val user = Json.obj("email" -> "test@gmail.com", "name" -> "test", "applications" -> List[JsObject]())
       val el = Json.obj("name" -> "app test")
 
       "Insert" in {
-        val res = databaseService.addElementToArray[JsObject](
+        databaseService.addElementToArray[JsObject](
           "email",
           "test@gmail.com",
           "applications",
           el
-        ) match {
-          case Success(_) => true
-          case Failure(_) => false
-        }
-
-        val r = databaseService.existsInArray[JsObject]("email", "test@gmail.com", "applications", el)
-        res must equalTo(true)
-        r must equalTo(true)
+        ) must equalTo(Success())
       }
 
       "Update" in {
@@ -100,6 +84,7 @@ class MongoDatabaseServiceTest  extends Specification {
           "email",
           "test@gmail.com",
           "applications",
+          "name",
           el
         )
 

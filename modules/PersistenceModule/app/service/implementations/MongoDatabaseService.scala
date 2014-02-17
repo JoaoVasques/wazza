@@ -112,9 +112,10 @@ class MongoDatabaseService extends DatabaseService {
     docIdKey: String,
     docIdValue: String,
     arrayKey: String,
+    elementKey: String,
     elementValue: T
   ): Boolean = {
-    this.getElementFromArray[T](docIdKey, docIdValue, arrayKey, elementValue) match {
+    this.getElementFromArray[T](docIdKey, docIdValue, arrayKey, elementKey, elementValue) match {
       case Some(_) => true
       case None => false
     }
@@ -124,24 +125,20 @@ class MongoDatabaseService extends DatabaseService {
     docIdKey: String,
     docIdValue: String,
     arrayKey: String,
+    elementKey: String,
     elementValue: T
   ): Option[JsValue] = {
 
-    val element = elementValue match {
-      case j: JsObject => {
-       arrayKey $in List(convertJsonToDBObject(j))
-      }
-      case s: String => {
-        arrayKey $in List(s)
-      }
+    def findElementAux(array: JsArray): Option[JsValue] = {  
+       array.value.find{ el=> {
+         (el \ elementKey).as[String].filter(_ != '"').equals(elementValue)
+      }}
     }
 
-    val query = element ++ MongoDBObject(docIdKey -> docIdValue)
+    val query = MongoDBObject(docIdKey -> docIdValue)
     val projection = MongoDBObject(arrayKey -> 1)
     this.collection.findOne(query, projection) match {
-      case Some(obj) => {
-        Some(Json.parse(obj.toString))
-      }
+      case Some(obj) => findElementAux((Json.parse(obj.toString) \ arrayKey).as[JsArray])   
       case _ => None
     }
   }
