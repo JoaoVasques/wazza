@@ -1,45 +1,45 @@
-@(registrationForm: Form[models.user.User])
+@(registrationForm: Form[models.user.WazzaUser])
 
-@import helper._
-@import helper.twitterBootstrap._
-
-@userMain("Registration") {
+@inputText(inputType: String, name: String, placeholder: String) = {
+  <div ng-class="form-group">
+    <label class="control-label" ng-show="errors.show" for="loginEmail"></label>
+    <input id="loginEmail" class="form-control" ng-model="userForm.email" placeholder=@placeholder name=@name type=@inputType required>
+  </div>
+}
 
 <div class="container">
-    <div class="row-fluid">
-        <div class="span9">
-            @helper.form(action = controllers.user.routes.RegistrationController.submitUser) {
-                    <fieldset>
-                        <legend>Create new company</legend>
-
-                        @inputText(
-                            registrationForm("name"),
-                            '_label -> "Name",
-                            '_error -> registrationForm("name").error.map(_.withMessage("Please insert a name"))
-                        )
-
-                        @inputText(
-                            registrationForm("company"),
-                            '_label -> "Company"
-                        )
-
-                        @inputText(
-                            registrationForm("email"),
-                            '_label -> "Email",
-                            '_error -> registrationForm("email").error.map(_.withMessage("Invalid email"))
-                        )
-
-                        @inputText(
-                            registrationForm("password"),
-                            '_label -> "Password"
-                        )
-
-                    </fieldset>
-                    <div class="actions">
-                        <input type="submit" class="btn btn-success" value="Create">
-                    </div>
-                }
-        }
-        </div>
+    <div class="row vertical-offset-100" style="padding-top:100px">
+      <div class="col-md-4 col-md-offset-4">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h3 class="panel-title">Create account</h3>
+          </div>
+          <div class="panel-body">
+            <form accept-charset="UTF-8" role="form" ng-submit="createUserAccount()">
+                <fieldset>
+                  <div class="form-group">
+                    <input class="form-control" ng-model="userForm.name" placeholder="Name" name="name" type="text" required>
+                  </div>
+                  <div ng-class="emailCss">
+                    <label class="control-label" ng-show="errors.show" for="newUserEmail">{{errors.content}}</label>
+                    <input id="newUserEmail" class="form-control" ng-model="userForm.email" placeholder="E-mail" name="email" type="email" required>
+                  </div>
+                  <div ng-class="passwordCss">
+                    <label class="control-label" ng-show="passwordErrors.show" for="userPassword">{{passwordErrors.content}}</label>
+                    <input id="userPassword" class="form-control" ng-model="userForm.password" placeholder="Password" name="password" type="password" value="" required>
+                  </div>
+                  <div class="form-group">
+                    <input class="form-control" ng-model="passwordConfirmation" placeholder="Repeat password" name="password" type="password" value="" required>
+                  </div>
+                  <div class="form-group">
+                    <input class="form-control" ng-model="userForm.company" placeholder="Company" name="company" type="text" required>
+                  </div>
+                  <br>
+                  <input class="btn btn-lg btn-success btn-block" type="submit" value="Create account">
+                </fieldset>
+            </form>
+          </div>
+      </div>
     </div>
+  </div>
 </div>
