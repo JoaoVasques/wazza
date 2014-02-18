@@ -70,11 +70,12 @@ class MongoDatabaseServiceTest  extends Specification {
       }
 
       "Delete" in {
-        val res = databaseService.deleteElementFromArray[JsObject](
+        val res = databaseService.deleteElementFromArray[String](
           "email",
           "test@gmail.com",
           "applications",
-          el
+          "name",
+          (el \ "name").as[String]
         ) match {
           case Success(_) => true
           case Failure(_) => false

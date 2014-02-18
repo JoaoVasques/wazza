@@ -189,18 +189,11 @@ class MongoDatabaseService extends DatabaseService {
     docIdKey: String,
     docIdValue: Any,
     arrayKey: String,
-    m: T
+    elementKey: String,
+    elementValue: T
   ): Try[Unit] = {
     val query = MongoDBObject(docIdKey -> docIdValue)
-
-    val model = m match {
-      case j: JsObject => {
-        convertJsonToDBObject(j)
-      }
-      case _ => m
-    }
-
-    val update = $pull(arrayKey -> model)
+    val update = $pull(arrayKey -> MongoDBObject(elementKey -> elementValue))
     this.collection.update(query, update)
   }
 

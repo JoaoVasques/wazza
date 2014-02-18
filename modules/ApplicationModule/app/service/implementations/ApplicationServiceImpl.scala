@@ -80,14 +80,8 @@ class ApplicationServiceImpl @Inject()(
         WazzaApplication.ItemsId,
         item
       ) match {
-        case Success(_) => {
-          println("item: " + item)
-          Success(item)
-        }
-        case Failure(f) => {
-          println(f.getMessage)
-          Failure(f)
-        }
+        case Success(_) => Success(item)
+        case Failure(f) => Failure(f)
       }
     }
 
@@ -123,11 +117,12 @@ class ApplicationServiceImpl @Inject()(
       val promise = Promise[Unit]
       val item = this.getItem(itemId, applicationName) match {
         case Some(item) => {
-          databaseService.deleteElementFromArray(
+          databaseService.deleteElementFromArray[String](
             WazzaApplication.Key,
             applicationName,
             WazzaApplication.ItemsId,
-            item
+            Item.ElementId,
+            itemId
           ) match {
             case Success(_) => {
               photoService.delete(imageName) map {res =>
