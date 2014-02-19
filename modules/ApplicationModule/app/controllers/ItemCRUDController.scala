@@ -32,10 +32,10 @@ import play.api.cache._
 **/
 
 class ItemCRUDController @Inject()(
-    applicationService: ApplicationService,
-    itemService: ItemService,
-    photosService: PhotosService
-  ) extends Controller {
+  applicationService: ApplicationService,
+  itemService: ItemService,
+  photosService: PhotosService
+) extends Controller {
 
   private def generateErrors(value: String) = {
     BadRequest(Json.obj("errors" -> value))
@@ -96,7 +96,7 @@ class ItemCRUDController @Inject()(
 
   private implicit def extractFile(filePart: FilePart[_]): File = {
     filePart.ref match {
-       case TemporaryFile(file) => file
+      case TemporaryFile(file) => file
     }
   }
 }
