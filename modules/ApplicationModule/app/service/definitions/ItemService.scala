@@ -16,7 +16,7 @@ trait ItemService {
 		virtualCurrency: Option[String],
 		price: Double,
 		publishedState: String,
-		purchaseType: Int,
+		purchaseType: String,
 		autoTranslate: Boolean,
 		autofill: Boolean,
 		language: String,
@@ -41,6 +41,8 @@ trait ItemService {
 
 	def getCurrencyTypes(): Map[String, Int]
 
-	protected def generateId(idType: Int, name: String, purchaseType: Int): String
+	def generateMetadataFile(item: Item): File
+
+	protected def generateId(idType: Int, name: String, purchaseType: String): String
 		
 }

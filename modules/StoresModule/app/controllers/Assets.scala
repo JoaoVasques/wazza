@@ -1,2 +1,0 @@
-package controllers.stores
-object Assets extends controllers.AssetsBuilder
