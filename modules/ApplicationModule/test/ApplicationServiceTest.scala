@@ -1,16 +1,10 @@
 package test.application
 
-import models.application.Currency
-import models.application.GoogleMetadata
-import models.application.GoogleTranslations
-import models.application.ImageInfo
-import models.application.InAppPurchaseMetadata
-import models.application.Item
-import models.application.VirtualCurrency
-import models.application.{WazzaApplication, Credentials}
+import models.application.{Credentials, Currency, GoogleMetadata, GoogleTranslations, ImageInfo, InAppPurchaseMetadata, Item, VirtualCurrency, WazzaApplication}
 import org.specs2.mutable._
-import play.api.test._
+import play.api.test.FakeApplication
 import play.api.test.Helpers._
+import scala.util.Failure
 import scala.util.Success
 import service.application.implementations.ApplicationServiceImpl
 import service.aws.implementations.PhotosServiceImpl
@@ -98,6 +92,9 @@ class ApplicationServiceTest extends Specification {
         // re-add application
         applicationService.insertApplication(application) must equalTo(Success(application))
         applicationService.addItem(item, application.name) must equalTo(Success(item))
+      }
+
+      "Get Item" in {
         applicationService.getItem(item.name, application.name) must equalTo(Some(item))
         applicationService.itemExists(item.name, application.name) must equalTo(true)
       }

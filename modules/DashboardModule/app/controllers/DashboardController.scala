@@ -55,12 +55,10 @@ class DashboardController @Inject()(
             "apiKey" -> application.credentials.apiKey,
             "sdkKey" -> application.credentials.sdkKey
           ),
-          "virtualCurrencies" -> JsArray()
-            /**new JsArray(application.virtualCurrencies map {vc =>
+          "virtualCurrencies" -> new JsArray(application.virtualCurrencies map {vc =>
             VirtualCurrency.buildJson(vc)
-          })*/,
+          }),
           "items" -> new JsArray(applicationService.getItems(application.name) map {item =>
-            println(item)
             Item.convertToJson(item)
           }),
           "applications" -> new JsArray(applications map {el =>

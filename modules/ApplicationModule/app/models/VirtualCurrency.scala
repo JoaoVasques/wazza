@@ -13,6 +13,7 @@ case class VirtualCurrency(
 )
 
 object VirtualCurrency {
+  val Id = "name"
 
   def buildJson(vc: VirtualCurrency): JsValue = {
     Json.obj(

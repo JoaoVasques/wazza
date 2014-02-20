@@ -1,6 +1,7 @@
 package service.persistence.definitions
 
 import com.mongodb.casbah.MongoCollection
+import play.api.libs.json.JsObject
 import play.api.libs.json.JsValue
 import scala.util.Try
 
@@ -34,15 +35,43 @@ trait DatabaseService {
     Array operations
   **/
 
-  def existsInArray[T <: Any](docIdKey: String, docIdValue: String, arrayKey: String, elementValue: T): Boolean
+  def existsInArray[T <: Any](
+    docIdKey: String,
+    docIdValue: String,
+    arrayKey: String,
+    elementKey: String,
+    elementValue: T
+  ): Boolean
 
-  def getElementFromArray[T <: Any](docIdKey: String, docIdValue: String, arrayKey: String, elementValue: T): Option[JsValue]
+  def getElementFromArray[T <: Any](
+    docIdKey: String,
+    docIdValue: String,
+    arrayKey: String,
+    elementKey: String,
+    elementValue: T
+  ): Option[JsValue]
 
-  def getElementsOfArray(docIdKey: String, docIdValue: String, arrayKey: String, limit: Option[Int]): List[JsValue]
+  def getElementsOfArray(
+    docIdKey: String,
+    docIdValue: String,
+    arrayKey: String,
+    limit: Option[Int]
+  ): List[JsValue]
 
-  def addElementToArray[T <: Any](docIdKey: String, docIdValue: Any, arrayKey: String, model: T): Try[Unit]
+  def addElementToArray[T <: Any](
+      docIdKey: String,
+      docIdValue: Any,
+      arrayKey: String,
+      model: T
+    ): Try[Unit]
 
-  def deleteElementFromArray[T <: Any](docIdKey: String, docIdValue: Any, arrayKey: String, m: T): Try[Unit]
+  def deleteElementFromArray[T <: Any](
+    docIdKey: String,
+    docIdValue: Any,
+    arrayKey: String,
+    elementKey: String,
+    elementValue:T
+  ): Try[Unit]
 
   def updateElementOnArray[T <: Any](
     docIdKey: String,
