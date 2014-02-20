@@ -5,14 +5,17 @@ angular.module('SecurityModule', [])
 .factory('cookiesManagerService', [
   '$cookieStore', '$cookies',
   function ($cookieStore, $cookies) {
-  return {
-    set: function(cookieName, value) {
+    var service = {};
+
+    service.set = function(cookieName, value) {
       $cookies[cookieName] = value;
       $cookieStore.put(cookieName, value);
-    },
-    get: function(cookieName){
+    };
+
+    service.get = function(cookieName){
       return $cookies[cookieName];
-    }
-  };
+    };
+
+    return service;
 }])
 ;

@@ -14,8 +14,16 @@ import play.api.libs.json.JsValue
 import InAppPurchaseContext._
 import scala.util.{Try, Success, Failure}
 import scala.reflect.runtime.universe._
+import com.mongodb.casbah.commons.{MongoDBList}
+import com.google.inject._
+import service.aws.definitions.{PhotosService}
+import scala.concurrent._
+import ExecutionContext.Implicits.global
+import scala.language.implicitConversions
 
-class ApplicationServiceImpl extends ApplicationService with ApplicationErrors{
+class ApplicationServiceImpl @Inject()(
+    photoService: PhotosService
+) extends ApplicationService with ApplicationErrors{
     
     private val dao = WazzaApplication.getDAO
 
@@ -55,6 +63,10 @@ class ApplicationServiceImpl extends ApplicationService with ApplicationErrors{
 
     def getApplicationyTypes: List[String] = {
         WazzaApplication.applicationTypes
+    }
+
+    def getApplicationCountries(appName: String): List[String] = {
+        List("PT")
     }
 
     private def addDocumentToArray[T <: ApplicationList](doc: T, value: String, applicationName: String): Try[T] = {
@@ -107,7 +119,7 @@ class ApplicationServiceImpl extends ApplicationService with ApplicationErrors{
         applicationName: String
     ): Boolean = {
         if(exists(applicationName)){
-            !dao.find(MongoDBObject(s"$applicationAttribute.$key" -> value)).isEmpty
+          !dao.find(MongoDBObject(s"$applicationAttribute.$key" -> value)).isEmpty
         } else {
             false
         }
@@ -139,16 +151,36 @@ class ApplicationServiceImpl extends ApplicationService with ApplicationErrors{
         getDocumentInArray("items", "_id", itemId, applicationName)
     }
 
+    def getItems(applicationName: String, offset: Int = 0): List[Item] = {
+        // WARNING: this is inefficient because it loads all items from DB. For now, just works... to be fixed later
+        this.find(applicationName) match {
+            case Some(application) => application.items.drop(offset).take(ItemBatch)
+            case None => Nil
+        }
+    }
+
     def itemExists(keyValue: String, applicationName: String, key: String = "name"): Boolean = {
         if(key == "name"){
-            existsDocumentInArray("items", "._id", keyValue, applicationName)
+            existsDocumentInArray("items", "_id", keyValue, applicationName)
         } else {
             existsDocumentInArray("items", "metadata.itemId", keyValue, applicationName)
         }
     }
 
-    def deleteItem(itemId: String, applicationName: String): Try[Unit] = {
-        deleteDocumentFromArray[Item]("items", "_id", itemId, applicationName)
+    def deleteItem(itemId: String, applicationName: String, imageName: String): Future[Unit] = {
+        val promise = Promise[Unit]
+        val result = deleteDocumentFromArray[Item]("items", "_id", itemId, applicationName)
+        result match {
+            case Success(_) => {
+                photoService.delete(imageName) map {res =>
+                    promise.success()
+                } recover {
+                    case err: Exception => promise.failure(err)
+                }
+            }
+            case Failure(failure) => promise.failure(failure)
+        }
+        promise.future
     }
 
     def addVirtualCurrency(currency: VirtualCurrency, applicationName: String): Try[VirtualCurrency] = {
@@ -175,5 +207,21 @@ class ApplicationServiceImpl extends ApplicationService with ApplicationErrors{
 
     def virtualCurrencyExists(currencyName: String, applicationName: String): Boolean = {
         existsDocumentInArray("virtualCurrencies", "name", currencyName, applicationName)
+    }
+
+    implicit def convertListJsonToItem(jsonList: List[JsValue]): List[Item] = {
+        jsonList.map {el =>
+            new Item(
+                (el \ "_id").as[String],
+                (el \ "description").as[String],
+                (el \ "store").as[Int],
+                (el \ "metadata"),
+                (el \ "currency"),
+                new ImageInfo(
+                    (el \ "name").as[String],
+                    (el \ "url").as[String]
+                )
+            )
+        }
     }
 }

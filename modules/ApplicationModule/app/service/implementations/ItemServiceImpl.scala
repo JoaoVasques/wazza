@@ -8,22 +8,22 @@ import scala.util.{Try, Success, Failure}
 import InAppPurchaseContext._
 import play.api.mvc.{MultipartFormData}
 import play.api.libs.json._
-import scala.collection.mutable.ListBuffer
+import scala.collection.mutable.{ArrayBuffer, ListBuffer}
 import com.github.nscala_time.time.Imports._
-import service.aws.definitions._
 import play.api.libs.Files._
 import java.io.File
+import java.io.PrintWriter
 import play.api.mvc.MultipartFormData._
 import scala.concurrent._
 import ExecutionContext.Implicits.global
 import scala.language.implicitConversions
 
 class ItemServiceImpl @Inject()(
-	applicationService: ApplicationService,
-	uploadFileService: UploadFileService
+	applicationService: ApplicationService
 ) extends ItemService {
 	
 	private val dao = Item.getDAO
+	private lazy val MultiplyDelta = 1000000
 
 	def createGooglePlayItem(
 		applicationName: String,
@@ -33,7 +33,7 @@ class ItemServiceImpl @Inject()(
 		virtualCurrency: Option[String],
 		price: Double,
 		publishedState: String,
-		purchaseType: Int,
+		purchaseType: String,
 		autoTranslate: Boolean,
 		autofill: Boolean,
 		language: String,
@@ -51,10 +51,11 @@ class ItemServiceImpl @Inject()(
 			publishedState,
 			purchaseType,
 			autoTranslate,
-			List[GoogleTranslations](),
+			List[GoogleTranslations](GoogleTranslations(InAppPurchaseMetadata.LanguageCodes.get(language).get, name, description)),
 			autofill,
 			language,
-			price
+			price,
+			applicationService.getApplicationCountries(applicationName)
 		)
 
 		val item = new Item(
@@ -160,7 +161,7 @@ class ItemServiceImpl @Inject()(
 				(itemData("currency") \ "virtualCurrency").asOpt[String],
 				(itemData("currency") \ "value").as[Double],
 				(itemData("metadata") \ "publishedState").as[String],
-				(itemData("metadata") \ "purchaseType").as[Int],
+				(itemData("metadata") \ "purchaseType").as[String],
 				(itemData("metadata") \ "autoTranslate").as[Boolean],
 				(itemData("metadata") \ "autofill").as[Boolean],
 				(itemData("metadata") \ "language").as[String],
@@ -174,12 +175,57 @@ class ItemServiceImpl @Inject()(
 		Map("Real" -> RealWordCurrencyType, "Virtual" -> VirtualCurrencyType)
 	}
 
-	protected def generateId(idType: Int, name: String, purchaseType: Int): String = {
-		val date = DateTime.now.toString().replace(":","_")
-		val formatedName = name.toLowerCase.replace(" ", "_")
+	def generateMetadataFile(item: Item): File = {
+		def escape(str: String): String = {			
+			str.replaceAll(";","\\;").replaceAll("\"", "\\")
+		}
+
+    def parseContent(content: String): String = {
+      lazy val DescriptionSectionThreshold = 2
+      lazy val MainSeparator = ","
+      lazy val SubsectionSeparator = ';'
+      val parsedContent = content.replace("\n","").split(MainSeparator)
+      val result = ArrayBuffer[String]()
+      parsedContent.map({(el: String) =>
+        if(el.count(_ == SubsectionSeparator) > DescriptionSectionThreshold){
+          result += s"${el.dropRight(1)},"
+        } else {
+          result += s"$el,"
+        }
+      })
+      result.mkString.dropRight(1)
+    }
+
+		item.metadata match {
+			case google: GoogleMetadata => {
+				val file = new File(s"/tmp/" + item.name + ".csv")
+		    val writer = new PrintWriter(file)
+		    val content = views.txt.csv.csvGoogleTemplate.render(
+				  google.itemId,
+				  google.publishedState,
+				  google.purchaseType,
+				  google.autoTranslate,
+				  google.locale,
+				  escape(google.title),
+				  escape(google.description),
+				  google.autofill,
+          List("PT"), //TODO default
+				  (google.price * MultiplyDelta).toInt
+			  ).body
+
+			  writer.write(parseContent(content))
+		    writer.close()
+				file
+			}
+			case _ => null
+		}
+	}
+
+	protected def generateId(idType: Int, name: String, purchaseType: String): String = {
+		val date = DateTime.now.toString()
 
 		idType match {
-			case GoogleStoreId => s"$date.$formatedName.$purchaseType"
+			case GoogleStoreId => s"${date.replace(":","_").replace("-","_").toLowerCase}.${name.toLowerCase.replace(" ", "_")}.$purchaseType"
 			case AppleStoreId => null //TODO
 			case _ => null
 		}
@@ -189,5 +235,11 @@ class ItemServiceImpl @Inject()(
     filePart.ref match {
        case TemporaryFile(file) => file
     }
+  }
+
+  private implicit def convertStringListToCountryInfo(lst: List[String]): List[CountryInfo] = {
+  	lst.map((el: String) => {
+  		new CountryInfo(el)
+  	})
   }
 }

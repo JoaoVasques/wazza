@@ -1,4 +1,4 @@
-@(itemType: String, currencyTypes: List[String])
+@(currencyTypes: List[String])
 
 @inputText(placeholderName: String, name: String, required: Boolean, show: String = null) = {
   <div class="form-group" @if(show != null){ng-show=@show}>
@@ -60,7 +60,6 @@
 
 @createItemForm(metadata: Html) = {
   <form class="form-vertical" enctype="multipart/form-data" ng-submit="createItem()">
-    <legend>New item</legend>
     @inputText("Name", "name", true)
     @textArea("Description", "description", true)
     @metadata
@@ -69,13 +68,7 @@
     <input type="submit" class="btn btn-success" value="Create">
     <div class="alert alert-danger" ng-show="errors">There were errors with your submission</div>
   </form>
+
 }
 
-@itemType match {
-  case "Android" => {
-    @createItemForm(androidMetadata)
-  }
-  case "iOS" => {
-    @createItemForm(iOsMetadata)
-  }
-}
+@createItemForm(androidMetadata)

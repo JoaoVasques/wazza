@@ -21,35 +21,6 @@ import com.github.nscala_time.time.Imports._
 
 class UploadFileServiceImpl extends UploadFileService {
 
-  private object ExpirationDate{
-    val Year = 2035;
-    val Month = 12
-    val Day = 25
-  }
-
-  private def getAWSCredentials(): Try[Map[String, String]] = {
-    Play.current.configuration.getConfig("aws") match {
-      case Some(config) => {
-        Success(Map(
-          "accessKeyId" -> config.underlying.root.get("accessKeyId").render.filter(_ != '"'),
-          "secretKey" -> config.underlying.root.get("secretKey").render.filter(_ != '"')
-          )
-        )
-      }
-      case _ => Failure(new Exception("AWS Credentials do not exist"))
-    }
-  }
-
-  private def getS3Client(bucketName: String): Try[AmazonS3Client] = {
-    getAWSCredentials match {
-      case Success(credentialData) => {
-        val myCredentials = new BasicAWSCredentials(credentialData("accessKeyId"), credentialData("secretKey"))
-        Success(new AmazonS3Client(myCredentials))
-      }
-      case Failure(failure) => Failure(failure)
-    }
-  }
-
   private def generateFileName(file: File): String = {
     (new HexBinaryAdapter()).marshal(MessageDigest.getInstance("SHA-1").digest(file.getName.getBytes()))
   }
