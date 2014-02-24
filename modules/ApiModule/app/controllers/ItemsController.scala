@@ -43,7 +43,6 @@ class ItemsController @Inject()(
   }
   
   def handlePurchase = Action(parse.json) {implicit request =>
-
     if(applicationService.itemExists(
       (request.body \ "itemId").as[String],
       (request.body \ "applicationName").as[String]

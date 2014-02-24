@@ -17,3 +17,5 @@ class Application extends Controller with Security{
   def dashboard = Action {
   	Ok(views.html.dashboard("Your new application is ready."))
   }
+
+}
