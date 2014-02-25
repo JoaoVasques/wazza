@@ -31,7 +31,6 @@ templatesImport += "models.user._"
 templatesImport += "controllers.user._"
 
 lazy val mySettings = Seq(
-    Keys.fork in run := true,
     javaOptions in run += "-Dconfig.file=conf/dev/application_dev.conf",
     routesImport ++= Seq("se.radley.plugin.salat.Binders._"),
     scalacOptions ++= Seq("-feature", "-language:reflectiveCalls")
@@ -39,9 +38,9 @@ lazy val mySettings = Seq(
 
 // Projects
 lazy val home = project.in(file("."))
-                .aggregate(dashboardModule, userModule, applicationModule, securityModule, photosModule, awsModule, apiModule)
-                .dependsOn(dashboardModule, userModule, applicationModule, securityModule, photosModule, awsModule, apiModule)
-                .settings(mySettings: _*)
+  .aggregate(dashboardModule, userModule, applicationModule, securityModule, photosModule, awsModule, apiModule, persistenceModule)
+  .dependsOn(dashboardModule, userModule, applicationModule, securityModule, photosModule, awsModule, apiModule, persistenceModule)
+  .settings(mySettings: _*)
 
 lazy val dashboardModule = play.Project("dashboard",
                     version.toString,
@@ -56,7 +55,7 @@ lazy val userModule = play.Project("user",
                     dependencies,
                     path = file("modules/UserModule")
               )
-              .dependsOn(securityModule)
+              .dependsOn(securityModule, persistenceModule)
               .settings(mySettings: _*)
 
 lazy val applicationModule = play.Project("application",
@@ -64,7 +63,7 @@ lazy val applicationModule = play.Project("application",
                     dependencies,
                     path = file("modules/ApplicationModule")
               )
-              .dependsOn(securityModule, photosModule, awsModule, userModule)
+              .dependsOn(securityModule, photosModule, awsModule, userModule, persistenceModule)
               .settings(mySettings: _*)
 
 lazy val securityModule = play.Project("security",
@@ -95,5 +94,14 @@ lazy val apiModule = play.Project("api",
               )
               .dependsOn(securityModule, awsModule, userModule, applicationModule)
               .settings(mySettings: _*)
+
+
+lazy val persistenceModule = play.Project("persistence",
+                  version.toString,
+                  dependencies,
+                  path = file("modules/PersistenceModule")
+              )
+              .settings(mySettings: _*)
+
 
 play.Project.playScalaSettings

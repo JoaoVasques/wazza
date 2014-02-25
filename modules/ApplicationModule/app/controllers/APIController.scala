@@ -46,7 +46,7 @@ class APIController @Inject()(
   def getItems(applicationName: String, offset: Int) = HasToken() {token => userId => implicit request =>
     val items = applicationService.getItems(applicationName, offset)
     Ok(new JsArray(items map {item =>
-      Json.parse(Item.toCompactJson(item))
+      Item.convertToJson(item)
     }))
   }
 }
