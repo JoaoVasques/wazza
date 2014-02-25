@@ -38,12 +38,11 @@ class ItemsController @Inject()(
   def getItemDetails(id: String, applicationName: String) = Action {implicit request =>
     val res = applicationService.getItem(id, applicationName)
     Ok(Json.obj(
-      "item" -> ""// res.map{item => Json.parse(Item.toCompactJson(item))}
+      "item" ->  res.map{item => Item.convertToJson(item)}
     ))
   }
   
   def handlePurchase = Action(parse.json) {implicit request =>
-
     if(applicationService.itemExists(
       (request.body \ "itemId").as[String],
       (request.body \ "applicationName").as[String]
