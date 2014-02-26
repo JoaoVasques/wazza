@@ -1,5 +1,6 @@
 package controllers.api
 
+import java.security.MessageDigest
 import models.application.Credentials
 import play.api._
 import play.api.libs.Crypto
@@ -16,6 +17,8 @@ import service.application.modules._
 import service.aws.modules.AWSModule
 import service.persistence.modules.PersistenceModule
 import org.apache.commons.codec.binary.Base64
+import org.apache.commons.codec.digest.DigestUtils
+import org.apache.commons.codec.binary.Hex
 
 trait ApiSecurity { self: Controller =>
 
@@ -45,17 +48,20 @@ trait ApiSecurity { self: Controller =>
     credentials: Credentials
   ): Result = {
 
+    def checkMessageIntegrity(messageDigest: String, content: String): Boolean = {
+      val md = MessageDigest.getInstance("SHA-256")
+      md.update(content.getBytes("UTF-8"))
+      return Hex.encodeHexString(md.digest()) == messageDigest
+    }
+
     body match {
       case b: JsValue => {
-        println(credentials)
-        try {
-          println(b.toString)
-          val content = (b \ "content").as[String]
-          val x = Base64.decodeBase64(content)
-          println(x)
-          val  a = Crypto.encryptAES(new String(x), credentials.apiKey)
-          println(a)
-          f(request)
+        try { 
+          if(checkMessageIntegrity(request.headers.get("Digest").get, (b \ "content").as[String])) {
+            f(request)
+          } else {
+            BadRequest
+          }
         } catch {
           case e: Exception => {
             println(e.getMessage())
@@ -71,9 +77,6 @@ trait ApiSecurity { self: Controller =>
   def ApiSecurityHandler[A]
     (p: BodyParser[A] = parse.json)
     (f:  Request[A] => Result): Action[A] = Action(p){implicit request =>
-
-    println("request!!")
-
     request.headers.get(ApplicationNameHeader) match {
       case Some(name) => {
         applicationService.getApplicationCredentials(name) match {
