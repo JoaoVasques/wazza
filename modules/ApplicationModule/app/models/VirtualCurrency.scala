@@ -3,8 +3,6 @@ package models.application
 import play.api.Play.current
 import play.api.libs.json._
 import java.util.Date
-import ApplicationMongoContext._
-import InAppPurchaseContext._
 import scala.language.implicitConversions
 import play.api.libs.functional.syntax._
 
@@ -16,18 +14,8 @@ case class VirtualCurrency(
 
 object VirtualCurrency {
 
-  implicit val reader = (
-    (__ \ "name").read[String] and
-    (__ \ "price").read[Double] and
-    (__ \ "inAppPurchaseMetadata").read[InAppPurchaseMetadata]
-  )(VirtualCurrency.apply _)
+  val Id = "name"
 
-  implicit val writer = (
-    (__ \ "name").write[String] and
-    (__ \ "price").write[Double] and
-    (__ \ "inAppPurchaseMetadata").write[InAppPurchaseMetadata]
-  )(unlift(VirtualCurrency.unapply))
-/**
   def buildJson(vc: VirtualCurrency): JsValue = {
     Json.obj(
       "name" -> vc.name,
@@ -51,8 +39,8 @@ object VirtualCurrency {
     }
   }
 
-  implicit def convertJsonSetToVCList(set: Set[JsValue]): List[VirtualCurrency] = {
-    set.map((json: JsValue) => {
+  implicit def buildVCListFromJsonArray(array: JsArray): List[VirtualCurrency] = {
+   array.value .map((json: JsValue) => {
       new VirtualCurrency(
         (json \ "name").as[String],
         (json \ "price").as[Double],
@@ -60,5 +48,4 @@ object VirtualCurrency {
       )
     }).toList
   }
-  **/
 }

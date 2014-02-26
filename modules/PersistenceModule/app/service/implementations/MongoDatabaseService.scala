@@ -23,7 +23,6 @@ class MongoDatabaseService extends DatabaseService {
   private def getMongoClient(): Try[MongoClient] = {
     Play.current.configuration.getConfig("mongodb.dev") match {
       case Some(config) => {
-        println(config)
         val uriStr = config.underlying.root.get("uri").render.filter(_ != '"')
         val uri = MongoClientURI(uriStr)
         this.databaseName = uriStr.split("/").last
@@ -31,6 +30,10 @@ class MongoDatabaseService extends DatabaseService {
       }
       case _ => Failure(new Exception("MongoDb credentials do not exist"))
     }
+  }
+
+  def dropCollection(): Unit = {
+    collection.drop()
   }
 
   def init(collectionName: String): Try[Unit] = {
@@ -109,9 +112,10 @@ class MongoDatabaseService extends DatabaseService {
     docIdKey: String,
     docIdValue: String,
     arrayKey: String,
+    elementKey: String,
     elementValue: T
   ): Boolean = {
-    this.getElementFromArray[T](docIdKey, docIdValue, arrayKey, elementValue) match {
+    this.getElementFromArray[T](docIdKey, docIdValue, arrayKey, elementKey, elementValue) match {
       case Some(_) => true
       case None => false
     }
@@ -121,25 +125,44 @@ class MongoDatabaseService extends DatabaseService {
     docIdKey: String,
     docIdValue: String,
     arrayKey: String,
+    elementKey: String,
     elementValue: T
   ): Option[JsValue] = {
 
-    val element = elementValue match {
-      case j: JsObject => {
-       arrayKey $in List(convertJsonToDBObject(j))
-      }
-      case s: String => {
-        arrayKey $in List(s)
-      }
+    def findElementAux(array: JsArray): Option[JsValue] = {  
+       array.value.find{ el=> {
+         (el \ elementKey).as[String].filter(_ != '"').equals(elementValue)
+      }}
     }
 
-    val query = element ++ MongoDBObject(docIdKey -> docIdValue)
+    val query = MongoDBObject(docIdKey -> docIdValue)
     val projection = MongoDBObject(arrayKey -> 1)
     this.collection.findOne(query, projection) match {
-      case Some(obj) => {
-        Some(Json.parse(obj.toString))
-      }
+      case Some(obj) => findElementAux((Json.parse(obj.toString) \ arrayKey).as[JsArray])   
       case _ => None
+    }
+  }
+
+
+  def getElementsOfArray(
+    docIdKey: String,
+    docIdValue: String,
+    arrayKey: String,
+    limit: Option[Int]
+  ): List[JsValue] = {
+    val query = MongoDBObject(docIdKey -> docIdValue)
+    val projection = MongoDBObject(arrayKey -> 1)
+    limit match {
+      case Some(maxNumberElements) => {
+        this.collection.find(query, projection).limit(maxNumberElements).map{el =>
+          Json.parse(el.toString)
+        }.toList
+      }
+      case None => {
+        this.collection.find(query, projection).map{el =>
+          Json.parse(el.toString)
+        }.toList
+      }
     }
   }
 
@@ -166,18 +189,11 @@ class MongoDatabaseService extends DatabaseService {
     docIdKey: String,
     docIdValue: Any,
     arrayKey: String,
-    m: T
+    elementKey: String,
+    elementValue: T
   ): Try[Unit] = {
     val query = MongoDBObject(docIdKey -> docIdValue)
-
-    val model = m match {
-      case j: JsObject => {
-        convertJsonToDBObject(j)
-      }
-      case _ => m
-    }
-
-    val update = $pull(arrayKey -> model)
+    val update = $pull(arrayKey -> MongoDBObject(elementKey -> elementValue))
     this.collection.update(query, update)
   }
 
@@ -200,11 +216,6 @@ class MongoDatabaseService extends DatabaseService {
     val query = MongoDBObject(docIdKey -> docIdValue, s"$arrayKey.$elementId" -> elementIdValue)
     val update = $set((arrayKey+".$." + elementId) -> model)
     this.collection.update(query, update)
-  }
-
-  /** Database operations **/
-  def dropCollection(): Unit = {
-    collection.drop()
   }
 }
 

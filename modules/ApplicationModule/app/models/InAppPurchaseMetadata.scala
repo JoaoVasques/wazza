@@ -20,17 +20,7 @@ case class GoogleTranslations(
 )
 
 object GoogleTranslations {
-  implicit val reader = (
-    (__ \ "locale").read[String] and
-    (__ \ "title").read[String] and
-    (__ \ "description").read[String]
-  )(GoogleTranslations.apply _)
-
-  implicit val write = (
-    (__ \ "locale").write[String] and
-    (__ \ "title").write[String] and
-    (__ \ "description").write[String]
-  )(unlift(GoogleTranslations.unapply))
+  implicit val format = Json.format[GoogleTranslations]
 }
 
 case class GoogleMetadata(
@@ -51,36 +41,7 @@ case class GoogleMetadata(
 
 object GoogleMetadata {
 
-  implicit val reader = (
-    (__ \ "name").read[String] and
-    (__ \ "itemId").read[String] and
-    (__ \ "title").read[String] and
-    (__ \ "description").read[String] and
-    (__ \ "publishedState").read[String] and
-    (__ \ "purchaseType").read[String] and
-    (__ \ "autoTranslate").read[Boolean] and
-    (__ \ "locale").read[List[GoogleTranslations]] and
-    (__ \ "autofill").read[Boolean] and
-    (__ \ "language").read[String] and
-    (__ \ "price").read[Double] and
-    (__ \ "countries").read[List[String]]
-  )(GoogleMetadata.apply _)
-
-  implicit val writer = (
-    (__ \ "name").write[String] and
-    (__ \ "itemId").write[String] and
-    (__ \ "title").write[String] and
-    (__ \ "description").write[String] and
-    (__ \ "publishedState").write[String] and
-    (__ \ "purchaseType").write[String] and
-    (__ \ "autoTranslate").write[Boolean] and
-    (__ \ "locale").write[List[GoogleTranslations]] and
-    (__ \ "autofill").write[Boolean] and
-    (__ \ "language").write[String] and
-    (__ \ "price").write[Double] and
-    (__ \ "countries").write[List[String]]
-  )(unlift(GoogleMetadata.unapply))
-
+  implicit val format = Json.format[GoogleMetadata]
 }
 
 case class AppleMetadata(
@@ -129,52 +90,7 @@ case class AppleDurationProperties(
 object InAppPurchaseMetadata {
 
   lazy val Android = "android"
-  lazy val IOS = "ios" 
-
-  implicit object metadataWrite extends Writes[InAppPurchaseMetadata] {
-    def writes(iap: InAppPurchaseMetadata) = iap match {
-      case google: GoogleMetadata => Json.toJson(iap)
-      case apple: AppleMetadata => null
-    }
-  }
-  
-  implicit object metadataRead extends Reads[InAppPurchaseMetadata] {
-    def reads(json: JsValue) = {
-      (json \ "osType").as[String] match {
-        case Android => json.validate[GoogleMetadata]
-        case IOS => null
-      }
-    }
-  }
-
-  /**
-  def buildJson(metadata: InAppPurchaseMetadata): JsValue = {
-    metadata match {
-      case google: GoogleMetadata => {
-        Json.obj(
-          "osType" -> google.osType,
-          "itemId" -> google.itemId,
-          "title" -> google.title,
-          "description" -> google.description,
-          "publicationName" -> google.publishedState,
-          "purchaseType" -> google.purchaseType,
-          "autoTranslate" -> google.autoTranslate,
-          "locale" -> Json.toJson(google.locale.map((el: GoogleTranslations) => {
-            Json.obj("locale" -> el.locale, "title" -> el.title, "description" -> el.description)
-          })),
-          "autofill" -> google.autofill,
-          "language" -> google.language,
-          "price" -> google.price
-        )
-      }
-      case apple: AppleMetadata => {
-        //TODO
-        Json.obj()
-      }
-      case _ => null
-    }
-  }
-  **/
+  lazy val IOS = "ios"
 
   val LanguageCodes = Map(
     "Chinese" ->    "zh_TW",
@@ -197,6 +113,67 @@ object InAppPurchaseMetadata {
     "Swedish" ->    "sv_SE",
     "Hindi" ->      "hi_IN"
   )
+
+  implicit def buildJson(metadata: InAppPurchaseMetadata): JsValue = {
+    metadata match {
+      case google: GoogleMetadata => {
+        Json.obj(
+          "osType" -> google.osType,
+          "itemId" -> google.itemId,
+          "title" -> google.title,
+          "description" -> google.description,
+          "publishedState" -> google.publishedState,
+          "purchaseType" -> google.purchaseType,
+          "autoTranslate" -> google.autoTranslate,
+          "locale" -> Json.toJson(google.locale.map((el: GoogleTranslations) => {
+            Json.obj("locale" -> el.locale, "title" -> el.title, "description" -> el.description)
+          })),
+          "autofill" -> google.autofill,
+          "language" -> google.language,
+          "price" -> google.price,
+          "countries" -> google.countries
+        )
+      }
+      case apple: AppleMetadata => {
+        //TODO
+        Json.obj()
+      }
+      case _ => null
+    }
+  }
+
+  private implicit def buildLocateFromJson(array: JsArray): List[GoogleTranslations] = {
+    array.value.map{(el: JsValue) =>
+      new GoogleTranslations(
+        (el \ "locale").as[String],
+        (el \ "title").as[String],
+        (el \ "description").as[String]
+      )
+    }.toList
+  }
+
+  implicit def buildFromJson(json: JsValue): InAppPurchaseMetadata = {
+    val metadataType = (json \ "osType").as[String]
+    metadataType match {
+      case Android => {
+        new GoogleMetadata(
+          (json \ "osType").as[String],
+          (json \ "itemId").as[String],
+          (json \ "title").as[String],
+          (json \ "description").as[String],
+          (json \ "publishedState").as[String],
+          (json \ "purchaseType").as[String],
+          (json \ "autoTranslate").as[Boolean],
+          (json \ "locale").as[JsArray],
+          (json \ "autofill").as[Boolean],
+          (json \ "language").as[String],
+          (json \ "price").as[Double],
+          (json \ "countries").as[List[String]]
+        )
+      }
+      case IOS => null //TODO
+    }
+  }
 }
 
 package object InAppPurchaseContext {
@@ -217,110 +194,5 @@ package object InAppPurchaseContext {
   lazy val ManagedProduct = 0
   lazy val Subscription = 1
   lazy val UnManaged = 2
-/**
-  implicit def jsonToMetadata(obj: JsValue): InAppPurchaseMetadata = {
-    val metadataType = (obj \ "_t").as[String]
-    if(metadataType == GoogleMetadataType){
-      new GoogleMetadata(
-        (obj \ "osType").as[String],
-        (obj \ "itemId").as[String],
-        (obj \ "title").as[String],
-        (obj \ "description").as[String],
-        (obj \ "publishedState").as[String],
-        (obj \ "purchaseType").as[String],
-        (obj \ "autoTranslate").as[Boolean],
-        (obj \ "locale"),
-        (obj \ "autofill").as[Boolean],
-        (obj \ "language").as[String],
-        (obj \ "price").as[Double],
-        (obj \ "country").as[List[String]]
-      )
-    } else {
-      new AppleMetadata(
-        (obj \ "osType").as[String],
-        (obj \ "itemId").as[String],
-        (obj \ "title").as[String],
-        (obj \ "description").as[String],
-        (obj \ "productProperties"),
-        (obj \ "languageProperties"),
-        (obj \ "pricingProperties"),
-        (obj \ "languageProperties")
-      )
-    }
-  }
-  *
 
-  implicit def jsonToCurrency(obj: JsValue): Currency = {
-    new Currency(
-      (obj \ "typeOf").as[Int],
-      (obj \ "value").as[Double],
-      (obj \ "virtualCurrency").asOpt[String]
-    )
-  }
-
-  implicit def jsonArrayToLocale(obj: JsValue): List[GoogleTranslations] = {
-    obj match {
-      case JsArray(array) => {
-        array.map((element: JsValue) => {
-          new GoogleTranslations(
-              (element \ "locale").as[String],
-              (element \ "title").as[String],
-              (element \ "description").as[String]
-          )
-        }).toList
-      }
-      case _ => List[GoogleTranslations]()
-    }
-  }
-
-  
-  implicit def jsonArrayToCountryInfo(obj: JsValue): List[CountryInfo] = {
-    obj match {
-      case JsArray(array) => {
-        array.map((el: JsValue) => {
-          new CountryInfo(
-            (el \ "name").as[String]
-          )
-        }).toList
-      }
-      case _ => List[CountryInfo]()
-    }
-  }
-
-  implicit def jsonToAppleProductProperties(obj: JsValue): AppleProductProperties = {
-    new AppleProductProperties(
-      (obj \ "productType").as[Int],
-      (obj \ "status").as[String],
-      (obj \ "reviewNotes").as[String]
-    )
-  }
-
-  implicit def jsonToAppleLanguageProperties(obj: JsValue): AppleLanguageProperties = {
-    new AppleLanguageProperties(
-      (obj \ "language").as[String],
-      (obj \ "display").as[String],
-      (obj \ "description").as[String],
-      (obj \ "publicationName").as[String]
-    )
-  }
-
-  implicit def jsonToApplePricingProperties(obj: JsValue): ApplePricingProperties = {
-    new ApplePricingProperties(
-      (obj \ "clearedForSale").as[Boolean],
-      (obj \ "price").as[Double],
-      new PricingAvailability(
-        (obj \ "pricingAvailability" \ "begin").as[Date],
-        (obj \ "pricingAvailability" \ "end").as[Date]
-      )
-    )
-  }
-
-  implicit def jsonToAppleDurationProperties(obj: JsValue): AppleDurationProperties = {
-    new AppleDurationProperties(
-      (obj \ "autoRenewalDuration").as[Date],
-      (obj \ "freeTrialDuration").as[Date],
-      (obj \ "marketingIncentiveDuration").as[Date]
-    )
-  }
-  **/
 }

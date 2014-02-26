@@ -12,7 +12,6 @@ case class Credentials(
 )
 
 object Credentials {
-
   implicit val reader = (
     (__ \ "appId").read[String] and
     (__ \ "apiKey").read[String] and
@@ -24,6 +23,22 @@ object Credentials {
     (__ \ "apiKey").write[String] and
     (__ \ "sdkKey").write[String]
   )(unlift(Credentials.unapply))
+
+  implicit def toJson(credential: Credentials): JsValue = {
+    Json.obj(
+      "appId" -> credential.appId,
+      "apiKey" -> credential.apiKey,
+      "sdkKey" -> credential.sdkKey
+    )
+  }
+
+  implicit def fromJson(json: JsValue): Credentials = {
+    new Credentials(
+      (json \ "appId").as[String],
+      (json \ "apiKey").as[String],
+      (json \ "sdkKey").as[String]
+    )
+  }
 }
 
 case class WazzaApplication(
@@ -42,14 +57,9 @@ object WazzaApplication {
   lazy val ItemsId = "items"
   lazy val VirtualCurrenciesId = "virtualCurrencies"
   lazy val applicationTypes = List("iOS", "Android")
-
 }
 
 package object WazzaApplicationImplicits {
-
-  private def buildList[T](jsonArray: JsArray): List[T] = {
-    List[T]()
-  }
 
   implicit def buildFromJson(json: JsValue): WazzaApplication = {
     new WazzaApplication(
@@ -58,9 +68,9 @@ package object WazzaApplicationImplicits {
       (json \ "imageName").as[String],
       (json \ "packageName").as[String],
       (json \ "appType").asOpt[String],
-      json.validate[Credentials].get,
-      buildList[Item]((json \ "items").as[JsArray]),
-      buildList[VirtualCurrency]((json \ "items").as[JsArray])
+      (json \ "credentials").validate[Credentials].get,
+      (json \ "items").as[JsArray],
+      (json \ "virtualCurrencies").as[JsArray]
     )
   }
 
@@ -79,8 +89,12 @@ package object WazzaApplicationImplicits {
       "packageName" -> application.packageName,
       "appType" -> application.appType,
       "credentials" -> Json.toJson(application.credentials),
-      "items" -> "",
-      "virtualCurrencies" -> ""
+      "items" -> JsArray(application.items.map{item =>
+        Item.convertToJson(item)
+      }.toSeq),
+      "virtualCurrencies" -> JsArray(application.virtualCurrencies.map {vc =>
+        VirtualCurrency.buildJson(vc)
+      })
     )
   }
 }

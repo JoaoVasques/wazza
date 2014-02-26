@@ -136,7 +136,6 @@ class CRUDController @Inject()(
               Redirect("/dashboard")
             }
             case Failure(f) => {
-              println(f)
               BadRequest(f.getMessage)
             }
           }

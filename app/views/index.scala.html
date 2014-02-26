@@ -1,24 +1,35 @@
+@(title: String)
+
 <!DOCTYPE html>
-<html lang="en-GB">
+
+@javascripts = {
+	<!-- TODO: Colocar analytics -->
+	<!-- @views.html.dashboardJavascripts.render() -->
+}
+
+@stylesheets = {
+	<!-- Bootstrap core CSS -->
+	<link rel="stylesheet" media="screen" href="@routes.WebJarAssets.at(WebJarAssets.locate("bootstrap.min.css"))">
+	<link rel="stylesheet" type="text/css" media="screen" href="@routes.Assets.at("stylesheets/style.css")">
+	<link rel="stylesheet" type="text/css" media="screen" href="@routes.Assets.at("stylesheets/font-awesome.min.css")">
+	<link href='http://fonts.googleapis.com/css?family=Titillium+Web:400,600,300,200&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
+	<!-- TODO: Colocar favicon -->
+	<link rel="shortcut icon" type="image/png" href="@routes.Assets.at("images/favicon.png")">
+}
+
+<html lang="en-GB" ng-app="Wazza">
+
 <head>
-	<title>Wazza - In-App Purchases made simple</title>
+	<title>@title</title>
+	@stylesheets
+
 	<meta name="description" content="Wazza - In-App Purchases made simple" />
 	<meta name="author" content="Wazza" />
 	<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" />
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
-	<!-- Bootstrap core CSS -->
-    <link rel="stylesheet" media="screen" href="@routes.WebJarAssets.at(WebJarAssets.locate("bootstrap.min.css"))">
-
-	<!-- TODO: Colocar favicon -->
-    <link rel="shortcut icon" type="image/png" href="@routes.Assets.at("images/favicon.png")">
-    <link rel="stylesheet" type="text/css" media="screen" href="@routes.Assets.at("stylesheets/style.css")">
-    <link rel="stylesheet" type="text/css" media="screen" href="@routes.Assets.at("stylesheets/font-awesome.min.css")">
-	<link href='http://fonts.googleapis.com/css?family=Titillium+Web:400,600,300,200&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
-
-	<!-- TODO: Colocar analytics -->
-
 </head>
+
 <body class="body">
 
 	<div class="container-fluid center-block">
