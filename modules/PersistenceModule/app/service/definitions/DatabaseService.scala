@@ -23,7 +23,7 @@ trait DatabaseService {
 
   def exists(key: String, value: String): Boolean
 
-  def get(key: String, value: String): Option[JsValue]
+  def get(key: String, value: String, projection: String = null): Option[JsValue]
 
   def insert(model: JsValue): Try[Unit]
 

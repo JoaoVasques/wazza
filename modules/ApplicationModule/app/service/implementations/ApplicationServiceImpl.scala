@@ -43,6 +43,10 @@ class ApplicationServiceImpl @Inject()(
      List("PT")
    }
 
+  def getApplicationCredentials(appName: String): Option[Credentials] = {
+    databaseService.get(WazzaApplication.Key, appName, WazzaApplication.CredentialsId)
+  }
+
     def insertApplication(application: WazzaApplication): Try[WazzaApplication] = {
       if(! databaseService.exists(WazzaApplication.Key, application.name)) {
         databaseService.insert(application) match {

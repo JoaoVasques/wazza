@@ -1,5 +1,6 @@
 package service.security.implementations
 
+import play.api.libs.Crypto
 import service.security.definitions._
 import java.security.SecureRandom
 import java.math.BigInteger
@@ -17,9 +18,7 @@ class SecretGeneratorServiceImpl extends SecretGeneratorService {
         val random = new SecureRandom()
         new BigInteger(NumberBits, random).toString(Radix)
       }
-      case ApiKey => {
-        UUID.randomUUID().toString().filterNot("-".toSet)
-      }
+      case ApiKey => Crypto.generateToken
       case _ => null
     }
   }

@@ -20,6 +20,8 @@ trait ApplicationService {
 
   def getApplicationCountries(appName: String): List[String]
 
+  def getApplicationCredentials(appName: String): Option[Credentials]
+
   /** Item operations **/
 
   def addItem(item: Item, applicationName: String): Try[Item]
