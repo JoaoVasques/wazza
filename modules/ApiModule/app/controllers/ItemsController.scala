@@ -13,15 +13,14 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.util.Failure
 import scala.util.Success
 import service.application.definitions.ApplicationService
-import service.security.definitions.TokenManagerService
 import service.application.definitions.{PurchaseService}
 
 class ItemsController @Inject()(
   applicationService: ApplicationService,
   purchaseService: PurchaseService
-) extends Controller {
+) extends Controller with ApiSecurity {
 
-  def getItems(applicationName: String) = Action {implicit request =>
+  def getItems(applicationName: String) = ApiSecurityHandler() {implicit request =>
     val offset = request.headers.get("Offset") match {
       case Some(o) => {
         o.toInt
@@ -35,7 +34,7 @@ class ItemsController @Inject()(
     })))
   }
 
-  def getItemDetails(id: String, applicationName: String) = Action {implicit request =>
+  def getItemDetails(id: String, applicationName: String) = ApiSecurityHandler() {implicit request =>
     val res = applicationService.getItem(id, applicationName)
     Ok(Json.obj(
       "item" ->  res.map{item => Item.convertToJson(item)}
