@@ -2,52 +2,12 @@
 
 <!DOCTYPE html>
 
-@javascripts = {
-  <script src="@routes.WebJarAssets.at(WebJarAssets.locate("1.2.6/angular.js"))"></script>
-  <script src="@routes.WebJarAssets.at(WebJarAssets.locate("1.2.6/angular-route.js"))"></script>
-  <script src="@routes.WebJarAssets.at(WebJarAssets.locate("1.2.6/angular-cookies.min.js"))"></script>
-  <script src="@routes.WebJarAssets.at(WebJarAssets.locate("0.10.0/ui-bootstrap.min.js"))"></script>
-  <script src="@routes.WebJarAssets.at(WebJarAssets.locate("0.10.0/ui-bootstrap-tpls.min.js"))"></script>
-  <script src="@routes.WebJarAssets.at(WebJarAssets.locate("underscore-min.js"))"></script>
-  <script src="@routes.Assets.at("javascripts/angular-file-upload.min.js")"></script>
-  <script src="@routes.Assets.at("javascripts/angular-file-upload-html5-shim.min.js")"></script>
-  <script src="@routes.Assets.at("javascripts/app.js")"></script>
-  <script src="@routes.Assets.at("javascripts/services.js")"></script>
-  <script src="@routes.Assets.at("javascripts/controllers.js")"></script>
-
-  <script src="@controllers.application.routes.Assets.at("javascripts/application/appModule.js")"></script>
-  <script src="@controllers.application.routes.Assets.at("javascripts/application/controllers.js")"></script>
-  <script src="@controllers.application.routes.Assets.at("javascripts/application/service.js")"></script>
-
-  <script src="@controllers.application.routes.Assets.at("javascripts/item/itemModule.js")"></script>
-  <script src="@controllers.application.routes.Assets.at("javascripts/item/controllers.js")"></script>
-  <script src="@controllers.application.routes.Assets.at("javascripts/item/service.js")"></script>
-  <script src="@controllers.application.routes.Assets.at("javascripts/item/directives.js")"></script>
-
-  <script src="@controllers.user.routes.Assets.at("javascripts/userModule.js")"></script>
-  <script src="@controllers.user.routes.Assets.at("javascripts/controllers.js")"></script>
-  <script src="@controllers.user.routes.Assets.at("javascripts/service.js")"></script>
-  <script src="@controllers.user.routes.Assets.at("javascripts/directives.js")"></script>
-
-  <script src="@controllers.security.routes.Assets.at("javascripts/securityModule.js")"></script>
-  <script src="@controllers.security.routes.Assets.at("javascripts/services.js")"></script>
-  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-
-  @views.html.dashboardJavascripts.render()
-}
-
-@stylesheets = {
-  <link rel="stylesheet" media="screen" href="@routes.WebJarAssets.at(WebJarAssets.locate("bootstrap.min.css"))">
-  <link rel="shortcut icon" type="image/png" href="@routes.Assets.at("images/favicon.png")">
-  <link rel="stylesheet" href="@routes.Assets.at("stylesheets/item.css")" type="text/css">
-  <link rel="stylesheet" href="@routes.Assets.at("stylesheets/sidebar.css")" type="text/css">
-}
-
 <html ng-app="Wazza">
     <head>
         <title>@title</title>
-        @stylesheets
-        @javascripts
+        @stylesheets()
+        @javascripts()
+        @views.html.dashboardJavascripts.render()
     </head>
     <body>
     <div id="wrapper">
@@ -56,18 +16,128 @@
       <div id="page-content-wrapper">
         <div class="page-content inset">
           <div class="row">
-              <div class="col-md-12">
-                <div ng-view></div>
+            <div class="col-md-12">
+              <div ng-view></div>
             </div>
           </div>
         </div>
       </div>
     </div>
+    content
+
+  </section>
+
+  <div id="page-wrapper">
+    <div class="row">
+      <div class="col-lg-12">
+        <h1 class="page-header font-semibold">Dashboard</h1>
+      </div>
+      <!-- /.col-lg-12 -->
+    </div>
+    <!-- /.row -->
+    <div class="row">
+
+      <div class="col-lg-8">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <i class="fa fa-bell fa-fw"></i> Notifications Panel
+          </div>
+          <!-- /.panel-heading -->
+          <div class="panel-body">
+            <div class="list-group">
+              <a href="#" class="list-group-item">
+                <i class="fa fa-comment fa-fw"></i> Item #1337 from "Best Game Ever" needs attention.
+                <span class="pull-right text-muted small"><em>4 minutes ago</em>
+                </span>
+              </a>
+              <a href="#" class="list-group-item">
+                <i class="fa fa-shopping-cart fa-fw"></i> Increase revenue selling a limited run of Item #BIGBOOBS.
+                <span class="pull-right text-muted small"><em>12 minutes ago</em>
+                </span>
+              </a>
+              <a href="#" class="list-group-item">
+                <i class="fa fa-warning fa-fw"></i> Item #DEADBEEF at Apple Store is out of stock.
+                <span class="pull-right text-muted small"><em>27 minutes ago</em>
+                </span>
+              </a>
+              <a href="#" class="list-group-item">
+                <i class="fa fa-money fa-fw"></i> Configure "Best App ever" IAP.
+                <span class="pull-right text-muted small"><em>43 minutes ago</em>
+                </span>
+              </a>
+              <a href="#" class="list-group-item">
+                <i class="fa fa-bolt fa-fw"></i> Server Crashed!
+                <span class="pull-right text-muted small"><em>11:13 AM</em>
+                </span>
+              </a>
+              <a href="#" class="list-group-item">
+                <i class="fa fa-money fa-fw"></i> Payment Received
+                <span class="pull-right text-muted small"><em>Yesterday</em>
+                </span>
+              </a>
+            </div>
+            <!-- /.list-group -->
+            <a href="#" class="btn btn-default btn-block">View All Alerts</a>
+          </div>
+        </div>
+        <div class="panel panel-default" hidden>
+          <div class="panel-heading">
+            <i class="fa fa-bar-chart-o fa-fw"></i> Area Chart Example
+            <div class="pull-right">
+              <div class="btn-group">
+                <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
+                  Actions
+                  <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu pull-right" role="menu">
+                  <li><a href="#">Action</a>
+                  </li>
+                  <li><a href="#">Another action</a>
+                  </li>
+                  <li><a href="#">Something else here</a>
+                  </li>
+                  <li class="divider"></li>
+                  <li><a href="#">Separated link</a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="panel-body">
+            <div id="morris-area-chart"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-4">
+        <div class="panel panel-default">
+          <div class="input-group">
+            <input id="btn-input" type="text" class="form-control input-sm" placeholder="Type your query here..." />
+            <span class="input-group-btn">
+              <button class="btn btn-warning btn-sm" id="btn-chat">Search</button>
+            </span>
+          </div>
+        </div>
+
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <i class="fa fa-bar-chart-o fa-fw"></i> Revenue
+          </div>
+          <div class="panel-body">
+            <div id="morris-donut-chart"></div>
+            <a href="#" class="btn btn-default btn-block">View Details</a>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
 </body>
 <script type="text/javascript">
   $("#menu-toggle").click(function(e) {
-          e.preventDefault();
-          $("#wrapper").toggleClass("active");
+    e.preventDefault();
+    $("#wrapper").toggleClass("active");
   });
 </script>
 </html>
