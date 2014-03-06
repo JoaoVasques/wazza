@@ -25,7 +25,10 @@ trait ApiSecurity { self: Controller =>
   val ApplicationNameHeader = "AppName"
   val MessageDigestHeader = "Digest"
 
-  lazy val applicationService = Guice.createInjector(
+  private val HashAlgorithm = "SHA-256"
+  private val Encoding = "UTF-8"
+
+  private  val applicationService = Guice.createInjector(
     new AppModule,
     new AWSModule,
     new PersistenceModule
@@ -49,9 +52,9 @@ trait ApiSecurity { self: Controller =>
   ): Result = {
 
     def checkMessageIntegrity(messageDigest: String, content: String): Boolean = {
-      val md = MessageDigest.getInstance("SHA-256")
-      md.update(content.getBytes("UTF-8"))
-      return Hex.encodeHexString(md.digest()) == messageDigest
+      val md = MessageDigest.getInstance(HashAlgorithm)
+      md.update(content.getBytes(Encoding))
+      Hex.encodeHexString(md.digest()) == messageDigest
     }
 
     body match {
@@ -75,15 +78,20 @@ trait ApiSecurity { self: Controller =>
 
 
   def ApiSecurityHandler[A]
-    (p: BodyParser[A] = parse.json)
+    (p: BodyParser[A] = parse.anyContent)
     (f:  Request[A] => Result): Action[A] = Action(p){implicit request =>
+    //println(s"HEADERS ${request.headers}")
     request.headers.get(ApplicationNameHeader) match {
       case Some(name) => {
-        applicationService.getApplicationCredentials(name) match {
-          case Some(credentials) => {
-            checkMessageValidity(request, request.body, f, credentials)
+        if(request.method == "GET") {
+          f(request)
+        } else {
+          applicationService.getApplicationCredentials(name) match {
+            case Some(credentials) => {
+              checkMessageValidity(request, request.body, f, credentials)
+            }
+            case None => BadRequest
           }
-          case None => BadRequest
         }
       }
       case None => {
@@ -102,6 +110,5 @@ trait ApiSecurity { self: Controller =>
     (f: String => Request[A] => Result): Action[A] = Action(p) {implicit request =>
     f("")(request)
   }
-
 }
 

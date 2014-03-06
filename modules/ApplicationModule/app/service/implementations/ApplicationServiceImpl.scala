@@ -102,7 +102,7 @@ class ApplicationServiceImpl @Inject()(
       }
     }
 
-    def getItems(applicationName: String, offset: Int = 0): List[Item] = {
+    def getItems(applicationName: String, offset: Int = 0, projection: String = null): List[Item] = {
         // WARNING: this is inefficient because it loads all items from DB. For now, just works... to be fixed later
         this.find(applicationName) match {
             case Some(application) => application.items.drop(offset).take(ItemBatch)

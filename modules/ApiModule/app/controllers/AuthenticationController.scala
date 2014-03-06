@@ -12,7 +12,7 @@ import com.google.inject._
 
 class AuthenticationController extends Controller with ApiSecurity {
 
-  def authenticate = ApiSecurityHandler() {implicit request =>
+  def authenticate = ApiSecurityHandler(parse.json) {implicit request =>
 
     Ok("TODO")
   }
