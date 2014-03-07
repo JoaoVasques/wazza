@@ -1,56 +1,70 @@
-@(title: String)
+@(title: String = "Wazza - In-App Purchases made simple")
 
 <!DOCTYPE html>
 
 @javascripts = {
-	<!-- TODO: Colocar analytics -->
-	<!-- @views.html.dashboardJavascripts.render() -->
+  <script src="@routes.WebJarAssets.at(WebJarAssets.locate("1.2.6/angular.js"))"></script>
+  <script src="@routes.WebJarAssets.at(WebJarAssets.locate("1.2.6/angular-route.js"))"></script>
+  <script src="@routes.WebJarAssets.at(WebJarAssets.locate("1.2.6/angular-cookies.min.js"))"></script>
+  <script src="@routes.WebJarAssets.at(WebJarAssets.locate("0.10.0/ui-bootstrap.min.js"))"></script>
+  <script src="@routes.WebJarAssets.at(WebJarAssets.locate("0.10.0/ui-bootstrap-tpls.min.js"))"></script>
+  <script src="@routes.WebJarAssets.at(WebJarAssets.locate("underscore-min.js"))"></script>
+  <script src="@routes.Assets.at("javascripts/angular-file-upload.min.js")"></script>
+  <script src="@routes.Assets.at("javascripts/angular-file-upload-html5-shim.min.js")"></script>
+  <script src="@routes.Assets.at("javascripts/app.js")"></script>
+  <script src="@routes.Assets.at("javascripts/services.js")"></script>
+  <script src="@routes.Assets.at("javascripts/controllers.js")"></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+  <script src="@routes.WebJarAssets.at(WebJarAssets.locate("bootstrap.min.js"))"></script>
+  <!-- controllers -->
+  @views.html.applicationJavascripts.render()
+
+  @views.html.userJavascripts.render()
+
+  @views.html.securityJavascripts.render()
+
+  @views.html.dashboardJavascripts.render()
+
+  <script src="@routes.Assets.at("custom.js")"></script>
 }
 
 @stylesheets = {
-	<!-- Bootstrap core CSS -->
-	<link rel="stylesheet" media="screen" href="@routes.WebJarAssets.at(WebJarAssets.locate("bootstrap.min.css"))">
-	<link rel="stylesheet" type="text/css" media="screen" href="@routes.Assets.at("stylesheets/style.css")">
-	<link rel="stylesheet" type="text/css" media="screen" href="@routes.Assets.at("stylesheets/font-awesome.min.css")">
-	<link href='http://fonts.googleapis.com/css?family=Titillium+Web:400,600,300,200&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
-	<!-- TODO: Colocar favicon -->
-	<link rel="shortcut icon" type="image/png" href="@routes.Assets.at("images/favicon.png")">
+  <!-- Bootstrap core CSS -->
+  <link rel="stylesheet" type="text/css" media="screen" href="@routes.WebJarAssets.at(WebJarAssets.locate("bootstrap.min.css"))">
+  <!-- TODO: Optimize CSS again.. -->
+  <link rel="stylesheet" type="text/css" media="screen" href="@routes.Assets.at("stylesheets/item.css")">
+
+  <link rel="stylesheet" type="text/css" media="screen" href="@routes.Assets.at("stylesheets/style.css")">
+  <link rel="stylesheet" type="text/css" media="screen" href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css">
+  <link rel="stylesheet" type="text/css" media="screen" href='http://fonts.googleapis.com/css?family=Titillium+Web:400,600,300,200&subset=latin,latin-ext'>
+  <!-- TODO: better custom favicon :) -->
+  <link rel="shortcut icon" href="@routes.Assets.at("images/favicon.ico")">
 }
 
-<html lang="en-GB" ng-app="Wazza">
-
-<head>
-	<title>@title</title>
-	@stylesheets
-
-	<meta name="description" content="Wazza - In-App Purchases made simple" />
-	<meta name="author" content="Wazza" />
-	<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" />
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-
-</head>
-
-<body class="body">
-
-	<div class="container-fluid center-block">
-		<div id="home-row-1" class="row clearfix">
-			<div class="col-12">
-				<img src="@routes.Assets.at("images/letter-logo.png")">
-				<h1 class="font-semibold">Virtual Store <span class="font-thin">as a Service</span></h1>
-				<h2 class="cover-heading font-thin">an all-in-one in-app purchase solution</h2>
-				<br>
-				<br>
-				<p class="lead font-semibold">
-					<a href="http://www.usewazza.com/" class="btn btn-lg btn-default">Learn more</a>
-					<a href="dashboard" class="btn btn-lg btn-default">Join Us</a>
-					<a href="login" class="btn btn-lg btn-default">Login</a>
-				</p>
-			</div>
-		</div>
-	</div>
-
-
-	<h4 class="font-semibold"><br>&copy; 2014 Wazza <span class="font-thin"> - All Rights Reserved</span></h4>
-
-</body>
+<html ng-app="Wazza">
+  <head>
+    <title>@title</title>
+    <meta name="description" content="Wazza - In-App Purchases made simple" />
+    <meta name="author" content="Wazza" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    @stylesheets
+    @javascripts
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body class="font-thin">
+    <div id="wrapper">
+      @views.html.sidebar.render()
+      @views.html.navigationBar.render()
+      <div id="page-wrapper">
+          <div class="row">
+            <div class="col-md-12">
+              <div ng-view></div>
+            </div>
+          </div>
+      </div>
+    </div>
+  </body>
 </html>

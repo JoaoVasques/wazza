@@ -11,6 +11,10 @@ import com.google.inject._
 class Application extends Controller with Security{
 
   def index = Action {
-    Ok(views.html.index("Wazza - In-App Purchases made simple"))
+	Ok(views.html.index())
+  }
+
+  def launch = Action {
+	Ok(views.html.launch())
   }
 }

@@ -6,6 +6,9 @@ angular.module('Wazza', ['ngRoute', 'Wazza.controllers', 'ItemModule', 'UserModu
   config([ '$routeProvider', '$locationProvider' , function($routeProvider, $locationProvider) {
     $routeProvider
       .when('/', {
+        templateUrl: '/launch'
+      })
+      .when('/login', {
         templateUrl: '/login',
         controller: 'LoginController'
       })
@@ -28,6 +31,9 @@ angular.module('Wazza', ['ngRoute', 'Wazza.controllers', 'ItemModule', 'UserModu
       .when('/item/create', {
         templateUrl: '/app/item/new/',
         controller: 'NewItemController'
+      })
+      .when('/dss', {
+        redirectTo: '/'
       });
 
     $locationProvider.html5Mode(true);

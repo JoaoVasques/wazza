@@ -1,11 +1,26 @@
-@base("Login into Wazza")(views.html.javascripts()){
+
 <div class="container" ng-controller="LoginController">
-    <div class="row vertical-offset-100" style="padding-top:50px">
+    <div class="row vertical-offset-100" style="padding-top:100px">
+<img src="@routes.Assets.at("images/letter-logo.png")">
       <div class="col-md-4 col-md-offset-4">
         <div class="panel panel-default">
-          <div class="panel-heading">
-            <h3 class="panel-title">Sign in</h3>
-          </div>
+          <ul class="nav nav-tabs" id="myTab">
+            <li  class="active">
+                <a href="#login">
+                  <h3 class="panel-title">Sign in</h3>
+                </a>
+            </li>
+            <li>
+                <a href="/register">
+                  <h3 class="panel-title">Register</h3>
+                </a>
+            </li>
+            <li>
+                <a href="#login">
+                  <h3 class="panel-title">Reset Password</h3>
+                </a>
+            </li>
+          </ul>
           <div class="panel-body">
             <form accept-charset="UTF-8" role="form" ng-submit="signIn()">
                 <fieldset>
@@ -18,7 +33,6 @@
                     <input id="loginPassword" class="form-control" ng-model="loginForm.password" placeholder="Password" name="password" type="password" value="" required>
                   </div>
                   <input class="btn btn-lg btn-success btn-block" type="submit" value="Login">
-                  <a href="/register" class="help-block">Create an account</a>
                 </fieldset>
             </form>
           </div>
@@ -26,4 +40,9 @@
     </div>
   </div>
 </div>
-}
+<script type="text/javascript">
+$('#myTab a').click(function (e) {
+  e.preventDefault()
+  $(this).tab('show')
+})
+</script>

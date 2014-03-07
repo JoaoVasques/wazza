@@ -27,12 +27,17 @@
 }
 
 @stylesheets = {
-  <link rel="shortcut icon" type="image/png" href="@routes.Assets.at("images/favicon.png")">
+	<!-- Bootstrap core CSS -->
+	<link rel="stylesheet" type="text/css" media="screen" href="@routes.WebJarAssets.at(WebJarAssets.locate("bootstrap.min.css"))">
 
-  <link rel="stylesheet" media="screen" href="@routes.WebJarAssets.at(WebJarAssets.locate("bootstrap.min.css"))">
-  
-  <link rel="stylesheet" href="@routes.Assets.at("stylesheets/item.css")" type="text/css">
-  <link rel="stylesheet" href="@routes.Assets.at("stylesheets/sidebar.css")" type="text/css">
+	<link rel="stylesheet" type="text/css" media="screen" href="@routes.Assets.at("stylesheets/item.css")">
+	<link rel="stylesheet" type="text/css" media="screen" href="@routes.Assets.at("stylesheets/sidebar.css")">
+
+	<link rel="stylesheet" type="text/css" media="screen" href="@routes.Assets.at("stylesheets/style.css")">
+	<link rel="stylesheet" type="text/css" media="screen" href="@routes.Assets.at("stylesheets/font-awesome.min.css")">
+	<link rel='stylesheet' type='text/css' media="screen" href='http://fonts.googleapis.com/css?family=Titillium+Web:400,600,300,200&subset=latin,latin-ext'>
+	<!-- TODO: Colocar favicon -->
+	<link rel="shortcut icon" type="image/png" href="@routes.Assets.at("images/favicon.png")">
 }
 
 <html ng-app="Wazza">

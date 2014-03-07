@@ -16,8 +16,6 @@ import java.io.PrintWriter
 import play.api.mvc.MultipartFormData._
 import scala.concurrent._
 import ExecutionContext.Implicits.global
-import models.application.{Stores}
-import java.util.Locale
 import scala.language.implicitConversions
 
 class ItemServiceImpl @Inject()(
