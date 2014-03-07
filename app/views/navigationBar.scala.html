@@ -1,6 +1,6 @@
 @dashboardSection = {
 <div>
-  <ul class="nav navbar-nav">
+  <ul >
     <div class="dropdown" ng-controller="DashboardController">
         <a href="#" class="dropdown-toggle glyphicon" data-toggle="dropdown">Add<b class="caret"></b></a>
         <ul class="dropdown-menu">
@@ -31,30 +31,32 @@
 
 
   <nav class="navbar navbar-inverse navbar-default navbar-static-top" role="navigation" ng-controller="NavBarController" ng-show="showNavBar">
-    <a class="navbar-header navbar-brand" href="home"><img src="@routes.Assets.at("images/letter-logo.png")" alt="wazza logo" /></a>
-    <p class="navbar-text">In App purchases made simple.</p>
-    <div class="nav navbar-top-links navbar-left" style="color:#999">
-      {{applicationName}}
-      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-        @dashboardSection
+    <div class="container">
+      <a class="navbar-header navbar-brand" href="home"><img src="@routes.Assets.at("images/letter-logo.png")" alt="wazza logo"  style="height:100%;"/></a>
+      <p class="navbar-text">In App purchases made simple.</p>
+      <div class="nav navbar-top-links navbar-left" style="color:#999">
+        <p class="navbar-text">{{applicationName}}</p>
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+          @dashboardSection
+        </div>
       </div>
-    </div>
-    <div class="nav navbar-top-links navbar-right" style="color:#999">
-      <!-- TODO: replace with ng-model user -->
-      Duarte Barbosa
+      <div class="nav navbar-top-links navbar-right navbar-btn" style="color:#999">
+        <!-- TODO: replace with ng-model user -->
+        Duarte Barbosa
 
-      <div class="dropdown">
-        <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-          <span class="fa fa-user fa-fw"></span>  <span class="fa fa-caret-down"></span>
-        </a>
-        <ul class="dropdown-menu dropdown-user">
-          <li><a ng-show="sessionOn" ng-href='/newapp'>New Application</a></li>
-          <li><a href="#"><span class="fa fa-user fa-fw"></span> User Profile</a></li>
-          <li><a href="#"><span class="fa fa-gear fa-fw"></span> Settings</a></li>
-          <li class="divider"></li>
-          <li><a ng-show="sessionOn" ng-click="logout()"><span class="fa fa-sign-out fa-fw"></span> Logout</a>
-          </li>
-        </ul>
+        <div class="dropdown">
+          <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+            <span class="fa fa-user fa-fw"></span>  <span class="fa fa-caret-down"></span>
+          </a>
+          <ul class="dropdown-menu dropdown-user">
+            <li><a ng-show="sessionOn" ng-href='/newapp'>New Application</a></li>
+            <li><a href="#"><span class="fa fa-user fa-fw"></span> User Profile</a></li>
+            <li><a href="#"><span class="fa fa-gear fa-fw"></span> Settings</a></li>
+            <li class="divider"></li>
+            <li><a ng-show="sessionOn" ng-click="logout()"><span class="fa fa-sign-out fa-fw"></span> Logout</a>
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
   </nav>
