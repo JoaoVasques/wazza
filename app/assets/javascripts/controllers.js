@@ -25,6 +25,7 @@ angular.module('Wazza.controllers', ['ApplicationModule', 'Wazza.services', 'Ite
         function(){
           LoginLogoutService.login();
           $location.path("/home");
+          document.getElementById("page-wrapper").className = "page-wrapper";
         }
       );
   };

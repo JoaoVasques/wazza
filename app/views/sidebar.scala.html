@@ -1,113 +1,54 @@
-<nav class="navbar-default navbar-inverse navbar-static-side" role="navigation" ng-controller="SideBarController" ng-show="showSideBar">
-    <div class="sidebar-collapse">
-      <ul class="nav" id="side-menu">
-        <li>
-          <a href="home"><span class="fa fa-dashboard fa-fw"></span> Dashboard</a>
-        </li>
-        <li>
-          <a href="#"><span class="fa fa-table fa-fw"></span> Inventory<span class="fa arrow"></span></a>
-          <ul class="nav nav-second-level">
-            <li>
-              <a href="#">Overview</a>
-            </li>
-            <li>
-              <a href="#">CRUD</a>
-            </li>
-            <li>
-              <a href="#">Virtual Currency</a>
-            </li>
-          </ul>
-        </li>
-        <li>
-          <a href="#"><span class="fa fa-edit fa-fw"></span> Stores<span class="fa arrow"></span></a>
-          <ul class="nav nav-second-level">
-            <li>
-              <a href="#">Android</a>
-            </li>
-            <li>
-              <a href="#">Apple</a>
-            </li>
-            <li>
-              <a href="#">Amazon</a>
-            </li>
-          </ul>
-        </li>
-        <li>
-          <a href="#"><span class="fa fa-bar-chart-o fa-fw"></span> Analytics<span class="fa arrow"></span></a>
-          <ul class="nav nav-second-level">
-            <li>
-              <a href="#">Overview</a>
-            </li>
-          </ul>
-        </li>
-        <li>
-          <a href="#"><span class="fa fa-wrench fa-fw"></span> Settings</a>
-        </li>
-        <li>
-          <a href="#contact" data-toggle="modal" data-target="#contacts">Contacts</a>
-        </li>
-        <li>
-          <a href="#about">About</a>
-        </li>
-      </ul>
-
-<div>
-
-  <accordion close-others=true>
-    <accordion-group is-open="isopen">
-        <accordion-heading>
-            <a href="#"><span class="fa fa-table fa-fw"></span> Inventory<span class="fa arrow"></span></a> <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': isopen, 'glyphicon-chevron-right': !isopen}"></i>
-        </accordion-heading>
+<nav class="navbar-default navbar-inverse navbar-static-side" role="navigation" ng-controller="SideBarController" ng-show="showSideBar" style="padding-top:100px;">
+  <div class="sidebar-collapse">
+    <ul class="nav" id="side-menu">
+      <li>
+        <a href="home"><span class="fa fa-dashboard fa-fw"></span> Dashboard</a>
+      </li>
+      <li>
+        <a href="#"><span class="fa fa-table fa-fw"></span> Inventory<span class="fa arrow"></span></a>
         <ul class="nav nav-second-level">
-            <li>
-              <a href="#">Overview</a>
-            </li>
-            <li>
-              <a href="#">CRUD</a>
-            </li>
-            <li>
-              <a href="#">Virtual Currency</a>
-            </li>
+          <li>
+            <a href="#">Overview</a>
+          </li>
+          <li>
+            <a href="#">CRUD</a>
+          </li>
+          <li>
+            <a href="#">Virtual Currency</a>
+          </li>
         </ul>
-    </accordion-group>
-
-    <accordion-group is-open="isopen">
-        <accordion-heading>
-            <a href="#"><span class="fa fa-edit fa-fw"></span> Stores<span class="fa arrow"></span></a> <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': isopen, 'glyphicon-chevron-right': !isopen}"></i>
-        </accordion-heading>
-        coco
-          <ul>
-            <li>
-              <a href="#">Android</a>
-            </li>
-            <li>
-              <a href="#">Apple</a>
-            </li>
-            <li>
-              <a href="#">Amazon</a>
-            </li>
-          </ul>
-          coco2
-    </accordion-group>
-
-    <accordion-group is-open="isopen">
-        <accordion-heading>
-            <a href="#"><span class="fa fa-edit fa-fw"></span> Stores<span class="fa arrow"></span></a> <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': isopen, 'glyphicon-chevron-right': !isopen}"></i>
-        </accordion-heading>
-          <ul class="nav nav-second-level">
-            <li>
-              <a href="#">Overview</a>
-            </li>
-            <li>
-              <a href="#">Configure others</a>
-            </li>
-          </ul>
-    </accordion-group>
-
-  </accordion>
-
-</div>
-
-
-    </div>
-  </nav>
+      </li>
+      <li>
+        <a href="#"><span class="fa fa-edit fa-fw"></span> Stores<span class="fa arrow"></span></a>
+        <ul class="nav nav-second-level">
+          <li>
+            <a href="#">Android</a>
+          </li>
+          <li>
+            <a href="#">Apple</a>
+          </li>
+          <li>
+            <a href="#">Amazon</a>
+          </li>
+        </ul>
+      </li>
+      <li>
+        <a href="#"><span class="fa fa-bar-chart-o fa-fw"></span> Analytics<span class="fa arrow"></span></a>
+        <ul class="nav nav-second-level">
+          <li>
+            <a href="#">Overview</a>
+          </li>
+        </ul>
+      </li>
+      <li>
+        <a href="#"><span class="fa fa-wrench fa-fw"></span> Settings</a>
+      </li>
+      <li>
+        <a href="#contact" data-toggle="modal" data-target="#contacts">Contacts</a>
+      </li>
+      <li>
+        <a href="#about">About</a>
+      </li>
+    </ul>
+  </div>
+</nav>

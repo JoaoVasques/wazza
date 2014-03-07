@@ -58,14 +58,12 @@
     <div id="wrapper">
       @views.html.sidebar.render()
       @views.html.navigationBar.render()
-      <div class="page-wrapper">
-        <div class="page-content inset">
+      <div id="page-wrapper">
           <div class="row">
             <div class="col-md-12">
               <div ng-view></div>
             </div>
           </div>
-        </div>
       </div>
     </div>
   </body>
