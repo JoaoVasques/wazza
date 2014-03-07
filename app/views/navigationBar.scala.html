@@ -1,21 +1,21 @@
 @dashboardSection = {
 <div>
   <ul class="nav navbar-nav">
-  <li class="dropdown" ng-controller="DashboardController">
-      <a href="#" class="dropdown-toggle glyphicon" data-toggle="dropdown">Add<b class="caret"></b></a>
-      <ul class="dropdown-menu">
-        <li><a href="#" ng-click="addItem()">Virtual Currency</a></li>
-        <li><a href="#" ng-click="open()">In-app Purchase</a></li>
-      </ul>
-  </li>
-  <!--
-  <li class="dropdown" ng-controller="DashboardController">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown">Change Application<b class="caret"></b></a>
-      <ul class="dropdown-menu" ng-repeat="application in applications">
-        <li><a href="#">{{application}}</a></li>
-      </ul>
-  </li>
-  -->
+    <div class="dropdown" ng-controller="DashboardController">
+        <a href="#" class="dropdown-toggle glyphicon" data-toggle="dropdown">Add<b class="caret"></b></a>
+        <ul class="dropdown-menu">
+          <li><a href="#" ng-click="addItem()">Virtual Currency</a></li>
+          <li><a href="#" ng-click="open()">In-app Purchase</a></li>
+        </ul>
+    </div>
+    <!--
+    <li class="dropdown" ng-controller="DashboardController">
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Change Application<b class="caret"></b></a>
+        <ul class="dropdown-menu" ng-repeat="application in applications">
+          <li><a href="#">{{application}}</a></li>
+        </ul>
+    </li>
+    -->
   </ul>
   <div class="col-sm-3 col-md-3">
       <form class="navbar-form" role="search" ng-submit="">
@@ -28,18 +28,31 @@
 }
 
 
-<nav class="navbar navbar-default" role="navigation" ng-controller="NavBarController" ng-show="showNavBar">
-  <!-- Brand and toggle get grouped for better mobile display -->
-  <div class="navbar-header">
-    <a class="navbar-brand">{{applicationName}}</a>
-  </div>
+  <nav class="navbar navbar-inverse navbar-default navbar-static-top" role="navigation" ng-controller="NavBarController" ng-show="showNavBar">
+    <a class="navbar-header navbar-brand" href="home"><img src="@routes.Assets.at("images/letter-logo.png")" alt="wazza logo" /></a>
+    <p class="navbar-text">In App purchases made simple.</p>
+    <div class="nav navbar-top-links navbar-left" style="color:#999">
+      {{applicationName}}
+      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+        @dashboardSection
+      </div>
+    </div>
+    <div class="nav navbar-top-links navbar-right" style="color:#999">
+      <!-- TODO: replace with ng-model user -->
+      Duarte Barbosa
 
-  <!-- Collect the nav links, forms, and other content for toggling -->
-  <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-    @dashboardSection
-    <ul class="nav navbar-nav navbar-right">
-      <li><a ng-show="sessionOn" ng-href='/newapp'>New Application</a></li>
-      <li><a ng-show="sessionOn" class="glyphicon glyphicon-log-out" ng-click="logout()"></a></li>
-    </ul>
-  </div>
-</nav>
+      <div class="dropdown">
+        <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+          <span class="fa fa-user fa-fw"></span>  <span class="fa fa-caret-down"></span>
+        </a>
+        <ul class="dropdown-menu dropdown-user">
+          <li><a ng-show="sessionOn" ng-href='/newapp'>New Application</a></li>
+          <li><a href="#"><span class="fa fa-user fa-fw"></span> User Profile</a></li>
+          <li><a href="#"><span class="fa fa-gear fa-fw"></span> Settings</a></li>
+          <li class="divider"></li>
+          <li><a ng-show="sessionOn" ng-click="logout()"><span class="fa fa-sign-out fa-fw"></span> Logout</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
