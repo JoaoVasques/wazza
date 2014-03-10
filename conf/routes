@@ -1,0 +1,24 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+
+# Home page
+GET     /                     @controllers.Application.index
+GET     /index2               @controllers.Application.fault(path = "home")
+GET     /launch	              @controllers.Application.launch
+GET     /login                @controllers.LoginLogoutController.login
+POST    /login                @controllers.LoginLogoutController.authenticate
+POST    /logout               @controllers.LoginLogoutController.logout
+
+# Modules
+->  /dashboard                dashboard.Routes
+->  /user                     user.Routes
+->  /app                      application.Routes
+->  /api                      api.Routes
+  
+# Map static resources from the /public folder to the /assets URL path
+GET     /assets/*file         controllers.Assets.at(path="/public", file)
+GET     /webjars/*file        controllers.WebJarAssets.at(file)
+
+# Not correct, but better that 404. TODO: take out the ng-hide from the navbars!
+GET     /*route               @controllers.Application.fault(route)
