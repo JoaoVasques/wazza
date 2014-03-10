@@ -2,7 +2,7 @@
       <a class="navbar-header navbar-brand" href="/home"><img src="@routes.Assets.at("images/letter-logo.png")" alt="wazza logo"/></a>
       <p class="navbar-text">In App purchases made simple.</p>
         <div class="navbar-right dropdown">
-          <p class="navbar-text">Duarte Barbosa</p>
+          <p class="navbar-text" ng-model="userInfo.name">{{userInfo.name}}</p>
           <a class="dropdown-toggle" data-toggle="dropdown" href="#">
             <span class="fa fa-user fa-fw"></span> <span class="fa fa-caret-down"></span>
           </a>

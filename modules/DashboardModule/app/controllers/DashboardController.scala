@@ -48,9 +48,14 @@ class DashboardController @Inject()(
       BadRequest
     } else {
       val application = applicationService.find(applications.head).get
+      val user = userService.find(userId).get
       Ok(
         Json.obj(
           "name" -> application.name,
+          "userInfo" -> Json.obj(
+            "name" -> user.name,
+            "email" -> user.email
+          ),
           "credentials" -> Json.obj(
             "apiKey" -> application.credentials.apiKey,
             "sdkKey" -> application.credentials.sdkKey

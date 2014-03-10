@@ -49,6 +49,7 @@ class LoginLogoutController @Inject()(
           Ok(Json.obj(
             "authToken" -> token,
             "userId" -> user.get.email,
+            "userName" -> user.get.name,
             "url" -> "/home"// TODO routes.Application.test().url
           )).withToken(token)
         }

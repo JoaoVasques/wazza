@@ -39,6 +39,7 @@ angular.module('DashboardModule', ['ItemModule.services'])
       $scope.applications
     );
     ApplicationStateService.updateApplicationName(_.first(data.data.applications).name);
+    ApplicationStateService.updateUserInfo(data.data.userInfo);
   }
 
   $scope.bootstrapFailureCallback = function(errorData){
@@ -173,6 +174,10 @@ angular.module('DashboardModule', ['ItemModule.services'])
   var service = {};
   service.applicationName = "";
   service.applicationsList = [];
+  service.userInfo = {
+      name: "",
+      email: ""
+  };
 
   service.updateApplicationName = function(newName){
     service.applicationName = newName;
@@ -182,6 +187,11 @@ angular.module('DashboardModule', ['ItemModule.services'])
   service.updateApplicationsList = function(newList){
     service.appplicationsList = newList;
     $rootScope.$broadcast("APPLICATIONS_LIST_UPDATED");
+  };
+
+  service.updateUserInfo = function(newInfo) {
+    service.userInfo = newInfo;
+    $rootScope.$broadcast("USER_INFO_UPDATED");
   };
 
   return service;
