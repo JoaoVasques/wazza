@@ -1,22 +1,6 @@
 /* Global Styles */
 /* ------------------------------- */
 
-.body{
-    text-align: center;
-    font: 13px Sans-serif
-}
-
-.center{
-    margin-left: auto;
-    margin-right: auto
-}
-
-#copyright{
-    text-align: center;
-    font: 700 12px Sans-serif
-}
-
-
 html,body{
     height: 100%;
     background: #333
@@ -58,15 +42,20 @@ a{
 }
 
 .page-wrapper{
-    padding: 0 15px;
+    border-top-left-radius: 10px 10px;
     min-height: 568px;
     text-align: left;
     background: #f8f8f8;
     color: #333;
 }
 
+.page-header{
+    margin-top: 10px;
+}
+
 @media(min-width:768px) {
     .page-wrapper{
+        border-top-left-radius: 10px 10px;
         text-align: left;
         position: relative;
         background: #f8f8f8;
@@ -88,13 +77,25 @@ a{
     }
 }
 
+.dropdown-toggle{
+    margin-top: 13px;
+    margin-right: 13px;
+    float: right;
+}
+
 .navbar-static-side ul li{
     border-bottom: 1px solid #e7e7e7;
     text-align: left;
 }
 
+.navbar-static-top {
+    border-width: 0;
+}
+
 .navbar{
     text-align: left;
+    color:#999;
+    margin-bottom:0;
 }
 
 /* Navigation */
@@ -216,42 +217,6 @@ a{
     color: #fff
 }
 
-/* Pages */
-/* ------------------------------- */
-/* Dashboard Chat */
-.chat{
-    margin: 0;
-    padding: 0;
-    list-style: none
-}
-
-.chat li{
-    margin-bottom: 10px;
-    padding-bottom: 5px;
-    border-bottom: 1px dotted #b3a9a9
-}
-
-.chat li.left .chat-body{
-    margin-left: 60px
-}
-
-.chat li.right .chat-body{
-    margin-right: 60px
-}
-
-.chat li .chat-body p{
-    margin: 0;
-    color: #777
-}
-
-.panel .slidedown .glyphicon,.chat .glyphicon{
-    margin-right: 5px
-}
-
-.chat-panel .panel-body{
-    height: 350px;
-    overflow-y: scroll
-}
 
 /* Login Page */
 .login-panel{
