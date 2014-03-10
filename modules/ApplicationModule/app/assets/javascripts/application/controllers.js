@@ -19,7 +19,8 @@ angular.module('ApplicationModule.controllers', ['ApplicationModule.services']).
         .then(
           function(result){
             $scope.formErrors = {};
-            $location.path('/');
+            $scope.applicationName=$scope.applicationForm.name;
+            $location.path('/home');
           },
           function(errors){
             angular.extend($scope.formErrors, errors.data.errors);

@@ -17,12 +17,9 @@
   </div>
 }
 
-<form
-  class="form-vertical"
-  enctype="multipart/form-data"
-  ng-controller="NewApplicationFormController"
-  ng-submit="createApplication(applicationForm)">
-    <legend>General</legend>
+<h1>Create new Application</h1>
+<form class="form-vertical" enctype="multipart/form-data" ng-controller="NewApplicationFormController" ng-submit="createApplication(applicationForm)">
+    <legend>General Information</legend>
       @inputText("Name", "name", true)
       @inputText("Url", "appUrl", true)
       @radioButtons(appTypes, "appType")

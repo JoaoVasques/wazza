@@ -1,20 +1,20 @@
-<nav class="navbar-default navbar-inverse navbar-static-side" role="navigation" ng-controller="SideBarController" ng-show="showSideBar">
+<nav class="navbar-inverse navbar-static-side" role="navigation" ng-controller="SideBarController" ng-show="showSideBar" id="sidebar">
   <div class="sidebar-collapse font-semibold">
     <ul class="nav" id="side-menu">
       <li>
-        <a href="home"><span class="fa fa-dashboard fa-fw"></span> Dashboard</a>
+        <a href="/home"><span class="fa fa-dashboard fa-fw"></span> Dashboard</a>
       </li>
       <li>
         <a href="#"><span class="fa fa-table fa-fw"></span> Inventory<span class="fa arrow"></span></a>
         <ul class="nav nav-second-level">
           <li>
-            <a href="#">Overview</a>
+            <a href="/inventory">Overview</a>
           </li>
           <li>
-            <a href="#">CRUD</a>
+            <a href="/inventory/crud">CRUD</a>
           </li>
           <li>
-            <a href="#">Virtual Currency</a>
+            <a href="/inventory/virtualCurrencies">Virtual Currency</a>
           </li>
         </ul>
       </li>
@@ -22,13 +22,13 @@
         <a href="#"><span class="fa fa-edit fa-fw"></span> Stores<span class="fa arrow"></span></a>
         <ul class="nav nav-second-level">
           <li>
-            <a href="#">Android</a>
+            <a href="/store/android"><i class="fa fa-android fa-fw"></i>Android</a>
           </li>
           <li>
-            <a href="#">Apple</a>
+            <a href="/store/apple"><i class="fa fa-apple fa-fw"></i>Apple</a>
           </li>
-          <li>
-            <a href="#">Amazon</a>
+          <li><!-- TODO: amazon icon anyone? :) -->
+            <a href="/store/amazon"><i class="fa fa-amazon fa-fw"></i>Amazon</a>
           </li>
         </ul>
       </li>
@@ -36,18 +36,18 @@
         <a href="#"><span class="fa fa-bar-chart-o fa-fw"></span> Analytics<span class="fa arrow"></span></a>
         <ul class="nav nav-second-level">
           <li>
-            <a href="#">Overview</a>
+            <a href="/analytics">Overview</a>
           </li>
         </ul>
       </li>
       <li>
-        <a href="#"><span class="fa fa-wrench fa-fw"></span> Settings</a>
+        <a href="/settings"><span class="fa fa-wrench fa-fw"></span> Settings</a>
       </li>
       <li>
         <a href="#contact" data-toggle="modal" data-target="#contacts">Contacts</a>
       </li>
       <li>
-        <a href="#about">About</a>
+        <a href="#about" data-toggle="modal" data-target="#about">About</a>
       </li>
     </ul>
   </div>
