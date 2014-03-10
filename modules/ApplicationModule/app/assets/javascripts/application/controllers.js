@@ -28,6 +28,7 @@ angular.module('ApplicationModule.controllers', ['ApplicationModule.services']).
         );
     };
 
+    $scope.imgThumb = "";
     $scope.readyToSubmit = true;
     $scope.store = {
       "Android": false,

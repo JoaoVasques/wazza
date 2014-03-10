@@ -1,36 +1,5 @@
-@dashboardSection = {
-<div>
-  <ul >
-    <div class="dropdown" ng-controller="DashboardController">
-        <a href="#" class="dropdown-toggle glyphicon" data-toggle="dropdown">Add<b class="caret"></b></a>
-        <ul class="dropdown-menu">
-          <li><a href="#" ng-click="addItem()">Virtual Currency</a></li>
-          <li><a href="#" ng-click="open()">In-app Purchase</a></li>
-        </ul>
-    </div>
-    <!--
-    <li class="dropdown" ng-controller="DashboardController">
-        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Change Application<b class="caret"></b></a>
-        <ul class="dropdown-menu" ng-repeat="application in applications">
-          <li><a href="#">{{application}}</a></li>
-        </ul>
-    </li>
-    -->
-  </ul>
-  <!--
-  <div class="col-sm-3 col-md-3">
-      <form class="navbar-form" role="search" ng-submit="">
-      <div class="input-group">
-          <input type="text" ng-model="itemName" ng-change="sendItemSearchEvent()" class="form-control" placeholder="Search Items" name="q">
-      </div>
-      </form>
-  </div>
-      -->
-</div>
-}
-
   <nav class="nav navbar navbar-inverse navbar-static-top" role="navigation" ng-controller="NavBarController" ng-show="showNavBar" id="navbar">
-      <a class="navbar-header navbar-brand" href="/home"><img src="@routes.Assets.at("images/letter-logo.png")" alt="wazza logo" style="height:100%;"/></a>
+      <a class="navbar-header navbar-brand" href="/home"><img src="@routes.Assets.at("images/letter-logo.png")" alt="wazza logo"/></a>
       <p class="navbar-text">In App purchases made simple.</p>
         <div class="navbar-right dropdown">
           <p class="navbar-text">Duarte Barbosa</p>
@@ -39,8 +8,8 @@
           </a>
           <ul class="dropdown-menu">
             <li><a ng-show="sessionOn" ng-href='/newapp'><span class="fa fa-edit fa-fw"></span>New Application</a></li>
-            <li><a href="#"><span class="fa fa-user fa-fw"></span> User Profile</a></li>
-            <li><a href="#"><span class="fa fa-gear fa-fw"></span> Settings</a></li>
+            <li><a href="/user"><span class="fa fa-user fa-fw"></span> User Profile</a></li>
+            <li><a href="/settings"><span class="fa fa-gear fa-fw"></span> Settings</a></li>
             <li class="divider"></li>
             <li><a ng-show="sessionOn" ng-click="logout()"><span class="fa fa-sign-out fa-fw"></span> Logout</a>
             </li>
@@ -49,33 +18,3 @@
         </div>
         
   </nav>
-
-@old = {
-  <nav class="nav navbar navbar-inverse navbar-static-top" role="navigation" ng-controller="NavBarController" ng-show="showNavBar">
-    <div class="container">
-      <a class="navbar-header navbar-brand" href="home"><img src="@routes.Assets.at("images/letter-logo.png")" alt="wazza logo" style="height:100%;"/></a>
-      <p class="navbar-text">In App purchases made simple.</p>
-        <!--div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-          @dashboardSection
-        </div-->
-
-      <div class="navbar-right">
-        <!-- TODO: replace with ng-model user -->
-        <p class="navbar-text">Duarte Barbosa</p>
-        <div class="dropdown">
-          <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-            <span class="fa fa-user fa-fw"></span>  <span class="fa fa-caret-down"></span>
-          </a>
-          <ul class="dropdown-menu dropdown-user">
-            <li><a ng-show="sessionOn" ng-href='/newapp'>New Application</a></li>
-            <li><a href="#"><span class="fa fa-user fa-fw"></span> User Profile</a></li>
-            <li><a href="#"><span class="fa fa-gear fa-fw"></span> Settings</a></li>
-            <li class="divider"></li>
-            <li><a ng-show="sessionOn" ng-click="logout()"><span class="fa fa-sign-out fa-fw"></span> Logout</a>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </nav>
-}

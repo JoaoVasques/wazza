@@ -1,161 +1,119 @@
 @(
-  exist: Boolean,
-  applicationName: String,
-  credentials: models.application.Credentials,
-  virtualCurrencies: List[models.application.VirtualCurrency],
-  items: List[models.application.Item]
+exist: Boolean,
+applicationName: String,
+credentials: models.application.Credentials,
+virtualCurrencies: List[models.application.VirtualCurrency],
+items: List[models.application.Item]
 )
 
-@itemView = {
-<div class="panel panel-default">
-  <div class="panel-body">
-    <div class="row">
-      <div class="col-xs-6"><img class="img-responsive" ng-src="{{item.imageInfo.url}}">
-      </div>
-      <div class="col-xs-5">
-        <h4 class="product-name"><strong>{{item._id}}</strong></h4><h4><small>{{item.description}}</small></h4>
-        <h5><strong>{{item.currency.value}}<span class="glyphicon-euro"></span></strong></h5>
-      </div>
-      <div class="col-xs-1">
-        <button type="button" class="btn btn-link btn-xs" ng-click="deleteItem(item.name, item.imageInfo.name)">
-          <span class="glyphicon glyphicon-trash"> </span>
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
-}
-
-@itemsGrid = {
-<div class="row form-group">
-  <div class="col-xs-12 col-md-4" ng-repeat="item in items | filter:itemSearch">
-    @itemView
-  </div>
-</div> 
-}
-
 @if(exist){
-  <!--<div>
-      <script type="text/ng-template" id="myModalContent.html">
-        <div class="modal-header">
-            <h3>New item</h3>
-        </div>
-        <div class="modal-body">
-            @views.html.newItem.render(List("Real", "Virtual"))
-        </div>
-        <div class="modal-footer">
-            <button class="btn btn-primary" ng-click="ok()">OK</button>
-            <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
-        </div>
-      </script>
-  </div>-->
-  @itemsGrid
-
-} else {
-  <h2>No applications :(</h2>
-}
 
 <div class="row">
-      <div class="col-lg-12">
-        <h1 class="page-header font-semibold">Dashboard - {{applicationName}}<span class="pull-right"><i class="fa fa-android fa-fw"></i><i class="fa fa-apple fa-fw"></i></span></h1>
-      </div>
+  <div class="col-lg-12">
+    <h1 class="page-header font-semibold">Dashboard - {{applicationName}}<span class="pull-right"><i class="fa fa-android fa-fw"></i><i class="fa fa-apple fa-fw"></i></span></h1>
+  </div>
 </div>
 
-    <div class="row">
+<div class="row">
 
-      <div class="col-lg-8">
-        <div class="panel panel-default">
-          <div class="panel-heading">
-            <i class="fa fa-bell fa-fw"></i> Notifications Panel
-          </div>
-          <!-- /.panel-heading -->
-          <div class="panel-body">
-            <div class="list-group">
-              <a href="#" class="list-group-item">
-                <i class="fa fa-comment fa-fw"></i> Item #1337 from "Best Game Ever" needs attention.
-                <span class="pull-right text-muted small"><em>4 minutes ago</em>
-                </span>
-              </a>
-              <a href="#" class="list-group-item">
-                <i class="fa fa-shopping-cart fa-fw"></i> Increase revenue selling a limited run of Item #BIGBOOBS.
-                <span class="pull-right text-muted small"><em>12 minutes ago</em>
-                </span>
-              </a>
-              <a href="#" class="list-group-item">
-                <i class="fa fa-warning fa-fw"></i> Item #DEADBEEF at Apple Store is out of stock.
-                <span class="pull-right text-muted small"><em>27 minutes ago</em>
-                </span>
-              </a>
-              <a href="#" class="list-group-item">
-                <i class="fa fa-money fa-fw"></i> Configure "Best App ever" IAP.
-                <span class="pull-right text-muted small"><em>43 minutes ago</em>
-                </span>
-              </a>
-              <a href="#" class="list-group-item">
-                <i class="fa fa-bolt fa-fw"></i> Server Crashed!
-                <span class="pull-right text-muted small"><em>10:13 AM</em>
-                </span>
-              </a>
-              <a href="#" class="list-group-item">
-                <i class="fa fa-money fa-fw"></i> Payment Received
-                <span class="pull-right text-muted small"><em>Yesterday</em>
-                </span>
-              </a>
-            </div>
-            <!-- /.list-group -->
-            <a href="#" class="btn btn-default btn-block">View All Alerts</a>
-          </div>
+  <div class="col-lg-8">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <i class="fa fa-bell fa-fw"></i> Notifications Panel
+      </div>
+
+      <div class="panel-body">
+        <div class="list-group">
+          <a href="#" class="list-group-item">
+            <i class="fa fa-comment fa-fw"></i> Item #1337 from "Best Game Ever" needs attention.
+            <span class="pull-right text-muted small"><em>4 minutes ago</em>
+            </span>
+          </a>
+          <a href="#" class="list-group-item">
+            <i class="fa fa-shopping-cart fa-fw"></i> Increase revenue selling a limited run of Item #BIGBOOBS.
+            <span class="pull-right text-muted small"><em>12 minutes ago</em>
+            </span>
+          </a>
+          <a href="#" class="list-group-item">
+            <i class="fa fa-warning fa-fw"></i> Item #DEADBEEF at Apple Store is out of stock.
+            <span class="pull-right text-muted small"><em>27 minutes ago</em>
+            </span>
+          </a>
+          <a href="#" class="list-group-item">
+            <i class="fa fa-money fa-fw"></i> Configure "Best App ever" IAP.
+            <span class="pull-right text-muted small"><em>43 minutes ago</em>
+            </span>
+          </a>
+          <a href="#" class="list-group-item">
+            <i class="fa fa-bolt fa-fw"></i> Server Crashed!
+            <span class="pull-right text-muted small"><em>10:13 AM</em>
+            </span>
+          </a>
+          <a href="#" class="list-group-item">
+            <i class="fa fa-money fa-fw"></i> Payment Received
+            <span class="pull-right text-muted small"><em>Yesterday</em>
+            </span>
+          </a>
         </div>
-        <div class="panel panel-default" hidden>
-          <div class="panel-heading">
-            <i class="fa fa-bar-chart-o fa-fw"></i> Area Chart Example
-            <div class="pull-right">
-              <div class="btn-group">
-                <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
-                  Actions
-                  <span class="caret"></span>
-                </button>
-                <ul class="dropdown-menu pull-right" role="menu">
-                  <li><a href="#">Action</a>
-                  </li>
-                  <li><a href="#">Another action</a>
-                  </li>
-                  <li><a href="#">Something else here</a>
-                  </li>
-                  <li class="divider"></li>
-                  <li><a href="#">Separated link</a>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-          <div class="panel-body">
-            <div id="morris-area-chart"></div>
+        <a href="#" class="btn btn-default btn-block">View All Alerts</a>
+      </div>
+    </div>
+
+    <div class="panel panel-default" hidden>
+      <div class="panel-heading">
+        <i class="fa fa-bar-chart-o fa-fw"></i> Area Chart Example
+        <div class="pull-right">
+          <div class="btn-group">
+            <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
+              Actions
+              <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu pull-right" role="menu">
+              <li><a href="#">Action</a>
+              </li>
+              <li><a href="#">Another action</a>
+              </li>
+              <li><a href="#">Something else here</a>
+              </li>
+              <li class="divider"></li>
+              <li><a href="#">Separated link</a>
+              </li>
+            </ul>
           </div>
         </div>
       </div>
+      <div class="panel-body">
+        <div id="morris-area-chart"></div>
+      </div>
+    </div>
 
-      <div class="col-lg-4">
-        <div class="panel panel-default">
-          <div class="input-group">
-            <input id="btn-input" type="text" class="form-control input-sm" placeholder="Type your query here..." />
-            <span class="input-group-btn">
-              <button class="btn btn-warning btn-sm" id="btn-chat">Search</button>
-            </span>
-          </div>
-        </div>
+  </div>
 
-        <div class="panel panel-default">
-          <div class="panel-heading">
-            <i class="fa fa-bar-chart-o fa-fw"></i> Revenue
-          </div>
-          <div class="panel-body">
-            <div id="morris-donut-chart"></div>
-            <a href="#" class="btn btn-default btn-block">View Details</a>
-          </div>
+  <div class="col-lg-4">
+    <div class="panel panel-default">
+      <div class="input-group">
+        <input id="btn-input" type="text" class="form-control input-sm" placeholder="Type your query here..." />
+        <span class="input-group-btn">
+          <button class="btn btn-warning btn-sm" id="btn-chat">Search</button>
+        </span>
+      </div>
+    </div>
 
-        </div>
-
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <i class="fa fa-bar-chart-o fa-fw"></i> Revenue
+      </div>
+      <div class="panel-body">
+        <div id="morris-donut-chart"></div>
+        <a href="#" class="btn btn-default btn-block">View Details</a>
       </div>
 
     </div>
+
+  </div>
+
+</div>
+
+} else {
+  <h2>It seems you have not registered any application yet.</h2>
+}

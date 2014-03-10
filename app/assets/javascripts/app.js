@@ -70,6 +70,11 @@ angular.module('Wazza', ['ngRoute', 'Wazza.controllers', 'ItemModule', 'UserModu
         templateUrl : '/app/new',
         controller : ''
       })
+      //user
+      .when('/user', {
+        templateUrl : '/user',
+        controller : ''
+      })
       .otherwise({redirectTo:"/"});
 
 
