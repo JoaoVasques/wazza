@@ -73,4 +73,32 @@ class DashboardController @Inject()(
     Ok(views.html.analytics())
   }
 
+  def storeAndroid = HasToken() {token => userId => implicit request =>
+    Ok(views.html.storeAndroid())
+  }
+
+  def storeApple = HasToken() {token => userId => implicit request =>
+    Ok(views.html.storeApple())
+  }
+
+  def storeAmazon = HasToken() {token => userId => implicit request =>
+    Ok(views.html.storeAmazon())
+  }
+
+  def settingsSection = HasToken() {token => userId => implicit request =>
+    Ok(views.html.settings())
+  }
+
+  def inventory = HasToken() {token => userId => implicit request =>
+    Ok(views.html.inventory())
+  }
+
+  def inventoryCRUD = HasToken() {token => userId => implicit request =>
+    Ok(views.html.inventoryCRUD())
+  }
+
+  def inventoryVirtualCurrencies = HasToken() {token => userId => implicit request =>
+    Ok(views.html.inventoryVirtualCurrencies())
+  }
+
 }

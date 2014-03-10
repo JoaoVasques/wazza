@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('DashboardModule', ['ui.bootstrap', 'ItemModule.services'])
+angular.module('DashboardModule', ['ItemModule.services'])
 
 .controller('DashboardController', [
   '$scope',
@@ -8,7 +8,6 @@ angular.module('DashboardModule', ['ui.bootstrap', 'ItemModule.services'])
   '$rootScope',
   'FetchItemsService',
   'BootstrapDashboardService',
-  '$modal',
   'DeleteItemService',
   'ApplicationStateService',
   'ItemSearchService',
@@ -18,7 +17,6 @@ angular.module('DashboardModule', ['ui.bootstrap', 'ItemModule.services'])
     $rootScope,
     FetchItemsService,
     BootstrapDashboardService,
-    $modal,
     DeleteItemService,
     ApplicationStateService,
     ItemSearchService
@@ -46,7 +44,7 @@ angular.module('DashboardModule', ['ui.bootstrap', 'ItemModule.services'])
   $scope.bootstrapFailureCallback = function(errorData){
     console.log(errorData);
   }
-
+/*
   var ModalInstanceCtrl = function ($scope, $modalInstance, items) {
     $scope.items = items;
     $scope.selected = {
@@ -61,9 +59,9 @@ angular.module('DashboardModule', ['ui.bootstrap', 'ItemModule.services'])
       $modalInstance.dismiss('cancel');
     };
   };
-
+*/
   $scope.open = function () {
-
+/*
     var modalInstance = $modal.open({
       templateUrl: 'myModalContent.html',
       controller: ModalInstanceCtrl,
@@ -77,6 +75,7 @@ angular.module('DashboardModule', ['ui.bootstrap', 'ItemModule.services'])
     modalInstance.result.then(function (selectedItem) {
       $scope.selected = selectedItem;
     }, function () {});
+  */
   };
 
   $scope.bootstrapModule = function(){

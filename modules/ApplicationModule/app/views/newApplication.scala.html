@@ -17,15 +17,35 @@
   </div>
 }
 
-<form
-  class="form-vertical"
-  enctype="multipart/form-data"
-  ng-controller="NewApplicationFormController"
-  ng-submit="createApplication(applicationForm)">
-    <legend>General</legend>
+@thumbnail = {
+  <img id="item-logo-thumbnail" ng-src="{{itemForm.imageInfo.url}}" ng-show="imgThumb" class="img-thumbnail" style="height: 200px">
+}
+
+@images = {
+  <div class="form-group">
+    Import an Image for identifying the Application
+    <input type="file" file-model="myFile" ng-file-select="onFileSelect($files)" ng-model="imgThumb" />
+    @thumbnail
+  </div>
+}
+
+@itemlist = {
+  <div class="form-group">
+    Import an Item list
+    <input type="file" file-model="myFile" ng-file-select="onFileSelect($files)"/>
+  </div>
+}
+
+<h1>Create new Application</h1>
+<form class="form-vertical" enctype="multipart/form-data" ng-controller="NewApplicationFormController" ng-submit="createApplication(applicationForm)">
+    <legend>General Information</legend>
       @inputText("Name", "name", true)
       @inputText("Url", "appUrl", true)
       @radioButtons(appTypes, "appType")
       @inputText("Package name", "packageName", false, "store.Android")
+    <legend>Additional Information</legend>
+      @inputText("Description", "description", false)
+      @images
+      @itemlist
     <input type="submit" class="btn btn-success" value="Create">
 </form>

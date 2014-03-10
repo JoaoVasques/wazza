@@ -11,10 +11,17 @@ import com.google.inject._
 class Application extends Controller with Security{
 
   def index = Action {
-	Ok(views.html.index())
+	 Ok(views.html.index())
   }
 
   def launch = Action {
-	Ok(views.html.launch())
+	 Ok(views.html.launch())
+  }
+
+  def fault(path : String) = Action {
+  	if(path == "home")
+  		Ok(views.html.index2())
+  	else
+  		Ok(views.html.index())
   }
 }

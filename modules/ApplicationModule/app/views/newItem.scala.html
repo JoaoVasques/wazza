@@ -59,6 +59,7 @@
 }
 
 @createItemForm(metadata: Html) = {
+  <h1>Create new Item</h1>
   <form class="form-vertical" enctype="multipart/form-data" ng-submit="createItem()">
     @inputText("Name", "name", true)
     @textArea("Description", "description", true)
