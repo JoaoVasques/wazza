@@ -45,6 +45,7 @@ angular.module('UserModule', ['UserModule.services', 'UserModule.directives', 'S
   $scope.handleUserCreationSuccess = function(success) {
     cookiesManagerService.set('PLAY2AUTH_SESS_ID', success.data.authToken);
     LoginLogoutService.login();
+    document.getElementById("page-wrapper").className = "page-wrapper";
     $location.path(success.data.url);
   };
 
