@@ -19,7 +19,15 @@ items: List[models.application.Item]
   <div class="col-lg-8">
     <div class="panel panel-default">
       <div class="panel-heading">
-        <i class="fa fa-bell fa-fw"></i> Notifications Panel
+        <div class="row">
+          <div class="col-md-6" style="padding-top:5px"><i class="fa fa-bell fa-fw"></i> Notifications Panel</div>
+          <div class="input-group .col-md-4 .col-md-offset-4" style="padding-right:15px">
+            <input id="btn-input" type="text" class="form-control input-sm" placeholder="Type your query here..." />
+            <span class="input-group-btn">
+              <button class="btn btn-warning btn-sm" id="btn-chat">Search</button>
+            </span>
+          </div>
+        </div>     
       </div>
 
       <div class="panel-body">
@@ -40,15 +48,15 @@ items: List[models.application.Item]
             </span>
           </a>
           <a href="#" class="list-group-item">
-            <i class="fa fa-money fa-fw"></i> Configure "Best App ever" IAP.
+            <i class="fa fa-money fa-fw"></i> "Best App ever" Waiting for approval by Apple.
             <span class="pull-right text-muted small"><em>43 minutes ago</em>
             </span>
           </a>
-          <a href="#" class="list-group-item">
+          <!--a href="#" class="list-group-item">
             <i class="fa fa-bolt fa-fw"></i> Server Crashed!
             <span class="pull-right text-muted small"><em>10:13 AM</em>
             </span>
-          </a>
+          </a-->
           <a href="#" class="list-group-item">
             <i class="fa fa-money fa-fw"></i> Payment Received
             <span class="pull-right text-muted small"><em>Yesterday</em>
@@ -56,6 +64,45 @@ items: List[models.application.Item]
           </a>
         </div>
         <a href="#" class="btn btn-default btn-block">View All Alerts</a>
+      </div>
+    </div>
+
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <i class="fa fa-bell fa-fw"></i> Items Panel
+      </div>
+
+      <div class="panel-body">
+        <table class="table table-hover">
+          <tr>
+            <td>Item name</td>
+            <td>#</td> 
+            <td>Revenue</td>
+            <td>Date</td>
+            <td>Price</td>
+          </tr>
+          <tr>
+            <td>PowerUp</td>
+            <td>94</td>
+            <td>200 USD</td>
+            <td>March 12th</td>
+            <td>0.99 USD</td>
+          </tr>
+          <tr>
+            <td>Big Bad Wolf</td>
+            <td>20</td>
+            <td>14 USD</td>
+            <td>March 3th</td>
+            <td>2.99 USD</td>
+          </tr>
+          <tr>
+            <td>Special Chicken</td>
+            <td>96</td>
+            <td>0 USD</td>
+            <td>March 12th</td>
+            <td>0.99 USD</td>
+          </tr>
+        </table>
       </div>
     </div>
 
@@ -91,15 +138,6 @@ items: List[models.application.Item]
 
   <div class="col-lg-4">
     <div class="panel panel-default">
-      <div class="input-group">
-        <input id="btn-input" type="text" class="form-control input-sm" placeholder="Type your query here..." />
-        <span class="input-group-btn">
-          <button class="btn btn-warning btn-sm" id="btn-chat">Search</button>
-        </span>
-      </div>
-    </div>
-
-    <div class="panel panel-default">
       <div class="panel-heading">
         <i class="fa fa-bar-chart-o fa-fw"></i> Revenue
       </div>
@@ -120,3 +158,4 @@ items: List[models.application.Item]
     <a class="btn btn-default btn-lg" ng-href='/newapp'><span class="fa fa-edit fa-fw"></span>New Application</a>
   </p>
 }
+
