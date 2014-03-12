@@ -33,22 +33,22 @@ items: List[models.application.Item]
       <div class="panel-body">
         <div class="list-group">
           <a href="#" class="list-group-item">
-            <i class="fa fa-comment fa-fw"></i> Item #1337 from "Best Game Ever" needs attention.
+            <i class="fa fa-comment fa-fw"></i> Item #Marina from "App" needs attention.
             <span class="pull-right text-muted small"><em>4 minutes ago</em>
             </span>
           </a>
           <a href="#" class="list-group-item">
-            <i class="fa fa-shopping-cart fa-fw"></i> Increase revenue selling a limited run of Item #BIGBOOBS.
+            <i class="fa fa-shopping-cart fa-fw"></i> Increase revenue selling a limited run of Item #Marina.
             <span class="pull-right text-muted small"><em>12 minutes ago</em>
             </span>
           </a>
           <a href="#" class="list-group-item">
-            <i class="fa fa-warning fa-fw"></i> Item #DEADBEEF at Apple Store is out of stock.
+            <i class="fa fa-warning fa-fw"></i> Item #RuadaPrata at Apple Store is out of stock.
             <span class="pull-right text-muted small"><em>27 minutes ago</em>
             </span>
           </a>
           <a href="#" class="list-group-item">
-            <i class="fa fa-money fa-fw"></i> "Best App ever" Waiting for approval by Apple.
+            <i class="fa fa-money fa-fw"></i> "App" Waiting for approval by Apple.
             <span class="pull-right text-muted small"><em>43 minutes ago</em>
             </span>
           </a>
@@ -75,33 +75,17 @@ items: List[models.application.Item]
       <div class="panel-body">
         <table class="table table-hover">
           <tr>
-            <td>Item name</td>
-            <td>#</td> 
+            <td>Item name</td> 
             <td>Revenue</td>
             <td>Date</td>
             <td>Price</td>
           </tr>
-          <tr>
-            <td>PowerUp</td>
-            <td>94</td>
-            <td>200 USD</td>
+          <tr ng-repeat="item in items">
+            <td>{{item.name}}</td>
+            <td>{{0.95 * item.currency.value}}</td>
             <td>March 12th</td>
-            <td>0.99 USD</td>
-          </tr>
-          <tr>
-            <td>Big Bad Wolf</td>
-            <td>20</td>
-            <td>14 USD</td>
-            <td>March 3th</td>
-            <td>2.99 USD</td>
-          </tr>
-          <tr>
-            <td>Special Chicken</td>
-            <td>96</td>
-            <td>0 USD</td>
-            <td>March 12th</td>
-            <td>0.99 USD</td>
-          </tr>
+            <td>{{item.currency.value}} EUR</td>
+	        </tr>
         </table>
       </div>
     </div>

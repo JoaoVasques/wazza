@@ -8,39 +8,15 @@
 <table class="table table-hover">
 	<tr>
 		<td>Item name</td>
-		<td>#</td> 
 		<td>Revenue</td>
 		<td>Date</td>
 		<td>Price</td>
 	</tr>
-	<tr>
-		<td>PowerUp</td>
-		<td>94</td>
-		<td>200 USD</td>
-		<td>March 12th</td>
-		<td>0.99 USD</td>
-	</tr>
-	<tr>
-		<td>Big Bad Wolf</td>
-		<td>20</td>
-		<td>14 USD</td>
-		<td>March 3th</td>
-		<td>2.99 USD</td>
-	</tr>
-	<tr>
-		<td>Special Chicken</td>
-		<td>96</td>
-		<td>0 USD</td>
-		<td>March 12th</td>
-		<td>0.99 USD</td>
-	</tr>
-	<div ng-repeat="item in items" ng-show="items">
-		<tr>
-			<td>{{item._id}}</td>
-			<td>97</td>
-			<td>{{item.currency.value}} USD</td>
+		<tr ng-repeat="item in items">
+			<td>{{item.name}}</td>
+			<td>{{0.95 * item.currency.value}}</td>
 			<td>March 12th</td>
-			<td>0.99 USD</td>
+			<td>{{item.currency.value}} EUR</td>
 		</tr>
-	</div>
 </table>
+
