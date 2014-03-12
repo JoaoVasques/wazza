@@ -20,6 +20,7 @@ angular.module('ApplicationModule.controllers', ['ApplicationModule.services']).
           function(result){
             $scope.formErrors = {};
             $scope.applicationName=$scope.applicationForm.name;
+            $scope.exist=true;
             $location.path('/home');
           },
           function(errors){
