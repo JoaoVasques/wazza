@@ -1,6 +1,22 @@
 
 angular.module('Wazza.controllers', ['ApplicationModule', 'Wazza.services', 'ItemModule', 'ngCookies', 'SecurityModule', 'DashboardModule'])
 
+//evil, horrendous and quite broken hack. do not try this at home!
+.controller('RedirectController',[
+  '$scope',
+  '$location',
+  function (
+    $scope,
+    $location
+    ) {
+    document.getElementById("navbar").css("ng-hide", "");
+    document.getElementById("sidebar").css("ng-hide", "");
+    $scope.showNavBar = $scope.showSideBar = $scope.sessionOn = true;
+    console.log($scope);
+    $location.path("/home");
+  
+}])
+
 .controller('LoginController',[
   '$scope',
   '$location',
@@ -9,6 +25,7 @@ angular.module('Wazza.controllers', ['ApplicationModule', 'Wazza.services', 'Ite
   '$rootScope',
   'redirectToDashboardService',
   'LoginLogoutService',
+  'ApplicationStateService',
   function (
     $scope,
     $location,
@@ -16,7 +33,8 @@ angular.module('Wazza.controllers', ['ApplicationModule', 'Wazza.services', 'Ite
     cookiesManagerService,
     $rootScope, 
     redirectToDashboardService,
-    LoginLogoutService
+    LoginLogoutService,
+    ApplicationStateService
     ) {
 
   $scope.canRedirectToDashboard = function(){
@@ -24,6 +42,7 @@ angular.module('Wazza.controllers', ['ApplicationModule', 'Wazza.services', 'Ite
       then(
         function(){
           LoginLogoutService.login();
+          document.getElementById("page-wrapper").className = "page-wrapper";
           $location.path("/home");
         }
       );
@@ -46,7 +65,12 @@ angular.module('Wazza.controllers', ['ApplicationModule', 'Wazza.services', 'Ite
 
   $scope.handleLoginSuccess = function(success){
     cookiesManagerService.set('PLAY2AUTH_SESS_ID', success.data.authToken);
+    ApplicationStateService.updateUserInfo({
+        name: success.data.userName,
+        email: success.data.userId
+    });
     LoginLogoutService.login();
+    document.getElementById("page-wrapper").className = "page-wrapper";
     $location.path(success.data.url);
   };
 
@@ -89,18 +113,29 @@ angular.module('Wazza.controllers', ['ApplicationModule', 'Wazza.services', 'Ite
       $scope.sessionOn = false;
       $scope.showNavBar = false;
       $scope.applicationName = "";
+      $scope.userInfo = {
+          name: "",
+          email: ""
+      };
       $scope.$on("APPLICATION_NAME_UPDATED", function(){
         $scope.applicationName = ApplicationStateService.applicationName;
       });
-      $scope.$on("LOGIN_SUCCESS", function(event, data){
+        
+      $scope.$on("LOGIN_SUCCESS", function(data){
         $scope.sessionOn = true;
         $scope.showNavBar = true;
       });
-
+        
       $scope.$on("LOGOUT_SUCCESS", function(event, url){
+        document.getElementById("page-wrapper").className = "";
         $scope.sessionOn = false;
         $scope.showNavBar = false;
         $location.path(url.value);
+      });
+       
+      $scope.$on("USER_INFO_UPDATED", function(){
+          $scope.userInfo.name = ApplicationStateService.userInfo.name;
+          $scope.userInfo.email = ApplicationStateService.userInfo.email; 
       });
     };
     $scope.bootstrapModule();
@@ -132,6 +167,7 @@ angular.module('Wazza.controllers', ['ApplicationModule', 'Wazza.services', 'Ite
       });
 
       $scope.$on("LOGOUT_SUCCESS", function(event, data){
+        document.getElementById("page-wrapper").className = "";
         $scope.showSideBar = false;
       });
 

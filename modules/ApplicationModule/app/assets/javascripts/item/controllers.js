@@ -23,6 +23,7 @@ angular.module('ItemModule.controllers', ['ItemModule.services', 'angularFileUpl
       GetLanguagesService
     ) {
 
+      $scope.itemSearch = false;
     $scope.currencyOptions = ["Real","Virtual"];
     $scope.showCurrencyInputs = {
       "real": true,
@@ -135,6 +136,7 @@ angular.module('ItemModule.controllers', ['ItemModule.services', 'angularFileUpl
       hiddenElement.click();
       $scope.errors = false;
       $scope.formErrors = [];
+      $scope.itemSearch = true;
       $location.path("/home");
     }
 

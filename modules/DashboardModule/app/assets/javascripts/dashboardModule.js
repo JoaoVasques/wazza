@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('DashboardModule', ['ui.bootstrap', 'ItemModule.services'])
+angular.module('DashboardModule', ['ItemModule.services'])
 
 .controller('DashboardController', [
   '$scope',
@@ -8,7 +8,6 @@ angular.module('DashboardModule', ['ui.bootstrap', 'ItemModule.services'])
   '$rootScope',
   'FetchItemsService',
   'BootstrapDashboardService',
-  '$modal',
   'DeleteItemService',
   'ApplicationStateService',
   'ItemSearchService',
@@ -18,7 +17,6 @@ angular.module('DashboardModule', ['ui.bootstrap', 'ItemModule.services'])
     $rootScope,
     FetchItemsService,
     BootstrapDashboardService,
-    $modal,
     DeleteItemService,
     ApplicationStateService,
     ItemSearchService
@@ -41,12 +39,13 @@ angular.module('DashboardModule', ['ui.bootstrap', 'ItemModule.services'])
       $scope.applications
     );
     ApplicationStateService.updateApplicationName(_.first(data.data.applications).name);
+    ApplicationStateService.updateUserInfo(data.data.userInfo);
   }
 
   $scope.bootstrapFailureCallback = function(errorData){
     console.log(errorData);
   }
-
+/*
   var ModalInstanceCtrl = function ($scope, $modalInstance, items) {
     $scope.items = items;
     $scope.selected = {
@@ -61,9 +60,9 @@ angular.module('DashboardModule', ['ui.bootstrap', 'ItemModule.services'])
       $modalInstance.dismiss('cancel');
     };
   };
-
+*/
   $scope.open = function () {
-
+/*
     var modalInstance = $modal.open({
       templateUrl: 'myModalContent.html',
       controller: ModalInstanceCtrl,
@@ -77,6 +76,7 @@ angular.module('DashboardModule', ['ui.bootstrap', 'ItemModule.services'])
     modalInstance.result.then(function (selectedItem) {
       $scope.selected = selectedItem;
     }, function () {});
+  */
   };
 
   $scope.bootstrapModule = function(){
@@ -174,6 +174,10 @@ angular.module('DashboardModule', ['ui.bootstrap', 'ItemModule.services'])
   var service = {};
   service.applicationName = "";
   service.applicationsList = [];
+  service.userInfo = {
+      name: "",
+      email: ""
+  };
 
   service.updateApplicationName = function(newName){
     service.applicationName = newName;
@@ -183,6 +187,11 @@ angular.module('DashboardModule', ['ui.bootstrap', 'ItemModule.services'])
   service.updateApplicationsList = function(newList){
     service.appplicationsList = newList;
     $rootScope.$broadcast("APPLICATIONS_LIST_UPDATED");
+  };
+
+  service.updateUserInfo = function(newInfo) {
+    service.userInfo = newInfo;
+    $rootScope.$broadcast("USER_INFO_UPDATED");
   };
 
   return service;

@@ -48,9 +48,14 @@ class DashboardController @Inject()(
       BadRequest
     } else {
       val application = applicationService.find(applications.head).get
+      val user = userService.find(userId).get
       Ok(
         Json.obj(
           "name" -> application.name,
+          "userInfo" -> Json.obj(
+            "name" -> user.name,
+            "email" -> user.email
+          ),
           "credentials" -> Json.obj(
             "apiKey" -> application.credentials.apiKey,
             "sdkKey" -> application.credentials.sdkKey
@@ -71,6 +76,34 @@ class DashboardController @Inject()(
 
   def analyticsSection = HasToken() {token => userId => implicit request =>
     Ok(views.html.analytics())
+  }
+
+  def storeAndroid = HasToken() {token => userId => implicit request =>
+    Ok(views.html.storeAndroid())
+  }
+
+  def storeApple = HasToken() {token => userId => implicit request =>
+    Ok(views.html.storeApple())
+  }
+
+  def storeAmazon = HasToken() {token => userId => implicit request =>
+    Ok(views.html.storeAmazon())
+  }
+
+  def settingsSection = HasToken() {token => userId => implicit request =>
+    Ok(views.html.settings())
+  }
+
+  def inventory = HasToken() {token => userId => implicit request =>
+    Ok(views.html.inventory())
+  }
+
+  def inventoryCRUD = HasToken() {token => userId => implicit request =>
+    Ok(views.html.inventoryCRUD())
+  }
+
+  def inventoryVirtualCurrencies = HasToken() {token => userId => implicit request =>
+    Ok(views.html.inventoryVirtualCurrencies())
   }
 
 }

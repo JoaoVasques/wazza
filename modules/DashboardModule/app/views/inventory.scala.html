@@ -1,0 +1,89 @@
+<div class="row">
+	<div class="col-lg-12">
+		<h1 class="page-header font-semibold">Inventory - Overview<span class="pull-right">{{applicationName}}</span></h1>
+	</div>
+</div>
+@navSection
+
+<div id="page-wrapper">
+	<div class="row">
+		<div class="col-md-12">
+			<!--div class="modal fade" id="newItem" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+							<h4 class="modal-title" id="myModalLabel">New item</h4>
+						</div>
+						<div class="modal-body">
+							@views.html.newItem.render(List("Real", "Virtual"))
+						</div>
+						<div class="modal-footer">
+							<button class="btn btn-primary" ng-click="ok()">OK</button>
+							<button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+						</div>
+					</div>
+				</div>
+			</div-->
+			@itemsGrid
+		</div>
+	</div>
+</div>
+
+
+@navSection = {
+	<nav>
+		<div class="col-sm-3 col-md-3">
+			<form class="navbar-form" role="search" ng-submit="">
+				<div class="input-group">
+					<input type="text" ng-model="itemName" ng-change="sendItemSearchEvent()" class="form-control" placeholder="Search Items" name="q">
+				</div>
+			</form>
+		</div>
+
+		<ul class="nav nav-pills pull-right">
+			<li class="dropdown" ng-controller="DashboardController">
+				<a href="#" class="dropdown-toggle" data-toggle="dropdown">Add<b class="caret"></b></a>
+				<ul class="dropdown-menu">
+					<li><a href="#" ng-click="addItem()">Item</a></li>
+					<li><a href="#" ng-click="open()">Virtual Currency</a></li>
+				</ul>
+			</li>
+
+			<li class="dropdown" ng-controller="DashboardController">
+				<a href="#" class="dropdown-toggle" data-toggle="dropdown">Change Application<b class="caret"></b></a>
+				<ul class="dropdown-menu" ng-repeat="application in applications">
+					<li><a href="#">{{application}}</a></li>
+				</ul>
+			</li>
+		</ul>
+	</nav>
+	}
+
+@itemView = {
+<div class="panel panel-default">
+	<div class="panel-body">
+		<div class="row">
+			<div class="col-xs-6"><img class="img-responsive" ng-src="{{item.imageInfo.url}}">
+			</div>
+			<div class="col-xs-5">
+				<h4 class="product-name"><strong>{{item._id}}</strong></h4><h4><small>{{item.description}}</small></h4>
+				<h5><strong>{{item.currency.value}}<span class="glyphicon-euro"></span></strong></h5>
+			</div>
+			<div class="col-xs-1">
+				<button type="button" class="btn btn-link btn-xs" ng-click="deleteItem(item.name, item.imageInfo.name)">
+					<span class="glyphicon glyphicon-trash"> </span>
+				</button>
+			</div>
+		</div>
+	</div>
+</div>
+}
+
+@itemsGrid = {
+<div class="row form-group">
+	<div class="col-xs-12 col-md-4" ng-repeat="item in items | filter:itemSearch">
+		@itemView
+	</div>
+</div> 
+}
