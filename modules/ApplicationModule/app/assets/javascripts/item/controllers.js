@@ -58,6 +58,7 @@ angular.module('ItemModule.controllers', ['ItemModule.services', 'angularFileUpl
           "url": ""
         }
       };
+          $scope.imgThumb = "";
       $scope.showCurrencyInputs.real = true;
       $scope.errors = false;
       $scope.formErrors = [];
