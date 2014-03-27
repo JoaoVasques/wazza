@@ -143,3 +143,19 @@ items: List[models.application.Item]
   </p>
 }
 
+<script>
+    Morris.Donut({
+        element: 'morris-donut-chart',
+        data: [{
+            label: "Amazon Sales",
+            value: 12
+        }, {
+            label: "Android Sales",
+            value: 30
+        }, {
+            label: "Apple Sales",
+            value: 20
+        }],
+        resize: true
+    });
+</script>

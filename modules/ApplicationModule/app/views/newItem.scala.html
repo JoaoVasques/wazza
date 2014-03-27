@@ -53,8 +53,8 @@
 
 @images = {
   <div class="form-group">
-    <img id="item-logo-thumbnail" ng-src="{{itemForm.imageInfo.url}}" class="img-thumbnail" style="height: 200px">
-    <input type="file" file-model="myFile" ng-file-select="onFileSelect($files)" required/>
+    <img id="item-logo-thumbnail" ng-src="{{itemForm.imageInfo.url}}" ng-show="imgThumb"  class="img-thumbnail" style="height: 200px">
+    <input type="file" file-model="myFile" ng-file-select="onFileSelect($files)" ng-model="imgThumb" required/>
   </div>
 }
 
