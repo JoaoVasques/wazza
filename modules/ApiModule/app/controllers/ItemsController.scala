@@ -47,33 +47,5 @@ class ItemsController @Inject()(
       "item" ->  res.map{item => Item.convertToJson(item)}
     ))
   }
-
-  def getItemsWithDetails(applicationName: String) = ApiSecurityHandler() {implicit request =>
-    val result = applicationService.getItems(applicationName, getOffsetValue(request))
-    Ok(new JsArray(
-      result.map{item => Item.convertToJson(item)}.toSeq
-    ))
-  }
-  
-  def handlePurchase = Action(parse.json) {implicit request =>
-    val content = (request.body \ "content").as[String].replace("\\", "")
-    Json.parse(content).validate[PurchaseInfo].map{purchase =>
-      if(applicationService.itemExists(
-        purchase.itemId,
-        purchase.applicationName
-      )) {
-        purchaseService.save(purchase)match {
-          case Success(_) => Ok
-          case Failure(_) => BadRequest
-        }
-      } else {
-        BadRequest("item does not exist")
-      }
-    }.recoverTotal{
-      e => {
-        BadRequest(s"Detected error: ${JsError.toFlatJson(e)}")
-      }
-    }
-  }
 }
 
