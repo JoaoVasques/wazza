@@ -56,6 +56,7 @@ object WazzaApplication {
   lazy val Key = "name"
   lazy val ItemsId = "items"
   lazy val VirtualCurrenciesId = "virtualCurrencies"
+  lazy val CredentialsId = "credentials"
   lazy val applicationTypes = List("iOS", "Android")
 }
 
@@ -96,6 +97,18 @@ package object WazzaApplicationImplicits {
         VirtualCurrency.buildJson(vc)
       })
     )
+  }
+
+  implicit def buildOptionCredentialsFromJson(json: Option[JsValue]): Option[Credentials] = {
+    json match {
+      case Some(j) => {
+          (j \ WazzaApplication.CredentialsId).validate[Credentials].fold(
+          valid = {c => Some(c)},
+          invalid = {_ => None}
+        )
+      }
+      case None => None
+    }
   }
 }
 

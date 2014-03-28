@@ -20,13 +20,15 @@ trait ApplicationService {
 
   def getApplicationCountries(appName: String): List[String]
 
+  def getApplicationCredentials(appName: String): Option[Credentials]
+
   /** Item operations **/
 
   def addItem(item: Item, applicationName: String): Try[Item]
 
   def getItem(itemId: String, applicationName: String): Option[Item]
 
-  def getItems(applicationName: String, offset: Int = 0): List[Item]
+  def getItems(applicationName: String, offset: Int = 0, projection: String = null): List[Item]
 
   def itemExists(item: String, applicationName: String): Boolean
 

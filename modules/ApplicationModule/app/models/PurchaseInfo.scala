@@ -21,6 +21,9 @@ object LocationInfo {
   )(unlift(LocationInfo.unapply))
 }
 
+/**
+  Purchase Id format: Hash(appName + itemID + time + device)
+**/
 case class PurchaseInfo(
   id: String,
   applicationName: String,
