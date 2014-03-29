@@ -7,10 +7,10 @@ VAGRANTFILE_API_VERSION = "2"
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # Every Vagrant virtual environment requires a box to build off of.
   config.vm.box = "wazza"
-  config.vm.box_url = "https://dl.dropboxusercontent.com/u/5858910/wazza.box"
+  config.vm.box_url = "https://dl.dropboxusercontent.com/u/5858910/package.box"
 
   # The ruby runtime is also installed; just change the hostname to debian7rc1 to ensure puppet is executed with rvm also
-  config.vm.hostname = "wazza"
+  #config.vm.hostname = "wazza"
 
   config.vm.network :forwarded_port, guest: 3000, host: 3000
   config.vm.network :private_network, ip: "172.16.16.16"
@@ -47,5 +47,5 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   #config.vm.provision :shell, :inline => "/bin/bash /vagrant/bootstrap/puppet/update.sh"
 
   #config.vm.synced_folder "bootstrap/karma-mobile-reporter", "/home/vagrant/karma-mobile-reporter"
-  #config.vm.synced_folder "bootstrap/scripts", "/home/vagrant/scripts"
+  #config.vm.synced_folder "./", "/home"
 end
