@@ -13,7 +13,6 @@ import scala.util.{Success, Failure}
 import service.security.definitions._
 import SecretGeneratorServiceContext._
 import play.api.mvc.MultipartFormData._
-import service.photos.definitions._
 import java.text.CharacterIterator
 import java.text.StringCharacterIterator
 import play.api.libs.json._
