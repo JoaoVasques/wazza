@@ -7,7 +7,6 @@ import service.user.definitions._
 import service.user.implementations._
 import service.user.modules._
 import service.security.modules._
-import service.photos.modules._
 import service.aws.modules._
 import service.persistence.modules.PersistenceModule
 
@@ -18,7 +17,6 @@ object Global extends GlobalSettings {
       new AppModule,
       new UserModule,
       new SecurityModule,
-      new PhotosModule,
       new AWSModule,
       new PersistenceModule
     )
