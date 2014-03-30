@@ -7,12 +7,12 @@ VAGRANTFILE_API_VERSION = "2"
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # Every Vagrant virtual environment requires a box to build off of.
   config.vm.box = "wazza"
-  config.vm.box_url = "https://dl.dropboxusercontent.com/u/5858910/package.box"
+  config.vm.box_url = "https://dl.dropboxusercontent.com/u/5858910/wazza.box"
 
   # The ruby runtime is also installed; just change the hostname to debian7rc1 to ensure puppet is executed with rvm also
   #config.vm.hostname = "wazza"
 
-  config.vm.network :forwarded_port, guest: 3000, host: 3000
+  config.vm.network :forwarded_port, guest: 9000, host: 9000
   config.vm.network :private_network, ip: "172.16.16.16"
 
   # Share an additional folder to the guest VM. The first argument is
@@ -30,10 +30,14 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     vb.gui = false
 
     # Use VBoxManage to customize the VM. For example to change memory
-    vb.customize ["modifyvm", :id, "--memory", "1024", "--cpus", "2"]
+    vb.customize ["modifyvm", :id, "--memory", "2048", "--cpus", "2"]
 
     #Fix Symlinks in Virtualbox Shared Folders
     vb.customize ["setextradata", :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate/v-root", "1"]
+
+    vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
+    vb.customize ["modifyvm", :id, "--natdnsproxy1", "on"]
+
   end
 
   # config.vm.synced_folder "bootstrap/puppet/files", "/etc/puppet/files"
