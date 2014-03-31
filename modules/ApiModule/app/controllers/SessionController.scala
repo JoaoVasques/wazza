@@ -9,16 +9,26 @@ import play.api.mvc._
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.util.Failure
 import scala.util.Success
+import service.user.definitions.MobileUserService
+import scala.concurrent._
+import ExecutionContext.Implicits.global
 
 class SessionController @Inject()(
-
+  mobileUserService: MobileUserService
 ) extends Controller {
 
-  def updateSession = Action(parse.json) {implicit request =>
-    println("update session")
-    val content = (request.body \ "content").as[String].replace("\\", "")
-    println(content)
-    Ok
+  def updateSession = Action(parse.json) {implicit request =>    
+    val content = Json.parse((request.body \ "content").as[String].replace("\\", ""))
+    mobileUserService.createSession(content) match {
+      case Success(session) => {
+        val userId = (content \ "userId").as[String]
+        mobileUserService.updateMobileUserSession(userId, session) match {
+          case Success(s) => Ok
+          case Failure(f) => BadRequest
+        }
+      }
+      case Failure(f) => BadRequest
+    }
   }
 }
 
