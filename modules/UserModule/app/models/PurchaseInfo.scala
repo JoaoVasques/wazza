@@ -26,10 +26,12 @@ object LocationInfo {
 **/
 case class PurchaseInfo(
   id: String,
+  userId: String,
   applicationName: String,
   itemId: String,
   price: Double,
   time: String,
+  deviceInfo: DeviceInfo,
   location: Option[LocationInfo]
 )
 
@@ -39,19 +41,23 @@ object PurchaseInfo {
 
   implicit val reader = (
     (__ \ "id").read[String] and
+    (__ \ "userId").read[String] and
     (__ \ "name").read[String] and
     (__ \ "itemId").read[String] and
     (__ \ "price").read[Double] and
     (__ \ "time").read[String] and
+    (__ \ "deviceInfo").read[DeviceInfo] and
     (__ \ "location").readNullable[LocationInfo]
   )(PurchaseInfo.apply _)
 
   implicit val writes = (
     (__ \ "id").write[String] and
+    (__ \ "userId").write[String] and
     (__ \ "name").write[String] and
     (__ \ "itemId").write[String] and
     (__ \ "price").write[Double] and
     (__ \ "time").write[String] and
+    (__ \ "deviceInfo").write[DeviceInfo] and
     (__ \ "location").writeNullable[LocationInfo]
   )(unlift(PurchaseInfo.unapply))
 }
