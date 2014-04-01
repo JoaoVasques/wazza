@@ -8,5 +8,6 @@ class UserModule extends ScalaModule {
   def configure() {
     bind[UserService].to[UserServiceImpl]
     bind[MobileUserService].to[MobileUserServiceImpl]
+    bind[PurchaseService].to[PurchaseServiceImpl]
   }
 }

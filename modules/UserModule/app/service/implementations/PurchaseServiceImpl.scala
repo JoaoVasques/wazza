@@ -1,9 +1,9 @@
-package service.application.implementations
+package service.user.implementations
 
 import play.api.libs.json._
 import play.api.libs.functional.syntax._
-import service.application.definitions.{PurchaseService}
-import models.application.{PurchaseInfo}
+import service.user.definitions.{PurchaseService}
+import models.user.{PurchaseInfo}
 import scala.util.Try
 import com.google.inject._
 import service.persistence.definitions.DatabaseService

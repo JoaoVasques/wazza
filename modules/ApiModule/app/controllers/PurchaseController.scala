@@ -2,8 +2,8 @@ package controllers.api
 
 import com.google.inject._
 import models.application.Item
-import models.application.LocationInfo
-import models.application.PurchaseInfo
+import models.user.LocationInfo
+import models.user.PurchaseInfo
 import play.api._
 import play.api.libs.json.JsError
 import play.api.libs.json.JsSuccess
@@ -14,7 +14,7 @@ import scala.util.Failure
 import scala.util.Success
 import service.application.definitions.ApplicationService
 import service.security.definitions.TokenManagerService
-import service.application.definitions.{PurchaseService}
+import service.user.definitions.{PurchaseService}
 
 class PurchaseController @Inject()(
   applicationService: ApplicationService,

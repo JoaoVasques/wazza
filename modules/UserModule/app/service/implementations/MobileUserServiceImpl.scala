@@ -16,6 +16,7 @@ import scala.language.implicitConversions
 import com.google.inject._
 import service.persistence.definitions.{DatabaseService}
 import play.api.libs.json.Json
+import models.user.PurchaseInfo
 
 class MobileUserServiceImpl @Inject()(
   databaseService: DatabaseService
@@ -40,7 +41,7 @@ class MobileUserServiceImpl @Inject()(
         userId,
         session.deviceInfo.osType,
         List[MobileSession](session),
-        List[String]()
+        List[PurchaseInfo]()
       )
       databaseService.insert(Json.toJson(user))
     }

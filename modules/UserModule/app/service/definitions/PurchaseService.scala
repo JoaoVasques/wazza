@@ -1,6 +1,6 @@
-package service.application.definitions
+package service.user.definitions
 
-import models.application.{PurchaseInfo}
+import models.user.{PurchaseInfo}
 import scala.util.Try
 
 trait PurchaseService {
