@@ -3,7 +3,6 @@ package controllers.api
 import com.google.inject._
 import models.application.Item
 import models.application.LocationInfo
-import models.application.PurchaseInfo
 import play.api._
 import play.api.libs.json.JsError
 import play.api.libs.json.JsSuccess
@@ -14,7 +13,6 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.util.Failure
 import scala.util.Success
 import service.application.definitions.ApplicationService
-import service.application.definitions.{PurchaseService}
 
 class ItemsController @Inject()(
   applicationService: ApplicationService,
