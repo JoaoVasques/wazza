@@ -37,6 +37,13 @@ class ItemsController @Inject()(
       Json.obj("id" -> item.name)
     })))
   }
+
+  def getItemsWithDetails(applicationName: String) = ApiSecurityHandler() {implicit request =>
+    val result = applicationService.getItems(applicationName, getOffsetValue(request))
+    Ok(JsArray(result.map{(item: Item) =>
+      Item.convertToJson(item)
+    }))
+  }
  
   def getItemDetails(id: String, applicationName: String) = ApiSecurityHandler() {implicit request =>
     val res = applicationService.getItem(id, applicationName)
