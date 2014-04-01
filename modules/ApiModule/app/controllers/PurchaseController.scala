@@ -2,6 +2,7 @@ package controllers.api
 
 import com.google.inject._
 import models.application.Item
+import models.user.DeviceInfo
 import models.user.LocationInfo
 import models.user.PurchaseInfo
 import play.api._
@@ -23,23 +24,27 @@ class PurchaseController @Inject()(
 
   
   def handlePurchase = Action(parse.json) {implicit request =>
+    val content = Json.parse((request.body \ "content").as[String].replace("\\", ""))
     if(applicationService.itemExists(
-      (request.body \ "itemId").as[String],
-      (request.body \ "applicationName").as[String]
+      (content \ "itemId").as[String],
+      (content \ "name").as[String]
     )) {
 
+      val userId =  (content \ "userId").as[String]
       val purchaseInfo = new PurchaseInfo(
-        (request.body \ "id").as[String],
-        (request.body \ "applicationName").as[String],
-        (request.body \ "itemId").as[String],
-        (request.body \ "price").as[Double],
-        (request.body \ "time").as[String],
-        (request.body \ "location").validate[LocationInfo] match {
+        (content \ "id").as[String],
+        userId,
+        (content \ "name").as[String],
+        (content \ "itemId").as[String],
+        (content \ "price").as[Double],
+        (content \ "time").as[String],
+        (content \ "deviceInfo").as[DeviceInfo],
+        (content \ "location").validate[LocationInfo] match {
           case success: JsSuccess[LocationInfo] => Some(success.value)
           case JsError(errors) => None
         }
       )
-      purchaseService.save(purchaseInfo) match {
+      purchaseService.save(purchaseInfo, userId) match {
         case Success(_) => Ok
         case Failure(_) => BadRequest
       }
