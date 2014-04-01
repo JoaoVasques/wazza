@@ -22,7 +22,7 @@ class MobileUserServiceImpl @Inject()(
   databaseService: DatabaseService
 ) extends MobileUserService {
 
-  databaseService.init("mobileUsers")
+  databaseService.init(MobileUser.MobileUserCollection)
 
   private val UserId = "userId"
   private val SessionId = "sessions"
@@ -44,6 +44,41 @@ class MobileUserServiceImpl @Inject()(
         List[PurchaseInfo]()
       )
       databaseService.insert(Json.toJson(user))
+    }
+  }
+
+  def createMobileUser(
+    userId: String,
+    sessions: Option[List[MobileSession]],
+    purchases: Option[List[PurchaseInfo]]
+  ): Try[Unit] = {
+    if(!mobileUserExists(userId)) {
+
+      val osType = sessions match {
+        case Some(s) => s.head.deviceInfo.osType
+        case None => {
+          purchases match {
+            case Some(p) => null
+            case None => "unknown"
+          }
+        }
+      }
+
+      val user = new MobileUser(
+        userId,
+        osType,
+        sessions match {
+          case Some(s) => s
+          case None => List[MobileSession]()
+        },
+        purchases match {
+          case Some(p) => p
+          case None => List[PurchaseInfo]()
+        }
+      )
+      databaseService.insert(Json.toJson(user))
+    } else {
+      new Failure(new Exception("Duplicated mobile user"))
     }
   }
 

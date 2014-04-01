@@ -14,6 +14,8 @@ case class MobileUser(
 
 object MobileUser {
 
+  lazy val MobileUserCollection = "mobileUsers"
+
   implicit val readJson = (
     (__ \ "userId").read[String] and
     (__ \ "osType").read[String] and
