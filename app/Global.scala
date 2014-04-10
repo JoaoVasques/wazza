@@ -9,6 +9,7 @@ import service.user.modules._
 import service.security.modules._
 import service.aws.modules._
 import service.persistence.modules.PersistenceModule
+import service.recommendation.modules._
 
 object Global extends GlobalSettings {
   
@@ -18,7 +19,8 @@ object Global extends GlobalSettings {
       new UserModule,
       new SecurityModule,
       new AWSModule,
-      new PersistenceModule
+      new PersistenceModule,
+      new RecommendationModule
     )
   }
 
