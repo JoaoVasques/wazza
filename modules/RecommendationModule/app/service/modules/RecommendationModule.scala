@@ -6,7 +6,7 @@ import service.implementations.recommendation._
 
 class RecommendationModule extends ScalaModule {
   def configure() {
-    bind[RecommendationService].to[PredictionIORecommendationService]
+    bind[RecommendationService].to[RecommendationServiceImpl]
   }
 }
 

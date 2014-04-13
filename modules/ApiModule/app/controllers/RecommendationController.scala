@@ -19,17 +19,6 @@ class RecommendationController @Inject()(
 ) extends Controller {
 
   def test = Action{ request =>
-    val user = new MobileUser(
-      "userId",
-      "osType",
-      Nil,
-      Nil
-    )
-
-    recommendationService.addUserToRecommendationEngine(user) map {res =>
-      res
-    }
-    
     Ok
   }
 }
