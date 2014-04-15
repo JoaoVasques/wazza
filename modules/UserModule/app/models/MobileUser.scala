@@ -14,7 +14,7 @@ case class MobileUser(
 
 object MobileUser {
 
-  lazy val MobileUserCollection = "mobileUsers"
+  def getCollection(companyName: String, applicationName: String) = s"$companyName-mUsers-$applicationName"
 
   implicit val readJson = (
     (__ \ "userId").read[String] and

@@ -22,15 +22,21 @@ class MobileUserServiceImpl @Inject()(
   databaseService: DatabaseService
 ) extends MobileUserService {
 
-  databaseService.init(MobileUser.MobileUserCollection)
-
   private val UserId = "userId"
   private val SessionId = "sessions"
 
-  def updateMobileUserSession(userId: String, session: MobileSession): Try[Unit] = {
-   
-    if(mobileUserExists(userId)) {
+  def updateMobileUserSession(
+    companyName: String,
+    applicationName: String,
+    userId: String,
+    session: MobileSession
+  ): Try[Unit] = {
+
+    val collection = MobileUser.getCollection(companyName, applicationName)
+
+    if(mobileUserExists(companyName, applicationName, userId)) {
       databaseService.addElementToArray[JsValue](
+        collection,
         UserId,
         userId,
         SessionId,
@@ -43,17 +49,19 @@ class MobileUserServiceImpl @Inject()(
         List[MobileSession](session),
         List[PurchaseInfo]()
       )
-      databaseService.insert(Json.toJson(user))
+      databaseService.insert(collection, Json.toJson(user))
     }
   }
 
   def createMobileUser(
+    companyName: String,
+    applicationName: String,
     userId: String,
     sessions: Option[List[MobileSession]],
     purchases: Option[List[PurchaseInfo]]
   ): Try[Unit] = {
-    if(!mobileUserExists(userId)) {
-
+    val collection = MobileUser.getCollection(companyName, applicationName)
+    if(!mobileUserExists(companyName, applicationName, userId)) {
       val osType = sessions match {
         case Some(s) => s.head.deviceInfo.osType
         case None => {
@@ -76,7 +84,7 @@ class MobileUserServiceImpl @Inject()(
           case None => List[PurchaseInfo]()
         }
       )
-      databaseService.insert(Json.toJson(user))
+      databaseService.insert(collection, Json.toJson(user))
     } else {
       new Failure(new Exception("Duplicated mobile user"))
     }
@@ -91,8 +99,9 @@ class MobileUserServiceImpl @Inject()(
     }
   }
 
-  def mobileUserExists(userId: String): Boolean = {
-    databaseService.exists(UserId, userId)
+  def mobileUserExists(companyName: String, applicationName: String, userId: String): Boolean = {
+    val collection = MobileUser.getCollection(companyName, applicationName)
+    databaseService.exists(collection, UserId, userId)
   }
 }
 

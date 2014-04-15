@@ -46,8 +46,8 @@ class ItemCRUDController @Inject()(
     Ok(views.html.newItem(List("Real", "Virtual")))
   }
 
-  def newItemSubmit(applicationName: String) = Action.async(parse.multipartFormData) { implicit request =>
-    val result = itemService.createItemFromMultipartData(request.body, applicationName)
+  def newItemSubmit(companyName: String, applicationName: String) = Action.async(parse.multipartFormData) { implicit request =>
+    val result = itemService.createItemFromMultipartData(companyName, request.body, applicationName)
 
     result map {data =>
       data match {
@@ -83,10 +83,13 @@ class ItemCRUDController @Inject()(
     }
   }
 
-  def deleteItem(itemId: String) = Action.async(parse.json) { implicit request =>
-    val applicationName = (request.body \ "appName").as[String]
+  def deleteItem(
+    companyName: String,
+    applicationName: String,
+    itemId: String
+  ) = Action.async(parse.json) { implicit request =>
     val imageName = (request.body \ "image").as[String]
-    val result = applicationService.deleteItem(itemId, applicationName, imageName)
+    val result = applicationService.deleteItem(companyName, itemId, applicationName, imageName)
     result map {res =>
       Ok(itemId)
     } recover {

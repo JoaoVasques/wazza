@@ -4,17 +4,17 @@
 
 # Application routes
 GET     /new                          @controllers.application.CRUDController.newApplication
-POST    /new                          @controllers.application.CRUDController.newApplicationSubmit
+POST    /new/:companyName             @controllers.application.CRUDController.newApplicationSubmit(companyName: String)
 
 # Items routes
-GET     /item/new/                    @controllers.application.ItemCRUDController.newItem
-POST    /item/new/:applicationName    @controllers.application.ItemCRUDController.newItemSubmit(applicationName)
-POST    /item/uploadimage             @controllers.application.ItemCRUDController.uploadImage
-POST    /item/delete/:itemId          @controllers.application.ItemCRUDController.deleteItem(itemId)
+GET     /item/new/                                 @controllers.application.ItemCRUDController.newItem
+POST    /item/new/:companyName/:applicationName/    @controllers.application.ItemCRUDController.newItemSubmit(companyName: String, applicationName: String)
+POST    /item/uploadimage                          @controllers.application.ItemCRUDController.uploadImage
+POST    /item/delete/:companyName/:appName/:itemId @controllers.application.ItemCRUDController.deleteItem(companyName: String, appName: String, itemId)
 
 #API endpoints
-GET     /api/virtualcurrencies/all/:applicationName        @controllers.application.APIController.getVirtualCurrencies(applicationName)
-GET     /api/item/get/:applicationName/:offset             @controllers.application.APIController.getItems(applicationName, offset: Int)
+GET     /api/virtualcurrencies/all/:applicationName/:companyName  @controllers.application.APIController.getVirtualCurrencies(applicationName, companyName)
+GET     /api/item/get/:applicationName/:offset/:companyName   @controllers.application.APIController.getItems(applicationName, companyName, offset: Int)
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               	controllers.application.Assets.at(path="/public", file)

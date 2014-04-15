@@ -9,6 +9,7 @@ import scala.concurrent._
 trait ItemService {
 
 	def createGooglePlayItem(
+    companyName: String,
 		applicationName: String,
 		name: String,
 		description: String,
@@ -25,6 +26,7 @@ trait ItemService {
 	): Future[Try[Item]]
 
 	def createAppleItem(
+    companyName: String,
 		applicationName: String,
 		title: String,
 		name: String,
@@ -37,7 +39,11 @@ trait ItemService {
 	  durationProperties: AppleDurationProperties
 	): Try[Item]
 
-	def createItemFromMultipartData(data: MultipartFormData[_], applicationName: String): Future[Try[Item]]
+	def createItemFromMultipartData(
+    companyName: String,
+    data: MultipartFormData[_],
+    applicationName: String
+  ): Future[Try[Item]]
 
 	def getCurrencyTypes(): Map[String, Int]
 

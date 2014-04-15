@@ -5,12 +5,12 @@ import scala.util.Try
 
 trait PurchaseService {
 
-  def save(info: PurchaseInfo, userId: String): Try[Unit]
+  def save(companyName: String, applicationName: String, info: PurchaseInfo, userId: String): Try[Unit]
 
-  def get(id: String, userId: String): Option[PurchaseInfo]
+  def get(companyName: String, applicationName: String, id: String, userId: String): Option[PurchaseInfo]
 
-  def exist(id: String, userId: String): Boolean
+  def exist(companyName: String, applicationName: String, id: String, userId: String): Boolean
 
-  def delete(info: PurchaseInfo, userId: String): Try[Unit]
+  def delete(companyName: String, applicationName: String, info: PurchaseInfo, userId: String): Try[Unit]
 }
 

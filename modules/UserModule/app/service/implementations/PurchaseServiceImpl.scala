@@ -20,17 +20,22 @@ class PurchaseServiceImpl @Inject()(
   private val UserId = "userId"
   private val PurchaseId = "purchases"
 
-  databaseService.init(MobileUser.MobileUserCollection)
 
-  def save(info: PurchaseInfo, userId: String): Try[Unit] = {
-    if(!userService.mobileUserExists(userId)) {
+  def save(companyName: String, applicationName: String, info: PurchaseInfo, userId: String): Try[Unit] = {
+
+    val collection = PurchaseInfo.getCollection(companyName, applicationName)
+
+    if(!userService.mobileUserExists(companyName, applicationName, userId)) {
       userService.createMobileUser(
+        companyName,
+        applicationName,
         userId,
         None,
         Some(List[PurchaseInfo](info))
       ) match {
         case Success(u) => {
           databaseService.addElementToArray[JsValue](
+            collection,
             UserId,
             userId,
             PurchaseId,
@@ -40,10 +45,11 @@ class PurchaseServiceImpl @Inject()(
         case Failure(f) => Failure(f)
       }
     } else {
-      if(exist(info.id, userId)) {
+      if(exist(companyName, applicationName, info.id, userId)) {
         new Failure(new Exception("Duplicated purchase"))
       } else {
         databaseService.addElementToArray[JsValue](
+          collection,
           UserId,
           userId,
           PurchaseId,
@@ -53,8 +59,10 @@ class PurchaseServiceImpl @Inject()(
     }
   }
 
-  def get(id: String, userId: String): Option[PurchaseInfo] = {
+  def get(companyName: String, applicationName: String, id: String, userId: String): Option[PurchaseInfo] = {
+    val collection = PurchaseInfo.getCollection(companyName, applicationName)
     databaseService.getElementFromArray[String](
+      collection,
       UserId,
       userId,
       PurchaseId,
@@ -71,16 +79,18 @@ class PurchaseServiceImpl @Inject()(
     }
   }
 
-  def exist(id: String, userId: String): Boolean = {
-    this.get(id, userId) match {
+  def exist(companyName: String, applicationName: String, id: String, userId: String): Boolean = {
+    this.get(companyName, applicationName, id, userId) match {
       case Some(_) => true
       case None => false
     }
   }
 
-  def delete(info: PurchaseInfo, userId: String): Try[Unit] = {
-    if(exist(info.id, userId)) {
+  def delete(companyName: String, applicationName: String, info: PurchaseInfo, userId: String): Try[Unit] = {
+    if(exist(companyName, applicationName, info.id, userId)) {
+      val collection = PurchaseInfo.getCollection(companyName, applicationName)
       databaseService.deleteElementFromArray[String](
+        collection,
         UserId,
         userId,
         PurchaseId,

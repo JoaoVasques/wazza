@@ -1,11 +1,11 @@
 # Map static resources from the /public folder to the /assets URL path   
 
-POST    /auth                         @controllers.api.AuthenticationController.authenticate  
-GET     /items/:applicationName       @controllers.api.ItemsController.getItems(applicationName: String)
-GET     /items/details/:appName       @controllers.api.ItemsController.getItemsWithDetails(appName: String)
-GET     /item/:applicationName/:id    @controllers.api.ItemsController.getItemDetails(id: String, applicationName: String)    
-POST    /purchase                     @controllers.api.PurchaseController.handlePurchase
-POST    /session                      @controllers.api.SessionController.updateSession
+POST    /auth                                 @controllers.api.AuthenticationController.authenticate  
+GET     /items/:companyName/:applicationName  @controllers.api.ItemsController.getItems(companyName: String, applicationName: String)
+GET     /items/details/:companyName/:appName  @controllers.api.ItemsController.getItemsWithDetails(companyName: String, appName: String)
+GET     /item/:companyName/:applicationName/:id  @controllers.api.ItemsController.getItemDetails(companyName: String, id: String, applicationName: String)    
+POST    /purchase/:companyName/:applicationName  @controllers.api.PurchaseController.handlePurchase(companyName: String, applicationName: String)
+POST    /session/:companyName/:applicationName   @controllers.api.SessionController.updateSession(companyName: String, applicationName: String)
 
 #Recommendation routes
 GET     /test                         @controllers.api.RecommendationController.test

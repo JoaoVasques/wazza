@@ -17,12 +17,12 @@ class SessionController @Inject()(
   mobileUserService: MobileUserService
 ) extends Controller {
 
-  def updateSession = Action(parse.json) {implicit request =>    
+  def updateSession(companyName: String, applicationName: String) = Action(parse.json) {implicit request =>    
     val content = Json.parse((request.body \ "content").as[String].replace("\\", ""))
     mobileUserService.createSession(content) match {
       case Success(session) => {
         val userId = (content \ "userId").as[String]
-        mobileUserService.updateMobileUserSession(userId, session) match {
+        mobileUserService.updateMobileUserSession(companyName, applicationName, userId, session) match {
           case Success(s) => Ok
           case Failure(f) => BadRequest
         }

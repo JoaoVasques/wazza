@@ -83,19 +83,9 @@ class CRUDController @Inject()(
     }
   })
 
-  private def applicationNameConstrait: Constraint[String] = Constraint(""){
-    text => {
-      if(applicationService.exists(text)){
-        Invalid("An application with this name already exists")
-      } else {
-        Valid
-      }
-    }
-  }
-
   val applicationForm: Form[WazzaApplication] = Form(
     mapping(
-      "name" -> nonEmptyText.verifying(applicationNameConstrait),
+      "name" -> nonEmptyText,
       "appUrl" -> nonEmptyText.verifying(urlCheckConstraint),
       "imageName" -> ignored(""),
       "packageName" -> text,
@@ -119,16 +109,17 @@ class CRUDController @Inject()(
     BadRequest(Json.obj("errors" -> errors.errorsAsJson))
   }
 
-  def newApplicationSubmit = HasToken(parse.json) { token => userId => implicit request =>
+  def newApplicationSubmit(companyName: String) = HasToken(parse.json) { token => userId => implicit request =>
     applicationForm.bindFromRequest.fold(
       errors => {
         generateBadRequestResponse(errors)
       },
       application => {
-        if(application.appType.get == "Android" && (!checkPackageNameFormat(application.packageName))){
+        val androidPackageCheck = application.appType.get == "Android" && !checkPackageNameFormat(application.packageName)
+        if(androidPackageCheck || applicationService.exists(companyName, application.name)){
           generateBadRequestResponse(applicationForm.withError("packageName", "package name is invalid"))
         } else {
-          val result = applicationService.insertApplication(application)
+          val result = applicationService.insertApplication(companyName,application)
           result match {
             case Success(app) => {
               userService.addApplication(userId, app.name)
@@ -143,3 +134,4 @@ class CRUDController @Inject()(
     )
   }
 }
+

@@ -37,7 +37,7 @@ case class PurchaseInfo(
 
 object PurchaseInfo {
 
-  lazy val PurchaseCollection = "purchases"
+  def getCollection(companyName: String, applicationName: String) = s"$companyName-purchases-$applicationName"
 
   implicit val reader = (
     (__ \ "id").read[String] and
