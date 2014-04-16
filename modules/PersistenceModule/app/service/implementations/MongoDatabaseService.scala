@@ -43,14 +43,23 @@ class MongoDatabaseService extends DatabaseService {
     }
   }
 
-  private var databaseName = ""
+  private var databaseName = getDatabaseName().get
+
+  private def getDatabaseName(): Try[String] = {
+    Play.current.configuration.getConfig("mongodb.dev") match {
+      case Some(config) => {
+        val uriStr = config.underlying.root.get("uri").render.filter(_ != '"')
+        new Success(uriStr.split("/").last)
+      }
+      case _ => Failure(new Exception("MongoDb credentials do not exist"))
+    }
+  }
 
   private def getMongoClient(): Try[MongoClient] = {
     Play.current.configuration.getConfig("mongodb.dev") match {
       case Some(config) => {
         val uriStr = config.underlying.root.get("uri").render.filter(_ != '"')
         val uri = MongoClientURI(uriStr)
-        this.databaseName = uriStr.split("/").last
         new Success(MongoClient(uri))
       }
       case _ => Failure(new Exception("MongoDb credentials do not exist"))

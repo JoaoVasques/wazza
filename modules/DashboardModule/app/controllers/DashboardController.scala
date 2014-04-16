@@ -53,6 +53,7 @@ class DashboardController @Inject()(
       val application = applicationService.find(companyName, applications.head).get
       Ok(
         Json.obj(
+          "companyName" -> companyName,
           "name" -> application.name,
           "userInfo" -> Json.obj(
             "name" -> user.name,
