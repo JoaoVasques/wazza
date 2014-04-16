@@ -16,12 +16,13 @@ import scala.language.implicitConversions
 import com.google.inject._
 import service.persistence.definitions.{DatabaseService}
 import play.api.libs.json.Json
+import models.user.PurchaseInfo
 
 class MobileUserServiceImpl @Inject()(
   databaseService: DatabaseService
 ) extends MobileUserService {
 
-  databaseService.init("mobileUsers")
+  databaseService.init(MobileUser.MobileUserCollection)
 
   private val UserId = "userId"
   private val SessionId = "sessions"
@@ -40,9 +41,44 @@ class MobileUserServiceImpl @Inject()(
         userId,
         session.deviceInfo.osType,
         List[MobileSession](session),
-        List[String]()
+        List[PurchaseInfo]()
       )
       databaseService.insert(Json.toJson(user))
+    }
+  }
+
+  def createMobileUser(
+    userId: String,
+    sessions: Option[List[MobileSession]],
+    purchases: Option[List[PurchaseInfo]]
+  ): Try[Unit] = {
+    if(!mobileUserExists(userId)) {
+
+      val osType = sessions match {
+        case Some(s) => s.head.deviceInfo.osType
+        case None => {
+          purchases match {
+            case Some(p) => null
+            case None => "unknown"
+          }
+        }
+      }
+
+      val user = new MobileUser(
+        userId,
+        osType,
+        sessions match {
+          case Some(s) => s
+          case None => List[MobileSession]()
+        },
+        purchases match {
+          case Some(p) => p
+          case None => List[PurchaseInfo]()
+        }
+      )
+      databaseService.insert(Json.toJson(user))
+    } else {
+      new Failure(new Exception("Duplicated mobile user"))
     }
   }
 

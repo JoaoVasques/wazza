@@ -4,7 +4,7 @@ POST    /auth                         @controllers.api.AuthenticationController.
 GET     /items/:applicationName       @controllers.api.ItemsController.getItems(applicationName: String)
 GET     /items/details/:appName       @controllers.api.ItemsController.getItemsWithDetails(appName: String)
 GET     /item/:applicationName/:id    @controllers.api.ItemsController.getItemDetails(id: String, applicationName: String)    
-POST    /purchase                     @controllers.api.ItemsController.handlePurchase
+POST    /purchase                     @controllers.api.PurchaseController.handlePurchase
 POST    /session                      @controllers.api.SessionController.updateSession
       
 GET     /assets/*file                 controllers.api.Assets.at(path="/public", file)
