@@ -38,6 +38,8 @@ angular.module('DashboardModule', ['ItemModule.services'])
       }),
       $scope.applications
     );
+    
+    ApplicationStateService.updateCompanyName(data.data.companyName);
     ApplicationStateService.updateApplicationName(_.first(data.data.applications).name);
     ApplicationStateService.updateUserInfo(data.data.userInfo);
   }
@@ -45,39 +47,6 @@ angular.module('DashboardModule', ['ItemModule.services'])
   $scope.bootstrapFailureCallback = function(errorData){
     console.log(errorData);
   }
-/*
-  var ModalInstanceCtrl = function ($scope, $modalInstance, items) {
-    $scope.items = items;
-    $scope.selected = {
-      item: $scope.items[0]
-    };
-
-    $scope.ok = function () {
-      $modalInstance.close($scope.selected.item);
-    };
-
-    $scope.cancel = function () {
-      $modalInstance.dismiss('cancel');
-    };
-  };
-*/
-  $scope.open = function () {
-/*
-    var modalInstance = $modal.open({
-      templateUrl: 'myModalContent.html',
-      controller: ModalInstanceCtrl,
-      resolve: {
-        items: function () {
-          return $scope.items;
-        }
-      }
-    });
-
-    modalInstance.result.then(function (selectedItem) {
-      $scope.selected = selectedItem;
-    }, function () {});
-  */
-  };
 
   $scope.bootstrapModule = function(){
     $scope.applicationName = "";
@@ -121,12 +90,26 @@ angular.module('DashboardModule', ['ItemModule.services'])
 
 }])
 
-.factory('FetchItemsService', ['$http','$q', function ($http, $q) {
+.factory('FetchItemsService', [
+  '$http',
+  '$q',
+  'ApplicationStateService',
+  function (
+    $http,
+    $q,
+    ApplicationStateService
+  ) {
   var service = {};
 
   service.execute = function(appName, offset){
+    var baseUrl = '/app/api/item/get/';
+    var requestUrl = baseUrl +
+          ApplicationStateService.companyName + '/' +
+          appName + '/' +
+          offset;
+      
     var request = $http({
-      url: '/app/api/item/get/' + appName + '/' + offset,
+      url: requestUrl,
       method: 'GET'
     });
 
@@ -155,23 +138,38 @@ angular.module('DashboardModule', ['ItemModule.services'])
   return service;
 }])
 
-.factory('DeleteItemService', ['$http','$q', function ($http, $q) {
-  var service = function(id, name, imageName){
-    var request = $http.post("/app/item/delete/" + id, {
-      appName: name,
-      image: imageName
-    });
+.factory('DeleteItemService', [
+  '$http',
+  '$q',
+  'ApplicationStateService',
+  function (
+    $http,
+    $q,
+    ApplicationStateService
+  ) {
+    var service = function(id, name, imageName){
+      var baseUrl = '/app/item/delete/';
+      var requestUrl = baseUrl +
+            ApplicationStateService.companyName +
+            '/' + ApplicationStateService.applicationName +
+            '/' + id;
 
-    var deferred = $q.defer();
-    deferred.resolve(request);
-    return deferred.promise;
-  };
+      var request = $http.post(requestUrl, {
+        appName: name,
+        image: imageName
+      });
 
-  return service;
+      var deferred = $q.defer();
+        deferred.resolve(request);
+      return deferred.promise;
+    };
+
+    return service;
 }])
 
 .factory('ApplicationStateService', ['$rootScope', function ($rootScope) {
   var service = {};
+  service.companyName = "";
   service.applicationName = "";
   service.applicationsList = [];
   service.userInfo = {
@@ -179,6 +177,11 @@ angular.module('DashboardModule', ['ItemModule.services'])
       email: ""
   };
 
+  service.updateCompanyName = function(newName){
+    service.companyName = newName;
+    $rootScope.$broadcast("COMPANY_NAME_UPDATED");
+  };
+    
   service.updateApplicationName = function(newName){
     service.applicationName = newName;
     $rootScope.$broadcast("APPLICATION_NAME_UPDATED");

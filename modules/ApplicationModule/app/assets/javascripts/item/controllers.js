@@ -24,11 +24,11 @@ angular.module('ItemModule.controllers', ['ItemModule.services', 'angularFileUpl
     ) {
 
       $scope.itemSearch = false;
-    $scope.currencyOptions = ["Real","Virtual"];
-    $scope.showCurrencyInputs = {
-      "real": true,
-      "virtual": false
-    };
+      $scope.currencyOptions = ["Real","Virtual"];
+      $scope.showCurrencyInputs = {
+        "real": true,
+        "virtual": false
+      };
 
     $scope.bootstrapModule = function(){
       $scope.itemForm = {
@@ -58,7 +58,9 @@ angular.module('ItemModule.controllers', ['ItemModule.services', 'angularFileUpl
           "url": ""
         }
       };
-          $scope.imgThumb = "";
+
+      $scope.companyName = ApplicationStateService.companyName;
+      $scope.imgThumb = "";
       $scope.showCurrencyInputs.real = true;
       $scope.errors = false;
       $scope.formErrors = [];

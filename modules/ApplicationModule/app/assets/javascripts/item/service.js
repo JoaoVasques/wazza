@@ -1,12 +1,21 @@
 // item module
 
-angular.module('ItemModule.services', []).
-  factory('createNewItemService', ['$upload', '$q', function ($upload, $q) {
+angular.module('ItemModule.services', ['DashboardModule']).
+  factory('createNewItemService', [
+    '$upload',
+    '$q',
+    'ApplicationStateService',
+    function (
+      $upload,
+      $q,
+      ApplicationStateService
+    ) {
     var service = {};
 
     service.send = function(formData, file){
+      var requestUrl = '/app/item/new/' + ApplicationStateService.companyName + '/' + formData.applicationName
       var request = $upload.upload({
-          url: '/app/item/new/' + formData.applicationName,
+          url: requestUrl,
           method: 'POST',
           data: formData,
           file: file
@@ -38,12 +47,22 @@ angular.module('ItemModule.services', []).
     return service;
   }]).
 
-  factory('getVirtualCurrenciesService', ['$http','$q', function ($http, $q) {
+  factory('getVirtualCurrenciesService', [
+    '$http',
+    '$q',
+    'ApplicationStateService',
+    function (
+      $http,
+      $q,
+      ApplicationStateService
+    ) {
     var service = {};
 
     service.execute = function(applicationName){
+      var baseUrl = '/app/api/virtualcurrencies/all/';
+      var requestUrl = baseUrl + applicationName + '/' + ApplicationStateService.companyName;
       var request = $http({
-        url: '/app/api/virtualcurrencies/all/' + applicationName,
+        url: requestUrl,
         method: 'GET'
       });
 
