@@ -18,7 +18,16 @@ class RecommendationController @Inject()(
   recommendationService: RecommendationService
 ) extends Controller {
 
-  def test = Action{ request =>
-    Ok
+  def recommendItemsToUser(
+    companyName: String,
+    applicationName: String,
+    userId: String,
+    limit: Int = -1
+  ) = Action.async {implicit request =>
+    recommendationService.recommendItemsToUser(companyName, applicationName, userId, limit) map { result =>
+      Ok(result)
+    } recover {
+      case err: Exception => BadRequest(err.getMessage())
+    }
   }
 }
