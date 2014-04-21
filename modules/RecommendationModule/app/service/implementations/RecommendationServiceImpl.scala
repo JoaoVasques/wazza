@@ -94,8 +94,16 @@ class RecommendationServiceImpl extends RecommendationService {
     val promise = Promise[JsArray]
     WS.url(endpoint).get() map { result =>
       try {
-        val arr = Json.parse(result.body).as[JsArray]
-        promise.success(arr)
+        result.status match {
+          case 200 => {
+            val arr = Json.parse(result.body).as[JsArray]
+            promise.success(arr)
+          }
+          case _ => {
+            promise.failure(new Exception(result.ahcResponse.getResponseBody()))
+          }
+        }
+        
       } catch {
         case e: Exception => promise.failure(e)
       }
