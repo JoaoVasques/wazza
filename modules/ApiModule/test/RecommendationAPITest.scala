@@ -8,12 +8,12 @@ import models.user.DeviceInfo
 import models.user.MobileSession
 import models.user.PurchaseInfo
 import org.specs2.mutable._
+import play.api.libs.json.Json
 import play.api.test._
 import play.api.test.Helpers._
 import play.mvc.Controller
 import scala.util.Failure
 import scala.util.Success
-import com.google.inject._
 import service.persistence.implementations.MongoDatabaseService
 import service.application.implementations.ApplicationServiceImpl
 import service.application.implementations.ItemServiceImpl
@@ -32,7 +32,7 @@ class RecommendationAPITest extends Specification {
     Map(
       "mongodb" -> Map(
         "dev" -> Map(
-          "uri" -> "mongodb://localhost:27017/wazza-test"
+          "uri" -> "mongodb://joao:1234@dharma.mongohq.com:10045/app20418920"
         )
       )
     )
@@ -46,10 +46,10 @@ class RecommendationAPITest extends Specification {
 
   private val CompanyName = "CompanyTest"
   private val AppName = "RecTestApp"
-  private val NrItems = 100
+  private val NrItems = 10
   private val MaxPrice = 10
-  private val NrMobileUsers = 1000
-  private val NrPurchases = 500
+  private val NrMobileUsers = 5
+  private val NrPurchases = 5
 
   private def generateApp() = {
     val photosService = new PhotosServiceImpl
@@ -104,10 +104,10 @@ class RecommendationAPITest extends Specification {
     this.mobileUserService = new MobileUserServiceImpl(this.databaseService)
     var i = 0
     for(i <- 1 to NrMobileUsers) {
-      this.mobileUserService.createMobileUser(
+      val u = this.mobileUserService.createMobileUser(
         CompanyName,
         this.app.name,
-        i.toString,
+        s"user-" + i.toString,
         None,
         None
       )
@@ -118,18 +118,24 @@ class RecommendationAPITest extends Specification {
     this.purchaseService = new PurchaseServiceImpl(this.mobileUserService, this.databaseService)
     var i = 0
     for(i <- 1 to NrPurchases) {
+      val json = Json.obj(
+        "userId" ->  (s"user-" + i.toString),
+        "name" -> this.app.name,
+        "itemId" -> s"name-$i",
+        "price" -> i % MaxPrice,
+        "time" -> "time",
+        "deviceInfo" -> Json.obj(
+          "osType" -> "osType",
+          "osName" -> "name",
+          "osVersion" -> "version",
+          "deviceModel" -> "model"
+        )
+      )
+      val purchase = this.purchaseService.create(json)
       this.purchaseService.save(
         CompanyName,
         this.app.name,
-        new PurchaseInfo(
-          s"pId-$i",
-          i.toString,
-          this.app.name,
-          s"name-$i",
-          i % MaxPrice,
-          "time",
-          new DeviceInfo("osType", "name", "version", "model"),
-          None),
+        purchase,
         i.toString
       )
     }
@@ -151,11 +157,15 @@ class RecommendationAPITest extends Specification {
     generatePurchases
   }
 
-  "Recommendation API test" should {
-    running(FakeApplication(additionalConfiguration = appConfig)) {
-      init()
-      "Test" in {
-        true must equalTo(true)
+  "Application" should {
+    
+    "send 404 on a bad request" in {
+      running(FakeApplication(additionalConfiguration = appConfig)) {
+        init()
+        val url = "/api/rec/user/items/RecTestApp/1"
+        val Some(result) = route(FakeRequest(GET, url))
+        println(result)
+        route(FakeRequest(GET, "/boum")) must beNone
       }
     }
   }

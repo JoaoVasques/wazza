@@ -1,5 +1,6 @@
 package service.persistence.definitions
 
+import org.bson.types.ObjectId
 import play.api.libs.json.JsObject
 import play.api.libs.json.JsValue
 import scala.util.Try
@@ -14,7 +15,7 @@ trait DatabaseService {
 
   def get(collectionName: String, key: String, value: String, projection: String = null): Option[JsValue]
 
-  def insert(collectionName: String, model: JsValue): Try[Unit]
+  def insert(collectionName: String, model: JsValue, extra: Map[String, Long] = null): Try[Unit]
 
   def delete(collectionName: String, el: JsValue): Try[Unit]
 

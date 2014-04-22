@@ -1,5 +1,6 @@
 package service.user.implementations
 
+import org.bson.types.ObjectId
 import play.api.libs.json.JsError
 import play.api.libs.json.JsSuccess
 import play.api.libs.json.JsValue
@@ -17,6 +18,8 @@ import com.google.inject._
 import service.persistence.definitions.{DatabaseService}
 import play.api.libs.json.Json
 import models.user.PurchaseInfo
+import utils.persistence._
+import java.util.Date
 
 class MobileUserServiceImpl @Inject()(
   databaseService: DatabaseService
@@ -44,6 +47,7 @@ class MobileUserServiceImpl @Inject()(
       )
     } else {
       val user = new MobileUser(
+        PersistenceUtils.idToLong(new ObjectId),
         userId,
         session.deviceInfo.osType,
         List[MobileSession](session),
@@ -59,7 +63,7 @@ class MobileUserServiceImpl @Inject()(
     userId: String,
     sessions: Option[List[MobileSession]],
     purchases: Option[List[PurchaseInfo]]
-  ): Try[Unit] = {
+  ): Try[MobileUser] = {
     val collection = MobileUser.getCollection(companyName, applicationName)
     if(!mobileUserExists(companyName, applicationName, userId)) {
       val osType = sessions match {
@@ -73,6 +77,7 @@ class MobileUserServiceImpl @Inject()(
       }
 
       val user = new MobileUser(
+        PersistenceUtils.idToLong(new ObjectId),
         userId,
         osType,
         sessions match {
@@ -84,9 +89,27 @@ class MobileUserServiceImpl @Inject()(
           case None => List[PurchaseInfo]()
         }
       )
-      databaseService.insert(collection, Json.toJson(user))
+      databaseService.insert(collection, Json.toJson(user)) match {
+        case Success(_) => new Success(user)
+        case Failure(f) => new Failure(f)
+      }
     } else {
       new Failure(new Exception("Duplicated mobile user"))
+    }
+  }
+
+  def get(companyName: String, applicationName: String, userId: String): Option[MobileUser] = {
+    val collection = MobileUser.getCollection(companyName, applicationName)
+    databaseService.get(
+      collection,
+      MobileUser.KeyId,
+      userId
+    ) match {
+      case Some(j) => j.validate[MobileUser].fold(
+        valid = { u => Some(u)},
+        invalid = {_ => None}
+      )
+      case None => None
     }
   }
 

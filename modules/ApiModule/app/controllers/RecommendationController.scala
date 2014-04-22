@@ -13,9 +13,11 @@ import scala.util.Success
 import scala.concurrent._
 import ExecutionContext.Implicits.global
 import service.definitions.recommendation.{RecommendationService}
+import service.user.definitions.{MobileUserService}
 
 class RecommendationController @Inject()(
-  recommendationService: RecommendationService
+  recommendationService: RecommendationService,
+  userService: MobileUserService
 ) extends Controller {
 
   def recommendItemsToUser(
@@ -24,10 +26,17 @@ class RecommendationController @Inject()(
     userId: String,
     limit: Int = -1
   ) = Action.async {implicit request =>
-    recommendationService.recommendItemsToUser(companyName, applicationName, userId, limit) map { result =>
-      Ok(result)
-    } recover {
-      case err: Exception => BadRequest(err.getMessage())
+
+    userService.get(companyName, applicationName, userId) match {
+      case Some(user) => {
+        recommendationService.recommendItemsToUser(companyName, applicationName, userId, limit) map { result =>
+          Ok(result)
+        } recover {
+          case err: Exception => BadRequest(err.getMessage())
+        }
+      }
+      case None => Future {BadRequest("user does not exist")}
     }
   }
 }
+

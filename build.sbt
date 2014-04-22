@@ -99,7 +99,7 @@ lazy val recommendationModule = play.Project("recommendation",
   dependencies,
   path = file("modules/RecommendationModule")
 )
-  .dependsOn(userModule, applicationModule)
+  .dependsOn(userModule, applicationModule, persistenceModule)
   .settings(mySettings: _*)
 
 

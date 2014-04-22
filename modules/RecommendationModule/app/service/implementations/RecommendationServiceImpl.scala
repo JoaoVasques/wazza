@@ -26,30 +26,22 @@ class RecommendationServiceImpl extends RecommendationService {
     port: Int,
     endpoints: Map[String, String]
   ) {
-    def getEndpoint(endpointType: String, args: List[String]): String = {
+    def getEndpoint(endpointType: String, args: Map[String, String]): String = {
       endpointType match {
         case RecommendSimilarItems => {
           //TODO
           null
         }
         case RecommendItemsToUser => {
-          args.length match {
-            case 2 => {
-              val userId = args.head
-              val companyName = args.last
-              s"${host}:${port}${endpoints(RecommendSimilarItems)}/${companyName}/${userId}".replaceAll(" ","")
-            }
-            case 3 => {
-              val userId = args.head
-              val companyName = args(1)
-              val limit = args.last.toInt
-              s"${host}:${port}{endpoints(RecommendSimilarItems)}/${companyName}/{userId}/{limit}".replaceAll(" ","")
-            }
-            case _ => {
-              //error
-              null
-            }
-          }       
+          val userId = args("userId")
+          val companyName = args("companyName")
+          val appName = args("appName")
+          if(!args.contains("nrItems")) {
+            s"${host}:${port}${endpoints(RecommendSimilarItems)}/${userId}/${companyName}/${appName}".replaceAll(" ","")
+          } else {
+            val limit = args("nrItems")
+            s"${host}:${port}{endpoints(RecommendSimilarItems)}/${userId}/${companyName}/${appName}/${limit}".replaceAll(" ","")
+          }
         }
       }
     }
@@ -85,12 +77,20 @@ class RecommendationServiceImpl extends RecommendationService {
   ): Future[JsArray] = {
 
     val args = if(nrItems > 0) {
-      List(applicationName, userId, nrItems.toString)
+      Map("companyName" -> companyName,
+        "appName" -> applicationName,
+        "userId" -> userId,
+        "nrItems" -> nrItems.toString
+      )
     } else {
-      List(applicationName, userId)
+      Map("companyName" -> companyName,
+        "appName" -> applicationName,
+        "userId" -> userId
+      )
     }
 
     val endpoint = serverInfo.getEndpoint(RecommendItemsToUser, args)
+    println(s"endpoint - $endpoint")
     val promise = Promise[JsArray]
     WS.url(endpoint).get() map { result =>
       try {

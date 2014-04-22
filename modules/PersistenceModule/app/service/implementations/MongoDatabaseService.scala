@@ -108,9 +108,18 @@ class MongoDatabaseService extends DatabaseService {
     }
   }
 
-  def insert(collectionName: String, model: JsValue): Try[Unit] = {
+  def insert(collectionName: String, model: JsValue, extra: Map[String, Long] = null): Try[Unit] = {
     val collection = this.getCollection(collectionName)
-    collection.insert(model)    
+    if(extra == null) {
+      collection.insert(model)
+    } else {
+      // for the specific case of recommendation collection
+      val builder = MongoDBObject.newBuilder
+      builder += "created_at" -> (model \ "created_at").as[String]
+      builder += "user_id" -> extra("user_id")
+      builder += "purchase_id" -> extra("purchase_id")
+      collection.insert(builder.result())
+    }
   }
 
   def delete(collectionName: String, model: JsValue): Try[Unit] = {

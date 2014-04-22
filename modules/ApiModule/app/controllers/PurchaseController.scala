@@ -32,19 +32,7 @@ class PurchaseController @Inject()(
     )) {
 
       val userId =  (content \ "userId").as[String]
-      val purchaseInfo = new PurchaseInfo(
-        (content \ "id").as[String],
-        userId,
-        (content \ "name").as[String],
-        (content \ "itemId").as[String],
-        (content \ "price").as[Double],
-        (content \ "time").as[String],
-        (content \ "deviceInfo").as[DeviceInfo],
-        (content \ "location").validate[LocationInfo] match {
-          case success: JsSuccess[LocationInfo] => Some(success.value)
-          case JsError(errors) => None
-        }
-      )
+      val purchaseInfo = purchaseService.create(content)
       purchaseService.save(companyName, applicationName, purchaseInfo, userId) match {
         case Success(_) => Ok
         case Failure(_) => BadRequest

@@ -1,6 +1,12 @@
 package service.user.implementations
 
+import java.text.DateFormat
+import java.text.SimpleDateFormat
+import java.util.Date
+import models.user.DeviceInfo
+import models.user.LocationInfo
 import models.user.MobileUser
+import org.bson.types.ObjectId
 import play.api.libs.json._
 import play.api.libs.functional.syntax._
 import scala.util.Failure
@@ -11,6 +17,8 @@ import models.user.{PurchaseInfo}
 import scala.util.Try
 import com.google.inject._
 import service.persistence.definitions.DatabaseService
+import utils.persistence._
+import java.util.Locale
 
 class PurchaseServiceImpl @Inject()(
   userService: MobileUserService,
@@ -20,6 +28,44 @@ class PurchaseServiceImpl @Inject()(
   private val UserId = "userId"
   private val PurchaseId = "purchases"
 
+  private def addPurchaseToRecommendationCollection(
+    companyName: String,
+    applicationName: String,
+    purchaseId: Long,
+    userId: Long
+  ): Try[Unit] = {
+
+    val date = new SimpleDateFormat("EE MMM dd yyyy HH:mm:ss 'GMT'Z (zzz)", Locale.ENGLISH).format(new Date())
+
+    val collection = PurchaseInfo.getRecommendationCollection(companyName, applicationName)
+    val info = Json.obj(
+      "created_at" -> date
+    )
+
+    val objs = Map(
+      "user_id" -> userId,
+      "purchase_id" -> purchaseId
+    )
+
+    databaseService.insert(collection,info, objs)
+  }
+
+  def create(json: JsValue): PurchaseInfo = {
+    val _id = new ObjectId
+    new PurchaseInfo(
+      PersistenceUtils.idToLong(new ObjectId),
+      (json \ "userId").as[String],
+      (json \ "name").as[String],
+      (json \ "itemId").as[String],
+      (json \ "price").as[Double],
+      (json \ "time").as[String],
+      (json \ "deviceInfo").as[DeviceInfo],
+      (json \ "location").validate[LocationInfo] match {
+        case success: JsSuccess[LocationInfo] => Some(success.value)
+        case JsError(errors) => None
+      }
+    )
+  }
 
   def save(companyName: String, applicationName: String, info: PurchaseInfo, userId: String): Try[Unit] = {
 
@@ -41,11 +87,13 @@ class PurchaseServiceImpl @Inject()(
             PurchaseId,
             Json.toJson(info)
           )
+
+          addPurchaseToRecommendationCollection(companyName, applicationName, info.id, u.dbId)
         }
         case Failure(f) => Failure(f)
       }
     } else {
-      if(exist(companyName, applicationName, info.id, userId)) {
+      if(exist(companyName, applicationName, info.id.toString, userId)) {
         new Failure(new Exception("Duplicated purchase"))
       } else {
         databaseService.addElementToArray[JsValue](
@@ -55,6 +103,14 @@ class PurchaseServiceImpl @Inject()(
           PurchaseId,
           Json.toJson(info)
         )
+
+        val user = userService.get(companyName, applicationName, userId)
+
+        addPurchaseToRecommendationCollection(
+          companyName,
+          applicationName,
+          info.id,
+          user.get.dbId)
       }
     }
   }
@@ -87,9 +143,9 @@ class PurchaseServiceImpl @Inject()(
   }
 
   def delete(companyName: String, applicationName: String, info: PurchaseInfo, userId: String): Try[Unit] = {
-    if(exist(companyName, applicationName, info.id, userId)) {
+    if(exist(companyName, applicationName, info.id.toString, userId)) {
       val collection = PurchaseInfo.getCollection(companyName, applicationName)
-      databaseService.deleteElementFromArray[String](
+      databaseService.deleteElementFromArray[Long](
         collection,
         UserId,
         userId,

@@ -22,7 +22,9 @@ trait MobileUserService {
     userId: String,
     sessions: Option[List[MobileSession]],
     purchases: Option[List[PurchaseInfo]]
-  ): Try[Unit]
+  ): Try[MobileUser]
+
+  def get(companyName: String, applicationName: String, userId: String): Option[MobileUser]
 
   def createSession(json: JsValue): Try[MobileSession]
 
