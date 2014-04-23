@@ -49,7 +49,7 @@ angular.module('Wazza', ['ngRoute', 'Wazza.controllers', 'ItemModule', 'UserModu
       //analytics
       .when('/analytics', {
         templateUrl: '/dashboard/analytics',
-        controller: ''
+        controller: 'AnalyticsController'
       })
       //settings
       .when('/settings', {

@@ -196,5 +196,143 @@ angular.module('DashboardModule', ['ItemModule.services'])
 
   return service;
 }])
+
+
+.controller('AnalyticsController', [
+  '$scope',
+  '$location',
+  '$rootScope',
+  'FetchItemsService',
+  'BootstrapDashboardService',
+  'DeleteItemService',
+  'ApplicationStateService',
+  'ItemSearchService',
+  function (
+    $scope,
+    $location,
+    $rootScope,
+    FetchItemsService,
+    BootstrapDashboardService,
+    DeleteItemService,
+    ApplicationStateService,
+    ItemSearchService
+    ) {
+
+
+var dummyData = {
+  "Users": 
+    {"totalMoneySpent": {
+      "UserLevel0": 0,
+      "UserLevel1": 0,
+      "UserLevel2": 20,
+      "UserLevel3": 10,
+      "UserLevel4": 10,
+      "UserLevel5": 40,
+      "UserLevel6": 67,
+      "UserLevel7": 80,
+      "UserLevel8": 80,
+      "UserLevel9": 90
+    },
+    "deviceInfo": {
+        "pieChart" :{
+            "appVersion":{
+                "2": 10000,
+                "2.1": 45000,
+                "3": 4000000
+            },
+            "OS":{
+                "Android 2.3": 10000,
+                "Android 4.0": 20000,
+                "iOS 6": 4025000
+            },
+            "Screen Resolution": {
+                "240p": 5000,
+                "480p": 40000,
+                "720p": 2000000,
+                "1080p": 2000000
+            }
+        },
+        "map" : {
+            "lat": "38",
+            "long": "34"
+        }
+    },
+    "moneySpentLines" : {
+        
+    }
+    
+    },
+  "boolea": true,
+  "null": null,
+  "number": 123,
+  "object": {
+    "a": "b",
+    "c": "d",
+    "e": "f"
+  },
+  "string": "Hello World"
+}
+
+
+var rows = [];
+
+for (var key in dummyData.Users.totalMoneySpent) {
+  if (dummyData.Users.totalMoneySpent.hasOwnProperty(key)) {
+    rows.push(dummyData.Users.totalMoneySpent[key]);
+  }
+}
+
+
+$(function () { 
+          $('#totalMoneySpent').highcharts({
+              chart: {
+                  type: 'column'
+              },
+              title: {
+                  text: 'Total Money Spent'
+              },
+              xAxis: {
+                type: 'category',
+                labels: {
+                    rotation: -45,
+                    align: 'right',
+                    style: {
+                        fontSize: '13px',
+                        fontFamily: 'Verdana, sans-serif'
+                    }
+                }
+            },
+            legend: {
+                enabled: false
+            },
+            tooltip: {
+                pointFormat: "Total Money Spent in Q1 2014: <b>{point.y:.1f} millions</b>"
+            },
+              yAxis: {
+                  title: {
+                      text: 'in Million USD'
+                  }
+              },
+              series: [{
+                name: 'Population',
+                data: rows,
+                dataLabels: {
+                    enabled: true,
+                    rotation: -90,
+                    color: '#FFFFFF',
+                    align: 'right',
+                    x: 4,
+                    y: 10,
+                    style: {
+                        fontSize: '13px',
+                        fontFamily: 'Verdana, sans-serif',
+                        textShadow: '0 0 3px black'
+                    }
+                }
+            }]
+          });
+      });
+        
+  }])
 ;
 
