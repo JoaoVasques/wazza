@@ -31,9 +31,8 @@ class PurchaseController @Inject()(
       applicationName
     )) {
 
-      val userId =  (content \ "userId").as[String]
       val purchaseInfo = purchaseService.create(content)
-      purchaseService.save(companyName, applicationName, purchaseInfo, userId) match {
+      purchaseService.save(companyName, applicationName, purchaseInfo) match {
         case Success(_) => Ok
         case Failure(_) => BadRequest
       }
