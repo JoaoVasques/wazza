@@ -2,6 +2,7 @@ package controllers.api
 
 import com.google.inject._
 import models.user.MobileUser
+import org.bson.types.ObjectId
 import play.api._
 import play.api.libs.json.JsError
 import play.api.libs.json.JsSuccess
@@ -13,11 +14,13 @@ import scala.util.Success
 import scala.concurrent._
 import ExecutionContext.Implicits.global
 import service.definitions.recommendation.{RecommendationService}
+import service.persistence.definitions.DatabaseService
 import service.user.definitions.{MobileUserService}
 
 class RecommendationController @Inject()(
   recommendationService: RecommendationService,
-  userService: MobileUserService
+  userService: MobileUserService,
+  databaseService: DatabaseService
 ) extends Controller {
 
   def recommendItemsToUser(
@@ -27,15 +30,25 @@ class RecommendationController @Inject()(
     limit: Int = -1
   ) = Action.async {implicit request =>
 
-    userService.get(companyName, applicationName, userId) match {
-      case Some(user) => {
-        recommendationService.recommendItemsToUser(companyName, applicationName, user.dbId.toString, limit) map { result =>
-          Ok(result)
-        } recover {
-          case err: Exception => BadRequest(err.getMessage())
-        }
+    val id = databaseService.get(
+      MobileUser.getCollection(companyName, applicationName),
+      MobileUser.KeyId,
+      userId,
+      "_id") match {
+      case Some(json) => {
+        (json \ "_id" \ "$oid").as[String]
       }
-      case None => Future {BadRequest("user does not exist")}
+      case None => null
+    }
+
+    if(id != null) {
+      recommendationService.recommendItemsToUser(companyName, applicationName, id, limit) map { result =>
+        Ok(result)
+      } recover {
+        case err: Exception => BadRequest(err.getMessage())
+      }
+    } else {
+      Future { BadRequest(s"User $userId does not exist") }
     }
   }
 }

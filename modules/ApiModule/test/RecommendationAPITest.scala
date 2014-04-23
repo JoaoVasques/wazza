@@ -48,8 +48,8 @@ class RecommendationAPITest extends Specification {
   private val AppName = "RecTestApp"
   private val NrItems = 10
   private val MaxPrice = 10
-  private val NrMobileUsers = 25
-  private val NrPurchases = 25
+  private val NrMobileUsers = 10
+  private val NrPurchases = 10
 
   private def generateApp() = {
     val photosService = new PhotosServiceImpl
@@ -108,7 +108,6 @@ class RecommendationAPITest extends Specification {
         CompanyName,
         this.app.name,
         s"user-" + i.toString,
-        None,
         None
       )
     }
@@ -119,6 +118,7 @@ class RecommendationAPITest extends Specification {
     var i = 0
     for(i <- 1 to NrPurchases) {
       val json = Json.obj(
+        "id" -> (s"purchase-id-$i"),
         "userId" ->  (s"user-" + i.toString),
         "name" -> this.app.name,
         "itemId" -> s"name-$i",
@@ -135,8 +135,7 @@ class RecommendationAPITest extends Specification {
       this.purchaseService.save(
         CompanyName,
         this.app.name,
-        purchase,
-        i.toString
+        purchase
       )
     }
   }

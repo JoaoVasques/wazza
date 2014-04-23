@@ -20,8 +20,7 @@ trait MobileUserService {
     companyName: String,
     applicationName: String,
     userId: String,
-    sessions: Option[List[MobileSession]],
-    purchases: Option[List[PurchaseInfo]]
+    sessions: Option[List[MobileSession]]
   ): Try[MobileUser]
 
   def get(companyName: String, applicationName: String, userId: String): Option[MobileUser]

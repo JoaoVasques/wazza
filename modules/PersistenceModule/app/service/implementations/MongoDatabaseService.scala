@@ -108,7 +108,7 @@ class MongoDatabaseService extends DatabaseService {
     }
   }
 
-  def insert(collectionName: String, model: JsValue, extra: Map[String, Long] = null): Try[Unit] = {
+  def insert(collectionName: String, model: JsValue, extra: Map[String, ObjectId] = null): Try[Unit] = {
     val collection = this.getCollection(collectionName)
     if(extra == null) {
       collection.insert(model)

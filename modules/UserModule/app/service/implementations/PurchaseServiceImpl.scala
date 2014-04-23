@@ -25,14 +25,11 @@ class PurchaseServiceImpl @Inject()(
   databaseService: DatabaseService
 ) extends PurchaseService {
 
-  private val UserId = "userId"
-  private val PurchaseId = "purchases"
-
   private def addPurchaseToRecommendationCollection(
     companyName: String,
     applicationName: String,
-    purchaseId: Long,
-    userId: Long
+    purchaseId: String,
+    userId: String
   ): Try[Unit] = {
 
     val date = new SimpleDateFormat("EE MMM dd yyyy HH:mm:ss 'GMT'Z (zzz)", Locale.ENGLISH).format(new Date())
@@ -42,18 +39,35 @@ class PurchaseServiceImpl @Inject()(
       "created_at" -> date
     )
 
+    val pId = databaseService.get(
+      PurchaseInfo.getCollection(companyName, applicationName),
+      PurchaseInfo.Id,
+      purchaseId,
+      "_id"
+    ).get
+    
+    val uID = databaseService.get(
+      MobileUser.getCollection(companyName, applicationName),
+      MobileUser.KeyId,
+      userId,
+      "_id").get
+
+    val mobileUserObjectId = new ObjectId((uID \ "_id" \ "$oid").as[String])
+    val purchaseObjectId = new ObjectId((pId \ "_id" \ "$oid").as[String])
+
     val objs = Map(
-      "user_id" -> userId,
-      "purchase_id" -> purchaseId
+      "user_id" -> mobileUserObjectId,
+      "purchase_id" -> purchaseObjectId
     )
 
+    new Success
     databaseService.insert(collection,info, objs)
   }
 
   def create(json: JsValue): PurchaseInfo = {
     val _id = new ObjectId
     new PurchaseInfo(
-      PersistenceUtils.generateId,
+      (json \ "id").as[String],
       (json \ "userId").as[String],
       (json \ "name").as[String],
       (json \ "itemId").as[String],
@@ -67,62 +81,23 @@ class PurchaseServiceImpl @Inject()(
     )
   }
 
-  def save(companyName: String, applicationName: String, info: PurchaseInfo, userId: String): Try[Unit] = {
+  def save(companyName: String, applicationName: String, info: PurchaseInfo): Try[Unit] = {
 
     val collection = PurchaseInfo.getCollection(companyName, applicationName)
 
-    if(!userService.mobileUserExists(companyName, applicationName, userId)) {
-      userService.createMobileUser(
-        companyName,
-        applicationName,
-        userId,
-        None,
-        Some(List[PurchaseInfo](info))
-      ) match {
-        case Success(u) => {
-          databaseService.addElementToArray[JsValue](
-            collection,
-            UserId,
-            userId,
-            PurchaseId,
-            Json.toJson(info)
-          )
-
-          addPurchaseToRecommendationCollection(companyName, applicationName, info.id, u.dbId)
-        }
-        case Failure(f) => Failure(f)
-      }
+    if(!exist(companyName, applicationName, info.id)) {
+      databaseService.insert(collection, Json.toJson(info))
+      addPurchaseToRecommendationCollection(companyName, applicationName, info.id, info.userId)
     } else {
-      if(exist(companyName, applicationName, info.id.toString, userId)) {
-        new Failure(new Exception("Duplicated purchase"))
-      } else {
-        databaseService.addElementToArray[JsValue](
-          collection,
-          UserId,
-          userId,
-          PurchaseId,
-          Json.toJson(info)
-        )
-
-        val user = userService.get(companyName, applicationName, userId)
-
-        addPurchaseToRecommendationCollection(
-          companyName,
-          applicationName,
-          info.id,
-          user.get.dbId)
-      }
+      new Failure(new Exception("Duplicated purchase"))
     }
   }
 
-  def get(companyName: String, applicationName: String, id: String, userId: String): Option[PurchaseInfo] = {
+  def get(companyName: String, applicationName: String, id: String): Option[PurchaseInfo] = {
     val collection = PurchaseInfo.getCollection(companyName, applicationName)
-    databaseService.getElementFromArray[String](
+    databaseService.get(
       collection,
-      UserId,
-      userId,
-      PurchaseId,
-      "id",
+      PurchaseInfo.Id,
       id
     ) match {
       case Some(purchase) => {
@@ -135,24 +110,17 @@ class PurchaseServiceImpl @Inject()(
     }
   }
 
-  def exist(companyName: String, applicationName: String, id: String, userId: String): Boolean = {
-    this.get(companyName, applicationName, id, userId) match {
+  def exist(companyName: String, applicationName: String, id: String): Boolean = {
+    this.get(companyName, applicationName, id) match {
       case Some(_) => true
       case None => false
     }
   }
 
-  def delete(companyName: String, applicationName: String, info: PurchaseInfo, userId: String): Try[Unit] = {
-    if(exist(companyName, applicationName, info.id.toString, userId)) {
+  def delete(companyName: String, applicationName: String, info: PurchaseInfo): Try[Unit] = {
+    if(exist(companyName, applicationName, info.id.toString)) {
       val collection = PurchaseInfo.getCollection(companyName, applicationName)
-      databaseService.deleteElementFromArray[Long](
-        collection,
-        UserId,
-        userId,
-        PurchaseId,
-        "id",
-        info.id
-      )
+      databaseService.delete(collection, Json.toJson(info))
     } else {
       new Failure(new Exception("Cannot delete purchase that does not exist"))
     }

@@ -25,7 +25,7 @@ object LocationInfo {
   Purchase Id format: Hash(appName + itemID + time + device)
 **/
 case class PurchaseInfo(
-  id: Long,
+  id: String,
   userId: String,
   applicationName: String,
   itemId: String,
@@ -37,11 +37,12 @@ case class PurchaseInfo(
 
 object PurchaseInfo {
 
+  lazy val Id = "id"
   def getRecommendationCollection(companyName: String, applicationName: String) = s"$companyName-recommendation-$applicationName"
   def getCollection(companyName: String, applicationName: String) = s"$companyName-purchases-$applicationName"
 
   implicit val reader = (
-    (__ \ "id").read[Long] and
+    (__ \ "id").read[String] and
     (__ \ "userId").read[String] and
     (__ \ "name").read[String] and
     (__ \ "itemId").read[String] and
@@ -52,7 +53,7 @@ object PurchaseInfo {
   )(PurchaseInfo.apply _)
 
   implicit val writes = (
-    (__ \ "id").write[Long] and
+    (__ \ "id").write[String] and
     (__ \ "userId").write[String] and
     (__ \ "name").write[String] and
     (__ \ "itemId").write[String] and

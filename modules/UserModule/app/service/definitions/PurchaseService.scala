@@ -8,12 +8,12 @@ trait PurchaseService {
 
   def create(json: JsValue): PurchaseInfo
 
-  def save(companyName: String, applicationName: String, info: PurchaseInfo, userId: String): Try[Unit]
+  def save(companyName: String, applicationName: String, info: PurchaseInfo): Try[Unit]
 
-  def get(companyName: String, applicationName: String, id: String, userId: String): Option[PurchaseInfo]
+  def get(companyName: String, applicationName: String, id: String): Option[PurchaseInfo]
 
-  def exist(companyName: String, applicationName: String, id: String, userId: String): Boolean
+  def exist(companyName: String, applicationName: String, id: String): Boolean
 
-  def delete(companyName: String, applicationName: String, info: PurchaseInfo, userId: String): Try[Unit]
+  def delete(companyName: String, applicationName: String, info: PurchaseInfo): Try[Unit]
 }
 

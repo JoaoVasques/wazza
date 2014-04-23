@@ -47,11 +47,9 @@ class MobileUserServiceImpl @Inject()(
       )
     } else {
       val user = new MobileUser(
-        PersistenceUtils.generateId,
         userId,
         session.deviceInfo.osType,
-        List[MobileSession](session),
-        List[PurchaseInfo]()
+        List[MobileSession](session)
       )
       databaseService.insert(collection, Json.toJson(user))
     }
@@ -61,32 +59,21 @@ class MobileUserServiceImpl @Inject()(
     companyName: String,
     applicationName: String,
     userId: String,
-    sessions: Option[List[MobileSession]],
-    purchases: Option[List[PurchaseInfo]]
+    sessions: Option[List[MobileSession]]
   ): Try[MobileUser] = {
     val collection = MobileUser.getCollection(companyName, applicationName)
     if(!mobileUserExists(companyName, applicationName, userId)) {
       val osType = sessions match {
         case Some(s) => s.head.deviceInfo.osType
-        case None => {
-          purchases match {
-            case Some(p) => null
-            case None => "unknown"
-          }
+        case None => "" //TODO
         }
-      }
 
       val user = new MobileUser(
-        PersistenceUtils.generateId,
         userId,
         osType,
         sessions match {
           case Some(s) => s
           case None => List[MobileSession]()
-        },
-        purchases match {
-          case Some(p) => p
-          case None => List[PurchaseInfo]()
         }
       )
       databaseService.insert(collection, Json.toJson(user)) match {
