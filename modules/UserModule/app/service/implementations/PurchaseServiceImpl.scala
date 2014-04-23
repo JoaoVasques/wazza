@@ -53,7 +53,7 @@ class PurchaseServiceImpl @Inject()(
   def create(json: JsValue): PurchaseInfo = {
     val _id = new ObjectId
     new PurchaseInfo(
-      PersistenceUtils.idToLong(new ObjectId),
+      PersistenceUtils.generateId,
       (json \ "userId").as[String],
       (json \ "name").as[String],
       (json \ "itemId").as[String],

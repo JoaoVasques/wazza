@@ -47,7 +47,7 @@ class MobileUserServiceImpl @Inject()(
       )
     } else {
       val user = new MobileUser(
-        PersistenceUtils.idToLong(new ObjectId),
+        PersistenceUtils.generateId,
         userId,
         session.deviceInfo.osType,
         List[MobileSession](session),
@@ -77,7 +77,7 @@ class MobileUserServiceImpl @Inject()(
       }
 
       val user = new MobileUser(
-        PersistenceUtils.idToLong(new ObjectId),
+        PersistenceUtils.generateId,
         userId,
         osType,
         sessions match {

@@ -29,7 +29,7 @@ class RecommendationController @Inject()(
 
     userService.get(companyName, applicationName, userId) match {
       case Some(user) => {
-        recommendationService.recommendItemsToUser(companyName, applicationName, userId, limit) map { result =>
+        recommendationService.recommendItemsToUser(companyName, applicationName, user.dbId.toString, limit) map { result =>
           Ok(result)
         } recover {
           case err: Exception => BadRequest(err.getMessage())

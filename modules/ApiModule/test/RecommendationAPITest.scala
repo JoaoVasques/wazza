@@ -48,8 +48,8 @@ class RecommendationAPITest extends Specification {
   private val AppName = "RecTestApp"
   private val NrItems = 10
   private val MaxPrice = 10
-  private val NrMobileUsers = 5
-  private val NrPurchases = 5
+  private val NrMobileUsers = 25
+  private val NrPurchases = 25
 
   private def generateApp() = {
     val photosService = new PhotosServiceImpl
