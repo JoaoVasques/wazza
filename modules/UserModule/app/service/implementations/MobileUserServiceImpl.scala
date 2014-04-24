@@ -100,15 +100,6 @@ class MobileUserServiceImpl @Inject()(
     }
   }
 
-  def createSession(json: JsValue): Try[MobileSession] = {
-    (json).validate[MobileSession] match {
-      case session: JsSuccess[MobileSession] => {
-        Success(session.get)
-      }
-      case e: JsError => new Failure(new Exception(JsError.toFlatJson(e).toString))
-    }
-  }
-
   def mobileUserExists(companyName: String, applicationName: String, userId: String): Boolean = {
     val collection = MobileUser.getCollection(companyName, applicationName)
     databaseService.exists(collection, UserId, userId)

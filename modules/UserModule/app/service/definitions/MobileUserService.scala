@@ -25,7 +25,5 @@ trait MobileUserService {
 
   def get(companyName: String, applicationName: String, userId: String): Option[MobileUser]
 
-  def createSession(json: JsValue): Try[MobileSession]
-
   def mobileUserExists(companyName: String, applicationName: String, userId: String): Boolean
 }
