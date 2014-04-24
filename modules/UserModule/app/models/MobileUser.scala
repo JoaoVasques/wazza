@@ -1,16 +1,11 @@
 package models.user
 
-import org.bson.types.ObjectId
 import scala.language.implicitConversions
 import play.api.libs.functional.syntax._
 import play.api.Play.current
 import play.api.libs.json._
 
-case class MobileUser(
-  userId: String,
-  osType: String,
-  sessions: List[MobileSession]
-)
+case class MobileUser(userId: String)
 
 object MobileUser {
 
@@ -18,16 +13,16 @@ object MobileUser {
 
   def getCollection(companyName: String, applicationName: String) = s"$companyName-mUsers-$applicationName"
 
-  implicit val readJson = (
-    (__ \ "userId").read[String] and
-    (__ \ "osType").read[String] and
-    (__ \ "sessions").read[List[MobileSession]]
-  )(MobileUser.apply _)
+  implicit def readJson(mobileUser: MobileUser): JsValue = {
+    Json.obj(
+      "userId" -> mobileUser.userId
+    )
+  }
 
-  implicit val buildFromJson = (
-    (__ \ "userId").write[String] and
-    (__ \ "osType").write[String] and
-    (__ \ "sessions").write[List[MobileSession]]
-  )(unlift(MobileUser.unapply))
+  implicit def buildFromJson(json: JsValue): MobileUser = {
+    new MobileUser(
+      (json \ "userId").as[String]
+    )
+  }
 }
 

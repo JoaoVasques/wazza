@@ -2,6 +2,7 @@ package controllers.api
 
 import com.google.inject._
 import java.security.MessageDigest
+import models.user.MobileSession
 import org.apache.commons.codec.binary.Hex
 import play.api._
 import play.api.libs.json.JsError
@@ -26,11 +27,15 @@ class SessionController @Inject()(
 
   private def getSessionRequestType(contentStr: String) = {
     val json = Json.toJson(contentStr)
-    println("session content!")
-    println(contentStr)
     (json \ "hash").asOpt[String] match {
       case Some(_) => UpdateSession
       case None => NewSession
+    }
+  }
+
+  private def createMobileUser(companyName: String, applicationName: String, userId: String) = {
+    if(!mobileUserService.exists(companyName, applicationName, userId)) {
+      mobileUserService.createMobileUser(companyName, applicationName, userId)
     }
   }
 
@@ -45,8 +50,8 @@ class SessionController @Inject()(
     sessionService.create(Json.obj(
       "id" -> generateHash(content),
       "userId" -> (jsonContent \ "userId").as[String],
-      "sessionLength" -> 10, //default
-      "startTime" -> "t", //TODO
+      "sessionLength" -> MobileSession.DefaultSessionLength,
+      "startTime" -> (jsonContent \ "startTime").as[String],
       "deviceInfo" -> (jsonContent \ "deviceInfo"),
       "purchases" -> List[String]()
     )) match {
@@ -59,7 +64,6 @@ class SessionController @Inject()(
         }
       }
       case Failure(f) => {
-        println(s"$f.getMessage")
         BadRequest
       }
     }
@@ -73,7 +77,11 @@ class SessionController @Inject()(
 
     val content = (request.body \ "content").as[String].replace("\\", "")
     getSessionRequestType(content) match {
-      case NewSession => createNewSessionInfo(content)
+      case NewSession => {
+        val userId = ((Json.parse(content)) \ "userId").as[String]
+        createMobileUser(companyName, applicationName, userId)
+        createNewSessionInfo(content)
+      }
       case UpdateSession => updateOldSessionInfo(content)
     }
   }

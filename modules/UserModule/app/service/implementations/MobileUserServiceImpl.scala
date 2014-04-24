@@ -24,59 +24,16 @@ import java.util.Date
 class MobileUserServiceImpl @Inject()(
   databaseService: DatabaseService
 ) extends MobileUserService {
-
-  private val UserId = "userId"
-  private val SessionId = "sessions"
-
-  def updateMobileUserSession(
-    companyName: String,
-    applicationName: String,
-    userId: String,
-    session: MobileSession
-  ): Try[Unit] = {
-
-    val collection = MobileUser.getCollection(companyName, applicationName)
-
-    if(mobileUserExists(companyName, applicationName, userId)) {
-      databaseService.addElementToArray[JsValue](
-        collection,
-        UserId,
-        userId,
-        SessionId,
-        Json.toJson(session)
-      )
-    } else {
-      val user = new MobileUser(
-        userId,
-        session.deviceInfo.osType,
-        List[MobileSession](session)
-      )
-      databaseService.insert(collection, Json.toJson(user))
-    }
-  }
-
+  
   def createMobileUser(
     companyName: String,
     applicationName: String,
-    userId: String,
-    sessions: Option[List[MobileSession]]
+    userId: String
   ): Try[MobileUser] = {
     val collection = MobileUser.getCollection(companyName, applicationName)
-    if(!mobileUserExists(companyName, applicationName, userId)) {
-      val osType = sessions match {
-        case Some(s) => s.head.deviceInfo.osType
-        case None => "" //TODO
-        }
-
-      val user = new MobileUser(
-        userId,
-        osType,
-        sessions match {
-          case Some(s) => s
-          case None => List[MobileSession]()
-        }
-      )
-      databaseService.insert(collection, Json.toJson(user)) match {
+    if(!exists(companyName, applicationName, userId)) {
+      val user = new MobileUser(userId)
+      databaseService.insert(collection, user) match {
         case Success(_) => new Success(user)
         case Failure(f) => new Failure(f)
       }
@@ -92,17 +49,14 @@ class MobileUserServiceImpl @Inject()(
       MobileUser.KeyId,
       userId
     ) match {
-      case Some(j) => j.validate[MobileUser].fold(
-        valid = { u => Some(u)},
-        invalid = {_ => None}
-      )
+      case Some(j) => Some(j)
       case None => None
     }
   }
 
-  def mobileUserExists(companyName: String, applicationName: String, userId: String): Boolean = {
+  def exists(companyName: String, applicationName: String, userId: String): Boolean = {
     val collection = MobileUser.getCollection(companyName, applicationName)
-    databaseService.exists(collection, UserId, userId)
+    databaseService.exists(collection, MobileUser.KeyId, userId)
   }
 }
 

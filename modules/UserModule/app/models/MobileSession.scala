@@ -16,6 +16,8 @@ case class MobileSession(
 
 object MobileSession {
 
+  lazy val DefaultSessionLength = 10
+
   def getCollection(companyName: String, applicationName: String) = s"$companyName-mobileSessions-$applicationName"
 
   implicit val readJson = (

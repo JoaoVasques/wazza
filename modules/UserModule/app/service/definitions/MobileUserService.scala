@@ -9,21 +9,13 @@ import scala.util.Try
 
 trait MobileUserService {
 
-  def updateMobileUserSession(
-    companyName: String,
-    applicationName: String,
-    userId: String,
-    session: MobileSession
-  ): Try[Unit]
-
   def createMobileUser(
     companyName: String,
     applicationName: String,
-    userId: String,
-    sessions: Option[List[MobileSession]]
+    userId: String
   ): Try[MobileUser]
 
   def get(companyName: String, applicationName: String, userId: String): Option[MobileUser]
 
-  def mobileUserExists(companyName: String, applicationName: String, userId: String): Boolean
+  def exists(companyName: String, applicationName: String, userId: String): Boolean
 }
