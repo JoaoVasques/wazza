@@ -105,8 +105,15 @@ class MobileSessionServiceImpl @Inject()(
     databaseService.exists(collection, MobileSessionInfo.Id,id)
   }
 
-  def addPurchase(session: MobileSession, purchaseId: String) = {
-
+  def addPurchase(companyName: String, applicationName: String, session: MobileSession, purchaseId: String) = {
+    val collection = MobileSession.getCollection(companyName, applicationName)
+    databaseService.addElementToArray[String](
+      collection,
+      MobileSession.Id,
+      session.id,
+      MobileSession.Purchases,
+      purchaseId
+    )
   }
 
   def calculateSessionLength(session: MobileSession, dateStr: String) = {

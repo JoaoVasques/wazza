@@ -17,6 +17,7 @@ case class MobileSession(
 object MobileSession {
 
   val Id = "id"
+  val Purchases = "purchases"
 
   def getCollection(companyName: String, applicationName: String) = s"$companyName-mobileSessions-$applicationName"
 

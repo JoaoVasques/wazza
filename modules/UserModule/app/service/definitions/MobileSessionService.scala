@@ -14,7 +14,7 @@ trait MobileSessionService {
 
   def exists(id: String): Boolean
 
-  def addPurchase(session: MobileSession, purchaseId: String)
+  def addPurchase(companyName: String, applicationName: String, session: MobileSession, purchaseId: String)
 
   def calculateSessionLength(session: MobileSession, dateStr: String)
 }

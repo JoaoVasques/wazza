@@ -26,6 +26,7 @@ object LocationInfo {
 **/
 case class PurchaseInfo(
   id: String,
+  sessionId: String,
   userId: String,
   applicationName: String,
   itemId: String,
@@ -43,6 +44,7 @@ object PurchaseInfo {
 
   implicit val reader = (
     (__ \ "id").read[String] and
+    (__ \ "sessionId").read[String] and
     (__ \ "userId").read[String] and
     (__ \ "name").read[String] and
     (__ \ "itemId").read[String] and
@@ -54,6 +56,7 @@ object PurchaseInfo {
 
   implicit val writes = (
     (__ \ "id").write[String] and
+    (__ \ "sessionId").write[String] and
     (__ \ "userId").write[String] and
     (__ \ "name").write[String] and
     (__ \ "itemId").write[String] and
