@@ -16,7 +16,7 @@ case class MobileSession(
 
 object MobileSession {
 
-  lazy val DefaultSessionLength = 10
+  val Id = "id"
 
   def getCollection(companyName: String, applicationName: String) = s"$companyName-mobileSessions-$applicationName"
 

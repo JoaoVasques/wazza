@@ -1,5 +1,7 @@
 package service.user.implementations
 
+import java.text.SimpleDateFormat
+import java.util.concurrent.TimeUnit
 import play.api.libs.json.JsError
 import play.api.libs.json.JsSuccess
 import play.api.libs.json.Json
@@ -12,6 +14,7 @@ import scala.util.Try
 import com.google.inject._
 import service.persistence.definitions.DatabaseService
 import models.user.MobileSessionInfo
+import com.github.nscala_time.time.Imports._
 
 class MobileSessionServiceImpl @Inject()(
   databaseService: DatabaseService
@@ -37,6 +40,28 @@ class MobileSessionServiceImpl @Inject()(
       }
     } else {
       new Failure(new Exception("mobile session already exists"))
+    }
+  }
+
+  def get(hash: String): Option[MobileSession] = {
+    getSessionInfo(hash) match {
+      case Some(info) => {
+        val collection = MobileSession.getCollection(info.companyName, info.applicationName)
+        databaseService.get(
+          collection,
+          MobileSession.Id,
+          hash
+        ) match {
+          case Some(json) => {
+            json.validate[MobileSession].fold(
+              valid = { s => Some(s) },
+              invalid = {_ => None}
+            )
+          }
+          case None => None
+        }
+      }
+      case None => None
     }
   }
 
@@ -80,13 +105,27 @@ class MobileSessionServiceImpl @Inject()(
     databaseService.exists(collection, MobileSessionInfo.Id,id)
   }
 
-  def update(id: String, date: String, purchaseId: String): Try[Unit] = {
-    getSessionInfo(id) match {
-      case Some(info) => {
-        
-        null
-      }
-      case None => new Failure(new Exception("Session does not exist"))
-    }
+  def addPurchase(session: MobileSession, purchaseId: String) = {
+
+  }
+
+  def calculateSessionLength(session: MobileSession, dateStr: String) = {
+    val format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z")
+    val start = format.parse(session.startTime)
+    val end = format.parse(dateStr)
+    val duration =  TimeUnit.MILLISECONDS.toSeconds(end.getTime - start.getTime)
+
+    val info = getSessionInfo(session.id).get
+
+    val collection = MobileSession.getCollection(info.companyName, info.applicationName)
+
+    databaseService.update(
+      collection,
+      MobileSession.Id,
+      session.id,
+      "sessionLength",
+      duration
+    )
+
   }
 }
