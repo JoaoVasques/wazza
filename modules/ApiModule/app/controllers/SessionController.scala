@@ -27,9 +27,9 @@ class SessionController @Inject()(
 
   private def getSessionRequestType(contentStr: String) = {
     val json = Json.toJson(contentStr)
-    (json \ "hash").asOpt[String] match {
-      case Some(_) => UpdateSession
-      case None => NewSession
+    (json \ "type").as[Int] match {
+      case NewSession => UpdateSession
+      case UpdateSession => NewSession
     }
   }
 
@@ -50,7 +50,7 @@ class SessionController @Inject()(
     sessionService.create(Json.obj(
       "id" -> generateHash(content),
       "userId" -> (jsonContent \ "userId").as[String],
-      "sessionLength" -> MobileSession.DefaultSessionLength,
+      "sessionLength" -> 0,
       "startTime" -> (jsonContent \ "startTime").as[String],
       "deviceInfo" -> (jsonContent \ "deviceInfo"),
       "purchases" -> List[String]()
@@ -69,21 +69,25 @@ class SessionController @Inject()(
     }
   }
 
-  private def updateOldSessionInfo(content: String) = {
-    Ok
+  def newSession(companyName: String, applicationName: String) = Action(parse.json) {implicit request =>
+    val content = (request.body \ "content").as[String].replace("\\", "")
+    val userId = ((Json.parse(content)) \ "userId").as[String]
+    createMobileUser(companyName, applicationName, userId)
+    createNewSessionInfo(content)
   }
 
-  def updateSession(companyName: String, applicationName: String) = Action(parse.json) {implicit request =>
-
+  def endSession(companyName: String, applicationName: String) = Action(parse.json) {implicit request =>
     val content = (request.body \ "content").as[String].replace("\\", "")
-    getSessionRequestType(content) match {
-      case NewSession => {
-        val userId = ((Json.parse(content)) \ "userId").as[String]
-        createMobileUser(companyName, applicationName, userId)
-        createNewSessionInfo(content)
+    val json = Json.parse(content)
+    val hash = (json \ "hash").as[String]
+
+    sessionService.get(hash) match {
+      case Some(session) => {
+        println(s"$session")
+        sessionService.calculateSessionLength(session, (json \ "date").as[String])
+        Ok
       }
-      case UpdateSession => updateOldSessionInfo(content)
+      case None => BadRequest("session does not exist")
     }
   }
 }
-
