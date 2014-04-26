@@ -40,7 +40,7 @@ class RecommendationServiceImpl extends RecommendationService {
             s"${host}:${port}${endpoints(RecommendSimilarItems)}/${userId}/${companyName}/${appName}".replaceAll(" ","")
           } else {
             val limit = args("nrItems")
-            s"${host}:${port}{endpoints(RecommendSimilarItems)}/${userId}/${companyName}/${appName}/${limit}".replaceAll(" ","")
+            s"${host}:${port}${endpoints(RecommendSimilarItems)}/${userId}/${companyName}/${appName}/${limit}".replaceAll(" ","")
           }
         }
       }
@@ -90,7 +90,6 @@ class RecommendationServiceImpl extends RecommendationService {
     }
 
     val endpoint = serverInfo.getEndpoint(RecommendItemsToUser, args)
-    println(s"endpoint - $endpoint")
     val promise = Promise[JsArray]
     WS.url(endpoint).get() map { result =>
       try {
