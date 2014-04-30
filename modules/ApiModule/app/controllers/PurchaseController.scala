@@ -23,28 +23,16 @@ class PurchaseController @Inject()(
 ) extends Controller {
 
   
-  def handlePurchase = Action(parse.json) {implicit request =>
+  def handlePurchase(companyName: String, applicationName: String) = Action(parse.json) {implicit request =>
     val content = Json.parse((request.body \ "content").as[String].replace("\\", ""))
     if(applicationService.itemExists(
+      companyName,
       (content \ "itemId").as[String],
-      (content \ "name").as[String]
+      applicationName
     )) {
 
-      val userId =  (content \ "userId").as[String]
-      val purchaseInfo = new PurchaseInfo(
-        (content \ "id").as[String],
-        userId,
-        (content \ "name").as[String],
-        (content \ "itemId").as[String],
-        (content \ "price").as[Double],
-        (content \ "time").as[String],
-        (content \ "deviceInfo").as[DeviceInfo],
-        (content \ "location").validate[LocationInfo] match {
-          case success: JsSuccess[LocationInfo] => Some(success.value)
-          case JsError(errors) => None
-        }
-      )
-      purchaseService.save(purchaseInfo, userId) match {
+      val purchaseInfo = purchaseService.create(content)
+      purchaseService.save(companyName, applicationName, purchaseInfo) match {
         case Success(_) => Ok
         case Failure(_) => BadRequest
       }

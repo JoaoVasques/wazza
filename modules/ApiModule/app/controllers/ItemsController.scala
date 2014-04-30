@@ -27,26 +27,35 @@ class ItemsController @Inject()(
     }
   }
 
-  private def getItemsAux[A](request: Request[A], applicationName: String, projection: String = null): List[Any] = {
-    applicationService.getItems(applicationName, getOffsetValue(request))
+  private def getItemsAux[A](
+    request: Request[A],
+    companyName: String,
+    applicationName: String,
+    projection: String = null
+  ): List[Any] = {
+    applicationService.getItems(companyName, applicationName, getOffsetValue(request))
   }
 
-  def getItems(applicationName: String) = ApiSecurityHandler() {implicit request =>
-    val result = applicationService.getItems(applicationName, getOffsetValue(request))
+  def getItems(companyName: String, applicationName: String) = ApiSecurityHandler() {implicit request =>
+    val result = applicationService.getItems(companyName, applicationName, getOffsetValue(request))
     Ok(JsArray(result.map((item: Item) =>{
       Json.obj("id" -> item.name)
     })))
   }
 
-  def getItemsWithDetails(applicationName: String) = ApiSecurityHandler() {implicit request =>
-    val result = applicationService.getItems(applicationName, getOffsetValue(request))
+  def getItemsWithDetails(companyName: String, applicationName: String) = ApiSecurityHandler() {implicit request =>
+    val result = applicationService.getItems(companyName, applicationName, getOffsetValue(request))
     Ok(JsArray(result.map{(item: Item) =>
       Item.convertToJson(item)
     }))
   }
  
-  def getItemDetails(id: String, applicationName: String) = ApiSecurityHandler() {implicit request =>
-    val res = applicationService.getItem(id, applicationName)
+  def getItemDetails(
+    companyName: String,
+    applicationName:String,
+    id: String
+  ) = ApiSecurityHandler() {implicit request =>
+    val res = applicationService.getItem(companyName, id, applicationName)
     Ok(Json.obj(
       "item" ->  res.map{item => Item.convertToJson(item)}
     ))

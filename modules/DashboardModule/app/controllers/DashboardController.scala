@@ -27,7 +27,8 @@ class DashboardController @Inject()(
           Ok("skip " + json)
         }
         case None => {
-          val application = applicationService.find(applications.head).get
+          val companyName = userService.find(userId).get.company
+          val application = applicationService.find(companyName, applications.head).get
           Ok(views.html.dashboard(
             true,
             application.name,
@@ -47,10 +48,12 @@ class DashboardController @Inject()(
       //TODO: do not send bad request but a note saying that we dont have applications. then redirect to new application page
       BadRequest
     } else {
-      val application = applicationService.find(applications.head).get
       val user = userService.find(userId).get
+      val companyName = user.company
+      val application = applicationService.find(companyName, applications.head).get
       Ok(
         Json.obj(
+          "companyName" -> companyName,
           "name" -> application.name,
           "userInfo" -> Json.obj(
             "name" -> user.name,
@@ -63,7 +66,7 @@ class DashboardController @Inject()(
           "virtualCurrencies" -> new JsArray(application.virtualCurrencies map {vc =>
             VirtualCurrency.buildJson(vc)
           }),
-          "items" -> new JsArray(applicationService.getItems(application.name) map {item =>
+          "items" -> new JsArray(applicationService.getItems(companyName, application.name) map {item =>
             Item.convertToJson(item)
           }),
           "applications" -> new JsArray(applications map {el =>

@@ -1,41 +1,32 @@
 package service.persistence.definitions
 
-import com.mongodb.casbah.MongoCollection
+import org.bson.types.ObjectId
 import play.api.libs.json.JsObject
 import play.api.libs.json.JsValue
 import scala.util.Try
 
 trait DatabaseService {
 
-  protected var collection: MongoCollection = null
-
   lazy val ApplicationCollection = "applications"
   lazy val UserCollection = "users"
   lazy val PurchasesCollection = "purchases"
 
-  def dropCollection(): Unit
+  def exists(collectionName: String, key: String, value: String): Boolean
 
-  def init(collectionName: String): Try[Unit]
+  def get(collectionName: String, key: String, value: String, projection: String = null): Option[JsValue]
 
-  def init(uri: String, collectionName: String)
+  def insert(collectionName: String, model: JsValue, extra: Map[String, ObjectId] = null): Try[Unit]
 
-  def hello(): Unit
+  def delete(collectionName: String, el: JsValue): Try[Unit]
 
-  def exists(key: String, value: String): Boolean
-
-  def get(key: String, value: String, projection: String = null): Option[JsValue]
-
-  def insert(model: JsValue): Try[Unit]
-
-  def delete(el: JsValue): Try[Unit]
-
-  def update(key: String, keyValue: String, valueKey: String, newValue: Any): Try[Unit]
+  def update(collectionName: String, key: String, keyValue: String, valueKey: String, newValue: Any): Try[Unit]
 
   /**
     Array operations
   **/
 
   def existsInArray[T <: Any](
+    collectionName: String,
     docIdKey: String,
     docIdValue: String,
     arrayKey: String,
@@ -44,6 +35,7 @@ trait DatabaseService {
   ): Boolean
 
   def getElementFromArray[T <: Any](
+    collectionName: String,
     docIdKey: String,
     docIdValue: String,
     arrayKey: String,
@@ -52,6 +44,7 @@ trait DatabaseService {
   ): Option[JsValue]
 
   def getElementsOfArray(
+    collectionName: String,
     docIdKey: String,
     docIdValue: String,
     arrayKey: String,
@@ -59,13 +52,15 @@ trait DatabaseService {
   ): List[JsValue]
 
   def addElementToArray[T <: Any](
-      docIdKey: String,
-      docIdValue: Any,
-      arrayKey: String,
-      model: T
-    ): Try[Unit]
+    collectionName: String,
+    docIdKey: String,
+    docIdValue: Any,
+    arrayKey: String,
+    model: T
+  ): Try[Unit]
 
   def deleteElementFromArray[T <: Any](
+    collectionName: String,
     docIdKey: String,
     docIdValue: Any,
     arrayKey: String,
@@ -74,6 +69,7 @@ trait DatabaseService {
   ): Try[Unit]
 
   def updateElementOnArray[T <: Any](
+    collectionName: String,
     docIdKey: String,
     docIdValue: String,
     arrayKey: String,

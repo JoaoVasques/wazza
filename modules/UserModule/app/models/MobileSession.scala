@@ -9,7 +9,6 @@ case class MobileSession(
   length: Double,
   startTime: String,
   deviceInfo: DeviceInfo
-  //location
 )
 
 object MobileSession {

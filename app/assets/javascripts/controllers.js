@@ -1,5 +1,12 @@
 
-angular.module('Wazza.controllers', ['ApplicationModule', 'Wazza.services', 'ItemModule', 'ngCookies', 'SecurityModule', 'DashboardModule'])
+angular.module('Wazza.controllers', [
+    'ApplicationModule',
+    'Wazza.services',
+    'ItemModule',
+    'ngCookies',
+    'SecurityModule',
+    'DashboardModule'
+])
 
 //evil, horrendous and quite broken hack. do not try this at home!
 .controller('RedirectController',[
@@ -69,6 +76,7 @@ angular.module('Wazza.controllers', ['ApplicationModule', 'Wazza.services', 'Ite
         name: success.data.userName,
         email: success.data.userId
     });
+    ApplicationStateService.updateCompanyName(success.data.companyName);
     LoginLogoutService.login();
     document.getElementById("page-wrapper").className = "page-wrapper";
     $location.path(success.data.url);
