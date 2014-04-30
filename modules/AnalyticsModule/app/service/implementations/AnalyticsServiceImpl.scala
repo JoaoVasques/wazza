@@ -18,12 +18,12 @@ import org.bson.BasicBSONObject
 
 class AnalyticsServiceImpl extends AnalyticsService {
 
-  private lazy val context = new SparkContext("local", "Wazza Analytics")
+  private val context = new SparkContext("local", "Wazza Analytics")
 
   private val configuration = new HashMap[String, Configuration] with SynchronizedMap[String, Configuration]
 
   private def generateConfigurationName(companyName: String, applicationName: String, analyticsType: String) = {
-    s"companyName-$analyticsType-$applicationName"
+    s"${companyName}_${analyticsType}_${applicationName}"
   }
 
   private def addConfiguration(companyName: String, applicationName: String, analyticsType: String) = {
@@ -41,6 +41,7 @@ class AnalyticsServiceImpl extends AnalyticsService {
     val config = new Configuration
     config.set("mongo.input.uri", inputUri)
     config.set("mongo.output.uri", outputUri)
+    config.set("mongo.input.split.create_input_splits", "false")
 
     configuration.synchronized {
       configuration.put(generateConfigurationName(companyName, applicationName, analyticsType), config)
@@ -65,13 +66,32 @@ class AnalyticsServiceImpl extends AnalyticsService {
   }
 
   def getTotalRevenue(companyName: String, applicationName: String, start: Date, end: Date): Future[Double] = {
-    val config = this.getConfiguration(companyName, applicationName, "totalRevenue")
+    val config = getConfiguration(companyName, applicationName, "totalRevenue")
+    val input = config.get("mongo.input.uri")
+    val output = config.get("mongo.output.uri")
+
+    println(s"input $input \n output $output")
+
     val mongoRDD = context.newAPIHadoopRDD(
       config,
       classOf[com.mongodb.hadoop.MongoInputFormat],
       classOf[Object],
       classOf[BSONObject]
     )
+
+
+    println(mongoRDD.first())
+
+    val countsRDD = mongoRDD.flatMap(arg => {
+      println(arg._2)
+      ""
+      //var str = arg._2.get("text").toString
+      //str = str.toLowerCase().replaceAll("[.,!?\n]", " ")
+      //str.split(" ")
+    })
+
+    println("get total revenue")
+    
     null
   }
 

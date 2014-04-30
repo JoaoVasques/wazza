@@ -10,6 +10,7 @@ import service.security.modules._
 import service.aws.modules._
 import service.persistence.modules.PersistenceModule
 import service.recommendation.modules._
+import service.analytics.modules.AnalyticsModule
 
 object Global extends GlobalSettings {
   
@@ -20,7 +21,8 @@ object Global extends GlobalSettings {
       new SecurityModule,
       new AWSModule,
       new PersistenceModule,
-      new RecommendationModule
+      new RecommendationModule,
+      new AnalyticsModule
     )
   }
 
@@ -28,3 +30,4 @@ object Global extends GlobalSettings {
     injector.getInstance(clazz)
   }
 }
+
