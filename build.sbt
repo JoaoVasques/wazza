@@ -5,7 +5,6 @@ version := "pre-alpha"
 lazy val dependencies = Seq(
   anorm,
   cache,
-  //"se.radley" %% "play-plugins-salat" % "1.4.0",
   "com.google.inject" % "guice" % "3.0",
   "com.tzavellas" % "sse-guice" % "0.7.1",
   "org.webjars" % "webjars-play_2.10" % "2.2.0",
@@ -18,14 +17,21 @@ lazy val dependencies = Seq(
   "org.mindrot" % "jbcrypt" % "0.3m",
   "org.webjars" % "angular-ui-bootstrap" % "0.10.0",
   "commons-codec" % "commons-codec" % "1.9",
-  "org.apache.spark" %% "spark-core" % "0.9.0-incubating",
-  "org.apache.hadoop" % "hadoop-client" % "2.2.0",
-  //"org.mongodb" % "mongo-java-driver" % "2.11.4",
-  "org.mongodb" % "mongo-hadoop-core" % "1.0.0",
-  "org.mongodb" %% "casbah" % "2.7.0"
+  "org.mongodb" % "casbah_2.10" % "2.7.0"
 )
 
-resolvers += "Akka Repository" at "http://repo.akka.io/releases/"
+lazy val analyticsDependencies = Seq(
+  anorm,
+  cache,
+  "com.google.inject" % "guice" % "3.0",
+  "com.tzavellas" % "sse-guice" % "0.7.1",
+  "org.webjars" % "webjars-play_2.10" % "2.2.0",
+  "org.apache.spark" %% "spark-core" % "0.9.0-incubating",
+  "org.apache.hadoop" % "hadoop-client" % "2.2.0",
+  "org.mongodb" % "mongo-java-driver" % "2.11.4",
+  "com.typesafe.akka" %% "akka-actor" % "2.2.3",
+  "com.typesafe.akka" %% "akka-slf4j" % "2.2.3"
+)
 
 libraryDependencies ++= dependencies
 
@@ -130,6 +136,9 @@ lazy val analyticsModule = play.Project("analytics",
   path = file("modules/AnalyticsModule")
 )
   .dependsOn(userModule, applicationModule, persistenceModule)
-  .settings(mySettings: _*)
+  .settings(
+  libraryDependencies ++= analyticsDependencies,
+  resolvers += "Akka Repository" at "http://repo.akka.io/releases/"
+)
 
 play.Project.playScalaSettings
