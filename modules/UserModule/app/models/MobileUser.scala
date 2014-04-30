@@ -11,7 +11,7 @@ object MobileUser {
 
   lazy val KeyId = "userId"
 
-  def getCollection(companyName: String, applicationName: String) = s"$companyName-mUsers-$applicationName"
+  def getCollection(companyName: String, applicationName: String) = s"${companyName}_mUsers_${applicationName}"
 
   implicit def readJson(mobileUser: MobileUser): JsValue = {
     Json.obj(

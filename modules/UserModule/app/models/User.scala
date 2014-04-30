@@ -15,7 +15,7 @@ case class User(
 
 object User {
 
-  def getCollection() = "company-user"
+  def getCollection() = "company_user"
 
   implicit val userReadJson = (
     (__ \ "name").read[String] and

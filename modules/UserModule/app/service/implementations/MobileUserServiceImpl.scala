@@ -18,7 +18,6 @@ import com.google.inject._
 import service.persistence.definitions.{DatabaseService}
 import play.api.libs.json.Json
 import models.user.PurchaseInfo
-import utils.persistence._
 import java.util.Date
 
 class MobileUserServiceImpl @Inject()(

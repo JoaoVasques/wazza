@@ -19,7 +19,7 @@ object MobileSession {
   val Id = "id"
   val Purchases = "purchases"
 
-  def getCollection(companyName: String, applicationName: String) = s"$companyName-mobileSessions-$applicationName"
+  def getCollection(companyName: String, applicationName: String) = s"${companyName}_mobileSessions_${applicationName}"
 
   implicit val readJson = (
     (__ \ "id").read[String] and
