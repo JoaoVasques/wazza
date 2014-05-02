@@ -17,8 +17,7 @@ lazy val dependencies = Seq(
   "com.amazonaws" % "aws-java-sdk" % "1.6.12",
   "org.mindrot" % "jbcrypt" % "0.3m",
   "org.webjars" % "angular-ui-bootstrap" % "0.10.0",
-  "commons-codec" % "commons-codec" % "1.9",
-  "com.fasterxml.uuid" % "java-uuid-generator" % "3.1.3"
+  "commons-codec" % "commons-codec" % "1.9"
 )
 
 libraryDependencies ++= dependencies

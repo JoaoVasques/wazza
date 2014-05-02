@@ -11,18 +11,19 @@ import play.api.libs.json._
 import play.api.libs.functional.syntax._
 import scala.util.Failure
 import scala.util.Success
+import service.user.definitions.MobileSessionService
 import service.user.definitions.MobileUserService
 import service.user.definitions.{PurchaseService}
 import models.user.{PurchaseInfo}
 import scala.util.Try
 import com.google.inject._
 import service.persistence.definitions.DatabaseService
-import utils.persistence._
 import java.util.Locale
 
 class PurchaseServiceImpl @Inject()(
   userService: MobileUserService,
-  databaseService: DatabaseService
+  databaseService: DatabaseService,
+  mobileSessionService: MobileSessionService
 ) extends PurchaseService {
 
   private def addPurchaseToRecommendationCollection(
@@ -68,6 +69,7 @@ class PurchaseServiceImpl @Inject()(
     val _id = new ObjectId
     new PurchaseInfo(
       (json \ "id").as[String],
+      (json \ "sessionId").as[String],
       (json \ "userId").as[String],
       (json \ "name").as[String],
       (json \ "itemId").as[String],
@@ -82,11 +84,12 @@ class PurchaseServiceImpl @Inject()(
   }
 
   def save(companyName: String, applicationName: String, info: PurchaseInfo): Try[Unit] = {
-
     val collection = PurchaseInfo.getCollection(companyName, applicationName)
 
     if(!exist(companyName, applicationName, info.id)) {
       databaseService.insert(collection, Json.toJson(info))
+      val session = mobileSessionService.get(info.sessionId)
+      mobileSessionService.addPurchase(companyName, applicationName, session.get, info.id)
       addPurchaseToRecommendationCollection(companyName, applicationName, info.id, info.userId)
     } else {
       new Failure(new Exception("Duplicated purchase"))
