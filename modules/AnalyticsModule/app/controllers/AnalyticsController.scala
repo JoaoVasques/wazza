@@ -35,13 +35,10 @@ class AnalyticsController @Inject()(
     applicationName: String,
     startDateStr: String,
     endDateStr: String
-  ) = Action {implicit request =>
-
-    //val dates = (validateDate(startDateStr), validateDate(endDateStr))
-
-    analyticsService.getTotalRevenue(companyName, applicationName, null, null)
-
-    Ok
+  ) = Action.async {implicit request =>
+    analyticsService.getTotalRevenue(companyName, applicationName, new Date, new Date) map {res =>
+      Ok
+    }
   }
 
   def test = TODO
