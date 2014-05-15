@@ -9,8 +9,8 @@ angular.module('Wazza.controllers', ['ApplicationModule', 'Wazza.services', 'Ite
     $scope,
     $location
     ) {
-    document.getElementById("navbar").css("ng-hide", "");
-    document.getElementById("sidebar").css("ng-hide", "");
+    //document.getElementById("navbar").css("ng-hide", "");
+    //document.getElementById("sidebar").css("ng-hide", "");
     $scope.showNavBar = $scope.showSideBar = $scope.sessionOn = true;
     console.log($scope);
     $location.path("/home");
@@ -42,7 +42,7 @@ angular.module('Wazza.controllers', ['ApplicationModule', 'Wazza.services', 'Ite
       then(
         function(){
           LoginLogoutService.login();
-          document.getElementById("page-wrapper").className = "page-wrapper";
+          //document.getElementById("page-wrapper").className = "page-wrapper";
           $location.path("/home");
         }
       );
@@ -70,7 +70,7 @@ angular.module('Wazza.controllers', ['ApplicationModule', 'Wazza.services', 'Ite
         email: success.data.userId
     });
     LoginLogoutService.login();
-    document.getElementById("page-wrapper").className = "page-wrapper";
+    //document.getElementById("page-wrapper").className = "page-wrapper";
     $location.path(success.data.url);
   };
 
@@ -127,7 +127,7 @@ angular.module('Wazza.controllers', ['ApplicationModule', 'Wazza.services', 'Ite
       });
         
       $scope.$on("LOGOUT_SUCCESS", function(event, url){
-        document.getElementById("page-wrapper").className = "";
+        //document.getElementById("page-wrapper").className = "";
         $scope.sessionOn = false;
         $scope.showNavBar = false;
         $location.path(url.value);
@@ -167,7 +167,7 @@ angular.module('Wazza.controllers', ['ApplicationModule', 'Wazza.services', 'Ite
       });
 
       $scope.$on("LOGOUT_SUCCESS", function(event, data){
-        document.getElementById("page-wrapper").className = "";
+        //document.getElementById("page-wrapper").className = "";
         $scope.showSideBar = false;
       });
 
