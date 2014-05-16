@@ -29,11 +29,11 @@
   <script src="//cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
   <script src="http://cdn.oesmith.co.uk/morris-0.4.3.min.js"></script>
 
-  <script src="@routes.Assets.at("jquery.metisMenu.js")"></script>
-  <script src="@routes.Assets.at("custom.js")"></script>
+  <!--script src="@routes.Assets.at("jquery.metisMenu.js")"></script-->
+  <!--script src="@routes.Assets.at("custom.js")"></script-->
 
-          <!-- AdminLTE App -->
-        <script src="@routes.Assets.at("app.js")" type="text/javascript"></script>
+  <!-- AdminLTE App -->
+  <script src="@routes.Assets.at("app.js")" type="text/javascript"></script>
 }
 
 @stylesheets = {
@@ -77,16 +77,11 @@
     <![endif]-->
   </head>
   <body class="skin-blue">
-        <!-- header logo: style can be found in header.less -->
-        <header class="header">
-            @views.html.navigationBar.render()
-        </header>
+        @views.html.navigationBar.render()
+        
         <div class="wrapper row-offcanvas row-offcanvas-left">
             <!-- Left side column. contains the logo and sidebar -->
-            <aside class="left-side sidebar-offcanvas">                
-                <!-- sidebar: style can be found in sidebar.less -->
-                @views.html.sidebar.render()
-            </aside>
+            @views.html.sidebar.render()
 
             <!-- Right side column. Contains the navbar and content of the page -->
             <aside class="right-side">                
@@ -104,7 +99,7 @@
 
                 <!-- Main content -->
                 <section class="content">
-<div ng-view></div>
+                  <div ng-view></div>
 
                 </section><!-- /.content -->
             </aside><!-- /.right-side -->
