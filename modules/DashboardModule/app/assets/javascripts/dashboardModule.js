@@ -41,13 +41,15 @@ angular.module('DashboardModule', ['ItemModule.services'])
       ApplicationStateService.updateApplicationName(_.first(data.data.applications).name);
       ApplicationStateService.updateUserInfo(data.data.userInfo);
 
+      $scope.page = "Dashboard";
+
       $(function () {
         $('#device').highcharts({
             chart: {
                 zoomType: 'x'
             },
             title: {
-                text: 'USD to EUR exchange rate from 2006 through 2008'
+                text: 'Android Sales'
             },
             subtitle: {
                 text: document.ontouchstart === undefined ?
@@ -60,7 +62,7 @@ angular.module('DashboardModule', ['ItemModule.services'])
             },
             yAxis: {
                 title: {
-                    text: 'Exchange rate'
+                    text: 'Revenue (in Millions of USD)'
                 }
             },
             legend: {
@@ -92,7 +94,7 @@ angular.module('DashboardModule', ['ItemModule.services'])
                 type: 'area',
                 name: 'USD to EUR',
                 pointInterval: 24 * 3600 * 1000,
-                pointStart: 1136073600000,
+                pointStart: 1328054400000,
                 data: [
                     0.8446, 0.8445, 0.8444, 0.8451,    0.8418, 0.8264,    0.8258, 0.8232,    0.8233, 0.8258,
                     0.8283, 0.8278, 0.8256, 0.8292,    0.8239, 0.8239,    0.8245, 0.8265,    0.8261, 0.8269,
