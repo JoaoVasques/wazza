@@ -8,11 +8,23 @@ items: List[models.application.Item]
 
 @if(exist){
 
-<div class="row">
+                <!-- Content Header (Page header) -->
+                <section class="content-header">
+                    <h1>
+                        Dashboard
+                        <small>Control panel</small>
+                    </h1>
+                    <ol class="breadcrumb">
+                        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+                        <li class="active">Dashboard</li>
+                    </ol>
+                </section>
+
+<!--div class="row">
   <div class="col-lg-12">
     <h1 class="page-header font-semibold">Dashboard - {{applicationName}}<span class="pull-right"><i class="fa fa-android fa-fw"></i><i class="fa fa-apple fa-fw"></i></span></h1>
   </div>
-</div>
+</div-->
 
 <div class="row">
                    <!-- Small boxes (Stat box) -->
@@ -29,7 +41,7 @@ items: List[models.application.Item]
                                     </p>
                                 </div>
                                 <div class="icon">
-                                    <i class="ion ion-bag"></i>
+                                    <i class="ion ion-person-add"></i>
                                 </div>
                                 <a href="#" class="small-box-footer">
                                     More info <i class="fa fa-arrow-circle-right"></i>
@@ -67,7 +79,7 @@ items: List[models.application.Item]
                                     </p>
                                 </div>
                                 <div class="icon">
-                                    <i class="ion ion-person-add"></i>
+                                    <i class="ion ion-bag"></i>
                                 </div>
                                 <a href="#" class="small-box-footer">
                                     More info <i class="fa fa-arrow-circle-right"></i>
@@ -114,11 +126,11 @@ items: List[models.application.Item]
                         </div><!-- ./col -->
                         <div class="col-lg-2 col-xs-6">
                             <!-- small box -->
-                            <div class="small-box bg-red">
+                            <div class="small-box bg-green">
                                 <div class="inner">
-                                    <h3>
+                                    <h2>
                                         +
-                                    </h3>
+                                    </h2>
                                     <p>
                                         Add your own
                                     </p>
