@@ -1,11 +1,14 @@
+            <aside class="left-side sidebar-offcanvas"  ng-controller="SideBarController" ng-show="showSideBar" id="sidebar">                
+                
+
 <section class="sidebar">
                     <!-- Sidebar user panel -->
-                    <div class="user-panel">
+                    <div class="user-panel" ng-model="userInfo.name">
                         <div class="pull-left image">
                             <img src="img/avatar3.png" class="img-circle" alt="User Image" />
                         </div>
                         <div class="pull-left info">
-                            <p>Hello, Jane</p>
+                            <p>Hello, {{userInfo.name}}</p>
 
                             <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
                         </div>
@@ -140,7 +143,7 @@
           <li>
             <a href="/store/apple"><i class="fa fa-apple fa-fw"></i>Apple</a>
           </li>
-          <li><!-- TODO: amazon icon anyone? :) -->
+          <li>
             <a href="/store/amazon"><i class="fa fa-amazon fa-fw"></i>Amazon</a>
           </li>
         </ul>
@@ -166,3 +169,7 @@
   </div>
 </nav>
 -->
+
+<!-- sidebar: style can be found in sidebar.less -->
+                
+            </aside>

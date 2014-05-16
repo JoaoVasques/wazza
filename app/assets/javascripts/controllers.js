@@ -9,8 +9,8 @@ angular.module('Wazza.controllers', ['ApplicationModule', 'Wazza.services', 'Ite
     $scope,
     $location
     ) {
-    //document.getElementById("navbar").css("ng-hide", "");
-    //document.getElementById("sidebar").css("ng-hide", "");
+    document.getElementById("navbar").css("ng-hide", "");
+    document.getElementById("sidebar").css("ng-hide", "");
     $scope.showNavBar = $scope.showSideBar = $scope.sessionOn = true;
     console.log($scope);
     $location.path("/home");
