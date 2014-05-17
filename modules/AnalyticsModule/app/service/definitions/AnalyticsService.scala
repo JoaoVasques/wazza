@@ -7,11 +7,17 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 trait AnalyticsService {
 
-  def getTopTenItems(companyName: String, applicationName: String): Future[JsArray]
+  def calculateTopTenItems(companyName: String, applicationName: String, start: Date, end: Date)
+
+  def calculateTotalRevenue(
+    companyName: String,
+    applicationName: String,
+    start: Date,
+    end: Date
+  )
+
+  def getTopTenItems(companyName: String, applicationName: String, start: Date, end: Date): Future[JsArray]
 
   def getTotalRevenue(companyName: String, applicationName: String, start: Date, end: Date): Future[Double]
-
-  def getAverageRevenueOnTimeRange(companyName: String, applicationName: String, start: Date, end: Date): Future[Double] 
-
 }
 
