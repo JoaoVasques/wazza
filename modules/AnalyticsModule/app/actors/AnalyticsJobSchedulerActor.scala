@@ -8,7 +8,9 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 import service.analytics.definitions.AnalyticsService
+import service.security.definitions.InternalService
 import play.api.Play
+import models.security.CompanyData
 
 case class TotalDailyRevenue()
 case class TopItems()
@@ -16,6 +18,7 @@ case class TopItems()
 class AnalyticsJobSchedulerActor extends Actor {
 
   private val analyticsService = Play.current.global.getControllerInstance(classOf[AnalyticsService])
+  private val securityService = Play.current.global.getControllerInstance(classOf[InternalService])
 
   def receive = {
     case TopItems => {
@@ -32,8 +35,10 @@ class AnalyticsJobSchedulerActor extends Actor {
       }
 
       val yesterday = getYesterday
-      //analyticsService.calculateTotalRevenue("cName", "appName", yesterday, yesterday)
-      println(s"calculates total revenue of previous day - $yesterday")
+      for {
+        data <- securityService.getCompanies
+        app <- data.apps
+      } analyticsService.calculateTotalRevenue(data.name, app, yesterday, yesterday)
     }
   }
 }
