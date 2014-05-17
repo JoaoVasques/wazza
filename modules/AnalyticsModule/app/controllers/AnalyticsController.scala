@@ -19,7 +19,7 @@ class AnalyticsController @Inject()(
 ) extends Controller {
 
   private def validateDate(dateStr: String): Try[Date] = {
-    val df = new SimpleDateFormat("dd-mm-yyyy")
+    val df = new SimpleDateFormat("yyy-MM-dd")
     try {
       val date = df.parse(dateStr)
       new Success(date)
