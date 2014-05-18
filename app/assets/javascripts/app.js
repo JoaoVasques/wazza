@@ -25,7 +25,7 @@ angular.module('Wazza', ['ngRoute', 'Wazza.controllers', 'ItemModule', 'UserModu
       //inventory
       .when('/inventory', {
         templateUrl: '/dashboard/inventory',
-        controller: 'DashboardController'
+        controller: 'InventoryController'
       })
       .when('/inventory/crud', {
         templateUrl: '/dashboard/inventory/crud',
