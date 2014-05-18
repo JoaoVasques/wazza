@@ -9,15 +9,15 @@ lazy val dependencies = Seq(
   //"com.github.mumoshu" %% "play2-memcached" % "0.3.0.2",
   "com.google.inject" % "guice" % "3.0",
   "com.tzavellas" % "sse-guice" % "0.7.1",
-  "org.webjars" % "webjars-play_2.10" % "2.2.0",
+  "org.webjars" % "webjars-play_2.10" % "2.2.2-1",
   "org.webjars" % "angularjs" % "1.2.16",
   "org.webjars" % "bootstrap" % "3.1.1",
   "commons-validator" % "commons-validator" % "1.4.0",
-  "com.github.nscala-time" %% "nscala-time" % "0.6.0",
-  "org.webjars" % "underscorejs" % "1.5.2-1",
-  "com.amazonaws" % "aws-java-sdk" % "1.6.12",
+  "com.github.nscala-time" %% "nscala-time" % "1.0.0",
+  "org.webjars" % "underscorejs" % "1.6.0",
+  "com.amazonaws" % "aws-java-sdk" % "1.7.9",
   "org.mindrot" % "jbcrypt" % "0.3m",
-  "org.webjars" % "angular-ui-bootstrap" % "0.10.0",
+  //"org.webjars" % "angular-ui-bootstrap" % "0.10.0", //not used anymore
   "commons-codec" % "commons-codec" % "1.9"
 )
 
