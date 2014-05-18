@@ -106,4 +106,8 @@ class DashboardController @Inject()(
     Ok(views.html.inventoryVirtualCurrencies())
   }
 
+  def recommendation = HasToken() {token => userId => implicit request =>
+    Ok(views.html.recommendation())
+  }
+
 }

@@ -17,6 +17,11 @@ angular.module('Wazza', ['ngRoute', 'Wazza.controllers', 'ItemModule', 'UserModu
         templateUrl: '/dashboard',
         controller: 'RedirectController'
       })
+      //recommendation
+      .when('/recommendation', {
+        templateUrl: '/dashboard/recommendation',
+        controller: 'RecommendationController'
+      })
       //inventory
       .when('/inventory', {
         templateUrl: '/dashboard/inventory',

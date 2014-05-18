@@ -11,6 +11,7 @@ angular.module('DashboardModule', ['ItemModule.services'])
   'DeleteItemService',
   'ApplicationStateService',
   'ItemSearchService',
+  'TopbarService',
   function (
     $scope,
     $location,
@@ -19,7 +20,8 @@ angular.module('DashboardModule', ['ItemModule.services'])
     BootstrapDashboardService,
     DeleteItemService,
     ApplicationStateService,
-    ItemSearchService
+    ItemSearchService,
+    TopbarService
     ) {
 
     $scope.bootstrapSuccessCallback = function(data){
@@ -41,7 +43,7 @@ angular.module('DashboardModule', ['ItemModule.services'])
       ApplicationStateService.updateApplicationName(_.first(data.data.applications).name);
       ApplicationStateService.updateUserInfo(data.data.userInfo);
 
-      $scope.page = "Dashboard";
+      TopbarService.setName("Dashboard");
 
       $(function () {
         $('#android').highcharts({
@@ -546,6 +548,7 @@ $scope.deleteItem = function(id, image){
   'DeleteItemService',
   'ApplicationStateService',
   'ItemSearchService',
+  'TopbarService',
   function (
     $scope,
     $location,
@@ -554,9 +557,11 @@ $scope.deleteItem = function(id, image){
     BootstrapDashboardService,
     DeleteItemService,
     ApplicationStateService,
-    ItemSearchService
+    ItemSearchService,
+    TopbarService
     ) {
 
+    TopbarService.setName("Analytics");
 
     var dummyData = {
       "Users": 
@@ -813,6 +818,32 @@ $(function () {
     });
 });
 */
+}])
+
+.controller('RecommendationController', [
+  '$scope',
+  '$location',
+  '$rootScope',
+  'FetchItemsService',
+  'BootstrapDashboardService',
+  'DeleteItemService',
+  'ApplicationStateService',
+  'ItemSearchService',
+  'TopbarService',
+  function (
+    $scope,
+    $location,
+    $rootScope,
+    FetchItemsService,
+    BootstrapDashboardService,
+    DeleteItemService,
+    ApplicationStateService,
+    ItemSearchService,
+    TopbarService
+    ) {
+
+    TopbarService.setName("Recommendation");
+
 }])
 ;
 

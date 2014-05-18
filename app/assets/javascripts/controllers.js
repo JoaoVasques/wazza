@@ -98,6 +98,7 @@ angular.module('Wazza.controllers', ['ApplicationModule', 'Wazza.services', 'Ite
   'LoginLogoutService',
   'ItemSearchService',
   'ApplicationStateService',
+  'TopbarService',
   function (
     $scope,
     cookiesManagerService,
@@ -106,8 +107,11 @@ angular.module('Wazza.controllers', ['ApplicationModule', 'Wazza.services', 'Ite
     $rootScope,
     LoginLogoutService,
     ItemSearchService,
-    ApplicationStateService
+    ApplicationStateService,
+    TopbarService
   ) {
+
+    $scope.page = "Dashboard";
 
     $scope.bootstrapModule = function(){
       $scope.sessionOn = false;
@@ -136,6 +140,10 @@ angular.module('Wazza.controllers', ['ApplicationModule', 'Wazza.services', 'Ite
       $scope.$on("USER_INFO_UPDATED", function(){
           $scope.userInfo.name = ApplicationStateService.userInfo.name;
           $scope.userInfo.email = ApplicationStateService.userInfo.email; 
+      });
+
+      $scope.$on("PAGE_UPDATED", function(){
+        $scope.page = TopbarService.getName();
       });
     };
     $scope.bootstrapModule();
