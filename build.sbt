@@ -10,7 +10,7 @@ lazy val dependencies = Seq(
   "com.google.inject" % "guice" % "3.0",
   "com.tzavellas" % "sse-guice" % "0.7.1",
   "org.webjars" % "webjars-play_2.10" % "2.2.0",
-  "org.webjars" % "angularjs" % "1.2.6",
+  "org.webjars" % "angularjs" % "1.2.16",
   "org.webjars" % "bootstrap" % "3.1.1",
   "commons-validator" % "commons-validator" % "1.4.0",
   "com.github.nscala-time" %% "nscala-time" % "0.6.0",
