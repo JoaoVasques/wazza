@@ -51,7 +51,8 @@ angular.module('DashboardModule', ['ItemModule.services'])
                 zoomType: 'x'
             },
             title: {
-                text: 'Android Sales'
+                useHTML: true,
+                text: '<span class="pull-right">Android Sales<i class="fa fa-android fa-fw"></i></span>'
             },
             subtitle: {
                 text: document.ontouchstart === undefined ?
@@ -96,7 +97,7 @@ angular.module('DashboardModule', ['ItemModule.services'])
                 type: 'area',
                 name: 'USD to EUR',
                 pointInterval: 24 * 3600 * 1000,
-                pointStart: 1328054400000,
+                pointStart: 1328004400000,
                 data: [
                     0.8446, 0.8445, 0.8444, 0.8451,    0.8418, 0.8264,    0.8258, 0.8232,    0.8233, 0.8258,
                     0.8283, 0.8278, 0.8256, 0.8292,    0.8239, 0.8239,    0.8245, 0.8265,    0.8261, 0.8269,
@@ -219,7 +220,8 @@ angular.module('DashboardModule', ['ItemModule.services'])
                 zoomType: 'x'
             },
             title: {
-                text: 'Apple Sales'
+                useHTML: true,
+                text: '<span class="pull-right">Apple Sales<i class="fa fa-apple fa-fw"></i></span>'
             },
             subtitle: {
                 text: document.ontouchstart === undefined ?
@@ -264,7 +266,7 @@ angular.module('DashboardModule', ['ItemModule.services'])
                 type: 'area',
                 name: 'USD to EUR',
                 pointInterval: 24 * 3600 * 1000,
-                pointStart: 1328054400000,
+                pointStart: 1328004400000,
                 data: [
                     0.734, 0.7336, 0.7351, 0.7346, 0.7321, 0.7294, 0.7266, 0.7266, 0.7254, 0.7242,
                     0.7213, 0.7197, 0.7209, 0.721, 0.721, 0.721, 0.7209, 0.7159, 0.7133, 0.7105,

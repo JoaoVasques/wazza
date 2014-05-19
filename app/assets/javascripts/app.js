@@ -29,11 +29,11 @@ angular.module('Wazza', ['ngRoute', 'Wazza.controllers', 'ItemModule', 'UserModu
       })
       .when('/inventory/crud', {
         templateUrl: '/dashboard/inventory/crud',
-        controller: 'DashboardController'
+        controller: 'InventoryController'
       })
       .when('/inventory/virtualCurrencies', {
         templateUrl: '/dashboard/inventory/virtualCurrencies',
-        controller: 'DashboardController'
+        controller: 'InventoryController'
       })
       //stores
       .when('/store/android', {
