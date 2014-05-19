@@ -15,6 +15,8 @@ trait DatabaseService {
 
   def get(collectionName: String, key: String, value: String, projection: String = null): Option[JsValue]
 
+  def getCollectionElements(collectionName: String): List[JsValue]
+
   def insert(collectionName: String, model: JsValue, extra: Map[String, ObjectId] = null): Try[Unit]
 
   def delete(collectionName: String, el: JsValue): Try[Unit]

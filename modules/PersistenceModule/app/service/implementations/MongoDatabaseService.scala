@@ -108,6 +108,12 @@ class MongoDatabaseService extends DatabaseService {
     }
   }
 
+  def getCollectionElements(collectionName: String): List[JsValue] = {
+    this.getCollection(collectionName).find.toList.map {el =>
+      Json.parse(el.toString)
+    }
+  }
+
   def insert(collectionName: String, model: JsValue, extra: Map[String, ObjectId] = null): Try[Unit] = {
     val collection = this.getCollection(collectionName)
     if(extra == null) {

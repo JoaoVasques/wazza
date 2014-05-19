@@ -12,7 +12,9 @@ case class CompanyData(
 
 object CompanyData {
 
-  def collection = "companiesData"
+  val Key = "name"
+  val Apps = "apps"
+  val Collection = "companiesData"
 
   implicit val reader = (
     (__ \ "name").read[String] and
