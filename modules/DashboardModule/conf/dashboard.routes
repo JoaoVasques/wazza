@@ -9,6 +9,7 @@ GET     /inventory                    @controllers.dashboard.DashboardController
 GET     /inventory/crud               @controllers.dashboard.DashboardController.inventoryCRUD
 GET     /inventory/virtualCurrencies  @controllers.dashboard.DashboardController.inventoryVirtualCurrencies
 GET     /recommendation				  @controllers.dashboard.DashboardController.recommendation
+GET     /campaigns                    @controllers.dashboard.DashboardController.campaigns
 GET     /store/android                @controllers.dashboard.DashboardController.storeAndroid
 GET     /store/apple                  @controllers.dashboard.DashboardController.storeApple
 GET     /store/amazon                 @controllers.dashboard.DashboardController.storeAmazon

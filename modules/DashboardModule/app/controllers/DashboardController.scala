@@ -110,4 +110,8 @@ class DashboardController @Inject()(
     Ok(views.html.recommendation())
   }
 
+  def campaigns = HasToken() {token => userId => implicit request =>
+    Ok(views.html.campaigns())
+  }
+
 }
