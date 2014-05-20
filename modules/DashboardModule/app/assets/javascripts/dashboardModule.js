@@ -545,12 +545,12 @@ angular.module('DashboardModule', ['ItemModule.services'])
 
 
   $(function () { 
-    $('#totalMoneySpent').highcharts({
+    $('#revenue').highcharts({
       chart: {
         type: 'column'
       },
       title: {
-        text: 'Total Money Spent'
+        text: 'Revenue per User level'
       },
       xAxis: {
         type: 'category',
