@@ -54,8 +54,20 @@ angular.module('Wazza', ['ngRoute', 'Wazza.controllers', 'ItemModule', 'UserModu
         controller: 'DashboardController'
       })
       //analytics
-      .when('/analytics', {
-        templateUrl: '/dashboard/analytics',
+      .when('/analyticsUser', {
+        templateUrl: '/dashboard/analyticsUser',
+        controller: 'AnalyticsController'
+      })
+      .when('/analyticsRevenue', {
+        templateUrl: '/dashboard/analyticsRevenue',
+        controller: 'AnalyticsController'
+      })
+      .when('/analyticsApp', {
+        templateUrl: '/dashboard/analyticsApp',
+        controller: 'AnalyticsController'
+      })
+      .when('/analyticsDevice', {
+        templateUrl: '/dashboard/analyticsDevice',
         controller: 'AnalyticsController'
       })
       //settings

@@ -74,8 +74,20 @@ class DashboardController @Inject()(
     }
   }
 
-  def analyticsSection = HasToken() {token => userId => implicit request =>
-    Ok(views.html.analytics())
+  def analyticsUser = HasToken() {token => userId => implicit request =>
+    Ok(views.html.analyticsUser())
+  }
+
+  def analyticsApp = HasToken() {token => userId => implicit request =>
+    Ok(views.html.analyticsApp())
+  }
+  
+  def analyticsDevice = HasToken() {token => userId => implicit request =>
+    Ok(views.html.analyticsDevice())
+  }
+
+  def analyticsRevenue = HasToken() {token => userId => implicit request =>
+    Ok(views.html.analyticsRevenue())
   }
 
   def storeAndroid = HasToken() {token => userId => implicit request =>

@@ -51,14 +51,14 @@ angular.module('Wazza.services', []).
 
   factory('TopbarService', ['$rootScope', function ($rootScope) {
         var service = {};
-        service.name = 'Dashboard';
+        service.pagename = 'Dashboard';
 
         service.getName = function () {
-                return name;
+                return pagename;
         };
 
         service.setName = function(value) {
-                name = value;
+                pagename = value;
                 $rootScope.$broadcast("PAGE_UPDATED");
         };
 

@@ -30,6 +30,8 @@
   <!-- AdminLTE App -->
   <script defer src="@routes.Assets.at("app.js")"></script>
 
+  <script defer src="@routes.Assets.at("custom.js")"></script>
+
   <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
   <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
   <!--[if lt IE 9]>
@@ -80,7 +82,16 @@
                 <section class="content-header" ng-controller="NavBarController" ng-show="showNavBar" ng-model="page">
                     <h1>
                         {{page}}
-                        <small>Control panel</small>
+                        <span ng-show="page === 'Dashboard'">
+                              <small>Control panel</small>
+                        </span>
+                        <span ng-show="page === 'Analytics'">
+                              <small>App</small>
+                              <small>Users</small>
+                              <small>Revenue</small>
+                              <small>Device</small>
+                        </span>
+                        
                     </h1>
                     <!--ol class="breadcrumb">
                         <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
