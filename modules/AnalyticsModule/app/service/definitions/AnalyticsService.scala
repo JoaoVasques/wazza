@@ -19,6 +19,6 @@ trait AnalyticsService {
 
   def getTopTenItems(companyName: String, applicationName: String, start: Date, end: Date): Future[JsArray]
 
-  def getTotalRevenue(companyName: String, applicationName: String, start: Date, end: Date): Future[Double]
+  def getTotalRevenue(companyName: String, applicationName: String, start: Date, end: Date): Future[JsArray]
 }
 

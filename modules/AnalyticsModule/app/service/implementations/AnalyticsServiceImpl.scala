@@ -64,30 +64,13 @@ class AnalyticsServiceImpl extends AnalyticsService {
     applicationName: String,
     start: Date,
     end: Date
-  ): Future[Double] = {
+  ): Future[JsArray] = {
 
-    /**
-      Format: inputCollectionName outputCollectionName startEnd endDate
-    **/
-    def generateContent() = {
-      val df = new SimpleDateFormat("yyyy/MM/dd")
-      val inputCollection = PurchaseInfo.getCollection(companyName, applicationName)
-      val outputCollection = Metrics.totalRevenueCollection(companyName, applicationName)
-      s"input=$inputCollection $outputCollection ${df.format(start)} ${df.format(end)}"
-    }
+    val promise = Promise[JsArray]
 
-    val promise = Promise[Double]
-    Play.current.configuration.getConfig("analytics") match {
-      case Some(conf) => {
-        val df = new SimpleDateFormat("yyyy/MM/dd")
-        val analyticsUrl = conf.underlying.root.get("url").render.filter(_ != '"')
-        val url = s"${analyticsUrl}jobs?appName=test&classPath=spark.jobserver.TotalRevenue&sync=true"
-        WS.url(url).post(generateContent).map {response =>
-          // TODO extract ID - make query and retrive result
-            println(s"response ${response.json}")
-        }
-      }
-      case _ => promise.failure(new Exception("No analytics config"))
+    Future {
+      val collection = Metrics.totalRevenueCollection(companyName, applicationName)
+
     }
 
     promise.future

@@ -7,10 +7,14 @@ import com.google.inject._
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
+import play.api.Logger
+import play.api.libs.json.JsResultException
 import service.analytics.definitions.AnalyticsService
 import service.security.definitions.InternalService
 import play.api.Play
 import models.security.CompanyData
+import scala.concurrent._
+import ExecutionContext.Implicits.global
 
 case class TotalDailyRevenue()
 case class TopItems()
@@ -38,7 +42,23 @@ class AnalyticsJobSchedulerActor extends Actor {
       for {
         data <- securityService.getCompanies
         app <- data.apps
-      } analyticsService.calculateTotalRevenue(data.name, app, yesterday, yesterday)
+      } analyticsService.calculateTotalRevenue(data.name, app, yesterday, yesterday) map { result =>
+        try {
+          val jobResult = (result \ "status").as[String]
+          jobResult match {
+            case "STARTED" => {
+              Logger.info(s"Calculate Revenue of app $app from ${data.name} started")
+            }
+            case _ => {
+              Logger.error(s"Unkown job server reply status - $jobResult")
+            }
+          }
+        } catch {
+          case e: JsResultException => {
+            Logger.error("Parse job result exception", e)
+          }
+        }
+      }
     }
   }
 }
