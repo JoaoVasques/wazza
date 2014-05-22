@@ -11,6 +11,8 @@ trait DatabaseService {
   lazy val UserCollection = "users"
   lazy val PurchasesCollection = "purchases"
 
+  def dropCollection(collectionName: String): Unit
+
   def exists(collectionName: String, key: String, value: String): Boolean
 
   def get(collectionName: String, key: String, value: String, projection: String = null): Option[JsValue]

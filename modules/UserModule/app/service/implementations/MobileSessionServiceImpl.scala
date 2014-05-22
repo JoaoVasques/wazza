@@ -2,9 +2,7 @@ package service.user.implementations
 
 import java.text.SimpleDateFormat
 import java.util.concurrent.TimeUnit
-import play.api.libs.json.JsError
-import play.api.libs.json.JsSuccess
-import play.api.libs.json.Json
+import play.api.libs.json._
 import scala.util.Failure
 import scala.util.Success
 import service.user.definitions.MobileSessionService
@@ -53,7 +51,12 @@ class MobileSessionServiceImpl @Inject()(
           hash
         ) match {
           case Some(json) => {
-            json.validate[MobileSession].fold(
+            val sessionMap = json.as[Map[String, JsValue]]
+            val updated = sessionMap + ("startTime" -> sessionMap.get("startTime").map {d =>
+              (d \ "$date").as[JsString]
+            }.get)
+
+            MobileSession.buildJsonFromMap(updated).validate[MobileSession].fold(
               valid = { s => Some(s) },
               invalid = {_ => None}
             )

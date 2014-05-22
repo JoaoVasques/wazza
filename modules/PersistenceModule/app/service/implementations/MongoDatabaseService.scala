@@ -7,6 +7,7 @@ import com.mongodb.casbah.MongoCollection
 import com.mongodb.casbah.MongoCursor
 import com.mongodb.casbah.commons.MongoDBObject
 import com.mongodb.util.JSON
+import java.text.SimpleDateFormat
 import play.api.Play
 import play.api.libs.json._
 import scala.collection.mutable.HashMap
@@ -31,6 +32,15 @@ class MongoDatabaseService extends DatabaseService {
           addCollection(collectionName)
           getCollection(collectionName)
         }
+      }
+    }
+  }
+
+  private def collectionExists(collectionName: String): Boolean = {
+    collections.synchronized {
+      collections.keySet.find(_ == collectionName) match {
+        case Some(_) => true
+        case None => false
       }
     }
   }
@@ -66,7 +76,7 @@ class MongoDatabaseService extends DatabaseService {
     }
   }
 
-  private def dropCollection(collectionName: String): Unit = {
+  def dropCollection(collectionName: String): Unit = {
     val collection = this.getCollection(collectionName)
     collections.remove(collectionName)
     collection.drop()
@@ -81,7 +91,27 @@ class MongoDatabaseService extends DatabaseService {
   }
 
   private implicit def convertJsonToDBObject(json: JsValue): DBObject = {
-    JSON.parse(json.toString).asInstanceOf[DBObject]
+
+    def convertDates(dateKey: String, dbObject: DBObject): DBObject = {
+      if(dbObject.containsField(dateKey)) {
+        val timeBackup = dbObject.get(dateKey).toString
+        dbObject.removeField(dateKey)
+        val format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z")
+        dbObject.put(dateKey, format.parse(timeBackup))
+      }
+      dbObject
+    }
+
+    val dateKeys = List("time", "startTime")
+    val dbObject = JSON.parse(json.toString).asInstanceOf[DBObject]
+    val res = dateKeys.filter(dbObject.containsField(_)).map {(key: String) =>
+      convertDates(key, dbObject)
+    }
+    if(res.isEmpty) {
+      dbObject
+    } else {
+      res.head
+    }
   }
 
   def exists(collectionName: String, key: String, value: String): Boolean = {
@@ -101,7 +131,7 @@ class MongoDatabaseService extends DatabaseService {
 
     val collection = this.getCollection(collectionName)
     collection.findOne(query, proj) match {
-      case Some(obj) => {       
+      case Some(obj) => {
         Some(Json.parse(obj.toString))
       }
       case _ => None
