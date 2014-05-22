@@ -19,6 +19,10 @@ import ExecutionContext.Implicits.global
 case class TotalDailyRevenue()
 case class TopItems()
 
+private trait Time
+private case class Today() extends Time
+private case class Yesterday() extends Time
+
 class AnalyticsJobSchedulerActor extends Actor {
 
   private val analyticsService = Play.current.global.getControllerInstance(classOf[AnalyticsService])
@@ -31,18 +35,24 @@ class AnalyticsJobSchedulerActor extends Actor {
     }
 
     case TotalDailyRevenue => {
-      def getYesterday() = {
+      def getDate(time: Time) = {
         val df = new SimpleDateFormat("yyyy/MM/dd")
         val cal = Calendar.getInstance()
-        cal.add(Calendar.DATE, -1)
+
+        time match {
+          case t: Yesterday => cal.add(Calendar.DATE, -1)
+          case _ => {}
+        }
+
         df.parse(df.format(cal.getTime()))
       }
 
-      val yesterday = getYesterday
+      val yesterday = getDate(new Yesterday)
+      val today = getDate(new Today)
       for {
         data <- securityService.getCompanies
         app <- data.apps
-      } analyticsService.calculateTotalRevenue(data.name, app, yesterday, yesterday) map { result =>
+      } analyticsService.calculateTotalRevenue(data.name, app, yesterday, today) map { result =>
         try {
           val jobResult = (result \ "status").as[String]
           jobResult match {

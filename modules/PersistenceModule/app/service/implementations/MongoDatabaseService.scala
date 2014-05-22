@@ -8,6 +8,7 @@ import com.mongodb.casbah.MongoCursor
 import com.mongodb.casbah.commons.MongoDBObject
 import com.mongodb.util.JSON
 import java.text.SimpleDateFormat
+import java.util.Date
 import play.api.Play
 import play.api.libs.json._
 import scala.collection.mutable.HashMap
@@ -171,6 +172,21 @@ class MongoDatabaseService extends DatabaseService {
     val update = $set(valueKey -> newValue)
     val collection = this.getCollection(collectionName)
     collection.update(query, update)
+  }
+
+  /**
+    Time-ranged queries
+  **/
+  def getDocumentsWithinTimeRange(
+    collectionName: String,
+    dateFields: Tuple2[String, String],
+    start: Date,
+    end: Date
+  ): JsArray = {
+    val query = (dateFields._1 $lte start $gt end) ++ (dateFields._2 $lte start $gt end)
+    new JsArray(this.getCollection(collectionName).find(query).map {doc =>
+      Json.parse(doc.toString)
+    }.toSeq)
   }
 
   /**

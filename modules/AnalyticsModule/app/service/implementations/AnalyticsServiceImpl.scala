@@ -15,8 +15,12 @@ import scala.concurrent._
 import play.api.Play
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import utils.analytics.Metrics
+import com.google.inject._
+import service.persistence.definitions.DatabaseService
 
-class AnalyticsServiceImpl extends AnalyticsService {
+class AnalyticsServiceImpl @Inject()(
+  databaseService: DatabaseService
+) extends AnalyticsService {
 
 
   def calculateTopTenItems(companyName: String, applicationName: String, start: Date, end: Date) = {
@@ -67,10 +71,10 @@ class AnalyticsServiceImpl extends AnalyticsService {
   ): Future[JsArray] = {
 
     val promise = Promise[JsArray]
-
     Future {
       val collection = Metrics.totalRevenueCollection(companyName, applicationName)
-
+      val fields = ("lowerDate", "upperDate")
+      promise.success(databaseService.getDocumentsWithinTimeRange(collection, fields, start, end))
     }
 
     promise.future

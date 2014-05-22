@@ -1,6 +1,8 @@
 package service.persistence.definitions
 
+import java.util.Date
 import org.bson.types.ObjectId
+import play.api.libs.json.JsArray
 import play.api.libs.json.JsObject
 import play.api.libs.json.JsValue
 import scala.util.Try
@@ -24,6 +26,11 @@ trait DatabaseService {
   def delete(collectionName: String, el: JsValue): Try[Unit]
 
   def update(collectionName: String, key: String, keyValue: String, valueKey: String, newValue: Any): Try[Unit]
+
+  /**
+    Time-ranged queries
+  **/
+  def getDocumentsWithinTimeRange(collectionName: String, dateFields: Tuple2[String, String], start: Date, end: Date): JsArray
 
   /**
     Array operations
