@@ -104,7 +104,12 @@ class PurchaseServiceImpl @Inject()(
       id
     ) match {
       case Some(purchase) => {
-        purchase.validate[PurchaseInfo].fold(
+        val purchaseMap = purchase.as[Map[String, JsValue]]
+        val updated = purchaseMap + ("time" -> purchaseMap.get("time").map {t =>
+          (t \ "$date").as[JsString]
+        }.get)
+
+        PurchaseInfo.buildJsonFromMap(updated).validate[PurchaseInfo].fold(
           valid = (p => Some(p)),
           invalid = (_ => None)
         )

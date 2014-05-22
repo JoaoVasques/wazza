@@ -42,6 +42,21 @@ object PurchaseInfo {
   def getRecommendationCollection(companyName: String, applicationName: String) = s"${companyName}_recommendation_${applicationName}"
   def getCollection(companyName: String, applicationName: String) = s"${companyName}_purchases_${applicationName}"
 
+  implicit def buildJsonFromMap(map: Map[String, JsValue]): JsValue = {
+    Json.toJson(
+      Map(
+        "id" -> map("id"),
+        "sessionId" -> map("sessionId"),
+        "userId" -> map("userId"),
+        "name" -> map("name"),
+        "itemId" -> map("itemId"),
+        "price" -> map("price"),
+        "deviceInfo" -> map("deviceInfo"),
+        "time" -> map("time")
+      )
+    )
+  }
+
   implicit val reader = (
     (__ \ "id").read[String] and
     (__ \ "sessionId").read[String] and

@@ -107,11 +107,8 @@ class MongoDatabaseService extends DatabaseService {
     val res = dateKeys.filter(dbObject.containsField(_)).map {(key: String) =>
       convertDates(key, dbObject)
     }
-    if(res.isEmpty) {
-      dbObject
-    } else {
-      res.head
-    }
+
+    if(res.isEmpty) dbObject else res.head
   }
 
   def exists(collectionName: String, key: String, value: String): Boolean = {
