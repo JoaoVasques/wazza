@@ -121,7 +121,6 @@ class RecommendationAPITest extends Specification {
         s"user-" + i.toString
       )
 
-      cal.clear()
       cal.add(Calendar.DATE, (r.nextInt(NumberDays) * -1))
       val sessionJson = Json.obj(
         "id" -> i.toString,
@@ -149,7 +148,6 @@ class RecommendationAPITest extends Specification {
     val format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z")
     val r = new Random
     for(i <- 1 to NrPurchases) {
-      cal.clear()
       cal.add(Calendar.DATE, (r.nextInt(NumberDays) * -1))
       val json = Json.obj(
         "id" -> (s"purchase-id-$i"),
