@@ -1,7 +1,9 @@
 package test.api
 
 import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Date
+import java.util.Random
 import models.application.Credentials
 import models.application.Item
 import models.application.VirtualCurrency
@@ -50,10 +52,11 @@ class RecommendationAPITest extends Specification {
 
   private val CompanyName = "CompanyTest"
   private val AppName = "RecTestApp"
+  private val NumberDays = 5
   private val NrItems = 10
   private val MaxPrice = 10
-  private val NrMobileUsers = 10
-  private val NrPurchases = 10
+  private val NrMobileUsers = 500
+  private val NrPurchases = 150
 
   private def generateApp() = {
     val photosService = new PhotosServiceImpl
@@ -108,7 +111,9 @@ class RecommendationAPITest extends Specification {
     this.mobileSessionService = new MobileSessionServiceImpl(this.databaseService)
     this.mobileUserService = new MobileUserServiceImpl(this.databaseService)
     var i = 0
+    val cal = Calendar.getInstance()
     val format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z")
+    val r = new Random
     for(i <- 1 to NrMobileUsers) {
       val u = this.mobileUserService.createMobileUser(
         CompanyName,
@@ -116,11 +121,13 @@ class RecommendationAPITest extends Specification {
         s"user-" + i.toString
       )
 
+      cal.clear()
+      cal.add(Calendar.DATE, (r.nextInt(NumberDays) * -1))
       val sessionJson = Json.obj(
         "id" -> i.toString,
         "userId" -> (s"user-" + i.toString),
         "sessionLength" -> 0,
-        "startTime" -> format.format(new Date),
+        "startTime" -> format.format(cal.getTime),
         "deviceInfo" -> Json.obj(
           "osType" -> "osType",
           "osName" -> "name",
@@ -138,8 +145,12 @@ class RecommendationAPITest extends Specification {
   private def generatePurchases() = {
     this.purchaseService = new PurchaseServiceImpl(this.mobileUserService, this.databaseService, this.mobileSessionService)
     var i = 0
+    val cal = Calendar.getInstance()
     val format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z")
+    val r = new Random
     for(i <- 1 to NrPurchases) {
+      cal.clear()
+      cal.add(Calendar.DATE, (r.nextInt(NumberDays) * -1))
       val json = Json.obj(
         "id" -> (s"purchase-id-$i"),
         "sessionId" -> i.toString,
@@ -147,7 +158,7 @@ class RecommendationAPITest extends Specification {
         "name" -> this.app.name,
         "itemId" -> s"name-$i",
         "price" -> i % MaxPrice,
-        "time" -> format.format(new Date),
+        "time" -> format.format(cal.getTime),
         "deviceInfo" -> Json.obj(
           "osType" -> "osType",
           "osName" -> "name",
