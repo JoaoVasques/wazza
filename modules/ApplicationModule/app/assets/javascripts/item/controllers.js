@@ -31,6 +31,7 @@ angular.module('ItemModule.controllers', ['ItemModule.services', 'angularFileUpl
     };
 
     $scope.bootstrapModule = function(){
+      $scope.noImageThumbnailUrl = "http://allaboutuarts.ca/wp-content/uploads/2012/07/placeholder_2.jpg"
       $scope.itemForm = {
         "applicationName": ApplicationStateService.applicationName,
         "name": "",
@@ -51,14 +52,16 @@ angular.module('ItemModule.controllers', ['ItemModule.services', 'angularFileUpl
         "currency": {
           "typeOf": "Real",
           "value": 0.0,
-          "virtualCurrency": ""
+          "virtualCurrency": "",
+          "realCurrencies": ["Euro", "Dollar"]
         },
         "imageInfo": {
           "imageName": "",
-          "url": ""
+          "url": $scope.noImageThumbnailUrl
         }
       };
-          $scope.imgThumb = "";
+
+      $scope.imgThumb = "";
       $scope.showCurrencyInputs.real = true;
       $scope.errors = false;
       $scope.formErrors = [];
