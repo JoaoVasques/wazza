@@ -658,11 +658,11 @@ angular.module('DashboardModule', ['ItemModule.services'])
             }, {
                     name: 'Active Users',
                     type: 'spline',
-                    data: [-0.2, 0.8, 5.7, 11.3, 17.0, 22.0, 24.8, 24.1, 20.1, 14.1, 8.6, 2.5]
+                    data: [3.9, 4.2, 5.7, 11.3, 17.0, 22.0, 24.8, 24.1, 20.1, 14.1, 8.6, 4.8]
             }, {
                     name: 'Active Users with IAP',
                     type: 'spline',
-                    data: [3.9, 4.2, 5.7, 8.5, 11.9, 15.2, 17.0, 16.6, 14.2, 10.3, 6.6, 4.8]
+                    data: [-0.2, 0.8, 5.7, 8.5, 11.9, 15.2, 17.0, 16.6, 14.2, 10.3, 6.6, 2.5]
             }]
             });
         });
@@ -683,13 +683,13 @@ angular.module('DashboardModule', ['ItemModule.services'])
                     labels: {
                         format: '{value}',
                         style: {
-                            color: Highcharts.getOptions().colors[2]
+                            color: Highcharts.getOptions().colors[0]
                         }
                     },
                     title: {
                         text: 'Active users with IAPs',
                         style: {
-                            color: Highcharts.getOptions().colors[2]
+                            color: Highcharts.getOptions().colors[0]
                         }
                     },
                     opposite: true
@@ -699,13 +699,13 @@ angular.module('DashboardModule', ['ItemModule.services'])
                     title: {
                         text: 'IAP',
                         style: {
-                            color: Highcharts.getOptions().colors[0]
+                            color: Highcharts.getOptions().colors[1]
                         }
                     },
                     labels: {
                         format: '{value} k',
                         style: {
-                            color: Highcharts.getOptions().colors[0]
+                            color: Highcharts.getOptions().colors[1]
                         }
                     }
 
@@ -714,13 +714,13 @@ angular.module('DashboardModule', ['ItemModule.services'])
                     title: {
                         text: 'Revenue',
                         style: {
-                            color: Highcharts.getOptions().colors[1]
+                            color: Highcharts.getOptions().colors[2]
                         }
                     },
                     labels: {
                         format: '{value} k USD',
                         style: {
-                            color: Highcharts.getOptions().colors[1]
+                            color: Highcharts.getOptions().colors[2]
                         }
                     },
                     opposite: true
