@@ -24,6 +24,8 @@ angular.module('DashboardModule', ['ItemModule.services'])
     TopbarService
     ) {
 
+    TopbarService.setName("Dashboard");
+
     $scope.bootstrapSuccessCallback = function(data){
       var push = function(origin, destination) {
         _.each(origin, function(el){
@@ -42,8 +44,6 @@ angular.module('DashboardModule', ['ItemModule.services'])
       );
       ApplicationStateService.updateApplicationName(_.first(data.data.applications).name);
       ApplicationStateService.updateUserInfo(data.data.userInfo);
-
-      TopbarService.setName("Dashboard");
 
       $(function () {
         $('#android').highcharts({
