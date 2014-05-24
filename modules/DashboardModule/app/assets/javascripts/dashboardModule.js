@@ -13,105 +13,109 @@ angular.module('DashboardModule', ['ItemModule.services'])
   'ItemSearchService',
   'TopbarService',
   function (
-    $scope,
-    $location,
-    $rootScope,
-    FetchItemsService,
-    BootstrapDashboardService,
-    DeleteItemService,
-    ApplicationStateService,
-    ItemSearchService,
-    TopbarService
+        $scope,
+        $location,
+        $rootScope,
+        FetchItemsService,
+        BootstrapDashboardService,
+        DeleteItemService,
+        ApplicationStateService,
+        ItemSearchService,
+        TopbarService
     ) {
 
-    $scope.bootstrapSuccessCallback = function(data){
-      var push = function(origin, destination) {
-        _.each(origin, function(el){
-          destination.push(el);
-        });
-      };
+        $scope.bootstrapSuccessCallback = function (data) {
+            var push = function (origin, destination) {
+                _.each(origin, function (el) {
+                    destination.push(el);
+                });
+            };
 
-      angular.extend($scope.credentials, data.data.credentials);
-      push(data.data.virtualCurrencies, $scope.virtualCurrencies);
-      push(data.data.items, $scope.items);
-      push(
-        _.map(data.data.applications, function(element){
-          return element.name;
-        }),
-        $scope.applications
-      );
-      ApplicationStateService.updateApplicationName(_.first(data.data.applications).name);
-      ApplicationStateService.updateUserInfo(data.data.userInfo);
+            angular.extend($scope.credentials, data.data.credentials);
+            push(data.data.virtualCurrencies, $scope.virtualCurrencies);
+            push(data.data.items, $scope.items);
+            push(
+                _.map(data.data.applications, function (element) {
+                    return element.name;
+                }),
+                $scope.applications
+            );
+            ApplicationStateService.updateApplicationName(_.first(data.data.applications).name);
+            ApplicationStateService.updateUserInfo(data.data.userInfo);
 
-      TopbarService.setName("Dashboard");
+            TopbarService.setName("Dashboard");
 
-      $(function () {
-        $('#android').highcharts({
-            chart: {
-                zoomType: 'x'
-            },
-            title: {
-                useHTML: true,
-                text: '<span class="pull-right">Android Sales<i class="fa fa-android fa-fw"></i></span>'
-            },
-            subtitle: {
-                text: document.ontouchstart === undefined ?
-                    'Click and drag in the plot area to zoom in' :
-                    'Pinch the chart to zoom in'
-            },
-            xAxis: {
-                type: 'datetime',
-                minRange: 14 * 24 * 3600000 // fourteen days
-            },
-            yAxis: {
-                title: {
-                    text: 'Revenue (in Millions of USD)'
-                }
-            },
-            legend: {
-                enabled: false
-            },
-            plotOptions: {
-                area: {
-                    fillColor: {
-                        linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1},
-                        stops: [
+            $(function () {
+                $('#android').highcharts({
+                    chart: {
+                        zoomType: 'x'
+                    },
+                    title: {
+                        useHTML: true,
+                        text: '<span class="pull-right">Android Sales<i class="fa fa-android fa-fw"></i></span>'
+                    },
+                    subtitle: {
+                        text: document.ontouchstart === undefined ?
+                            'Click and drag in the plot area to zoom in' : 'Pinch the chart to zoom in'
+                    },
+                    xAxis: {
+                        type: 'datetime',
+                        minRange: 14 * 24 * 3600000 // fourteen days
+                    },
+                    yAxis: {
+                        title: {
+                            text: 'Revenue (in Millions of USD)'
+                        }
+                    },
+                    legend: {
+                        enabled: false
+                    },
+                    plotOptions: {
+                        area: {
+                            fillColor: {
+                                linearGradient: {
+                                    x1: 0,
+                                    y1: 0,
+                                    x2: 0,
+                                    y2: 1
+                                },
+                                stops: [
                             [0, Highcharts.getOptions().colors[0]],
                             [1, Highcharts.Color(Highcharts.getOptions().colors[0]).setOpacity(0).get('rgba')]
                         ]
-                    },
-                    marker: {
-                        radius: 2
-                    },
-                    lineWidth: 1,
-                    states: {
-                        hover: {
-                            lineWidth: 1
+                            },
+                            marker: {
+                                radius: 2
+                            },
+                            lineWidth: 1,
+                            states: {
+                                hover: {
+                                    lineWidth: 1
+                                }
+                            },
+                            threshold: null
                         }
                     },
-                    threshold: null
-                }
-            },
-    
-            series: [{
-                type: 'area',
-                name: 'USD',
-                pointInterval: 24 * 3600 * 1000,
-                pointStart: 1328004400000,
-                data: [
-                    0.8446, 0.8445, 0.8444, 0.8451,    0.8418, 0.8264,    0.8258, 0.8232,    0.8233, 0.8258,
-                    0.8283, 0.8278, 0.8256, 0.8292,    0.8239, 0.8239,    0.8245, 0.8265,    0.8261, 0.8269,
-                    0.8273, 0.8244, 0.8244, 0.8172,    0.8139, 0.8146,    0.8164, 0.82,    0.8269, 0.8269,
-                    0.8269, 0.8258, 0.8247, 0.8286,    0.8289, 0.8316,    0.832, 0.8333,    0.8352, 0.8357,
-                    0.8355, 0.8354, 0.8403, 0.8403,    0.8406, 0.8403,    0.8396, 0.8418,    0.8409, 0.8384,
+
+                    series: [{
+                        type: 'area',
+                        name: 'USD',
+                        pointInterval: 24 * 3600 * 1000,
+                        pointStart: 1328004400000,
+                        data: [
+                    0.8446, 0.8445, 0.8444, 0.8451, 0.8418, 0.8264, 0.8258, 0.8232, 0.8233, 0.8258,
+                    0.8283, 0.8278, 0.8256, 0.8292, 0.8239, 0.8239, 0.8245, 0.8265, 0.8261, 0.8269,
+                    0.8273, 0.8244, 0.8244, 0.8172, 0.8139, 0.8146, 0.8164, 0.82, 0.8269, 0.8269,
+                    0.8269, 0.8258, 0.8247, 0.8286, 0.8289, 0.8316, 0.832, 0.8333, 0.8352, 0.8357,
+                    0.8355, 0.8354, 0.8403, 0.8403, 0.8406, 0.8403, 0.8396, 0.8418, 0.8409, 0.8384,
                     0.8386, 0.8372, 0.839, 0.84, 0.8389, 0.84, 0.8423, 0.8423, 0.8435, 0.8422,
-                    0.838, 0.8373, 0.8316, 0.8303,    0.8303, 0.8302,    0.8369, 0.84, 0.8385, 0.84,
-                    0.8401, 0.8402, 0.8381, 0.8351,    0.8314, 0.8273,    0.8213, 0.8207,    0.8207, 0.8215,
-                    0.8242, 0.8273, 0.8301, 0.8346,    0.8312, 0.8312,    0.8312, 0.8306,    0.8327, 0.8282,
+                    0.838, 0.8373, 0.8316, 0.8303, 0.8303, 0.8302, 0.8369, 0.84, 0.8385, 0.84,
+                    0.8401, 0.8402, 0.8381, 0.8351, 0.8314, 0.8273, 0.8213, 0.8207, 0.8207, 0.8215,
+                    0.8242, 0.8273, 0.8301, 0.8346, 0.8312, 0.8312, 0.8312, 0.8306, 0.8327, 0.8282,
                     0.824, 0.8255, 0.8256, 0.8273, 0.8209, 0.8151, 0.8149, 0.8213, 0.8273, 0.8273,
                     0.8261, 0.8252, 0.824, 0.8262, 0.8258, 0.8261, 0.826, 0.8199, 0.8153, 0.8097,
-                    0.8101, 0.8119, 0.8107, 0.8105,    0.8084, 0.8069,    0.8047, 0.8023,    0.7965, 0.7919,
-                    0.7921, 0.7922, 0.7934, 0.7918,    0.7915, 0.787, 0.7861, 0.7861, 0.7853, 0.7867,
+                    0.8101, 0.8119, 0.8107, 0.8105, 0.8084, 0.8069, 0.8047, 0.8023, 0.7965, 0.7919,
+                    0.7921, 0.7922, 0.7934, 0.7918, 0.7915, 0.787, 0.7861, 0.7861, 0.7853, 0.7867,
                     0.7827, 0.7834, 0.7766, 0.7751, 0.7739, 0.7767, 0.7802, 0.7788, 0.7828, 0.7816,
                     0.7829, 0.783, 0.7829, 0.7781, 0.7811, 0.7831, 0.7826, 0.7855, 0.7855, 0.7845,
                     0.7798, 0.7777, 0.7822, 0.7785, 0.7744, 0.7743, 0.7726, 0.7766, 0.7806, 0.785,
@@ -211,63 +215,67 @@ angular.module('DashboardModule', ['ItemModule.services'])
                     0.714, 0.7119, 0.7129, 0.7129, 0.7049, 0.7095
                 ]
             }]
-        });
-      });
-    
-      $(function () {
-        $('#apple').highcharts({
-            chart: {
-                zoomType: 'x'
-            },
-            title: {
-                useHTML: true,
-                text: '<span class="pull-right">Apple Sales<i class="fa fa-apple fa-fw"></i></span>'
-            },
-            subtitle: {
-                text: document.ontouchstart === undefined ?
-                    'Click and drag in the plot area to zoom in' :
-                    'Pinch the chart to zoom in'
-            },
-            xAxis: {
-                type: 'datetime',
-                minRange: 14 * 24 * 3600000 // fourteen days
-            },
-            yAxis: {
-                title: {
-                    text: 'Revenue (in Millions of USD)'
-                }
-            },
-            legend: {
-                enabled: false
-            },
-            plotOptions: {
-                area: {
-                    fillColor: {
-                        linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1},
-                        stops: [
+                });
+            });
+
+            $(function () {
+                $('#apple').highcharts({
+                    chart: {
+                        zoomType: 'x'
+                    },
+                    title: {
+                        useHTML: true,
+                        text: '<span class="pull-right">Apple Sales<i class="fa fa-apple fa-fw"></i></span>'
+                    },
+                    subtitle: {
+                        text: document.ontouchstart === undefined ?
+                            'Click and drag in the plot area to zoom in' : 'Pinch the chart to zoom in'
+                    },
+                    xAxis: {
+                        type: 'datetime',
+                        minRange: 14 * 24 * 3600000 // fourteen days
+                    },
+                    yAxis: {
+                        title: {
+                            text: 'Revenue (in Millions of USD)'
+                        }
+                    },
+                    legend: {
+                        enabled: false
+                    },
+                    plotOptions: {
+                        area: {
+                            fillColor: {
+                                linearGradient: {
+                                    x1: 0,
+                                    y1: 0,
+                                    x2: 0,
+                                    y2: 1
+                                },
+                                stops: [
                             [0, Highcharts.getOptions().colors[0]],
                             [1, Highcharts.Color(Highcharts.getOptions().colors[0]).setOpacity(0).get('rgba')]
                         ]
-                    },
-                    marker: {
-                        radius: 2
-                    },
-                    lineWidth: 1,
-                    states: {
-                        hover: {
-                            lineWidth: 1
+                            },
+                            marker: {
+                                radius: 2
+                            },
+                            lineWidth: 1,
+                            states: {
+                                hover: {
+                                    lineWidth: 1
+                                }
+                            },
+                            threshold: null
                         }
                     },
-                    threshold: null
-                }
-            },
-    
-            series: [{
-                type: 'area',
-                name: 'USD',
-                pointInterval: 24 * 3600 * 1000,
-                pointStart: 1328004400000,
-                data: [
+
+                    series: [{
+                        type: 'area',
+                        name: 'USD',
+                        pointInterval: 24 * 3600 * 1000,
+                        pointStart: 1328004400000,
+                        data: [
                     0.734, 0.7336, 0.7351, 0.7346, 0.7321, 0.7294, 0.7266, 0.7266, 0.7254, 0.7242,
                     0.7213, 0.7197, 0.7209, 0.721, 0.721, 0.721, 0.7209, 0.7159, 0.7133, 0.7105,
                     0.7099, 0.7099, 0.7093, 0.7093, 0.7076, 0.707, 0.7049, 0.7012, 0.7011, 0.7019,
@@ -283,13 +291,13 @@ angular.module('DashboardModule', ['ItemModule.services'])
                     0.7745, 0.771, 0.775, 0.7791, 0.7882, 0.7882, 0.7899, 0.7905, 0.7889, 0.7879,
                     0.7855, 0.7866, 0.7865, 0.7795, 0.7758, 0.7717, 0.761, 0.7497, 0.7471, 0.7473,
                     0.7407, 0.7288, 0.7074, 0.6927, 0.7083, 0.7191, 0.719, 0.7153, 0.7156, 0.7158,
-                    0.8446, 0.8445, 0.8444, 0.8451,    0.8418, 0.8264,    0.8258, 0.8232,    0.8233, 0.8258,
-                    0.8283, 0.8278, 0.8256, 0.8292,    0.8239, 0.8239,    0.8245, 0.8265,    0.8261, 0.8269,
-                    0.8273, 0.8244, 0.8244, 0.8172,    0.8139, 0.8146,    0.8164, 0.82,    0.8269, 0.8269,
-                    0.8269, 0.8258, 0.8247, 0.8286,    0.8289, 0.8316,    0.832, 0.8333,    0.8352, 0.8357,
-                    0.8355, 0.8354, 0.8403, 0.8403,    0.8406, 0.8403,    0.8396, 0.8418,    0.8409, 0.8384,
+                    0.8446, 0.8445, 0.8444, 0.8451, 0.8418, 0.8264, 0.8258, 0.8232, 0.8233, 0.8258,
+                    0.8283, 0.8278, 0.8256, 0.8292, 0.8239, 0.8239, 0.8245, 0.8265, 0.8261, 0.8269,
+                    0.8273, 0.8244, 0.8244, 0.8172, 0.8139, 0.8146, 0.8164, 0.82, 0.8269, 0.8269,
+                    0.8269, 0.8258, 0.8247, 0.8286, 0.8289, 0.8316, 0.832, 0.8333, 0.8352, 0.8357,
+                    0.8355, 0.8354, 0.8403, 0.8403, 0.8406, 0.8403, 0.8396, 0.8418, 0.8409, 0.8384,
                     0.8386, 0.8372, 0.839, 0.84, 0.8389, 0.84, 0.8423, 0.8423, 0.8435, 0.8422,
-                    0.838, 0.8373, 0.8316, 0.8303,    0.8303, 0.8302,    0.8369, 0.84, 0.8385, 0.84,
+                    0.838, 0.8373, 0.8316, 0.8303, 0.8303, 0.8302, 0.8369, 0.84, 0.8385, 0.84,
                     0.6965, 0.6956, 0.6956, 0.695, 0.6948, 0.6928, 0.6887, 0.6824, 0.6794, 0.6794,
                     0.6803, 0.6855, 0.6824, 0.6791, 0.6783, 0.6785, 0.6785, 0.6797, 0.68, 0.6803,
                     0.6805, 0.676, 0.677, 0.677, 0.6736, 0.6726, 0.6764, 0.6821, 0.6831, 0.6842,
@@ -363,12 +371,12 @@ angular.module('DashboardModule', ['ItemModule.services'])
                     0.7288, 0.7263, 0.7263, 0.7242, 0.7253, 0.7264, 0.727, 0.7312, 0.7305, 0.7305,
                     0.7318, 0.7358, 0.7409, 0.7454, 0.7437, 0.7424, 0.7424, 0.7415, 0.7419, 0.7414,
                     0.7377, 0.7355, 0.7315, 0.7315, 0.732, 0.7332, 0.7346, 0.7328, 0.7323, 0.734,
-                    0.8401, 0.8402, 0.8381, 0.8351,    0.8314, 0.8273,    0.8213, 0.8207,    0.8207, 0.8215,
-                    0.8242, 0.8273, 0.8301, 0.8346,    0.8312, 0.8312,    0.8312, 0.8306,    0.8327, 0.8282,
+                    0.8401, 0.8402, 0.8381, 0.8351, 0.8314, 0.8273, 0.8213, 0.8207, 0.8207, 0.8215,
+                    0.8242, 0.8273, 0.8301, 0.8346, 0.8312, 0.8312, 0.8312, 0.8306, 0.8327, 0.8282,
                     0.824, 0.8255, 0.8256, 0.8273, 0.8209, 0.8151, 0.8149, 0.8213, 0.8273, 0.8273,
                     0.8261, 0.8252, 0.824, 0.8262, 0.8258, 0.8261, 0.826, 0.8199, 0.8153, 0.8097,
-                    0.8101, 0.8119, 0.8107, 0.8105,    0.8084, 0.8069,    0.8047, 0.8023,    0.7965, 0.7919,
-                    0.7921, 0.7922, 0.7934, 0.7918,    0.7915, 0.787, 0.7861, 0.7861, 0.7853, 0.7867,
+                    0.8101, 0.8119, 0.8107, 0.8105, 0.8084, 0.8069, 0.8047, 0.8023, 0.7965, 0.7919,
+                    0.7921, 0.7922, 0.7934, 0.7918, 0.7915, 0.787, 0.7861, 0.7861, 0.7853, 0.7867,
                     0.7827, 0.7834, 0.7766, 0.7751, 0.7739, 0.7767, 0.7802, 0.7788, 0.7828, 0.7816,
                     0.7829, 0.783, 0.7829, 0.7781, 0.7811, 0.7831, 0.7826, 0.7855, 0.7855, 0.7845,
                     0.7798, 0.7777, 0.7822, 0.7785, 0.7744, 0.7743, 0.7726, 0.7766, 0.7806, 0.785,
@@ -380,79 +388,81 @@ angular.module('DashboardModule', ['ItemModule.services'])
                     0.714, 0.7119, 0.7129, 0.7129, 0.7049, 0.7095
                 ]
             }]
-        });
-      });
+                });
+            });
 
-    }
+        }
 
-    $scope.bootstrapFailureCallback = function(errorData){
-      console.log(errorData);
-    }
+        $scope.bootstrapFailureCallback = function (errorData) {
+            console.log(errorData);
+        }
 
-    $scope.bootstrapModule = function(){
-      $scope.applicationName = "";
-      $scope.applications = [];
-      $scope.credentials = {};
-      $scope.virtualCurrencies = [];
-      $scope.items = [];
-      $scope.isCollapsed = true;
-      $scope.$on("ITEM_SEARCH_EVENT", function(){
-        $scope.itemSearch = ItemSearchService.searchData
-      });
-      $scope.$on("APPLICATION_NAME_UPDATED", function(){
-        $scope.applicationName = ApplicationStateService.applicationName;
-      });
-      BootstrapDashboardService.execute()
-      .then(
-        $scope.bootstrapSuccessCallback,
-        $scope.bootstrapFailureCallback);
-    };
-    $scope.bootstrapModule();
+        $scope.bootstrapModule = function () {
+            $scope.applicationName = "";
+            $scope.applications = [];
+            $scope.credentials = {};
+            $scope.virtualCurrencies = [];
+            $scope.items = [];
+            $scope.isCollapsed = true;
+            $scope.$on("ITEM_SEARCH_EVENT", function () {
+                $scope.itemSearch = ItemSearchService.searchData
+            });
+            $scope.$on("APPLICATION_NAME_UPDATED", function () {
+                $scope.applicationName = ApplicationStateService.applicationName;
+            });
+            BootstrapDashboardService.execute()
+                .then(
+                    $scope.bootstrapSuccessCallback,
+                    $scope.bootstrapFailureCallback);
+        };
+        $scope.bootstrapModule();
 
     }])
 
-.factory('BootstrapDashboardService', ['$http','$q', function ($http, $q) {
-  var service = {};
+.factory('BootstrapDashboardService', ['$http', '$q',
+    function ($http, $q) {
+        var service = {};
 
-  service.execute = function(){
-    var request = $http({
-      url: '/dashboard/bootstrap',
-      method: 'GET'
-    });
+        service.execute = function () {
+            var request = $http({
+                url: '/dashboard/bootstrap',
+                method: 'GET'
+            });
 
-    var deferred = $q.defer();
-    deferred.resolve(request);
-    return deferred.promise;
-  };
+            var deferred = $q.defer();
+            deferred.resolve(request);
+            return deferred.promise;
+        };
 
-  return service;
+        return service;
 }])
 
-.factory('ApplicationStateService', ['$rootScope', function ($rootScope) {
-  var service = {};
-  service.applicationName = "";
-  service.applicationsList = [];
-  service.userInfo = {
-    name: "",
-    email: ""
-  };
+.factory('ApplicationStateService', ['$rootScope',
+    function ($rootScope) {
+        var service = {};
+        service.applicationName = "";
+        service.applicationsList = [];
+        service.userInfo = {
+            name: "",
+            email: ""
+        };
 
-  service.updateApplicationName = function(newName){
-    service.applicationName = newName;
-    $rootScope.$broadcast("APPLICATION_NAME_UPDATED");
-  };
+        service.updateApplicationName = function (newName) {
+            service.applicationName = newName;
+            $rootScope.$broadcast("APPLICATION_NAME_UPDATED");
+        };
 
-  service.updateApplicationsList = function(newList){
-    service.appplicationsList = newList;
-    $rootScope.$broadcast("APPLICATIONS_LIST_UPDATED");
-  };
+        service.updateApplicationsList = function (newList) {
+            service.appplicationsList = newList;
+            $rootScope.$broadcast("APPLICATIONS_LIST_UPDATED");
+        };
 
-  service.updateUserInfo = function(newInfo) {
-    service.userInfo = newInfo;
-    $rootScope.$broadcast("USER_INFO_UPDATED");
-  };
+        service.updateUserInfo = function (newInfo) {
+            service.userInfo = newInfo;
+            $rootScope.$broadcast("USER_INFO_UPDATED");
+        };
 
-  return service;
+        return service;
 }])
 
 
@@ -467,382 +477,382 @@ angular.module('DashboardModule', ['ItemModule.services'])
   'ItemSearchService',
   'TopbarService',
   function (
-    $scope,
-    $location,
-    $rootScope,
-    FetchItemsService,
-    BootstrapDashboardService,
-    DeleteItemService,
-    ApplicationStateService,
-    ItemSearchService,
-    TopbarService
+        $scope,
+        $location,
+        $rootScope,
+        FetchItemsService,
+        BootstrapDashboardService,
+        DeleteItemService,
+        ApplicationStateService,
+        ItemSearchService,
+        TopbarService
     ) {
 
-    TopbarService.setName("Analytics");
+        TopbarService.setName("Analytics");
 
-    var dummyData = {
-      "Users": 
-      {"totalMoneySpent": {
-        "UserLevel0": 0,
-        "UserLevel1": 0,
-        "UserLevel2": 20,
-        "UserLevel3": 10,
-        "UserLevel4": 10,
-        "UserLevel5": 40,
-        "UserLevel6": 67,
-        "UserLevel7": 80,
-        "UserLevel8": 80,
-        "UserLevel9": 90
-      },
-      "deviceInfo": {
-        "pieChart" :{
-          "appVersion":{
-            "2": 10000,
-            "2.1": 45000,
-            "3": 4000000
-          },
-          "OS":{
-            "Android 2.3": 10000,
-            "Android 4.0": 20000,
-            "iOS 6": 4025000
-          },
-          "Screen Resolution": {
-            "240p": 5000,
-            "480p": 40000,
-            "720p": 2000000,
-            "1080p": 2000000
-          }
-        },
-        "map" : {
-          "lat": "38",
-          "long": "34"
-        }
-      },
-      "moneySpentLines" : {
-
-      }
-
-    },
-    "boolea": true,
-    "null": null,
-    "number": 123,
-    "object": {
-      "a": "b",
-      "c": "d",
-      "e": "f"
-    },
-    "string": "Hello World"
-  }
-
-
-  var rows = [];
-
-  for (var key in dummyData.Users.totalMoneySpent) {
-    if (dummyData.Users.totalMoneySpent.hasOwnProperty(key)) {
-      rows.push(dummyData.Users.totalMoneySpent[key]);
-    }
-  }
-
-
-  $(function () { 
-    $('#revenue').highcharts({
-      chart: {
-        type: 'column'
-      },
-      title: {
-        text: 'Revenue per User level'
-      },
-      xAxis: {
-        type: 'category',
-        labels: {
-          rotation: -45,
-          align: 'right',
-          style: {
-            fontSize: '13px',
-            fontFamily: 'Verdana, sans-serif'
-          }
-        }
-      },
-      legend: {
-        enabled: false
-      },
-      tooltip: {
-        pointFormat: "Total Money Spent in Q1 2014: <b>{point.y:.1f} millions</b>"
-      },
-      yAxis: {
-        title: {
-          text: 'in Million USD'
-        }
-      },
-      series: [{
-        name: 'Population',
-        data: rows,
-        dataLabels: {
-          enabled: true,
-          rotation: -90,
-          color: '#FFFFFF',
-          align: 'right',
-          x: 4,
-          y: 10,
-          style: {
-            fontSize: '13px',
-            fontFamily: 'Verdana, sans-serif',
-            textShadow: '0 0 3px black'
-          }
-        }
-      }]
-    });
-  });
-
-$(function () {
-        $('#users').highcharts({
-            title: {
-                text: 'Users and Downloads evolution',
-                x: -20 //center
-            },
-            xAxis: {
-                categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-                    'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-            },
-            yAxis: [{ // Primary yAxis
-                title: {
-                    text: 'Users',
-                    style: {
-                        color: Highcharts.getOptions().colors[1]
+        var dummyData = {
+            "Users": {
+                "totalMoneySpent": {
+                    "UserLevel0": 0,
+                    "UserLevel1": 0,
+                    "UserLevel2": 20,
+                    "UserLevel3": 10,
+                    "UserLevel4": 10,
+                    "UserLevel5": 40,
+                    "UserLevel6": 67,
+                    "UserLevel7": 80,
+                    "UserLevel8": 80,
+                    "UserLevel9": 90
+                },
+                "deviceInfo": {
+                    "pieChart": {
+                        "appVersion": {
+                            "2": 10000,
+                            "2.1": 45000,
+                            "3": 4000000
+                        },
+                        "OS": {
+                            "Android 2.3": 10000,
+                            "Android 4.0": 20000,
+                            "iOS 6": 4025000
+                        },
+                        "Screen Resolution": {
+                            "240p": 5000,
+                            "480p": 40000,
+                            "720p": 2000000,
+                            "1080p": 2000000
+                        }
+                    },
+                    "map": {
+                        "lat": "38",
+                        "long": "34"
                     }
                 },
-                labels: {
-                    format: '{value} k',
-                    style: {
-                        color: Highcharts.getOptions().colors[1]
-                    }
+                "moneySpentLines": {
+
                 }
-            }, { // Secondary yAxis
+
+            },
+            "boolea": true,
+            "null": null,
+            "number": 123,
+            "object": {
+                "a": "b",
+                "c": "d",
+                "e": "f"
+            },
+            "string": "Hello World"
+        }
+
+
+        var rows = [];
+
+        for (var key in dummyData.Users.totalMoneySpent) {
+            if (dummyData.Users.totalMoneySpent.hasOwnProperty(key)) {
+                rows.push(dummyData.Users.totalMoneySpent[key]);
+            }
+        }
+
+
+        $(function () {
+            $('#revenue').highcharts({
+                chart: {
+                    type: 'column'
+                },
                 title: {
-                    text: 'Downloads',
-                    style: {
-                        color: Highcharts.getOptions().colors[0]
+                    text: 'Revenue per User level'
+                },
+                xAxis: {
+                    type: 'category',
+                    labels: {
+                        rotation: -45,
+                        align: 'right',
+                        style: {
+                            fontSize: '13px',
+                            fontFamily: 'Verdana, sans-serif'
+                        }
                     }
                 },
-                labels: {
-                    format: '{value} k',
-                    style: {
-                        color: Highcharts.getOptions().colors[0]
+                legend: {
+                    enabled: false
+                },
+                tooltip: {
+                    pointFormat: "Total Money Spent in Q1 2014: <b>{point.y:.1f} millions</b>"
+                },
+                yAxis: {
+                    title: {
+                        text: 'in Million USD'
                     }
                 },
-                opposite: true
-            }],
-            tooltip: {
-                valueSuffix: ''
-            },
-            legend: {
-                layout: 'vertical',
-                align: 'right',
-                verticalAlign: 'middle',
-                borderWidth: 0
-            },
-            series: [{
-                name: 'Total Downloads',
-                type: 'spline',
-                data: [7.0, 6.9, 9.5, 14.5, 18.2, 21.5, 25.2, 26.5, 23.3, 18.3, 13.9, 9.6]
-            }, {
-                name: 'Active Users',
-                type: 'spline',
-                data: [-0.2, 0.8, 5.7, 11.3, 17.0, 22.0, 24.8, 24.1, 20.1, 14.1, 8.6, 2.5]
-            }, {
-                name: 'Active Users with IAP',
-                type: 'spline',
-                data: [3.9, 4.2, 5.7, 8.5, 11.9, 15.2, 17.0, 16.6, 14.2, 10.3, 6.6, 4.8]
-            }]
+                series: [{
+                    name: 'Population',
+                    data: rows,
+                    dataLabels: {
+                        enabled: true,
+                        rotation: -90,
+                        color: '#FFFFFF',
+                        align: 'right',
+                        x: 4,
+                        y: 10,
+                        style: {
+                            fontSize: '13px',
+                            fontFamily: 'Verdana, sans-serif',
+                            textShadow: '0 0 3px black'
+                        }
+                    }
+      }]
+            });
         });
-    });
-    
-$(function () {
-    $('#activeUsersIAP').highcharts({
-        chart: {
-            zoomType: 'xy'
-        },
-        title: {
-            text: 'Active users and IAPs'
-        },
-        xAxis: [{
-            categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+
+        $(function () {
+            $('#users').highcharts({
+                title: {
+                    text: 'Users and Downloads evolution',
+                    x: -20 //center
+                },
+                xAxis: {
+                    categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+                    'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+                },
+                yAxis: [{ // Primary yAxis
+                    title: {
+                        text: 'Users',
+                        style: {
+                            color: Highcharts.getOptions().colors[1]
+                        }
+                    },
+                    labels: {
+                        format: '{value} k',
+                        style: {
+                            color: Highcharts.getOptions().colors[1]
+                        }
+                    }
+            }, { // Secondary yAxis
+                    title: {
+                        text: 'Downloads',
+                        style: {
+                            color: Highcharts.getOptions().colors[0]
+                        }
+                    },
+                    labels: {
+                        format: '{value} k',
+                        style: {
+                            color: Highcharts.getOptions().colors[0]
+                        }
+                    },
+                    opposite: true
+            }],
+                tooltip: {
+                    valueSuffix: ''
+                },
+                legend: {
+                    layout: 'vertical',
+                    align: 'right',
+                    verticalAlign: 'middle',
+                    borderWidth: 0
+                },
+                series: [{
+                    name: 'Total Downloads',
+                    type: 'spline',
+                    data: [7.0, 6.9, 9.5, 14.5, 18.2, 21.5, 25.2, 26.5, 23.3, 18.3, 13.9, 9.6]
+            }, {
+                    name: 'Active Users',
+                    type: 'spline',
+                    data: [-0.2, 0.8, 5.7, 11.3, 17.0, 22.0, 24.8, 24.1, 20.1, 14.1, 8.6, 2.5]
+            }, {
+                    name: 'Active Users with IAP',
+                    type: 'spline',
+                    data: [3.9, 4.2, 5.7, 8.5, 11.9, 15.2, 17.0, 16.6, 14.2, 10.3, 6.6, 4.8]
+            }]
+            });
+        });
+
+        $(function () {
+            $('#activeUsersIAP').highcharts({
+                chart: {
+                    zoomType: 'xy'
+                },
+                title: {
+                    text: 'Active users and IAPs'
+                },
+                xAxis: [{
+                    categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
                 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
         }],
-        yAxis: [{ // Primary yAxis
-            labels: {
-                format: '{value}',
-                style: {
-                    color: Highcharts.getOptions().colors[2]
-                }
-            },
-            title: {
-                text: 'Active users with IAPs',
-                style: {
-                    color: Highcharts.getOptions().colors[2]
-                }
-            },
-            opposite: true
+                yAxis: [{ // Primary yAxis
+                    labels: {
+                        format: '{value}',
+                        style: {
+                            color: Highcharts.getOptions().colors[2]
+                        }
+                    },
+                    title: {
+                        text: 'Active users with IAPs',
+                        style: {
+                            color: Highcharts.getOptions().colors[2]
+                        }
+                    },
+                    opposite: true
 
         }, { // Secondary yAxis
-            gridLineWidth: 0,
-            title: {
-                text: 'IAP',
-                style: {
-                    color: Highcharts.getOptions().colors[0]
-                }
-            },
-            labels: {
-                format: '{value} k',
-                style: {
-                    color: Highcharts.getOptions().colors[0]
-                }
-            }
+                    gridLineWidth: 0,
+                    title: {
+                        text: 'IAP',
+                        style: {
+                            color: Highcharts.getOptions().colors[0]
+                        }
+                    },
+                    labels: {
+                        format: '{value} k',
+                        style: {
+                            color: Highcharts.getOptions().colors[0]
+                        }
+                    }
 
         }, { // Tertiary yAxis
-            gridLineWidth: 0,
-            title: {
-                text: 'Revenue',
-                style: {
-                    color: Highcharts.getOptions().colors[1]
-                }
-            },
-            labels: {
-                format: '{value} k USD',
-                style: {
-                    color: Highcharts.getOptions().colors[1]
-                }
-            },
-            opposite: true
+                    gridLineWidth: 0,
+                    title: {
+                        text: 'Revenue',
+                        style: {
+                            color: Highcharts.getOptions().colors[1]
+                        }
+                    },
+                    labels: {
+                        format: '{value} k USD',
+                        style: {
+                            color: Highcharts.getOptions().colors[1]
+                        }
+                    },
+                    opposite: true
         }],
-        tooltip: {
-            shared: true
-        },
-        legend: {
-            layout: 'vertical',
-            align: 'right',
-            verticalAlign: 'middle',
-            borderWidth: 0
-        },
-        series: [{
-            name: 'Active users with IAPs',
-            type: 'spline',
-            yAxis: 1,
-            data: [49.9, 71.5, 106.4, 129.2, 144.0, 176.0, 135.6, 148.5, 216.4, 194.1, 95.6, 54.4],
-            tooltip: {
-                valueSuffix: ' k'
-            }
+                tooltip: {
+                    shared: true
+                },
+                legend: {
+                    layout: 'vertical',
+                    align: 'right',
+                    verticalAlign: 'middle',
+                    borderWidth: 0
+                },
+                series: [{
+                    name: 'Active users with IAPs',
+                    type: 'spline',
+                    yAxis: 1,
+                    data: [49.9, 71.5, 106.4, 129.2, 144.0, 176.0, 135.6, 148.5, 216.4, 194.1, 95.6, 54.4],
+                    tooltip: {
+                        valueSuffix: ' k'
+                    }
 
         }, {
-            name: 'IAPs/month',
-            type: 'spline',
-            yAxis: 2,
-            data: [1016, 1016, 1015.9, 1015.5, 1012.3, 1009.5, 1009.6, 1010.2, 1013.1, 1016.9, 1018.2, 1016.7],
-            marker: {
-                enabled: false
-            },
-            dashStyle: 'shortdot',
-            tooltip: {
-                valueSuffix: ' mb'
-            }
+                    name: 'IAPs/month',
+                    type: 'spline',
+                    yAxis: 2,
+                    data: [1016, 1016, 1015.9, 1015.5, 1012.3, 1009.5, 1009.6, 1010.2, 1013.1, 1016.9, 1018.2, 1016.7],
+                    marker: {
+                        enabled: false
+                    },
+                    dashStyle: 'shortdot',
+                    tooltip: {
+                        valueSuffix: ' mb'
+                    }
 
         }, {
-            name: 'Revenue/month',
-            type: 'spline',
-            data: [7.0, 6.9, 9.5, 14.5, 18.2, 21.5, 25.2, 26.5, 23.3, 18.3, 13.9, 9.6],
-            tooltip: {
-                valueSuffix: ' °C'
-            }
+                    name: 'Revenue/month',
+                    type: 'spline',
+                    data: [7.0, 6.9, 9.5, 14.5, 18.2, 21.5, 25.2, 26.5, 23.3, 18.3, 13.9, 9.6],
+                    tooltip: {
+                        valueSuffix: ' °C'
+                    }
         }]
-    });
-});
-    
-$(function () {
-    $('#appSession').highcharts({
-        chart: {
-            zoomType: 'xy'
-        },
-        title: {
-            text: 'Session and IAPs'
-        },
-        xAxis: [{
-            categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+            });
+        });
+
+        $(function () {
+            $('#appSession').highcharts({
+                chart: {
+                    zoomType: 'xy'
+                },
+                title: {
+                    text: 'Session and IAPs'
+                },
+                xAxis: [{
+                    categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
                 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
         }],
-        yAxis: [{ // Primary yAxis
-            labels: {
-                format: '{value}',
-                style: {
-                    color: Highcharts.getOptions().colors[1]
-                }
-            },
-            title: {
-                text: 'Session Time',
-                style: {
-                    color: Highcharts.getOptions().colors[1]
-                }
-            },
-            opposite: true
+                yAxis: [{ // Primary yAxis
+                    labels: {
+                        format: '{value}',
+                        style: {
+                            color: Highcharts.getOptions().colors[1]
+                        }
+                    },
+                    title: {
+                        text: 'Session Time',
+                        style: {
+                            color: Highcharts.getOptions().colors[1]
+                        }
+                    },
+                    opposite: true
 
         }, { // Secondary yAxis
-            gridLineWidth: 0,
-            title: {
-                text: 'Revenue / Session',
-                style: {
-                    color: Highcharts.getOptions().colors[0]
-                }
-            },
-            labels: {
-                format: '{value} k USD',
-                style: {
-                    color: Highcharts.getOptions().colors[0]
-                }
-            }
+                    gridLineWidth: 0,
+                    title: {
+                        text: 'Revenue / Session',
+                        style: {
+                            color: Highcharts.getOptions().colors[0]
+                        }
+                    },
+                    labels: {
+                        format: '{value} k USD',
+                        style: {
+                            color: Highcharts.getOptions().colors[0]
+                        }
+                    }
 
         }],
-        tooltip: {
-            shared: true
-        },
-        legend: {
-            layout: 'vertical',
-            align: 'right',
-            verticalAlign: 'middle',
-            borderWidth: 0
-        },
-        series: [{
-            name: 'Session time',
-            type: 'spline',
-            yAxis: 1,
-            data: [14, 13.8, 19, 29, 36.4, 43, 49.6, 48.2, 40.2, 28.2, 17.2, 5],
-            tooltip: {
-                valueSuffix: ' k'
-            }
+                tooltip: {
+                    shared: true
+                },
+                legend: {
+                    layout: 'vertical',
+                    align: 'right',
+                    verticalAlign: 'middle',
+                    borderWidth: 0
+                },
+                series: [{
+                    name: 'Session time',
+                    type: 'spline',
+                    yAxis: 1,
+                    data: [14, 13.8, 19, 29, 36.4, 43, 49.6, 48.2, 40.2, 28.2, 17.2, 5],
+                    tooltip: {
+                        valueSuffix: ' k'
+                    }
 
         }, {
-            name: 'Revenue/session',
-            type: 'spline',
-            yAxis: 0,
-            data: [1016, 1016, 1015.9, 1015.5, 1012.3, 1009.5, 1009.6, 1010.2, 1013.1, 1016.9, 1018.2, 1016.7],
-            marker: {
-                enabled: false
-            },
-            dashStyle: 'shortdot',
-            tooltip: {
-                valueSuffix: ' mb'
-            }
+                    name: 'Revenue/session',
+                    type: 'spline',
+                    yAxis: 0,
+                    data: [1016, 1016, 1015.9, 1015.5, 1012.3, 1009.5, 1009.6, 1010.2, 1013.1, 1016.9, 1018.2, 1016.7],
+                    marker: {
+                        enabled: false
+                    },
+                    dashStyle: 'shortdot',
+                    tooltip: {
+                        valueSuffix: ' mb'
+                    }
 
         }]
-    });
-});
-    
+            });
+        });
 
 
-$(function () {
-    
-        var colors = Highcharts.getOptions().colors,
-            categories = ['Android', 'iOS'],
-            name = 'Mobile Platforms',
-            data = [{
+
+        $(function () {
+
+            var colors = Highcharts.getOptions().colors,
+                categories = ['Android', 'iOS'],
+                name = 'Mobile Platforms',
+                data = [{
                     y: 55.11,
                     color: colors[0],
                     drilldown: {
@@ -861,81 +871,81 @@ $(function () {
                         color: colors[1]
                     }
                 }];
-    
-    
-        // Build the data arrays
-        var platformsData = [];
-        var versionsData = [];
-        for (var i = 0; i < data.length; i++) {
-    
-            // add browser data
-            platformsData.push({
-                name: categories[i],
-                y: data[i].y,
-                color: data[i].color
-            });
-    
-            // add version data
-            for (var j = 0; j < data[i].drilldown.data.length; j++) {
-                var brightness = 0.2 - (j / data[i].drilldown.data.length) / 5 ;
-                versionsData.push({
-                    name: data[i].drilldown.categories[j],
-                    y: data[i].drilldown.data[j],
-                    color: Highcharts.Color(data[i].color).brighten(brightness).get()
+
+
+            // Build the data arrays
+            var platformsData = [];
+            var versionsData = [];
+            for (var i = 0; i < data.length; i++) {
+
+                // add browser data
+                platformsData.push({
+                    name: categories[i],
+                    y: data[i].y,
+                    color: data[i].color
                 });
+
+                // add version data
+                for (var j = 0; j < data[i].drilldown.data.length; j++) {
+                    var brightness = 0.2 - (j / data[i].drilldown.data.length) / 5;
+                    versionsData.push({
+                        name: data[i].drilldown.categories[j],
+                        y: data[i].drilldown.data[j],
+                        color: Highcharts.Color(data[i].color).brighten(brightness).get()
+                    });
+                }
             }
-        }
-    
-        // Create the chart
-        $('#device').highcharts({
-            chart: {
-                type: 'pie'
-            },
-            title: {
-                text: 'Device Info'
-            },
-            yAxis: {
+
+            // Create the chart
+            $('#device').highcharts({
+                chart: {
+                    type: 'pie'
+                },
                 title: {
-                    text: 'DELETE Total percent market share'
-                }
-            },
-            plotOptions: {
-                pie: {
-                    shadow: false,
-                    center: ['50%', '50%']
-                }
-            },
-            tooltip: {
-              valueSuffix: '%'
-            },
-            series: [{
-                name: 'Platforms',
-                data: platformsData,
-                size: '60%',
-                datSaLabels: {
-                    formatter: function() {
-                        return this.y > 5 ? this.point.name : null;
-                    },
-                    color: 'white',
-                    distance: -30
-                }
-            }, {
-                name: 'Versions',
-                data: versionsData,
-                size: '80%',
-                innerSize: '60%',
-                dataLabels: {
-                    formatter: function() {
-                        // display only if larger than 1
-                        return this.y > 1 ? '<b>'+ this.point.name +':</b> '+ this.y +'%'  : null;
+                    text: 'Device Info'
+                },
+                yAxis: {
+                    title: {
+                        text: 'DELETE Total percent market share'
                     }
-                }
+                },
+                plotOptions: {
+                    pie: {
+                        shadow: false,
+                        center: ['50%', '50%']
+                    }
+                },
+                tooltip: {
+                    valueSuffix: '%'
+                },
+                series: [{
+                    name: 'Platforms',
+                    data: platformsData,
+                    size: '60%',
+                    datSaLabels: {
+                        formatter: function () {
+                            return this.y > 5 ? this.point.name : null;
+                        },
+                        color: 'white',
+                        distance: -30
+                    }
+            }, {
+                    name: 'Versions',
+                    data: versionsData,
+                    size: '80%',
+                    innerSize: '60%',
+                    dataLabels: {
+                        formatter: function () {
+                            // display only if larger than 1
+                            return this.y > 1 ? '<b>' + this.point.name + ':</b> ' + this.y + '%' : null;
+                        }
+                    }
             }]
+            });
         });
-    });
-    
-//map
-/*
+
+        //map
+        /*
 $(function () {
 
     $.getJSON('http://www.highcharts.com/samples/data/jsonp.php?filename=world-population-density.json&callback=?', function (data) {
@@ -991,18 +1001,18 @@ $(function () {
   'ItemSearchService',
   'TopbarService',
   function (
-    $scope,
-    $location,
-    $rootScope,
-    FetchItemsService,
-    BootstrapDashboardService,
-    DeleteItemService,
-    ApplicationStateService,
-    ItemSearchService,
-    TopbarService
+        $scope,
+        $location,
+        $rootScope,
+        FetchItemsService,
+        BootstrapDashboardService,
+        DeleteItemService,
+        ApplicationStateService,
+        ItemSearchService,
+        TopbarService
     ) {
 
-    TopbarService.setName("Recommendation");
+        TopbarService.setName("Recommendation");
 
 }])
 
@@ -1017,18 +1027,18 @@ $(function () {
   'ItemSearchService',
   'TopbarService',
   function (
-    $scope,
-    $location,
-    $rootScope,
-    FetchItemsService,
-    BootstrapDashboardService,
-    DeleteItemService,
-    ApplicationStateService,
-    ItemSearchService,
-    TopbarService
+        $scope,
+        $location,
+        $rootScope,
+        FetchItemsService,
+        BootstrapDashboardService,
+        DeleteItemService,
+        ApplicationStateService,
+        ItemSearchService,
+        TopbarService
     ) {
 
-    TopbarService.setName("Campaigns");
+        TopbarService.setName("Campaigns");
 
 }])
 
@@ -1044,72 +1054,74 @@ $(function () {
   'ItemSearchService',
   'TopbarService',
   function (
-    $scope,
-    $location,
-    $rootScope,
-    FetchItemsService,
-    BootstrapDashboardService,
-    DeleteItemService,
-    ApplicationStateService,
-    ItemSearchService,
-    TopbarService
+        $scope,
+        $location,
+        $rootScope,
+        FetchItemsService,
+        BootstrapDashboardService,
+        DeleteItemService,
+        ApplicationStateService,
+        ItemSearchService,
+        TopbarService
     ) {
 
-    TopbarService.setName("Management");
+        TopbarService.setName("Management");
 
-$scope.addItem = function(){
-  $location.path("/item/create");
-};
+        $scope.addItem = function () {
+            $location.path("/item/create");
+        };
 
-$scope.itemDeleteSucessCallback = function(data){
-  $scope.items = _.without($scope.items, _.findWhere($scope.items, {_id: data.data}));
-}
+        $scope.itemDeleteSucessCallback = function (data) {
+            $scope.items = _.without($scope.items, _.findWhere($scope.items, {
+                _id: data.data
+            }));
+        }
 
-/** TODO: show error message **/
-$scope.itemDeleteFailureCallback = function(data){
-}
+        /** TODO: show error message **/
+        $scope.itemDeleteFailureCallback = function (data) {}
 
-$scope.deleteItem = function(id, image){
-  DeleteItemService(id, $scope.applicationName, image)
-  .then(
-    $scope.itemDeleteSucessCallback,
-    $scope.itemDeleteFailureCallback
-    );
-};
+        $scope.deleteItem = function (id, image) {
+            DeleteItemService(id, $scope.applicationName, image)
+                .then(
+                    $scope.itemDeleteSucessCallback,
+                    $scope.itemDeleteFailureCallback
+            );
+        };
 
 }])
 
-.factory('FetchItemsService', ['$http','$q', function ($http, $q) {
-  var service = {};
+.factory('FetchItemsService', ['$http', '$q',
+    function ($http, $q) {
+        var service = {};
 
-  service.execute = function(appName, offset){
-    var request = $http({
-      url: '/app/api/item/get/' + appName + '/' + offset,
-      method: 'GET'
-    });
+        service.execute = function (appName, offset) {
+            var request = $http({
+                url: '/app/api/item/get/' + appName + '/' + offset,
+                method: 'GET'
+            });
 
-    var deferred = $q.defer();
-    deferred.resolve(request);
-    return deferred.promise;
-  };
+            var deferred = $q.defer();
+            deferred.resolve(request);
+            return deferred.promise;
+        };
 
-  return service;
+        return service;
 }])
 
-.factory('DeleteItemService', ['$http','$q', function ($http, $q) {
-  var service = function(id, name, imageName){
-    var request = $http.post("/app/item/delete/" + id, {
-      appName: name,
-      image: imageName
-    });
+.factory('DeleteItemService', ['$http', '$q',
+    function ($http, $q) {
+        var service = function (id, name, imageName) {
+            var request = $http.post("/app/item/delete/" + id, {
+                appName: name,
+                image: imageName
+            });
 
-    var deferred = $q.defer();
-    deferred.resolve(request);
-    return deferred.promise;
-  };
+            var deferred = $q.defer();
+            deferred.resolve(request);
+            return deferred.promise;
+        };
 
-  return service;
+        return service;
 }])
 
 ;
-
