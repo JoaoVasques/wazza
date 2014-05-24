@@ -46,7 +46,7 @@ case class WazzaApplication(
   appUrl: String,
   var imageName: String,
   packageName: String,
-  appType: Option[String],
+  appType: List[String],
   credentials: Credentials,
   items: List[Item] = List[Item](),
   virtualCurrencies: List[VirtualCurrency] = List[VirtualCurrency]()
@@ -68,7 +68,7 @@ package object WazzaApplicationImplicits {
       (json \ "appUrl").as[String],
       (json \ "imageName").as[String],
       (json \ "packageName").as[String],
-      (json \ "appType").asOpt[String],
+      (json \ "appType").as[List[String]],
       (json \ "credentials").validate[Credentials].get,
       (json \ "items").as[JsArray],
       (json \ "virtualCurrencies").as[JsArray]

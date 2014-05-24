@@ -36,6 +36,8 @@
   </div>
 }
 
+<!--
+
 <form class="form-vertical" enctype="multipart/form-data" ng-controller="NewApplicationFormController" ng-submit="createApplication(applicationForm)">
     <legend>General Information</legend>
       @inputText("Name", "name", true)
@@ -48,4 +50,49 @@
       @itemlist
     <input type="submit" class="btn btn-success" value="Create">
 </form>
-<!--div class="alert alert-success" hidden>Application successfully created</div-->
+
+-->
+
+<div class="row-fluid" ng-controller="NewApplicationFormController" ng-submit="createApplication(applicationForm)">
+    <form enctype="multipart/form-data" ng-submit="createItem()">
+      <div class="col-md-4 form-group">
+          <label for="name">Name</label>
+          <input class="form-control" id="name" type="text" data-ng-model="applicationForm.name" required/>
+
+          <label for="description">Description</label>
+          <textarea id="description" class="form-control" data-ng-model="applicationForm.description" rows="4"></textarea>
+
+          <label for="url">Url</label>
+          <input class="form-control" id="url" type="text" data-ng-model="applicationForm.url"/>
+      </div>
+      <div class="col-md-4 form-group">
+          <div class="col-md-12">
+            <label for="name">Select stores</label>
+          </div>
+          <div class="col-md-6">
+            <input type="checkbox" ng-model="iOSSelected">
+            <i ng-class="iOSStoreCss"></i>
+          </div>
+          <div class="col-md-6">
+            <input type="checkbox" ng-model="AndroidSelected">
+            <i ng-class="androidStoreCss"></i>
+          </div>
+
+          <!--
+          <label for="name">Package name</label>
+          <input class="form-control" id="packageName" type="text" data-ng-model="applicationForm.packageName"/>
+          -->
+          
+          <img id="item-logo-thumbnail" ng-src="{{applicationForm.imageUrl}}" class="img-thumbnail" style="height: 150px">
+          <div class="row-fluid">
+          <span class="btn btn-default btn-file">
+                <i class="fa fa-upload"></i>
+              App image <input type="file" file-model="myFile" ng-file-select="onFileSelect($files)" ng-model="imgThumb"/>
+          </span>
+        </div>
+      </div>
+      <div class="col-md-12 form-group">
+          <input type="submit" class="btn btn-success" value="Create">
+      </div>
+    </form>
+</div>

@@ -96,10 +96,10 @@ class CRUDController @Inject()(
   val applicationForm: Form[WazzaApplication] = Form(
     mapping(
       "name" -> nonEmptyText.verifying(applicationNameConstrait),
-      "appUrl" -> nonEmptyText.verifying(urlCheckConstraint),
+      "appUrl" -> ignored("www.test.com"), //nonEmptyText.verifying(urlCheckConstraint),
       "imageName" -> ignored(""),
-      "packageName" -> text,
-      "appType" -> optional(text),
+      "packageName" -> ignored("com.test"),
+      "appType" -> list(text),
       "credentials" -> mapping(
         "appId" -> ignored(secretGeneratorService.generateSecret(Id)),
         "apiKey" -> ignored(secretGeneratorService.generateSecret(ApiKey)),
@@ -125,18 +125,14 @@ class CRUDController @Inject()(
         generateBadRequestResponse(errors)
       },
       application => {
-        if(application.appType.get == "Android" && (!checkPackageNameFormat(application.packageName))){
-          generateBadRequestResponse(applicationForm.withError("packageName", "package name is invalid"))
-        } else {
-          val result = applicationService.insertApplication(application)
-          result match {
-            case Success(app) => {
-              userService.addApplication(userId, app.name)
-              Redirect("/dashboard")
-            }
-            case Failure(f) => {
-              BadRequest(f.getMessage)
-            }
+        val result = applicationService.insertApplication(application)
+        result match {
+          case Success(app) => {
+            userService.addApplication(userId, app.name)
+            Redirect("/dashboard")
+          }
+          case Failure(f) => {
+            BadRequest(f.getMessage)
           }
         }
       }
