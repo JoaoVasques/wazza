@@ -44,6 +44,9 @@ angular.module('DashboardModule', ['ItemModule.services'])
       );
       ApplicationStateService.updateApplicationName(_.first(data.data.applications).name);
       ApplicationStateService.updateUserInfo(data.data.userInfo);
+      ApplicationStateService.updateApplicationsList(_.map(data.data.applications, function(element){
+        return element.name;
+      }));
 
       $(function () {
         $('#android').highcharts({
@@ -443,7 +446,7 @@ angular.module('DashboardModule', ['ItemModule.services'])
   };
 
   service.updateApplicationsList = function(newList){
-    service.appplicationsList = newList;
+    angular.copy(newList, service.applicationsList);
     $rootScope.$broadcast("APPLICATIONS_LIST_UPDATED");
   };
 
