@@ -121,8 +121,13 @@ angular.module('Wazza.controllers', ['ApplicationModule', 'Wazza.services', 'Ite
           name: "",
           email: ""
       };
+      $scope.applicationsList = [];
       $scope.$on("APPLICATION_NAME_UPDATED", function(){
         $scope.applicationName = ApplicationStateService.applicationName;
+      });
+
+      $scope.$on("APPLICATIONS_LIST_UPDATED", function() {
+        $scope.applicationsList = ApplicationStateService.applicationsList;
       });
         
       $scope.$on("LOGIN_SUCCESS", function(data){

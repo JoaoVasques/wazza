@@ -1,14 +1,12 @@
 <aside class="left-side sidebar-offcanvas"  ng-controller="SideBarController" ng-show="showSideBar" id="sidebar">                
     <section class="sidebar">
         <!-- Sidebar user panel -->
-        <div class="user-panel" ng-model="userInfo.name">
+        <div class="user-panel" ng-model="applicationName">
             <div class="pull-left image">
                 <img src="https://scontent-a-lhr.xx.fbcdn.net/hphotos-prn1/t1.0-9/p526x296/10313730_10202032360951646_6599789807152582529_n.jpg" class="img-circle" alt="User Image" />
             </div>
             <div class="pull-left info">
-                <p>Hello, Joao</p>
-
-                <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
+                <h4>{{applicationName}}</h4>
             </div>
         </div>
         <!-- search form -->
