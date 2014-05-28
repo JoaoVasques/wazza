@@ -113,15 +113,11 @@ class RecommendationServiceImpl @Inject()(
         result.status match {
           case 200 => {
             val arr = Json.parse(result.body).as[JsArray]
-            println(s"recommended results $arr")
             if(arr.value.isEmpty) {
-              // Get items that the user has not bought yet
-              val x = applicationService.getItemsNotPurchased(companyName, applicationName, userId, nrItems)
-              println(s"xxx $x")
-              val items = applicationService.getItems(companyName, applicationName, 0).map { el =>
-                Item.convertToJson(el)
-              }.toSeq
-              promise.success(new JsArray(items))
+              promise.success(new JsArray(
+                applicationService.getItemsNotPurchased(companyName, applicationName, userId, nrItems).map { el =>
+                  Item.convertToJson(el)
+                }.toSeq))
             } else {
               promise.success(arr)
             }

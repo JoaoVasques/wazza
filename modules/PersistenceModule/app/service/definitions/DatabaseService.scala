@@ -25,7 +25,8 @@ trait DatabaseService {
     collectionName: String,
     arrayKey: String,
     elementKey: String,
-    array: List[String]
+    array: List[String],
+    limit: Int
   ): List[JsValue]
                                                                                                  
   def getCollectionElements(collectionName: String): List[JsValue]

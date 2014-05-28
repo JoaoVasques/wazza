@@ -125,14 +125,16 @@ class ApplicationServiceImpl @Inject()(
     val purchases = purchaseService.getUserPurchases(companyName, applicationName, userId) map {(p: PurchaseInfo) =>
       p.itemId
     }
-
-    val collection = WazzaApplication.getCollection(companyName, applicationName)
+    
     databaseService.getElementsWithoutArrayContent(
-      collection,
+      WazzaApplication.getCollection(companyName, applicationName),
       WazzaApplication.ItemsId,
       Item.ElementId,
-      purchases
-    )
+      purchases,
+      limit
+    ) map (i => {
+      Item.buildFromJson(i)
+    })
   }
 
   def itemExists(companyName: String, itemName: String, applicationName: String): Boolean = {

@@ -156,7 +156,8 @@ class MongoDatabaseService extends DatabaseService {
     collectionName: String,
     arrayKey: String,
     elementKey: String,
-    array: List[String]
+    array: List[String],
+    limit: Int
   ): List[JsValue] = {
 
     val query = (arrayKey $nin array)
@@ -168,14 +169,16 @@ class MongoDatabaseService extends DatabaseService {
         elements ::= Json.parse(item.toString)
       })
     }
-    elements.map(el => {
-      (el \ elementKey)
-    }).filter(el => {
-      val itemId = el match {
-        case s: JsString => s.value
-      }
-      !array.contains(itemId)
+    
+    val result = elements.filter(el => {
+      !array.contains((el \ elementKey).as[String])
     })
+
+    if(limit > 0) {
+      result.take(limit)
+    } else {
+      result
+    }
   }
 
   def getCollectionElements(collectionName: String): List[JsValue] = {
