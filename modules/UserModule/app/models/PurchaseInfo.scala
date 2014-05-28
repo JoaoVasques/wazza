@@ -39,6 +39,7 @@ case class PurchaseInfo(
 object PurchaseInfo {
 
   lazy val Id = "id"
+  lazy val UserId = "userId"
   def getRecommendationCollection(companyName: String, applicationName: String) = s"${companyName}_recommendation_${applicationName}"
   def getCollection(companyName: String, applicationName: String) = s"${companyName}_purchases_${applicationName}"
 

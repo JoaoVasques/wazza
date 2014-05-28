@@ -136,6 +136,48 @@ class MongoDatabaseService extends DatabaseService {
     }
   }
 
+  def getListElements(collectionName: String, key: String, value: String, projection: String = null): List[JsValue] = {
+    val query = MongoDBObject(key -> value)
+    val proj = if(projection != null) {
+      MongoDBObject(projection -> 1)
+    } else {
+      MongoDBObject()
+    }
+
+    val collection = this.getCollection(collectionName)
+    var elements = List[JsValue]()
+    for(el <- collection.find(query, proj)) {
+      elements ::= Json.parse(el.toString)
+    }
+    elements
+  }
+
+  def getElementsWithoutArrayContent(
+    collectionName: String,
+    arrayKey: String,
+    elementKey: String,
+    array: List[String]
+  ): List[JsValue] = {
+
+    val query = (arrayKey $nin array)
+    val projection = MongoDBObject(arrayKey -> 1)
+    val collection = this.getCollection(collectionName)
+    var elements = List[JsValue]()
+    for(el <- collection.find(query, projection)) {
+      (Json.parse(el.toString) \ arrayKey).as[JsArray].value.foreach(item => {
+        elements ::= Json.parse(item.toString)
+      })
+    }
+    elements.map(el => {
+      (el \ elementKey)
+    }).filter(el => {
+      val itemId = el match {
+        case s: JsString => s.value
+      }
+      !array.contains(itemId)
+    })
+  }
+
   def getCollectionElements(collectionName: String): List[JsValue] = {
     this.getCollection(collectionName).find.toList.map {el =>
       Json.parse(el.toString)

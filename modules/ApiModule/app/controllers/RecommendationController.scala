@@ -30,7 +30,7 @@ class RecommendationController @Inject()(
     limit: Int = -1
   ) = Action.async {implicit request =>
 
-    val id = databaseService.get(
+    /**val id = databaseService.get(
       MobileUser.getCollection(companyName, applicationName),
       MobileUser.KeyId,
       userId,
@@ -39,16 +39,13 @@ class RecommendationController @Inject()(
         (json \ "_id" \ "$oid").as[String]
       }
       case None => null
-    }
+    }**/
 
-    if(id != null) {
-      recommendationService.recommendItemsToUser(companyName, applicationName, id, limit) map { result =>
-        Ok(result)
-      } recover {
-        case err: Exception => BadRequest(err.getMessage())
-      }
-    } else {
-      Future { BadRequest(s"User $userId does not exist") }
+    
+    recommendationService.recommendItemsToUser(companyName, applicationName, userId, limit) map { result =>
+      Ok(result)
+    } recover {
+      case err: Exception => BadRequest(err.getMessage())
     }
   }
 }

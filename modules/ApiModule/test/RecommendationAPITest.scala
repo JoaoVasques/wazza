@@ -55,7 +55,7 @@ class RecommendationAPITest extends Specification {
   private val NumberDays = 5
   private val NrItems = 10
   private val MaxPrice = 10
-  private val NrMobileUsers = 500
+  private val NrMobileUsers = 200
   private val NrPurchases = 150
 
   private def generateApp() = {
@@ -154,7 +154,7 @@ class RecommendationAPITest extends Specification {
         "sessionId" -> i.toString,
         "userId" ->  (s"user-" + i.toString),
         "name" -> this.app.name,
-        "itemId" -> s"name-$i",
+        "itemId" -> s"name-${i % NrItems}",
         "price" -> i % MaxPrice,
         "time" -> format.format(cal.getTime),
         "deviceInfo" -> Json.obj(

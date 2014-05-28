@@ -30,6 +30,8 @@ trait ApplicationService {
 
   def getItems(companyName: String, applicationName: String, offset: Int = 0, projection: String = null): List[Item]
 
+  def getItemsNotPurchased(companyName: String, applicationName: String, userId: String, limit: Int): List[Item]
+
   def itemExists(companyName: String, item: String, applicationName: String): Boolean
 
   def deleteItem(companyName: String, itemId: String, applicationName: String, imageName: String): Future[Unit]
