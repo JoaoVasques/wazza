@@ -8,9 +8,11 @@ import scala.util.Try
 import service.user.definitions.{UserService}
 import com.google.inject._
 import service.persistence.definitions.{DatabaseService}
+import service.security.definitions.InternalService
 
 class UserServiceImpl @Inject()(
-  databaseService: DatabaseService
+  databaseService: DatabaseService,
+  internalService: InternalService
 ) extends UserService {
 
   private val UserId = "email"
@@ -20,6 +22,7 @@ class UserServiceImpl @Inject()(
     val collection = User.getCollection
     user.password = BCrypt.hashpw(user.password, BCrypt.gensalt())
     databaseService.insert(collection, Json.toJson(user))
+    internalService.addCompany(user.company)
   }
 
   def find(email: String): Option[User] = {

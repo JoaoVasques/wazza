@@ -7,6 +7,7 @@ import play.api.libs.json.JsArray
 import play.api.libs.json.Json
 import scala.util.Failure
 import service.definitions.recommendation.{RecommendationService}
+import service.application.definitions.{ApplicationService}
 import models.application.Item
 import models.user.MobileUser
 import scala.concurrent.Future
@@ -15,8 +16,13 @@ import scala.util.Success
 import scala.concurrent._
 import scala.concurrent.ExecutionContext.Implicits.global
 import play.api.libs.ws._
+import com.google.inject._
+import service.persistence.definitions.DatabaseService
 
-class RecommendationServiceImpl extends RecommendationService {
+class RecommendationServiceImpl @Inject()(
+  applicationService: ApplicationService,
+  databaseService: DatabaseService
+) extends RecommendationService {
 
   private lazy val RecommendItemsToUser = "Rec-Items-User"
   private lazy val RecommendSimilarItems = "Rec-Similar-Items"
@@ -76,16 +82,27 @@ class RecommendationServiceImpl extends RecommendationService {
     nrItems: Int
   ): Future[JsArray] = {
 
+    val id = databaseService.get(
+      MobileUser.getCollection(companyName, applicationName),
+      MobileUser.KeyId,
+      userId,
+      "_id") match {
+      case Some(json) => {
+        (json \ "_id" \ "$oid").as[String]
+      }
+      case None => null
+    }
+
     val args = if(nrItems > 0) {
       Map("companyName" -> companyName,
         "appName" -> applicationName,
-        "userId" -> userId,
+        "userId" -> id,
         "nrItems" -> nrItems.toString
       )
     } else {
       Map("companyName" -> companyName,
         "appName" -> applicationName,
-        "userId" -> userId
+        "userId" -> id
       )
     }
 
@@ -96,7 +113,14 @@ class RecommendationServiceImpl extends RecommendationService {
         result.status match {
           case 200 => {
             val arr = Json.parse(result.body).as[JsArray]
-            promise.success(arr)
+            if(arr.value.isEmpty) {
+              promise.success(new JsArray(
+                applicationService.getItemsNotPurchased(companyName, applicationName, userId, nrItems).map { el =>
+                  Item.convertToJson(el)
+                }.toSeq))
+            } else {
+              promise.success(arr)
+            }
           }
           case _ => {
             promise.failure(new Exception(result.ahcResponse.getResponseBody()))

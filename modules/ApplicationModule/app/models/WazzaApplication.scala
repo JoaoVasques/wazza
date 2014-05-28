@@ -54,7 +54,7 @@ case class WazzaApplication(
 
 object WazzaApplication {
 
-  def getCollection(companyName: String, applicationName: String) = s"$companyName-apps-$applicationName"
+  def getCollection(companyName: String, applicationName: String) = s"${companyName}_apps_${applicationName}"
 
   lazy val Key = "name"
   lazy val ItemsId = "items"

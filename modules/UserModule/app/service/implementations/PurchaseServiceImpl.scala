@@ -66,7 +66,6 @@ class PurchaseServiceImpl @Inject()(
   }
 
   def create(json: JsValue): PurchaseInfo = {
-    val _id = new ObjectId
     new PurchaseInfo(
       (json \ "id").as[String],
       (json \ "sessionId").as[String],
@@ -104,13 +103,33 @@ class PurchaseServiceImpl @Inject()(
       id
     ) match {
       case Some(purchase) => {
-        purchase.validate[PurchaseInfo].fold(
+        val purchaseMap = purchase.as[Map[String, JsValue]]
+        val updated = purchaseMap + ("time" -> purchaseMap.get("time").map {t =>
+          (t \ "$date").as[JsString]
+        }.get)
+
+        PurchaseInfo.buildJsonFromMap(updated).validate[PurchaseInfo].fold(
           valid = (p => Some(p)),
           invalid = (_ => None)
         )
       }
       case None => None
     }
+  }
+
+  def getUserPurchases(companyName: String, applicationName: String, userId: String): List[PurchaseInfo] = {
+    val collecion = PurchaseInfo.getCollection(companyName, applicationName)
+    databaseService.getListElements(collecion, PurchaseInfo.UserId, userId) map (purchase => {
+      val purchaseMap = purchase.as[Map[String, JsValue]]
+      val updated = purchaseMap + ("time" -> purchaseMap.get("time").map {t =>
+        (t \ "$date").as[JsString]
+      }.get)
+
+      PurchaseInfo.buildJsonFromMap(updated).validate[PurchaseInfo].fold(
+        valid = (p => p),
+        invalid = (_ => null)
+      )
+    })
   }
 
   def exist(companyName: String, applicationName: String, id: String): Boolean = {

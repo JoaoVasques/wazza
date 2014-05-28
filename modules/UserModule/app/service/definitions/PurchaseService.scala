@@ -12,6 +12,8 @@ trait PurchaseService {
 
   def get(companyName: String, applicationName: String, id: String): Option[PurchaseInfo]
 
+  def getUserPurchases(companyName: String, applicationName: String, userId: String): List[PurchaseInfo]
+
   def exist(companyName: String, applicationName: String, id: String): Boolean
 
   def delete(companyName: String, applicationName: String, info: PurchaseInfo): Try[Unit]

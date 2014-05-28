@@ -17,10 +17,13 @@ import ExecutionContext.Implicits.global
 import scala.language.implicitConversions
 import service.persistence.definitions.DatabaseService
 import WazzaApplicationImplicits._
+import service.user.definitions.PurchaseService
+import models.user.PurchaseInfo
 
 class ApplicationServiceImpl @Inject()(
     photoService: PhotosService,
-    databaseService: DatabaseService
+    databaseService: DatabaseService,
+    purchaseService: PurchaseService
 ) extends ApplicationService with ApplicationErrors{
 
   private implicit def convertItemToJsObject(item: Item): JsObject = {
@@ -116,6 +119,22 @@ class ApplicationServiceImpl @Inject()(
       case Some(application) => application.items.drop(offset).take(ItemBatch)
       case None => Nil
     }
+  }
+
+  def getItemsNotPurchased(companyName: String, applicationName: String, userId: String, limit: Int): List[Item] = {
+    val purchases = purchaseService.getUserPurchases(companyName, applicationName, userId) map {(p: PurchaseInfo) =>
+      p.itemId
+    }
+    
+    databaseService.getElementsWithoutArrayContent(
+      WazzaApplication.getCollection(companyName, applicationName),
+      WazzaApplication.ItemsId,
+      Item.ElementId,
+      purchases,
+      limit
+    ) map (i => {
+      Item.buildFromJson(i)
+    })
   }
 
   def itemExists(companyName: String, itemName: String, applicationName: String): Boolean = {
