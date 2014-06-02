@@ -46,13 +46,13 @@ var dashboard = angular.module('DashboardModule', ['ItemModule.services'])
             TopbarService.setName("Dashboard");
 
             $(function () {
-                $('#android').highcharts({
+                $('#revenueDashboard').highcharts({
                     chart: {
                         zoomType: 'x'
                     },
                     title: {
                         useHTML: true,
-                        text: '<span class="pull-right">Android Sales<i class="fa fa-android fa-fw"></i></span>'
+                        text: '<span class="pull-right">Sales per time<i class="fa fa-android fa-fw"></i></span>'
                     },
                     subtitle: {
                         text: document.ontouchstart === undefined ?
@@ -67,39 +67,15 @@ var dashboard = angular.module('DashboardModule', ['ItemModule.services'])
                             text: 'Revenue (in Millions of USD)'
                         }
                     },
-                    legend: {
-                        enabled: false
+                     legend: {
+                        layout: 'vertical',
+                        align: 'right',
+                        verticalAlign: 'middle',
+                        borderWidth: 0
                     },
-                    plotOptions: {
-                        area: {
-                            fillColor: {
-                                linearGradient: {
-                                    x1: 0,
-                                    y1: 0,
-                                    x2: 0,
-                                    y2: 1
-                                },
-                                stops: [
-                            [0, Highcharts.getOptions().colors[0]],
-                            [1, Highcharts.Color(Highcharts.getOptions().colors[0]).setOpacity(0).get('rgba')]
-                        ]
-                            },
-                            marker: {
-                                radius: 2
-                            },
-                            lineWidth: 1,
-                            states: {
-                                hover: {
-                                    lineWidth: 1
-                                }
-                            },
-                            threshold: null
-                        }
-                    },
-
                     series: [{
-                        type: 'area',
-                        name: 'USD',
+                        type: 'line',
+                        name: '<span class="pull-right">Android Revenue<i class="fa fa-android fa-fw"></i></span>',
                         pointInterval: 24 * 3600 * 1000,
                         pointStart: 1328004400000,
                         data: [
@@ -214,65 +190,9 @@ var dashboard = angular.module('DashboardModule', ['ItemModule.services'])
                             0.7407, 0.7288, 0.7074, 0.6927, 0.7083, 0.7191, 0.719, 0.7153, 0.7156, 0.7158,
                             0.714, 0.7119, 0.7129, 0.7129, 0.7049, 0.7095
                         ]
-                    }]
-                });
-            });
-
-            $(function () {
-                $('#apple').highcharts({
-                    chart: {
-                        zoomType: 'x'
-                    },
-                    title: {
-                        useHTML: true,
-                        text: '<span class="pull-right">Apple Sales<i class="fa fa-apple fa-fw"></i></span>'
-                    },
-                    subtitle: {
-                        text: document.ontouchstart === undefined ?
-                            'Click and drag in the plot area to zoom in' : 'Pinch the chart to zoom in'
-                    },
-                    xAxis: {
-                        type: 'datetime',
-                        minRange: 14 * 24 * 3600000 // fourteen days
-                    },
-                    yAxis: {
-                        title: {
-                            text: 'Revenue (in Millions of USD)'
-                        }
-                    },
-                    legend: {
-                        enabled: false
-                    },
-                    plotOptions: {
-                        area: {
-                            fillColor: {
-                                linearGradient: {
-                                    x1: 0,
-                                    y1: 0,
-                                    x2: 0,
-                                    y2: 1
-                                },
-                                stops: [
-                            [0, Highcharts.getOptions().colors[0]],
-                            [1, Highcharts.Color(Highcharts.getOptions().colors[0]).setOpacity(0).get('rgba')]
-                        ]
-                            },
-                            marker: {
-                                radius: 2
-                            },
-                            lineWidth: 1,
-                            states: {
-                                hover: {
-                                    lineWidth: 1
-                                }
-                            },
-                            threshold: null
-                        }
-                    },
-
-                    series: [{
-                        type: 'area',
-                        name: 'USD',
+                    }, {
+                        type: 'line',
+                        name: '<span class="pull-right">Apple Revenue<i class="fa fa-apple fa-fw"></i></span>',
                         pointInterval: 24 * 3600 * 1000,
                         pointStart: 1328004400000,
                         data: [
@@ -388,6 +308,7 @@ var dashboard = angular.module('DashboardModule', ['ItemModule.services'])
                             0.714, 0.7119, 0.7129, 0.7129, 0.7049, 0.7095
                         ]
                     }]
+
                 });
             });
 
