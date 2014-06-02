@@ -68,14 +68,6 @@ dashboard
                 }
 
             },
-            "boolea": true,
-            "null": null,
-            "number": 123,
-            "object": {
-                "a": "b",
-                "c": "d",
-                "e": "f"
-            },
             "string": "Hello World"
         }
 
@@ -135,7 +127,7 @@ dashboard
                             textShadow: '0 0 3px black'
                         }
                     }
-      }]
+                }]
             });
         });
 
@@ -150,33 +142,33 @@ dashboard
                     'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
                 },
                 yAxis: [{ // Primary yAxis
-                    title: {
-                        text: 'Users',
-                        style: {
-                            color: Highcharts.getOptions().colors[1]
-                        }
-                    },
-                    labels: {
-                        format: '{value} k',
-                        style: {
-                            color: Highcharts.getOptions().colors[1]
-                        }
-                    }
-            }, { // Secondary yAxis
-                    title: {
-                        text: 'Downloads',
-                        style: {
-                            color: Highcharts.getOptions().colors[0]
-                        }
-                    },
-                    labels: {
-                        format: '{value} k',
-                        style: {
-                            color: Highcharts.getOptions().colors[0]
-                        }
-                    },
-                    opposite: true
-            }],
+                            title: {
+                                text: 'Users',
+                                style: {
+                                    color: Highcharts.getOptions().colors[1]
+                                }
+                            },
+                            labels: {
+                                format: '{value} k',
+                                style: {
+                                    color: Highcharts.getOptions().colors[1]
+                                }
+                            }
+                        }, { // Secondary yAxis
+                            title: {
+                                text: 'Downloads',
+                                style: {
+                                    color: Highcharts.getOptions().colors[0]
+                                }
+                            },
+                            labels: {
+                                format: '{value} k',
+                                style: {
+                                    color: Highcharts.getOptions().colors[0]
+                                }
+                            },
+                            opposite: true
+                        }],
                 tooltip: {
                     valueSuffix: ''
                 },
@@ -190,15 +182,15 @@ dashboard
                     name: 'Total Downloads',
                     type: 'spline',
                     data: [7.0, 6.9, 9.5, 14.5, 18.2, 21.5, 25.2, 26.5, 23.3, 18.3, 13.9, 9.6]
-            }, {
+                }, {
                     name: 'Active Users',
                     type: 'spline',
                     data: [3.9, 4.2, 5.7, 11.3, 17.0, 22.0, 24.8, 24.1, 20.1, 14.1, 8.6, 4.8]
-            }, {
+                }, {
                     name: 'Active Users with IAP',
                     type: 'spline',
                     data: [-0.2, 0.8, 5.7, 8.5, 11.9, 15.2, 17.0, 16.6, 14.2, 10.3, 6.6, 2.5]
-            }]
+                }]
             });
         });
 
@@ -213,53 +205,52 @@ dashboard
                 xAxis: [{
                     categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
                 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-        }],
+                }],
                 yAxis: [{ // Primary yAxis
-                    labels: {
-                        format: '{value}',
-                        style: {
-                            color: Highcharts.getOptions().colors[0]
-                        }
-                    },
-                    title: {
-                        text: 'Active users with IAPs',
-                        style: {
-                            color: Highcharts.getOptions().colors[0]
-                        }
-                    },
-                    opposite: true
+                            labels: {
+                                format: '{value}',
+                                style: {
+                                    color: Highcharts.getOptions().colors[0]
+                                }
+                            },
+                            title: {
+                                text: 'Active users with IAPs',
+                                style: {
+                                    color: Highcharts.getOptions().colors[0]
+                                }
+                            },
+                            opposite: true
+                        }, { // Secondary yAxis
+                            gridLineWidth: 0,
+                            title: {
+                                text: 'IAP',
+                                style: {
+                                    color: Highcharts.getOptions().colors[1]
+                                }
+                            },
+                            labels: {
+                                format: '{value} k',
+                                style: {
+                                    color: Highcharts.getOptions().colors[1]
+                                }
+                            }
 
-        }, { // Secondary yAxis
-                    gridLineWidth: 0,
-                    title: {
-                        text: 'IAP',
-                        style: {
-                            color: Highcharts.getOptions().colors[1]
-                        }
-                    },
-                    labels: {
-                        format: '{value} k',
-                        style: {
-                            color: Highcharts.getOptions().colors[1]
-                        }
-                    }
-
-        }, { // Tertiary yAxis
-                    gridLineWidth: 0,
-                    title: {
-                        text: 'Revenue',
-                        style: {
-                            color: Highcharts.getOptions().colors[2]
-                        }
-                    },
-                    labels: {
-                        format: '{value} k USD',
-                        style: {
-                            color: Highcharts.getOptions().colors[2]
-                        }
-                    },
-                    opposite: true
-        }],
+                        }, { // Tertiary yAxis
+                            gridLineWidth: 0,
+                            title: {
+                                text: 'Revenue',
+                                style: {
+                                    color: Highcharts.getOptions().colors[2]
+                                }
+                            },
+                            labels: {
+                                format: '{value} k USD',
+                                style: {
+                                    color: Highcharts.getOptions().colors[2]
+                                }
+                            },
+                            opposite: true
+                        }],
                 tooltip: {
                     shared: true
                 },
@@ -270,35 +261,35 @@ dashboard
                     borderWidth: 0
                 },
                 series: [{
-                    name: 'Active users with IAPs',
-                    type: 'spline',
-                    yAxis: 1,
-                    data: [49.9, 71.5, 106.4, 129.2, 144.0, 176.0, 135.6, 148.5, 216.4, 194.1, 95.6, 54.4],
-                    tooltip: {
-                        valueSuffix: ' k'
-                    }
+                            name: 'Active users with IAPs',
+                            type: 'spline',
+                            yAxis: 1,
+                            data: [49.9, 71.5, 106.4, 129.2, 144.0, 176.0, 135.6, 148.5, 216.4, 194.1, 95.6, 54.4],
+                            tooltip: {
+                                valueSuffix: ' k'
+                            }
 
-        }, {
-                    name: 'IAPs/month',
-                    type: 'spline',
-                    yAxis: 2,
-                    data: [1016, 1016, 1015.9, 1015.5, 1012.3, 1009.5, 1009.6, 1010.2, 1013.1, 1016.9, 1018.2, 1016.7],
-                    marker: {
-                        enabled: false
-                    },
-                    dashStyle: 'shortdot',
-                    tooltip: {
-                        valueSuffix: ' mb'
-                    }
+                        }, {
+                            name: 'IAPs/month',
+                            type: 'spline',
+                            yAxis: 2,
+                            data: [1016, 1016, 1015.9, 1015.5, 1012.3, 1009.5, 1009.6, 1010.2, 1013.1, 1016.9, 1018.2, 1016.7],
+                            marker: {
+                                enabled: false
+                            },
+                            dashStyle: 'shortdot',
+                            tooltip: {
+                                valueSuffix: ' mb'
+                            }
 
-        }, {
-                    name: 'Revenue/month',
-                    type: 'spline',
-                    data: [7.0, 6.9, 9.5, 14.5, 18.2, 21.5, 25.2, 26.5, 23.3, 18.3, 13.9, 9.6],
-                    tooltip: {
-                        valueSuffix: ' °C'
-                    }
-        }]
+                        }, {
+                            name: 'Revenue/month',
+                            type: 'spline',
+                            data: [7.0, 6.9, 9.5, 14.5, 18.2, 21.5, 25.2, 26.5, 23.3, 18.3, 13.9, 9.6],
+                            tooltip: {
+                                valueSuffix: ' °C'
+                            }
+                        }]
             });
         });
 
@@ -313,38 +304,37 @@ dashboard
                 xAxis: [{
                     categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
                 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-        }],
+                }],
                 yAxis: [{ // Primary yAxis
-                    labels: {
-                        format: '{value}',
-                        style: {
-                            color: Highcharts.getOptions().colors[1]
-                        }
-                    },
-                    title: {
-                        text: 'Session Time',
-                        style: {
-                            color: Highcharts.getOptions().colors[1]
-                        }
-                    },
-                    opposite: true
+                            labels: {
+                                format: '{value}',
+                                style: {
+                                    color: Highcharts.getOptions().colors[1]
+                                }
+                            },
+                            title: {
+                                text: 'Session Time',
+                                style: {
+                                    color: Highcharts.getOptions().colors[1]
+                                }
+                            },
+                            opposite: true
 
-        }, { // Secondary yAxis
-                    gridLineWidth: 0,
-                    title: {
-                        text: 'Revenue / Session',
-                        style: {
-                            color: Highcharts.getOptions().colors[0]
-                        }
-                    },
-                    labels: {
-                        format: '{value} k USD',
-                        style: {
-                            color: Highcharts.getOptions().colors[0]
-                        }
-                    }
-
-        }],
+                        }, { // Secondary yAxis
+                            gridLineWidth: 0,
+                            title: {
+                                text: 'Revenue / Session',
+                                style: {
+                                    color: Highcharts.getOptions().colors[0]
+                                }
+                            },
+                            labels: {
+                                format: '{value} k USD',
+                                style: {
+                                    color: Highcharts.getOptions().colors[0]
+                                }
+                            }
+                        }],
                 tooltip: {
                     shared: true
                 },
@@ -355,28 +345,27 @@ dashboard
                     borderWidth: 0
                 },
                 series: [{
-                    name: 'Session time',
-                    type: 'spline',
-                    yAxis: 1,
-                    data: [14, 13.8, 19, 29, 36.4, 43, 49.6, 48.2, 40.2, 28.2, 17.2, 5],
-                    tooltip: {
-                        valueSuffix: ' k'
-                    }
+                            name: 'Session time',
+                            type: 'spline',
+                            yAxis: 1,
+                            data: [14, 13.8, 19, 29, 36.4, 43, 49.6, 48.2, 40.2, 28.2, 17.2, 5],
+                            tooltip: {
+                                valueSuffix: ' k'
+                            }
 
-        }, {
-                    name: 'Revenue/session',
-                    type: 'spline',
-                    yAxis: 0,
-                    data: [1016, 1016, 1015.9, 1015.5, 1012.3, 1009.5, 1009.6, 1010.2, 1013.1, 1016.9, 1018.2, 1016.7],
-                    marker: {
-                        enabled: false
-                    },
-                    dashStyle: 'shortdot',
-                    tooltip: {
-                        valueSuffix: ' mb'
-                    }
-
-        }]
+                        }, {
+                            name: 'Revenue/session',
+                            type: 'spline',
+                            yAxis: 0,
+                            data: [1016, 1016, 1015.9, 1015.5, 1012.3, 1009.5, 1009.6, 1010.2, 1013.1, 1016.9, 1018.2, 1016.7],
+                            marker: {
+                                enabled: false
+                            },
+                            dashStyle: 'shortdot',
+                            tooltip: {
+                                valueSuffix: ' mb'
+                            }
+                        }]
             });
         });
 
