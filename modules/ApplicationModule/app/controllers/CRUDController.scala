@@ -115,16 +115,6 @@ class CRUDController @Inject()(
         generateBadRequestResponse(errors)
       },
       application => {
-<<<<<<< HEAD
-        val result = applicationService.insertApplication(application)
-        result match {
-          case Success(app) => {
-            userService.addApplication(userId, app.name)
-            Redirect("/dashboard")
-          }
-          case Failure(f) => {
-            BadRequest(f.getMessage)
-=======
         val androidPackageCheck = application.appType.get == "Android" && !checkPackageNameFormat(application.packageName)
         if(androidPackageCheck || applicationService.exists(companyName, application.name)){
           generateBadRequestResponse(applicationForm.withError("packageName", "package name is invalid"))
@@ -138,7 +128,6 @@ class CRUDController @Inject()(
             case Failure(f) => {
               BadRequest(f.getMessage)
             }
->>>>>>> dc1f71e36efe4007b5411c33332263895f604c47
           }
         }
       }
