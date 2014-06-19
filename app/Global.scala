@@ -9,6 +9,13 @@ import service.user.modules._
 import service.security.modules._
 import service.aws.modules._
 import service.persistence.modules.PersistenceModule
+import service.recommendation.modules._
+import service.analytics.modules.AnalyticsModule
+import play.api.libs.concurrent.Execution.Implicits._
+import play.api.libs.concurrent.Akka
+import akka.actor.Props
+import actors.analytics._
+import scala.concurrent.duration._
 
 object Global extends GlobalSettings {
   
@@ -18,11 +25,20 @@ object Global extends GlobalSettings {
       new UserModule,
       new SecurityModule,
       new AWSModule,
-      new PersistenceModule
+      new PersistenceModule,
+      new RecommendationModule,
+      new AnalyticsModule
     )
   }
 
   override def getControllerInstance[A](clazz: Class[A]) = {
     injector.getInstance(clazz)
   }
+
+  override def onStart(app:Application) = {
+    val analyticsJobScheduler = Akka.system.actorOf(Props[AnalyticsJobSchedulerActor], name = "analytics-job-scheduler")
+    Akka.system.scheduler.schedule(0.microsecond, 60.second, analyticsJobScheduler, TopItems)
+    Akka.system.scheduler.schedule(0.microsecond, 60.second, analyticsJobScheduler, TotalDailyRevenue)
+  }
 }
+

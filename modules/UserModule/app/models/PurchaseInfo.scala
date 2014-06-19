@@ -26,6 +26,7 @@ object LocationInfo {
 **/
 case class PurchaseInfo(
   id: String,
+  sessionId: String,
   userId: String,
   applicationName: String,
   itemId: String,
@@ -37,10 +38,29 @@ case class PurchaseInfo(
 
 object PurchaseInfo {
 
-  lazy val PurchaseCollection = "purchases"
+  lazy val Id = "id"
+  lazy val UserId = "userId"
+  def getRecommendationCollection(companyName: String, applicationName: String) = s"${companyName}_recommendation_${applicationName}"
+  def getCollection(companyName: String, applicationName: String) = s"${companyName}_purchases_${applicationName}"
+
+  implicit def buildJsonFromMap(map: Map[String, JsValue]): JsValue = {
+    Json.toJson(
+      Map(
+        "id" -> map("id"),
+        "sessionId" -> map("sessionId"),
+        "userId" -> map("userId"),
+        "name" -> map("name"),
+        "itemId" -> map("itemId"),
+        "price" -> map("price"),
+        "deviceInfo" -> map("deviceInfo"),
+        "time" -> map("time")
+      )
+    )
+  }
 
   implicit val reader = (
     (__ \ "id").read[String] and
+    (__ \ "sessionId").read[String] and
     (__ \ "userId").read[String] and
     (__ \ "name").read[String] and
     (__ \ "itemId").read[String] and
@@ -52,6 +72,7 @@ object PurchaseInfo {
 
   implicit val writes = (
     (__ \ "id").write[String] and
+    (__ \ "sessionId").write[String] and
     (__ \ "userId").write[String] and
     (__ \ "name").write[String] and
     (__ \ "itemId").write[String] and

@@ -25,6 +25,7 @@ class ItemServiceImpl @Inject()(
   private lazy val MultiplyDelta = 1000000
 
   def createGooglePlayItem(
+    companyName: String,
     applicationName: String,
     name: String,
     description: String,
@@ -54,7 +55,7 @@ class ItemServiceImpl @Inject()(
       autofill,
       language,
       price,
-      applicationService.getApplicationCountries(applicationName)
+      applicationService.getApplicationCountries(companyName, applicationName)
     )
 
     val item = new Item(
@@ -66,12 +67,13 @@ class ItemServiceImpl @Inject()(
       imageInfo = new ImageInfo(imageName, imageUrl)
     )
 
-    promise.success(applicationService.addItem(item, applicationName))
+    promise.success(applicationService.addItem(companyName, item, applicationName))
     promise.future
   }
 
   //TODO
   def createAppleItem(
+    companyName: String,
     applicationName: String,
     title: String,
     name: String,
@@ -104,10 +106,14 @@ class ItemServiceImpl @Inject()(
       new ImageInfo("","")
     )
 
-    applicationService.addItem(item, applicationName)
+    applicationService.addItem(companyName, item, applicationName)
   }
 
-  def createItemFromMultipartData(formData: MultipartFormData[_], applicationName: String): Future[Try[Item]] = {
+  def createItemFromMultipartData(
+    companyName: String,
+    formData: MultipartFormData[_],
+    applicationName: String
+  ): Future[Try[Item]] = {
     def generateJsonError(key: String, message: String): JsValue = {
       Json.obj(key -> Json.obj("message" -> message, "visible" -> true))
     }
@@ -118,7 +124,7 @@ class ItemServiceImpl @Inject()(
 
     data get "name" match {
       case Some(name) => {
-        if(applicationService.itemExists(name.head, "application name")){
+        if(applicationService.itemExists(companyName, name.head, "application name")){
           errors += generateJsonError("name", "An item already exists with this name")
         }
       }
@@ -153,6 +159,7 @@ class ItemServiceImpl @Inject()(
       promise.future
     } else {
       createGooglePlayItem(
+        companyName,
         applicationName,
         (data get "name").get.head,
         (data get "description").get.head,

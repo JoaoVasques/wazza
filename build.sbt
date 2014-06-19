@@ -5,8 +5,6 @@ version := "pre-alpha"
 lazy val dependencies = Seq(
   anorm,
   cache,
-  "se.radley" %% "play-plugins-salat" % "1.4.0",
-  //"com.github.mumoshu" %% "play2-memcached" % "0.3.0.2",
   "com.google.inject" % "guice" % "3.0",
   "com.tzavellas" % "sse-guice" % "0.7.1",
   "org.webjars" % "webjars-play_2.10" % "2.2.2-1",
@@ -19,11 +17,12 @@ lazy val dependencies = Seq(
   "org.mindrot" % "jbcrypt" % "0.3m",
   //"org.webjars" % "angular-ui-bootstrap" % "0.10.0", //not used anymore
   "commons-codec" % "commons-codec" % "1.9"
+  "org.mongodb" % "casbah_2.10" % "2.7.0",
+  "com.typesafe.akka" %% "akka-actor" % "2.2.3",
+  "com.typesafe.akka" %% "akka-slf4j" % "2.2.3"
 )
 
 libraryDependencies ++= dependencies
-
-//resolvers += "Spy Repository" at "http://files.couchbase.com/maven2" // required to resolve `spymemcached`, the plugin's dependency.
 
 templatesImport += "org.bson.types.ObjectId"
 
@@ -33,14 +32,29 @@ templatesImport += "controllers.user._"
 
 lazy val mySettings = Seq(
     javaOptions in run += "-Dconfig.file=conf/dev/application_dev.conf",
-    routesImport ++= Seq("se.radley.plugin.salat.Binders._"),
     scalacOptions ++= Seq("-feature", "-language:reflectiveCalls")
 )
 
 // Projects
 lazy val home = project.in(file("."))
-  .aggregate(dashboardModule, userModule, applicationModule, securityModule, awsModule, apiModule, persistenceModule)
-  .dependsOn(dashboardModule, userModule, applicationModule, securityModule, awsModule, apiModule, persistenceModule)
+  .aggregate(dashboardModule,
+    userModule,
+    applicationModule,
+    securityModule,
+    awsModule,
+    apiModule,
+    persistenceModule,
+    recommendationModule,
+    analyticsModule)
+  .dependsOn(dashboardModule,
+    userModule,
+    applicationModule,
+    securityModule,
+    awsModule,
+    apiModule,
+    persistenceModule,
+    recommendationModule,
+    analyticsModule)
   .settings(mySettings: _*)
 
 lazy val dashboardModule = play.Project("dashboard",
@@ -72,6 +86,7 @@ lazy val securityModule = play.Project("security",
                     dependencies,
                     path = file("modules/SecurityModule")
               )
+              .dependsOn(persistenceModule)
               .settings(mySettings: _*)
 
 lazy val awsModule = play.Project("aws",
@@ -86,7 +101,7 @@ lazy val apiModule = play.Project("api",
                     dependencies,
                     path = file("modules/ApiModule")
               )
-              .dependsOn(securityModule, awsModule, userModule, applicationModule)
+              .dependsOn(securityModule, awsModule, userModule, applicationModule, recommendationModule)
               .settings(mySettings: _*)
 
 
@@ -97,5 +112,20 @@ lazy val persistenceModule = play.Project("persistence",
               )
               .settings(mySettings: _*)
 
+lazy val recommendationModule = play.Project("recommendation",
+  version.toString,
+  dependencies,
+  path = file("modules/RecommendationModule")
+)
+  .dependsOn(userModule, applicationModule, persistenceModule)
+  .settings(mySettings: _*)
+
+lazy val analyticsModule = play.Project("analytics",
+  version.toString,
+  dependencies,
+  path = file("modules/AnalyticsModule")
+)
+  .dependsOn(userModule, applicationModule, persistenceModule)
+  .settings(mySettings: _*)
 
 play.Project.playScalaSettings

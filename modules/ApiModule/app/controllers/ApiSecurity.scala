@@ -22,6 +22,7 @@ import org.apache.commons.codec.binary.Hex
 
 trait ApiSecurity { self: Controller =>
 
+  val CompanyNameHeader = "CompanyName"
   val ApplicationNameHeader = "AppName"
   val MessageDigestHeader = "Digest"
 
@@ -80,23 +81,22 @@ trait ApiSecurity { self: Controller =>
   def ApiSecurityHandler[A]
     (p: BodyParser[A] = parse.anyContent)
     (f:  Request[A] => Result): Action[A] = Action(p){implicit request =>
-    //println(s"HEADERS ${request.headers}")
-    request.headers.get(ApplicationNameHeader) match {
-      case Some(name) => {
-        if(request.method == "GET") {
-          f(request)
-        } else {
-          applicationService.getApplicationCredentials(name) match {
-            case Some(credentials) => {
-              checkMessageValidity(request, request.body, f, credentials)
-            }
-            case None => BadRequest
+    val companyName = request.headers.get(CompanyNameHeader).getOrElse(null)
+    val applicationName = request.headers.get(ApplicationNameHeader).getOrElse(null)
+
+    if(companyName == null || applicationName == null) {
+      println("missing headers..")
+      BadRequest
+    } else {
+      if(request.method == "GET") {
+        f(request)
+      } else {
+        applicationService.getApplicationCredentials(companyName, applicationName) match {
+          case Some(credentials) => {
+            checkMessageValidity(request, request.body, f, credentials)
           }
+          case None => BadRequest
         }
-      }
-      case None => {
-        println("No application header")
-        BadRequest
       }
     }
   }

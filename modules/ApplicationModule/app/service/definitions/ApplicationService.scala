@@ -8,42 +8,44 @@ trait ApplicationService {
 
   protected lazy val ItemBatch = 10
 
-  def insertApplication(application: WazzaApplication): Try[WazzaApplication]
+  def insertApplication(companyName: String, application: WazzaApplication): Try[WazzaApplication]
 
-  def deleteApplication(name: WazzaApplication): Try[Unit]
+  def deleteApplication(companyName: String, name: WazzaApplication): Try[Unit]
 
-  def exists(name: String): Boolean
+  def exists(companyName: String, name: String): Boolean
 
-  def find(key: String): Option[WazzaApplication]
+  def find(companyName: String, key: String): Option[WazzaApplication]
 
   def getApplicationyTypes: List[String]
 
-  def getApplicationCountries(appName: String): List[String]
+  def getApplicationCountries(companyName: String, appName: String): List[String]
 
-  def getApplicationCredentials(appName: String): Option[Credentials]
+  def getApplicationCredentials(companyName: String, appName: String): Option[Credentials]
 
   /** Item operations **/
 
-  def addItem(item: Item, applicationName: String): Try[Item]
+  def addItem(companyName: String, item: Item, applicationName: String): Try[Item]
 
-  def getItem(itemId: String, applicationName: String): Option[Item]
+  def getItem(companyName: String, itemId: String, applicationName: String): Option[Item]
 
-  def getItems(applicationName: String, offset: Int = 0, projection: String = null): List[Item]
+  def getItems(companyName: String, applicationName: String, offset: Int = 0, projection: String = null): List[Item]
 
-  def itemExists(item: String, applicationName: String): Boolean
+  def getItemsNotPurchased(companyName: String, applicationName: String, userId: String, limit: Int): List[Item]
 
-  def deleteItem(itemId: String, applicationName: String, imageName: String): Future[Unit]
+  def itemExists(companyName: String, item: String, applicationName: String): Boolean
+
+  def deleteItem(companyName: String, itemId: String, applicationName: String, imageName: String): Future[Unit]
 
   /** Virtual currency operations **/
 
-  def addVirtualCurrency(currency: VirtualCurrency, applicationName: String): Try[VirtualCurrency]
+  def addVirtualCurrency(companyName: String, currency: VirtualCurrency, applicationName: String): Try[VirtualCurrency]
 
-  def deleteVirtualCurrency(currencyName: String, applicationName: String): Try[Unit]
+  def deleteVirtualCurrency(companyName: String, currencyName: String, applicationName: String): Try[Unit]
 
-  def getVirtualCurrency(currencyName: String, applicationName: String): Option[VirtualCurrency]
+  def getVirtualCurrency(companyName: String, currencyName: String, applicationName: String): Option[VirtualCurrency]
 
-  def getVirtualCurrencies(applicationName: String): List[VirtualCurrency]
+  def getVirtualCurrencies(companyName: String, applicationName: String): List[VirtualCurrency]
 
-  def virtualCurrencyExists(currencyName: String, applicationName: String): Boolean
+  def virtualCurrencyExists(companyName: String, currencyName: String, applicationName: String): Boolean
 
 }

@@ -24,11 +24,11 @@ angular.module('ItemModule.controllers', ['ItemModule.services', 'angularFileUpl
     ) {
 
       $scope.itemSearch = false;
-    $scope.currencyOptions = ["Real","Virtual"];
-    $scope.showCurrencyInputs = {
-      "real": true,
-      "virtual": false
-    };
+      $scope.currencyOptions = ["Real","Virtual"];
+      $scope.showCurrencyInputs = {
+        "real": true,
+        "virtual": false
+      };
 
     $scope.bootstrapModule = function(){
       $scope.noImageThumbnailUrl = "http://allaboutuarts.ca/wp-content/uploads/2012/07/placeholder_2.jpg"
@@ -61,6 +61,7 @@ angular.module('ItemModule.controllers', ['ItemModule.services', 'angularFileUpl
         }
       };
 
+      $scope.companyName = ApplicationStateService.companyName;
       $scope.imgThumb = "";
       $scope.showCurrencyInputs.real = true;
       $scope.errors = false;
