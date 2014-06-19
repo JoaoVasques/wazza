@@ -88,8 +88,8 @@ class CRUDController @Inject()(
       "name" -> nonEmptyText,
       "appUrl" -> nonEmptyText.verifying(urlCheckConstraint),
       "imageName" -> ignored(""),
-      "packageName" -> text,
-      "appType" -> optional(text),
+      "packageName" -> ignored("com.test"),
+      "appType" -> list(text),
       "credentials" -> mapping(
         "appId" -> ignored(secretGeneratorService.generateSecret(Id)),
         "apiKey" -> ignored(secretGeneratorService.generateSecret(ApiKey)),

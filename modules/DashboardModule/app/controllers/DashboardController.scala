@@ -77,10 +77,22 @@ class DashboardController @Inject()(
     }
   }
 
-  def analyticsSection = HasToken() {token => userId => implicit request =>
-    Ok(views.html.analytics())
+  def analyticsApp = HasToken() {token => userId => implicit request =>
+    Ok(views.html.analyticsApp())
+  }
+  
+  def analyticsUser = HasToken() {token => userId => implicit request =>
+    Ok(views.html.analyticsUser())
   }
 
+  def analyticsRevenue = HasToken() {token => userId => implicit request =>
+    Ok(views.html.analyticsRevenue())
+  }
+  
+  def analyticsDevice = HasToken() {token => userId => implicit request =>
+    Ok(views.html.analyticsDevice())
+  }
+  
   def storeAndroid = HasToken() {token => userId => implicit request =>
     Ok(views.html.storeAndroid())
   }
@@ -107,6 +119,14 @@ class DashboardController @Inject()(
 
   def inventoryVirtualCurrencies = HasToken() {token => userId => implicit request =>
     Ok(views.html.inventoryVirtualCurrencies())
+  }
+
+  def recommendation = HasToken() {token => userId => implicit request =>
+    Ok(views.html.recommendation())
+  }
+
+  def campaigns = HasToken() {token => userId => implicit request =>
+    Ok(views.html.campaigns())
   }
 
 }

@@ -47,5 +47,21 @@ angular.module('Wazza.services', []).
     };
   
     return service;
-  }])
+  }]).
+
+  factory('TopbarService', ['$rootScope', function ($rootScope) {
+        var service = {};
+        service.pagename = 'Dashboard';
+
+        service.getName = function () {
+                return pagename;
+        };
+
+        service.setName = function(value) {
+                pagename = value;
+                $rootScope.$broadcast("PAGE_UPDATED");
+        };
+
+        return service;
+    }])
 ;

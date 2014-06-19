@@ -6,9 +6,6 @@ angular.module('Wazza', ['ngRoute', 'Wazza.controllers', 'ItemModule', 'UserModu
   config([ '$routeProvider', '$locationProvider' , function($routeProvider, $locationProvider) {
     $routeProvider
       .when('/', {
-        templateUrl: '/launch'
-      })
-      .when('/login', {
         templateUrl: '/login',
         controller: 'LoginController'
       })
@@ -20,18 +17,28 @@ angular.module('Wazza', ['ngRoute', 'Wazza.controllers', 'ItemModule', 'UserModu
         templateUrl: '/dashboard',
         controller: 'RedirectController'
       })
+      //recommendation
+      .when('/recommendation', {
+        templateUrl: '/dashboard/recommendation',
+        controller: 'RecommendationController'
+      })
+      //recommendation
+      .when('/campaigns', {
+        templateUrl: '/dashboard/campaigns',
+        controller: 'CampaignsController'
+      })
       //inventory
       .when('/inventory', {
         templateUrl: '/dashboard/inventory',
-        controller: 'DashboardController'
+        controller: 'InventoryController'
       })
       .when('/inventory/crud', {
         templateUrl: '/dashboard/inventory/crud',
-        controller: 'DashboardController'
+        controller: 'InventoryController'
       })
       .when('/inventory/virtualCurrencies', {
         templateUrl: '/dashboard/inventory/virtualCurrencies',
-        controller: 'DashboardController'
+        controller: 'InventoryController'
       })
       //stores
       .when('/store/android', {
@@ -47,9 +54,21 @@ angular.module('Wazza', ['ngRoute', 'Wazza.controllers', 'ItemModule', 'UserModu
         controller: 'DashboardController'
       })
       //analytics
-      .when('/analytics', {
-        templateUrl: '/dashboard/analytics',
-        controller: ''
+      .when('/analyticsUser', {
+        templateUrl: '/dashboard/analyticsUser',
+        controller: 'AnalyticsController'
+      })
+      .when('/analyticsRevenue', {
+        templateUrl: '/dashboard/analyticsRevenue',
+        controller: 'AnalyticsController'
+      })
+      .when('/analyticsApp', {
+        templateUrl: '/dashboard/analyticsApp',
+        controller: 'AnalyticsController'
+      })
+      .when('/analyticsDevice', {
+        templateUrl: '/dashboard/analyticsDevice',
+        controller: 'AnalyticsController'
       })
       //settings
       .when('/settings', {

@@ -3,17 +3,18 @@
 <!DOCTYPE html>
 
 @javascripts = {
-  <script src="@routes.WebJarAssets.at(WebJarAssets.locate("1.2.6/angular.js"))"></script>
-  <script src="@routes.WebJarAssets.at(WebJarAssets.locate("1.2.6/angular-route.js"))"></script>
-  <script src="@routes.WebJarAssets.at(WebJarAssets.locate("1.2.6/angular-cookies.min.js"))"></script>
-  <script src="@routes.WebJarAssets.at(WebJarAssets.locate("underscore-min.js"))"></script>
-  <script src="@routes.Assets.at("javascripts/angular-file-upload.min.js")"></script>
-  <script src="@routes.Assets.at("javascripts/angular-file-upload-html5-shim.min.js")"></script>
-  <script src="@routes.Assets.at("javascripts/app.js")"></script>
-  <script src="@routes.Assets.at("javascripts/services.js")"></script>
-  <script src="@routes.Assets.at("javascripts/controllers.js")"></script>
-  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-  <script src="@routes.WebJarAssets.at(WebJarAssets.locate("bootstrap.min.js"))"></script>
+  <script src="@routes.WebJarAssets.at(WebJarAssets.locate("1.2.16/angular.min.js"))"></script>
+  <script src="@routes.WebJarAssets.at(WebJarAssets.locate("1.2.16/angular-route.min.js"))"></script>
+  <script src="@routes.WebJarAssets.at(WebJarAssets.locate("1.2.16/angular-cookies.min.js"))"></script>
+  <script defer src="@routes.WebJarAssets.at(WebJarAssets.locate("underscore-min.js"))"></script>
+  <script defer src="@routes.Assets.at("javascripts/angular-file-upload.min.js")"></script>
+  <script defer src="@routes.Assets.at("javascripts/angular-file-upload-html5-shim.min.js")"></script>
+  <script defer src="@routes.Assets.at("javascripts/app.js")"></script>
+  <script defer src="@routes.Assets.at("javascripts/services.js")"></script>
+  <script defer src="@routes.Assets.at("javascripts/controllers.js")"></script>
+  <script defer src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+  <script defer src="@routes.WebJarAssets.at(WebJarAssets.locate("bootstrap.min.js"))"></script>
+
   <!-- controllers -->
   @views.html.applicationJavascripts.render()
 
@@ -23,7 +24,22 @@
 
   @views.html.dashboardJavascripts.render()
 
-  <script src="@routes.Assets.at("custom.js")"></script>
+  <!-- Charts -->
+  <script defer src="http://code.highcharts.com/highcharts.js"></script>
+
+  <!-- AdminLTE App -->
+  <script defer src="@routes.Assets.at("app.js")"></script>
+
+  <script defer src="@routes.Assets.at("custom.js")"></script>
+
+  <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+  <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+  <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+  <![endif]-->
+
+  <!--previously used: script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script-->
 }
 
 @stylesheets = {
@@ -32,39 +48,64 @@
   <!-- TODO: Optimize CSS again.. -->
   <link rel="stylesheet" type="text/css" media="screen" href="@routes.Assets.at("stylesheets/item.css")">
 
-  <link rel="stylesheet" type="text/css" media="screen" href="@routes.Assets.at("stylesheets/style.css")">
   <link rel="stylesheet" type="text/css" media="screen" href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css">
   <link rel="stylesheet" type="text/css" media="screen" href='http://fonts.googleapis.com/css?family=Titillium+Web:400,600,300,200&subset=latin,latin-ext'>
   <!-- TODO: better custom favicon :) -->
   <link rel="shortcut icon" href="@routes.Assets.at("images/favicon.ico")">
+
+  <!-- Ionicons -->
+  <link rel="stylesheet" type="text/css" href="http://code.ionicframework.com/ionicons/1.4.1/css/ionicons.min.css"/>
+  <!-- Theme style -->
+  <link rel="stylesheet" type="text/css" href="@routes.Assets.at("stylesheets/AdminLTE.css")" />
 }
 
 <html ng-app="Wazza">
   <head>
     <title>@title</title>
-    <meta name="description" content="Wazza - In-App Purchases made simple" />
+    <meta name="description" content="Wazza - All-in-one In-App Purchases solution" />
     <meta name="author" content="Wazza" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     @stylesheets
     @javascripts
-    <!--[if lt IE 9]>
-      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
   </head>
-  <body class="font-medium">
-    <div id="wrapper container-fluid">
-      @views.html.navigationBar.render()
-      @views.html.sidebar.render()
-      <div id="page-wrapper">
-        <div class="row">
-          <div class="col-md-12">
-            <div ng-view></div>
-          </div>
-        </div>
-        @views.html.contactsAbout.render()
-       </div>
-    </div>
+  <body class="skin-blue">
+        @views.html.navigationBar.render()
+        
+        <div class="wrapper row-offcanvas row-offcanvas-left">
+            <!-- Left side column. contains the logo and sidebar -->
+            @views.html.sidebar.render()
+
+            <!-- Right side column. Contains the navbar and content of the page -->
+            <aside class="right-side">                
+                <!-- Content Header (Page header) -->
+                <section class="content-header" ng-controller="NavBarController" ng-show="showNavBar" ng-model="page">
+                    <h1>
+                        {{page}}
+                        <span ng-show="page === 'Dashboard'">
+                              <small>Control panel</small>
+                        </span>
+                        <span ng-show="page === 'Analytics'">
+                              <small><a href="/analyticsApp"><!--i class="fa fa-dashboard"></i--> App</a></small>
+                              <small><a href="/analyticsUsers"><!--i class="fa fa-dashboard"></i--> Users</a></small>
+                              <small><a href="/analyticsRevenue"><!--i class="fa fa-dashboard"></i--> Revenue</a></small>
+                              <small><a href="/analyticsDevice"><!--i class="fa fa-dashboard"></i--> Device</a></small>
+                        </span>
+                        
+                    </h1>
+                    <!--ol class="breadcrumb">
+                        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+                        <li class="active">Blank page</li>
+                    </ol-->
+                </section>
+
+                <!-- Main content -->
+                <section class="content">
+                  <div ng-view></div>
+                </section><!-- /.content -->
+
+            </aside><!-- /.right-side -->
+        </div><!-- ./wrapper -->
 
   </body>
 </html>

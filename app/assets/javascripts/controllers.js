@@ -49,7 +49,7 @@ angular.module('Wazza.controllers', [
       then(
         function(){
           LoginLogoutService.login();
-          document.getElementById("page-wrapper").className = "page-wrapper";
+          //document.getElementById("page-wrapper").className = "page-wrapper";
           $location.path("/home");
         }
       );
@@ -78,7 +78,7 @@ angular.module('Wazza.controllers', [
     });
     ApplicationStateService.updateCompanyName(success.data.companyName);
     LoginLogoutService.login();
-    document.getElementById("page-wrapper").className = "page-wrapper";
+    //document.getElementById("page-wrapper").className = "page-wrapper";
     $location.path(success.data.url);
   };
 
@@ -106,6 +106,7 @@ angular.module('Wazza.controllers', [
   'LoginLogoutService',
   'ItemSearchService',
   'ApplicationStateService',
+  'TopbarService',
   function (
     $scope,
     cookiesManagerService,
@@ -114,8 +115,11 @@ angular.module('Wazza.controllers', [
     $rootScope,
     LoginLogoutService,
     ItemSearchService,
-    ApplicationStateService
+    ApplicationStateService,
+    TopbarService
   ) {
+
+    $scope.page = "Dashboard";
 
     $scope.bootstrapModule = function(){
       $scope.sessionOn = false;
@@ -125,8 +129,13 @@ angular.module('Wazza.controllers', [
           name: "",
           email: ""
       };
+      $scope.applicationsList = [];
       $scope.$on("APPLICATION_NAME_UPDATED", function(){
         $scope.applicationName = ApplicationStateService.applicationName;
+      });
+
+      $scope.$on("APPLICATIONS_LIST_UPDATED", function() {
+        $scope.applicationsList = ApplicationStateService.applicationsList;
       });
         
       $scope.$on("LOGIN_SUCCESS", function(data){
@@ -135,7 +144,7 @@ angular.module('Wazza.controllers', [
       });
         
       $scope.$on("LOGOUT_SUCCESS", function(event, url){
-        document.getElementById("page-wrapper").className = "";
+        //document.getElementById("page-wrapper").className = "";
         $scope.sessionOn = false;
         $scope.showNavBar = false;
         $location.path(url.value);
@@ -144,6 +153,10 @@ angular.module('Wazza.controllers', [
       $scope.$on("USER_INFO_UPDATED", function(){
           $scope.userInfo.name = ApplicationStateService.userInfo.name;
           $scope.userInfo.email = ApplicationStateService.userInfo.email; 
+      });
+
+      $scope.$on("PAGE_UPDATED", function(){
+        $scope.page = TopbarService.getName();
       });
     };
     $scope.bootstrapModule();
@@ -175,7 +188,7 @@ angular.module('Wazza.controllers', [
       });
 
       $scope.$on("LOGOUT_SUCCESS", function(event, data){
-        document.getElementById("page-wrapper").className = "";
+        //document.getElementById("page-wrapper").className = "";
         $scope.showSideBar = false;
       });
 
