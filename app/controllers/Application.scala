@@ -14,10 +14,6 @@ class Application extends Controller with Security{
 	 Ok(views.html.index())
   }
 
-  def launch = Action {
-	 Ok(views.html.launch())
-  }
-
   def fault(path : String) = Action {
   	if(path == "home")
   		Ok(views.html.index2())

@@ -5,7 +5,6 @@
 # Home page
 GET     /                     @controllers.Application.index
 GET     /index2               @controllers.Application.fault(path = "home")
-GET     /launch	              @controllers.Application.launch
 GET     /login                @controllers.LoginLogoutController.login
 POST    /login                @controllers.LoginLogoutController.authenticate
 POST    /logout               @controllers.LoginLogoutController.logout
