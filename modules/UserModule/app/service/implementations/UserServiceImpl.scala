@@ -11,8 +11,8 @@ import service.persistence.definitions.{DatabaseService}
 import service.security.definitions.InternalService
 
 class UserServiceImpl @Inject()(
-  databaseService: DatabaseService,
-  internalService: InternalService
+  databaseService: DatabaseService
+  //internalService: InternalService
 ) extends UserService {
 
   private val UserId = "email"
@@ -22,7 +22,7 @@ class UserServiceImpl @Inject()(
     val collection = User.getCollection
     user.password = BCrypt.hashpw(user.password, BCrypt.gensalt())
     databaseService.insert(collection, Json.toJson(user))
-    internalService.addCompany(user.company)
+    //internalService.addCompany(user.company)
   }
 
   def find(email: String): Option[User] = {
@@ -70,5 +70,3 @@ class UserServiceImpl @Inject()(
     }
   }
 }
-
-

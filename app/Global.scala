@@ -45,7 +45,7 @@ object Global extends GlobalSettings {
     ))
 
   override def onStart(app:Application) = {
-    val analyticsJobScheduler = Akka.system.actorOf(Props[AnalyticsJobSchedulerActor], name = "analytics-job-scheduler")
+    //val analyticsJobScheduler = Akka.system.actorOf(Props[AnalyticsJobSchedulerActor], name = "analytics-job-scheduler")
     //Akka.system.scheduler.schedule(0.microsecond, 60.second, analyticsJobScheduler, TopItems)
     //Akka.system.scheduler.schedule(0.microsecond, 60.second, analyticsJobScheduler, TotalDailyRevenue)
   }

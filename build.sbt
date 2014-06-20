@@ -124,7 +124,7 @@ lazy val analyticsModule = play.Project("analytics",
   dependencies,
   path = file("modules/AnalyticsModule")
 )
-  .dependsOn(userModule, applicationModule, persistenceModule)
+  .dependsOn(userModule, applicationModule, persistenceModule, securityModule)
   .settings(mySettings: _*)
 
 play.Project.playScalaSettings
