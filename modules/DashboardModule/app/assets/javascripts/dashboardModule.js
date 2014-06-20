@@ -362,6 +362,7 @@ var dashboard = angular.module('DashboardModule', ['ItemModule.services'])
     function ($rootScope) {
         var service = {};
         service.applicationName = "";
+        service.companyName = "";
         service.applicationsList = [];
         service.userInfo = {
             name: "",
@@ -373,6 +374,11 @@ var dashboard = angular.module('DashboardModule', ['ItemModule.services'])
             $rootScope.$broadcast("APPLICATION_NAME_UPDATED");
         };
 
+        service.updateCompanyName = function(newName) {
+            service.companyName = newName;
+            $rootScope.$broadcast("COMPANY_NAME_UPDATED");
+        };
+        
         service.updateApplicationsList = function (newList) {
             service.appplicationsList = newList;
             $rootScope.$broadcast("APPLICATIONS_LIST_UPDATED");
