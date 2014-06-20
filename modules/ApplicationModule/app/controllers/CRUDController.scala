@@ -86,7 +86,7 @@ class CRUDController @Inject()(
   val applicationForm: Form[WazzaApplication] = Form(
     mapping(
       "name" -> nonEmptyText,
-      "appUrl" -> nonEmptyText.verifying(urlCheckConstraint),
+      "url" -> nonEmptyText.verifying(urlCheckConstraint),
       "imageName" -> ignored(""),
       "packageName" -> ignored("com.test"),
       "appType" -> list(text),
@@ -106,10 +106,12 @@ class CRUDController @Inject()(
   }
 
   private def generateBadRequestResponse(errors: Form[WazzaApplication]): Result = {
+    println("errors")
     BadRequest(Json.obj("errors" -> errors.errorsAsJson))
   }
 
   def newApplicationSubmit(companyName: String) = HasToken(parse.json) { token => userId => implicit request =>
+    println("request " + request.body)
     applicationForm.bindFromRequest.fold(
       errors => {
         generateBadRequestResponse(errors)
