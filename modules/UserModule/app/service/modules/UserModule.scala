@@ -9,5 +9,6 @@ class UserModule extends ScalaModule {
     bind[UserService].to[UserServiceImpl]
     bind[MobileUserService].to[MobileUserServiceImpl]
     bind[PurchaseService].to[PurchaseServiceImpl]
+    bind[MobileSessionService].to[MobileSessionServiceImpl]
   }
 }

@@ -5,29 +5,24 @@ import play.api.libs.functional.syntax._
 import play.api.Play.current
 import play.api.libs.json._
 
-case class MobileUser(
-  userId: String,
-  osType: String,
-  sessions: List[MobileSession],
-  purchases: List[PurchaseInfo]
-)
+case class MobileUser(userId: String)
 
 object MobileUser {
 
-  lazy val MobileUserCollection = "mobileUsers"
+  lazy val KeyId = "userId"
 
-  implicit val readJson = (
-    (__ \ "userId").read[String] and
-    (__ \ "osType").read[String] and
-    (__ \ "sessions").read[List[MobileSession]] and
-    (__ \ "purchases").read[List[PurchaseInfo]]
-  )(MobileUser.apply _)
+  def getCollection(companyName: String, applicationName: String) = s"${companyName}_mUsers_${applicationName}"
 
-  implicit val buildFromJson = (
-    (__ \ "userId").write[String] and
-    (__ \ "osType").write[String] and
-    (__ \ "sessions").write[List[MobileSession]] and
-    (__ \ "purchases").write[List[PurchaseInfo]]
-  )(unlift(MobileUser.unapply))
+  implicit def readJson(mobileUser: MobileUser): JsValue = {
+    Json.obj(
+      "userId" -> mobileUser.userId
+    )
+  }
+
+  implicit def buildFromJson(json: JsValue): MobileUser = {
+    new MobileUser(
+      (json \ "userId").as[String]
+    )
+  }
 }
 

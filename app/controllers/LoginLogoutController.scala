@@ -47,6 +47,7 @@ class LoginLogoutController @Inject()(
         val token = tokenService.startNewSession(user.get.email)
         Future {
           Ok(Json.obj(
+            "companyName" -> user.get.company,
             "authToken" -> token,
             "userId" -> user.get.email,
             "userName" -> user.get.name,

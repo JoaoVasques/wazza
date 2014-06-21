@@ -7,8 +7,12 @@ import com.mongodb.casbah.MongoCollection
 import com.mongodb.casbah.MongoCursor
 import com.mongodb.casbah.commons.MongoDBObject
 import com.mongodb.util.JSON
+import java.text.SimpleDateFormat
+import java.util.Date
 import play.api.Play
 import play.api.libs.json._
+import scala.collection.mutable.HashMap
+import scala.collection.mutable.SynchronizedMap
 import scala.util.Failure
 import scala.util.Success
 import scala.util.Try
@@ -18,42 +22,65 @@ import com.mongodb.casbah.Imports._
 
 class MongoDatabaseService extends DatabaseService {
 
-  private var databaseName = ""
+  private val mongoClient = getMongoClient().get
+  private val collections = new HashMap[String, MongoCollection] with SynchronizedMap[String, MongoCollection]
+
+  private def getCollection(collectionName: String): MongoCollection = {
+    collections.synchronized {
+      collections.get(collectionName) match {
+        case Some(c) => c
+        case None => {
+          addCollection(collectionName)
+          getCollection(collectionName)
+        }
+      }
+    }
+  }
+
+  private def collectionExists(collectionName: String): Boolean = {
+    collections.synchronized {
+      collections.keySet.find(_ == collectionName) match {
+        case Some(_) => true
+        case None => false
+      }
+    }
+  }
+
+  private def addCollection(collectionName: String) = {
+    collections.synchronized {
+      if(!collections.keySet.exists(_ == collectionName)) {
+        collections.put(collectionName, this.mongoClient.getDB(this.databaseName)(collectionName))
+      }
+    }
+  }
+
+  private var databaseName = getDatabaseName().get
+
+  private def getDatabaseName(): Try[String] = {
+    Play.current.configuration.getConfig("mongodb.dev") match {
+      case Some(config) => {
+        val uriStr = config.underlying.root.get("uri").render.filter(_ != '"')
+        new Success(uriStr.split("/").last)
+      }
+      case _ => Failure(new Exception("MongoDb credentials do not exist"))
+    }
+  }
 
   private def getMongoClient(): Try[MongoClient] = {
     Play.current.configuration.getConfig("mongodb.dev") match {
       case Some(config) => {
         val uriStr = config.underlying.root.get("uri").render.filter(_ != '"')
         val uri = MongoClientURI(uriStr)
-        this.databaseName = uriStr.split("/").last
         new Success(MongoClient(uri))
       }
       case _ => Failure(new Exception("MongoDb credentials do not exist"))
     }
   }
 
-  def dropCollection(): Unit = {
+  def dropCollection(collectionName: String): Unit = {
+    val collection = this.getCollection(collectionName)
+    collections.remove(collectionName)
     collection.drop()
-  }
-
-  def init(collectionName: String): Try[Unit] = {
-    getMongoClient() match {
-      case Success(client) => {
-        this.collection =  client.getDB(this.databaseName)(collectionName)
-        new Success()
-      }
-      case Failure(e) => Failure(e)
-    }
-  }
-
-  def init(uriStr: String, collectionName: String) = {
-    val client = MongoClient( MongoClientURI(uriStr))
-    this.databaseName = uriStr.split("/").last
-    this.collection =  client.getDB(this.databaseName)(collectionName)
-  }
-
-  def hello(): Unit = {
-    println("hello world")
   }
 
   private implicit def errorCheck(res: WriteResult): Try[Unit] = {
@@ -65,17 +92,34 @@ class MongoDatabaseService extends DatabaseService {
   }
 
   private implicit def convertJsonToDBObject(json: JsValue): DBObject = {
-    JSON.parse(json.toString).asInstanceOf[DBObject]
+
+    def convertDates(dateKey: String, dbObject: DBObject): DBObject = {
+      if(dbObject.containsField(dateKey)) {
+        val timeBackup = dbObject.get(dateKey).toString
+        dbObject.removeField(dateKey)
+        val format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z")
+        dbObject.put(dateKey, format.parse(timeBackup))
+      }
+      dbObject
+    }
+
+    val dateKeys = List("time", "startTime")
+    val dbObject = JSON.parse(json.toString).asInstanceOf[DBObject]
+    val res = dateKeys.filter(dbObject.containsField(_)).map {(key: String) =>
+      convertDates(key, dbObject)
+    }
+
+    if(res.isEmpty) dbObject else res.head
   }
 
-  def exists(key: String, value: String): Boolean = {
-    this.get(key, value) match {
+  def exists(collectionName: String, key: String, value: String): Boolean = {
+    this.get(collectionName, key, value) match {
       case Some(_) => true
       case None => false
     }
   }
 
-  def get(key: String, value: String, projection: String = null): Option[JsValue] = {
+  def get(collectionName: String, key: String, value: String, projection: String = null): Option[JsValue] = {
     val query = MongoDBObject(key -> value)
     val proj = if(projection != null) {
       MongoDBObject(projection -> 1)
@@ -83,23 +127,87 @@ class MongoDatabaseService extends DatabaseService {
       MongoDBObject()
     }
 
-    this.collection.findOne(query, proj) match {
-      case Some(obj) => {       
+    val collection = this.getCollection(collectionName)
+    collection.findOne(query, proj) match {
+      case Some(obj) => {
         Some(Json.parse(obj.toString))
       }
       case _ => None
     }
   }
 
-  def insert(model: JsValue): Try[Unit] = {
-    this.collection.insert(model)    
+  def getListElements(collectionName: String, key: String, value: String, projection: String = null): List[JsValue] = {
+    val query = MongoDBObject(key -> value)
+    val proj = if(projection != null) {
+      MongoDBObject(projection -> 1)
+    } else {
+      MongoDBObject()
+    }
+
+    val collection = this.getCollection(collectionName)
+    var elements = List[JsValue]()
+    for(el <- collection.find(query, proj)) {
+      elements ::= Json.parse(el.toString)
+    }
+    elements
   }
 
-  def delete(model: JsValue): Try[Unit] = {
-    this.collection.remove(model)
+  def getElementsWithoutArrayContent(
+    collectionName: String,
+    arrayKey: String,
+    elementKey: String,
+    array: List[String],
+    limit: Int
+  ): List[JsValue] = {
+
+    val query = (arrayKey $nin array)
+    val projection = MongoDBObject(arrayKey -> 1)
+    val collection = this.getCollection(collectionName)
+    var elements = List[JsValue]()
+    for(el <- collection.find(query, projection)) {
+      (Json.parse(el.toString) \ arrayKey).as[JsArray].value.foreach(item => {
+        elements ::= Json.parse(item.toString)
+      })
+    }
+    
+    val result = elements.filter(el => {
+      !array.contains((el \ elementKey).as[String])
+    })
+
+    if(limit > 0) {
+      result.take(limit)
+    } else {
+      result
+    }
+  }
+
+  def getCollectionElements(collectionName: String): List[JsValue] = {
+    this.getCollection(collectionName).find.toList.map {el =>
+      Json.parse(el.toString)
+    }
+  }
+
+  def insert(collectionName: String, model: JsValue, extra: Map[String, ObjectId] = null): Try[Unit] = {
+    val collection = this.getCollection(collectionName)
+    if(extra == null) {
+      collection.insert(model)
+    } else {
+      // for the specific case of recommendation collection
+      val builder = MongoDBObject.newBuilder
+      builder += "created_at" -> (model \ "created_at").as[String]
+      builder += "user_id" -> extra("user_id")
+      builder += "purchase_id" -> extra("purchase_id")
+      collection.insert(builder.result())
+    }
+  }
+
+  def delete(collectionName: String, model: JsValue): Try[Unit] = {
+    val collection = this.getCollection(collectionName)
+    collection.remove(model)
   }
 
   def update(
+    collectionName: String,
     key: String,
     keyValue: String,
     valueKey: String,
@@ -107,7 +215,23 @@ class MongoDatabaseService extends DatabaseService {
   ): Try[Unit] = {
     val query = MongoDBObject(key -> keyValue)
     val update = $set(valueKey -> newValue)
-    this.collection.update(query, update)
+    val collection = this.getCollection(collectionName)
+    collection.update(query, update)
+  }
+
+  /**
+    Time-ranged queries
+  **/
+  def getDocumentsWithinTimeRange(
+    collectionName: String,
+    dateFields: Tuple2[String, String],
+    start: Date,
+    end: Date
+  ): JsArray = {
+    val query = (dateFields._1 $lte start $gt end) ++ (dateFields._2 $lte start $gt end)
+    new JsArray(this.getCollection(collectionName).find(query).map {doc =>
+      Json.parse(doc.toString)
+    }.toSeq)
   }
 
   /**
@@ -115,19 +239,21 @@ class MongoDatabaseService extends DatabaseService {
   **/
 
   def existsInArray[T <: Any](
+    collectionName: String,
     docIdKey: String,
     docIdValue: String,
     arrayKey: String,
     elementKey: String,
     elementValue: T
   ): Boolean = {
-    this.getElementFromArray[T](docIdKey, docIdValue, arrayKey, elementKey, elementValue) match {
+    this.getElementFromArray[T](collectionName, docIdKey, docIdValue, arrayKey, elementKey, elementValue) match {
       case Some(_) => true
       case None => false
     }
   }
  
   def getElementFromArray[T <: Any](
+    collectionName: String,
     docIdKey: String,
     docIdValue: String,
     arrayKey: String,
@@ -143,7 +269,8 @@ class MongoDatabaseService extends DatabaseService {
 
     val query = MongoDBObject(docIdKey -> docIdValue)
     val projection = MongoDBObject(arrayKey -> 1)
-    this.collection.findOne(query, projection) match {
+    val collection = this.getCollection(collectionName)
+    collection.findOne(query, projection) match {
       case Some(obj) => findElementAux((Json.parse(obj.toString) \ arrayKey).as[JsArray])   
       case _ => None
     }
@@ -151,6 +278,7 @@ class MongoDatabaseService extends DatabaseService {
 
 
   def getElementsOfArray(
+    collectionName: String,
     docIdKey: String,
     docIdValue: String,
     arrayKey: String,
@@ -158,14 +286,15 @@ class MongoDatabaseService extends DatabaseService {
   ): List[JsValue] = {
     val query = MongoDBObject(docIdKey -> docIdValue)
     val projection = MongoDBObject(arrayKey -> 1)
+    val collection = this.getCollection(collectionName)
     limit match {
       case Some(maxNumberElements) => {
-        this.collection.find(query, projection).limit(maxNumberElements).map{el =>
+        collection.find(query, projection).limit(maxNumberElements).map{el =>
           Json.parse(el.toString)
         }.toList
       }
       case None => {
-        this.collection.find(query, projection).map{el =>
+        collection.find(query, projection).map{el =>
           Json.parse(el.toString)
         }.toList
       }
@@ -173,6 +302,7 @@ class MongoDatabaseService extends DatabaseService {
   }
 
   def addElementToArray[T <: Any](
+    collectionName: String,
     docIdKey: String,
     docIdValue: Any,
     arrayKey: String,
@@ -188,10 +318,12 @@ class MongoDatabaseService extends DatabaseService {
     }
 
     val update = $push(arrayKey -> model)
-    this.collection.update(query, update)
+    val collection = this.getCollection(collectionName)
+    collection.update(query, update)
   }
 
   def deleteElementFromArray[T <: Any](
+    collectionName: String,
     docIdKey: String,
     docIdValue: Any,
     arrayKey: String,
@@ -200,10 +332,12 @@ class MongoDatabaseService extends DatabaseService {
   ): Try[Unit] = {
     val query = MongoDBObject(docIdKey -> docIdValue)
     val update = $pull(arrayKey -> MongoDBObject(elementKey -> elementValue))
-    this.collection.update(query, update)
+    val collection = this.getCollection(collectionName)
+    collection.update(query, update)
   }
 
   def updateElementOnArray[T <: Any](
+    collectionName: String,
     docIdKey: String,
     docIdValue: String,
     arrayKey: String,
@@ -221,7 +355,8 @@ class MongoDatabaseService extends DatabaseService {
 
     val query = MongoDBObject(docIdKey -> docIdValue, s"$arrayKey.$elementId" -> elementIdValue)
     val update = $set((arrayKey+".$." + elementId) -> model)
-    this.collection.update(query, update)
+    val collection = this.getCollection(collectionName)
+    collection.update(query, update)
   }
 }
 

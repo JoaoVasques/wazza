@@ -1,7 +1,15 @@
 // application module
 
-angular.module('ApplicationModule.services', [])
-  .factory('createNewApplicationService', ['$http', '$q', function($http, $q) {
+angular.module('ApplicationModule.services', ['DashboardModule'])
+  .factory('createNewApplicationService', [
+    '$http',
+    '$q',
+    'ApplicationStateService',
+    function(
+      $http,
+      $q,
+      ApplicationStateService
+    ) {
     var service = {};
 
     service.validate = function(formData){
@@ -21,7 +29,10 @@ angular.module('ApplicationModule.services', [])
     };
 
     service.send = function(data){
-      var request = $http.post("/app/new", data);
+      console.log("creating new app");
+      var companyName = ApplicationStateService.companyName;
+      console.log("companyName: " + companyName);
+      var request = $http.post("/app/new/" + companyName, data);
       var deferred = $q.defer();
       deferred.resolve(request);
       return deferred.promise;
