@@ -8,22 +8,6 @@ angular.module('Wazza.controllers', [
     'DashboardModule'
 ])
 
-//evil, horrendous and quite broken hack. do not try this at home!
-.controller('RedirectController',[
-  '$scope',
-  '$location',
-  function (
-    $scope,
-    $location
-    ) {
-    document.getElementById("navbar").css("ng-hide", "");
-    document.getElementById("sidebar").css("ng-hide", "");
-    $scope.showNavBar = $scope.showSideBar = $scope.sessionOn = true;
-    console.log($scope);
-    $location.path("/home");
-  
-}])
-
 .controller('LoginController',[
   '$scope',
   '$location',
