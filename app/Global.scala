@@ -1,7 +1,11 @@
 import play.api.{GlobalSettings, Application}
 import com.google.inject._
+import play.api._
 import play.api.Play
 import play.api.Play.current
+import play.api.mvc._
+import play.api.mvc.Results._
+import scala.concurrent.Future
 import service.application.modules._
 import service.user.definitions._
 import service.user.implementations._
@@ -24,5 +28,11 @@ object Global extends GlobalSettings {
 
   override def getControllerInstance[A](clazz: Class[A]) = {
     injector.getInstance(clazz)
+  }
+
+  override def onHandlerNotFound(request: RequestHeader) = {
+    Future.successful(NotFound(
+      views.html.index()
+    ))
   }
 }

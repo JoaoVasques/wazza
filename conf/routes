@@ -4,7 +4,6 @@
 
 # Home page
 GET     /                     @controllers.Application.index
-GET     /index2               @controllers.Application.fault(path = "home")
 GET     /login                @controllers.LoginLogoutController.login
 POST    /login                @controllers.LoginLogoutController.authenticate
 POST    /logout               @controllers.LoginLogoutController.logout
@@ -19,5 +18,3 @@ POST    /logout               @controllers.LoginLogoutController.logout
 GET     /assets/*file         controllers.Assets.at(path="/public", file)
 GET     /webjars/*file        controllers.WebJarAssets.at(file)
 
-# Not correct, but better that 404. TODO: take out the ng-hide from the navbars!
-GET     /*route               @controllers.Application.fault(route)
