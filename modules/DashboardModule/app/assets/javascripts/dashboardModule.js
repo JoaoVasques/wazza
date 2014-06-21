@@ -43,6 +43,12 @@ var dashboard = angular.module('DashboardModule', ['ItemModule.services'])
             ApplicationStateService.updateApplicationName(_.first(data.data.applications).name);
             ApplicationStateService.updateUserInfo(data.data.userInfo);
 
+            ApplicationStateService.updateApplicationsList(
+              _.map(data.data.applications, function(app) {
+                  return app.name;
+              })
+            );
+            
             TopbarService.setName("Dashboard");
 
             $(function () {
@@ -331,6 +337,11 @@ var dashboard = angular.module('DashboardModule', ['ItemModule.services'])
             $scope.$on("APPLICATION_NAME_UPDATED", function () {
                 $scope.applicationName = ApplicationStateService.applicationName;
             });
+
+            $scope.$on("APPLICATIONS_LIST_UPDATED", function() {
+                $scope.applications = ApplicationStateService.applicationsList;
+            });
+            
             BootstrapDashboardService.execute()
                 .then(
                     $scope.bootstrapSuccessCallback,
@@ -380,7 +391,7 @@ var dashboard = angular.module('DashboardModule', ['ItemModule.services'])
         };
         
         service.updateApplicationsList = function (newList) {
-            service.appplicationsList = newList;
+            service.applicationsList = newList.slice(0);
             $rootScope.$broadcast("APPLICATIONS_LIST_UPDATED");
         };
 
