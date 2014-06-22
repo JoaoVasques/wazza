@@ -38,21 +38,6 @@ angular.module('Wazza.controllers', [
       );
   };
 
-  $scope.bootstrapModule = function(){
-    $scope.loginForm = {
-      "email": "",
-      "password": "",
-      "css": "form-group"
-    };
-    $scope.errors = {
-      "content": "",
-      "show": false,
-      "css": "has-error"
-    };
-    $scope.canRedirectToDashboard();
-  };
-  $scope.bootstrapModule();
-
   $scope.handleLoginSuccess = function(success){
     cookiesManagerService.set('PLAY2AUTH_SESS_ID', success.data.authToken);
     ApplicationStateService.updateUserInfo({
@@ -67,7 +52,6 @@ angular.module('Wazza.controllers', [
   $scope.handleLoginFailure = function(error){
     $scope.errors.content = error.data.errors;
     $scope.errors.show = true;
-    $scope.loginForm.css = $scope.loginForm.css + " " + $scope.errors.css;
   };
 
   $scope.signIn = function(){
@@ -77,6 +61,18 @@ angular.module('Wazza.controllers', [
         $scope.handleLoginFailure
       );
   };
+
+    $scope.loginForm = {
+      "email": "",
+      "password": ""
+    };
+    $scope.errors = {
+      "content": "",
+      "show": false
+    };
+    $scope.canRedirectToDashboard();
+
+
 }])
 
 .controller('NavBarController',[

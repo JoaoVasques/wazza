@@ -1,4 +1,5 @@
 angular.module('Wazza.services', []).
+
   factory('submitLoginCredentialsService', ['$http', '$q', function($http, $q) {
     var service = {};
 
