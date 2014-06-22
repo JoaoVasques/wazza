@@ -48,4 +48,9 @@ trait ApplicationService {
 
   def virtualCurrencyExists(companyName: String, currencyName: String, applicationName: String): Boolean
 
+  /**
+    General information about every entity in the system - companies and apps
+  **/
+
+  def getCompanies(): List[CompanyData]
 }

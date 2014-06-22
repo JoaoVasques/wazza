@@ -53,6 +53,16 @@ class AnalyticsServiceImpl @Inject()(
     promise.future
   }
 
+  def calculateAverageSessionLength(
+    companyName: String,
+    applicationName: String,
+    start: Date,
+    end: Date
+  ): Future[JsValue] = {
+    //TODO
+    null
+  }
+
   def getTopTenItems(companyName: String, applicationName: String, start: Date, end: Date): Future[JsArray] = {
     null
   }
