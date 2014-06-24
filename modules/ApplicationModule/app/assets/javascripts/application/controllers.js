@@ -21,7 +21,7 @@ angular.module('ApplicationModule.controllers', ['ApplicationModule.services', '
     $scope.storeOptions = ['iOS', 'Android'];
     $scope.applicationForm = {
       "name": "",
-      "appUrl": "",
+      "url": "",
       "packageName": "",
       "imageUrl": $scope.noImageThumbnailUrl,
       "appType": []

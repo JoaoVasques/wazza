@@ -15,7 +15,6 @@ lazy val dependencies = Seq(
   "org.webjars" % "underscorejs" % "1.6.0",
   "com.amazonaws" % "aws-java-sdk" % "1.7.9",
   "org.mindrot" % "jbcrypt" % "0.3m",
-  //"org.webjars" % "angular-ui-bootstrap" % "0.10.0", //not used anymore
   "commons-codec" % "commons-codec" % "1.9",
   "org.mongodb" % "casbah_2.10" % "2.7.0",
   "com.typesafe.akka" %% "akka-actor" % "2.2.3",
@@ -125,7 +124,7 @@ lazy val analyticsModule = play.Project("analytics",
   dependencies,
   path = file("modules/AnalyticsModule")
 )
-  .dependsOn(userModule, applicationModule, persistenceModule)
+  .dependsOn(userModule, applicationModule, persistenceModule, securityModule)
   .settings(mySettings: _*)
 
 play.Project.playScalaSettings
