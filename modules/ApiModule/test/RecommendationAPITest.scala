@@ -57,17 +57,19 @@ class RecommendationAPITest extends Specification {
   private val MaxPrice = 10
   private val NrMobileUsers = 200
   private val NrPurchases = 150
+  private val MaxSessionLength = 120
 
   private def generateApp() = {
+    this.purchaseService = new PurchaseServiceImpl(this.mobileUserService, this.databaseService, this.mobileSessionService)
     val photosService = new PhotosServiceImpl
     val secretGeneratorService = new SecretGeneratorServiceImpl
-    this.applicationService = new ApplicationServiceImpl(photosService, this.databaseService)
+    this.applicationService = new ApplicationServiceImpl(photosService, this.databaseService, purchaseService)
     val application = new WazzaApplication(
       AppName,
       "http://www.test.com",
       "image",
       "com.test",
-      Some(WazzaApplication.applicationTypes.last), //Android
+      WazzaApplication.applicationTypes,
       new Credentials(
         secretGeneratorService.generateSecret(Id),
         secretGeneratorService.generateSecret(ApiKey),
@@ -125,7 +127,7 @@ class RecommendationAPITest extends Specification {
       val sessionJson = Json.obj(
         "id" -> i.toString,
         "userId" -> (s"user-" + i.toString),
-        "sessionLength" -> 0,
+        "sessionLength" -> Math.random() * MaxSessionLength,
         "startTime" -> format.format(cal.getTime),
         "deviceInfo" -> Json.obj(
           "osType" -> "osType",
@@ -142,7 +144,6 @@ class RecommendationAPITest extends Specification {
   }
 
   private def generatePurchases() = {
-    this.purchaseService = new PurchaseServiceImpl(this.mobileUserService, this.databaseService, this.mobileSessionService)
     var i = 0
     val cal = Calendar.getInstance()
     val format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z")

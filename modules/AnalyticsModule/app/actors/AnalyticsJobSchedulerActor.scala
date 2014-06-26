@@ -55,8 +55,13 @@ class AnalyticsJobSchedulerActor extends Actor {
     for {
       data <- appService.getCompanies
       app <- data.apps
-    } {
-      println(s"apps $app")
+    }  analyticsService.calculateAverageSessionLength(
+      data.name,
+      app,
+      yesterday,
+      today
+    ) map { result =>
+      println(s"session length result")
     }
   }
 
