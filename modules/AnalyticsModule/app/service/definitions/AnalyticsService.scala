@@ -30,6 +30,13 @@ trait AnalyticsService {
     end: Date
   ): Future[JsValue]
 
+  def calculateNumberPayingUsers(
+    companyName: String,
+    applicationName: String,
+    start: Date,
+    end: Date
+  ): Future[JsValue]
+
   def getTopTenItems(companyName: String, applicationName: String, start: Date, end: Date): Future[JsArray]
 
   def getTotalRevenue(companyName: String, applicationName: String, start: Date, end: Date): Future[JsArray]

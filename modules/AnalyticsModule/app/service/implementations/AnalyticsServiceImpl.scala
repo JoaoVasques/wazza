@@ -26,6 +26,7 @@ class AnalyticsServiceImpl @Inject()(
   private val TopItems = 0
   private val SessionLength = 1
   private val TotalRevenue = 2
+  private val PayingUsers = 3
 
   private val AnalyticsUrl = Play.current.configuration.getConfig("analytics") match {
     case Some(conf) =>conf.underlying.root.get("url").render.filter(_ != '"')
@@ -57,6 +58,10 @@ class AnalyticsServiceImpl @Inject()(
         inputCollection = PurchaseInfo.getCollection(companyName, applicationName)
         outputCollection = Metrics.totalRevenueCollection(companyName, applicationName)
       }
+      case PayingUsers => {
+        inputCollection = PurchaseInfo.getCollection(companyName, applicationName)
+        outputCollection = Metrics.numberPayingUsers(companyName, applicationName)
+      }
     }
     s"input=$inputCollection $outputCollection ${df.format(start)} ${df.format(end)}"
   }
@@ -85,7 +90,6 @@ class AnalyticsServiceImpl @Inject()(
   ): Future[JsValue] = {
     val promise = Promise[JsValue]
     val url = s"${AnalyticsUrl}jobs?appName=test&classPath=spark.jobserver.SessionLength"
-    println(s"URL $url")
     WS.url(url).post(generateContent(
       companyName,applicationName,
       start, end,
@@ -106,6 +110,22 @@ class AnalyticsServiceImpl @Inject()(
 
     val url = s"${AnalyticsUrl}jobs?appName=test&classPath=spark.jobserver.TotalRevenue"
     WS.url(url).post(generateContent(companyName, applicationName, start, end, TotalRevenue)).map {response =>
+      promise.success(response.json)
+    }
+
+    promise.future
+  }
+
+  def calculateNumberPayingUsers(
+    companyName: String,
+    applicationName: String,
+    start: Date,
+    end: Date
+  ): Future[JsValue] = {
+    val promise = Promise[JsValue]
+
+    val url = s"${AnalyticsUrl}jobs?appName=test&classPath=spark.jobserver.NumberPayingUsers"
+    WS.url(url).post(generateContent(companyName, applicationName, start, end, PayingUsers)).map {response =>
       promise.success(response.json)
     }
 

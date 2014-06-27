@@ -19,6 +19,9 @@ import ExecutionContext.Implicits.global
 case class TotalDailyRevenue()
 case class TopItems()
 case class SessionLength()
+case class RevenuePerUser()
+case class ActiveUsers()
+case class PayingUsers()
 
 private trait Time
 private case class Today() extends Time
@@ -45,6 +48,7 @@ class AnalyticsJobSchedulerActor extends Actor {
     case SessionLength => runSessionLength
     case TopItems => runTopItems
     case TotalDailyRevenue => runTotalDailyRevenue
+    case PayingUsers => runPayingUsers
   }
 
   private def runSessionLength() = {
@@ -100,6 +104,23 @@ class AnalyticsJobSchedulerActor extends Actor {
           Logger.error("Parse job result exception", e)
         }
       }
+    }
+  }
+
+  private def runPayingUsers() = {
+    val yesterday = getDate(new Yesterday)
+    val today = getDate(new Today)
+
+    for {
+      data <- appService.getCompanies
+      app <- data.apps
+    }  analyticsService.calculateNumberPayingUsers(
+      data.name,
+      app,
+      yesterday,
+      today
+    ) map { result =>
+      println(s"paying users result $result")
     }
   }
 }
