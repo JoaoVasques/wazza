@@ -44,7 +44,7 @@
   <!-- Bootstrap core CSS -->
   <link rel="stylesheet" type="text/css" media="screen" href="@routes.WebJarAssets.at(WebJarAssets.locate("bootstrap.min.css"))">
   <!-- TODO: Optimize CSS again.. -->
-  <link rel="stylesheet" type="text/css" media="screen" href="@routes.Assets.at("stylesheets/item.css")">
+  
 
   <link rel="stylesheet" type="text/css" media="screen" href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css">
   <link rel="stylesheet" type="text/css" media="screen" href='http://fonts.googleapis.com/css?family=Titillium+Web:400,600,300,200&subset=latin,latin-ext'>
@@ -56,6 +56,8 @@
   <link rel="stylesheet" type="text/css" href="@routes.Assets.at("stylesheets/AdminLTE.css")" />
 
   <link rel="stylesheet" type="text/css" media="screen" href="@routes.Assets.at("stylesheets/appEditor.css")">
+
+  <link rel="stylesheet" type="text/css" media="screen" href="@routes.Assets.at("stylesheets/item.css")">
 }
 
 <html ng-app="Wazza">
@@ -72,7 +74,8 @@
 
       <section ng-hide="authOK">
         <div class="bg-black" ng-controller="LoginController">
-            <div class="row vertical-offset-100 text-center" style="padding-top:100px">
+            <div class="row text-center">
+              <br><br><br><br>
               <img src="@routes.Assets.at("images/wazza_lettering_white-01.png")"/>
             </div>
 
