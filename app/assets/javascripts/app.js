@@ -6,6 +6,10 @@ angular.module('Wazza', ['ngRoute', 'Wazza.controllers', 'ItemModule', 'UserModu
   config([ '$routeProvider', '$locationProvider' , function($routeProvider, $locationProvider) {
     $routeProvider
       .when('/', {
+        templateUrl: '/login',
+        controller: 'LoginController'
+      })
+      .when('/home', {
         templateUrl: '/dashboard',
         controller: 'DashboardController'
       })

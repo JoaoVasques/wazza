@@ -71,7 +71,7 @@
     @javascripts
   </head>
 <body class="login-screen" ng-controller="AppController">
-
+        @views.html.navigationBar.render()
       <section ng-hide="authOK">
         <div class="bg-black" ng-controller="LoginController">
             <div class="row text-center">
@@ -118,7 +118,7 @@
       </section>
 
       <section ng-show="authOK">
-        @views.html.navigationBar.render()
+
         
         <div class="wrapper row-offcanvas row-offcanvas-left">
             <!-- Left side column. contains the logo and sidebar -->
