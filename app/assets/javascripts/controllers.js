@@ -193,20 +193,20 @@ angular.module('Wazza.controllers', [
     ApplicationStateService
   ) {
 
-    $scope.authOK = true;
+    $scope.authOK = false;
     $scope.applicationName = ""
 
     $scope.bootstrapModule = function(){
       $scope.$on("LOGIN_SUCCESS", function(event, data){
         $scope.showSideBar = true;
-        $scope.authOK = false;
+        $scope.authOK = true;
         document.body.className = "skin-blue";
       });
 
       $scope.$on("LOGOUT_SUCCESS", function(event, data){
         document.body.className = "login-screen";
         $scope.showSideBar = false;
-        $scope.authOK = true;
+        $scope.authOK = false;
       });
 
       $scope.$on("APPLICATION_NAME_UPDATED", function(){
