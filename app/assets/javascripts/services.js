@@ -4,7 +4,6 @@ angular.module('Wazza.services', []).
     var service = {};
 
     service.execute = function(loginData){
-      delete loginData["css"];
       var request = $http.post("/login", loginData);
       var deferred = $q.defer();
       deferred.resolve(request);

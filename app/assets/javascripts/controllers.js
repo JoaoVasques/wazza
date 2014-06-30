@@ -72,7 +72,6 @@ angular.module('Wazza.controllers', [
     };
     $scope.canRedirectToDashboard();
 
-
 }])
 
 .controller('NavBarController',[
@@ -100,8 +99,6 @@ angular.module('Wazza.controllers', [
     $scope.page = "Dashboard";
 
     $scope.bootstrapModule = function(){
-      $scope.sessionOn = false;
-      $scope.showNavBar = false;
       $scope.applicationName = "";
       $scope.userInfo = {
           name: "",
@@ -116,14 +113,7 @@ angular.module('Wazza.controllers', [
         $scope.applicationsList = ApplicationStateService.applicationsList;
       });
         
-      $scope.$on("LOGIN_SUCCESS", function(data){
-        $scope.sessionOn = true;
-        $scope.showNavBar = true;
-      });
-        
       $scope.$on("LOGOUT_SUCCESS", function(event, url){
-        $scope.sessionOn = false;
-        $scope.showNavBar = false;
         $location.path(url.value);
       });
        
@@ -137,6 +127,8 @@ angular.module('Wazza.controllers', [
       });
     };
     $scope.bootstrapModule();
+
+    console.log($scope.authOK)
 
     $scope.sendItemSearchEvent = function(){
       ItemSearchService.updateSearchData($scope.itemName);
