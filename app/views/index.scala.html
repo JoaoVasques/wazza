@@ -91,28 +91,14 @@
                             <label class="control-label" ng-show="errors.show" for="loginPassword">{{errors.content}}</label>
                             <input id="loginPassword" class="form-control" ng-model="loginForm.password" placeholder="Password" name="password" type="password" value="" required>
                           </div>
-                          <div class="form-group">
-                            <input type="checkbox" name="remember_me"/> Remember me
-                          </div>
                           <!--input class="btn btn-lg btn-success btn-block" type="submit" value="Login"-->
                         </fieldset>
                         <div class="footer">                                                               
                             <button type="submit" class="btn bg-olive btn-block" value="Login">Sign me in</button>  
                             
-                            <p><a href="#">I forgot my password</a></p>
-                            
-                            <a href="/register" class="text-center">Register a new membership</a>
+                            <!--a class="btn bg-olive btn-block text-center" href="/register">Register a new membership</a-->
                         </div>
                     </form>
-
-                    <div class="margin text-center">
-                        <span>Sign in using social networks</span>
-                        <br/>
-                        <button class="btn bg-light-blue btn-circle"><i class="fa fa-facebook"></i></button>
-                        <button class="btn bg-aqua btn-circle"><i class="fa fa-twitter"></i></button>
-                        <button class="btn bg-red btn-circle"><i class="fa fa-google-plus"></i></button>
-
-                    </div>
                 </div>
         </div>
       </section>
