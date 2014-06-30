@@ -44,7 +44,7 @@
   <!-- Bootstrap core CSS -->
   <link rel="stylesheet" type="text/css" media="screen" href="@routes.WebJarAssets.at(WebJarAssets.locate("bootstrap.min.css"))">
   <!-- TODO: Optimize CSS again.. -->
-  <link rel="stylesheet" type="text/css" media="screen" href="@routes.Assets.at("stylesheets/item.css")">
+  
 
   <link rel="stylesheet" type="text/css" media="screen" href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css">
   <link rel="stylesheet" type="text/css" media="screen" href='http://fonts.googleapis.com/css?family=Titillium+Web:400,600,300,200&subset=latin,latin-ext'>
@@ -56,6 +56,8 @@
   <link rel="stylesheet" type="text/css" href="@routes.Assets.at("stylesheets/AdminLTE.css")" />
 
   <link rel="stylesheet" type="text/css" media="screen" href="@routes.Assets.at("stylesheets/appEditor.css")">
+
+  <link rel="stylesheet" type="text/css" media="screen" href="@routes.Assets.at("stylesheets/item.css")">
 }
 
 <html ng-app="Wazza">
@@ -68,15 +70,46 @@
     @stylesheets
     @javascripts
   </head>
-  <body class="skin-blue">
-        @views.html.navigationBar.render()
-        
+<body class="login-screen" ng-controller="AppController">
+      @views.html.navigationBar.render()
+      <section ng-hide="authOK">
+        <div class="bg-black" ng-controller="LoginController">
+            <div class="row text-center">
+              <br><br><br><br>
+              <img src="@routes.Assets.at("images/wazza_lettering_white-01.png")"/>
+            </div>
+
+                <div class="form-box" id="login-box">
+                    <div class="header">Sign In</div>
+                    <form accept-charset="UTF-8" role="form" method="post" ng-submit="signIn()">
+                        <fieldset class="body bg-gray">
+                          <div class="form-group has-error" ng-class="loginForm.css">
+                            <label class="control-label" ng-show="errors.show" for="loginEmail">{{errors.content}}</label>
+                            <input id="loginEmail" class="form-control" ng-model="loginForm.email" placeholder="E-mail" name="email" type="email" required>
+                          </div>
+                          <div class="form-group has-error" ng-class="loginForm.css">
+                            <label class="control-label" ng-show="errors.show" for="loginPassword">{{errors.content}}</label>
+                            <input id="loginPassword" class="form-control" ng-model="loginForm.password" placeholder="Password" name="password" type="password" value="" required>
+                          </div>
+                          <!--input class="btn btn-lg btn-success btn-block" type="submit" value="Login"-->
+                        </fieldset>
+                        <div class="footer">
+                            <button type="submit" class="btn bg-olive btn-block" value="Login">Sign me in</button>
+                            <!--a class="btn bg-olive btn-block text-center" href="/register">Register a new membership</a-->
+                        </div>
+                    </form>
+                </div>
+        </div>
+      </section>
+
+      <section ng-show="authOK">
+     
         <div class="wrapper row-offcanvas row-offcanvas-left">
             <!-- Left side column. contains the logo and sidebar -->
             @views.html.sidebar.render()
 
             <!-- Right side column. Contains the navbar and content of the page -->
-            <aside class="right-side">                
+            <aside class="right-side">
                 <!-- Content Header (Page header) -->
                 <section class="content-header" ng-controller="NavBarController" ng-show="showNavBar" ng-model="page">
                     <h1>
@@ -101,6 +134,6 @@
 
             </aside><!-- /.right-side -->
         </div><!-- ./wrapper -->
-
+      </section>
   </body>
 </html>

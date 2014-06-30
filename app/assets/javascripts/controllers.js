@@ -33,26 +33,10 @@ angular.module('Wazza.controllers', [
       then(
         function(){
           LoginLogoutService.login();
-          //document.getElementById("page-wrapper").className = "page-wrapper";
           $location.path("/home");
         }
       );
   };
-
-  $scope.bootstrapModule = function(){
-    $scope.loginForm = {
-      "email": "",
-      "password": "",
-      "css": "form-group"
-    };
-    $scope.errors = {
-      "content": "",
-      "show": false,
-      "css": "has-error"
-    };
-    $scope.canRedirectToDashboard();
-  };
-  $scope.bootstrapModule();
 
   $scope.handleLoginSuccess = function(success){
     cookiesManagerService.set('PLAY2AUTH_SESS_ID', success.data.authToken);
@@ -62,14 +46,12 @@ angular.module('Wazza.controllers', [
     });
     ApplicationStateService.updateCompanyName(success.data.companyName);
     LoginLogoutService.login();
-    //document.getElementById("page-wrapper").className = "page-wrapper";
     $location.path(success.data.url);
   };
 
   $scope.handleLoginFailure = function(error){
     $scope.errors.content = error.data.errors;
     $scope.errors.show = true;
-    $scope.loginForm.css = $scope.loginForm.css + " " + $scope.errors.css;
   };
 
   $scope.signIn = function(){
@@ -79,6 +61,17 @@ angular.module('Wazza.controllers', [
         $scope.handleLoginFailure
       );
   };
+
+    $scope.loginForm = {
+      "email": "",
+      "password": ""
+    };
+    $scope.errors = {
+      "content": "",
+      "show": false
+    };
+    $scope.canRedirectToDashboard();
+
 }])
 
 .controller('NavBarController',[
@@ -106,8 +99,6 @@ angular.module('Wazza.controllers', [
     $scope.page = "Dashboard";
 
     $scope.bootstrapModule = function(){
-      $scope.sessionOn = false;
-      $scope.showNavBar = false;
       $scope.applicationName = "";
       $scope.userInfo = {
           name: "",
@@ -122,15 +113,7 @@ angular.module('Wazza.controllers', [
         $scope.applicationsList = ApplicationStateService.applicationsList;
       });
         
-      $scope.$on("LOGIN_SUCCESS", function(data){
-        $scope.sessionOn = true;
-        $scope.showNavBar = true;
-      });
-        
       $scope.$on("LOGOUT_SUCCESS", function(event, url){
-        //document.getElementById("page-wrapper").className = "";
-        $scope.sessionOn = false;
-        $scope.showNavBar = false;
         $location.path(url.value);
       });
        
@@ -145,6 +128,8 @@ angular.module('Wazza.controllers', [
     };
     $scope.bootstrapModule();
 
+    console.log($scope.authOK)
+
     $scope.sendItemSearchEvent = function(){
       ItemSearchService.updateSearchData($scope.itemName);
     };
@@ -156,31 +141,39 @@ angular.module('Wazza.controllers', [
 
 .controller('SideBarController', [
   '$scope',
-  '$location',
   'ApplicationStateService',
   function (
     $scope,
-    $location,
+
     ApplicationStateService
   ) {
-    $scope.showSideBar = false;
+
     $scope.applicationName = ""
-
-    $scope.bootstrapModule = function(){
-      $scope.$on("LOGIN_SUCCESS", function(event, data){
-        $scope.showSideBar = true;
-      });
-
-      $scope.$on("LOGOUT_SUCCESS", function(event, data){
-        //document.getElementById("page-wrapper").className = "";
-        $scope.showSideBar = false;
-      });
 
       $scope.$on("APPLICATION_NAME_UPDATED", function(){
         $scope.applicationName = ApplicationStateService.applicationName;
       });
-    };
-    $scope.bootstrapModule();
+
+}])
+
+.controller('AppController', [
+  '$scope',
+  function (
+    $scope
+  ) {
+
+    $scope.authOK = false;
+
+      $scope.$on("LOGIN_SUCCESS", function(event, data){
+        document.body.className = "skin-blue";
+        $scope.authOK = true;
+      });
+
+      $scope.$on("LOGOUT_SUCCESS", function(event, data){
+        document.body.className = "skin-blue login-screen";
+        $scope.authOK = false;
+      });
+
 }])
 
 ;

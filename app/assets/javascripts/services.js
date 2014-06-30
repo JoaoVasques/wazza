@@ -1,9 +1,9 @@
 angular.module('Wazza.services', []).
+
   factory('submitLoginCredentialsService', ['$http', '$q', function($http, $q) {
     var service = {};
 
     service.execute = function(loginData){
-      delete loginData["css"];
       var request = $http.post("/login", loginData);
       var deferred = $q.defer();
       deferred.resolve(request);
