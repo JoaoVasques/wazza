@@ -33,7 +33,6 @@ angular.module('Wazza.controllers', [
       then(
         function(){
           LoginLogoutService.login();
-          //document.getElementById("page-wrapper").className = "page-wrapper";
           $location.path("/home");
         }
       );
@@ -62,7 +61,6 @@ angular.module('Wazza.controllers', [
     });
     ApplicationStateService.updateCompanyName(success.data.companyName);
     LoginLogoutService.login();
-    //document.getElementById("page-wrapper").className = "page-wrapper";
     $location.path(success.data.url);
   };
 
@@ -128,7 +126,6 @@ angular.module('Wazza.controllers', [
       });
         
       $scope.$on("LOGOUT_SUCCESS", function(event, url){
-        //document.getElementById("page-wrapper").className = "";
         $scope.sessionOn = false;
         $scope.showNavBar = false;
         $location.path(url.value);
@@ -156,31 +153,19 @@ angular.module('Wazza.controllers', [
 
 .controller('SideBarController', [
   '$scope',
-  '$location',
   'ApplicationStateService',
   function (
     $scope,
-    $location,
+
     ApplicationStateService
   ) {
-    $scope.showSideBar = false;
+
     $scope.applicationName = ""
-
-    $scope.bootstrapModule = function(){
-      $scope.$on("LOGIN_SUCCESS", function(event, data){
-        $scope.showSideBar = true;
-      });
-
-      $scope.$on("LOGOUT_SUCCESS", function(event, data){
-        //document.getElementById("page-wrapper").className = "";
-        $scope.showSideBar = false;
-      });
 
       $scope.$on("APPLICATION_NAME_UPDATED", function(){
         $scope.applicationName = ApplicationStateService.applicationName;
       });
-    };
-    $scope.bootstrapModule();
+
 }])
 
 .controller('AppController', [
