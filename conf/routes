@@ -4,7 +4,7 @@
 
 # Home page
 GET     /                     @controllers.Application.index
-GET		/not_available_yet	  @controllers.dashboard.DashboardController.not_available_yet
+GET		/notavailableyet	  @controllers.Application.notavailableyet
 GET     /login                @controllers.LoginLogoutController.login
 POST    /login                @controllers.LoginLogoutController.authenticate
 POST    /logout               @controllers.LoginLogoutController.logout

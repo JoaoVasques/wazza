@@ -14,8 +14,8 @@ class Application extends Controller with Security{
 	 Ok(views.html.index())
   }
 
-  def not_available_yet = HasToken() {token => userId => implicit request =>
-    Ok(views.html.not_available_yet())
+  def notavailableyet = Action {
+    Ok(views.html.notavailableyet())
   }
 
 }
