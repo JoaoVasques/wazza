@@ -62,16 +62,16 @@ angular.module('Wazza.controllers', [
       );
   };
 
-    $scope.loginForm = {
-      "email": "",
-      "password": ""
-    };
-    $scope.errors = {
-      "content": "",
-      "show": false
-    };
-    $scope.canRedirectToDashboard();
+  $scope.loginForm = {
+    "email": "",
+    "password": ""
+  };
+  $scope.errors = {
+    "content": "",
+    "show": false
+  };
 
+  $scope.canRedirectToDashboard();
 }])
 
 .controller('NavBarController',[
@@ -98,37 +98,20 @@ angular.module('Wazza.controllers', [
 
     $scope.page = "Dashboard";
 
-    $scope.bootstrapModule = function(){
-      $scope.applicationName = "";
-      $scope.userInfo = {
-          name: "",
-          email: ""
-      };
-      $scope.applicationsList = [];
-      $scope.$on("APPLICATION_NAME_UPDATED", function(){
-        $scope.applicationName = ApplicationStateService.applicationName;
-      });
-
-      $scope.$on("APPLICATIONS_LIST_UPDATED", function() {
-        $scope.applicationsList = ApplicationStateService.applicationsList;
-      });
-        
-      $scope.$on("LOGOUT_SUCCESS", function(event, url){
-        $location.path(url.value);
-      });
-       
-      $scope.$on("USER_INFO_UPDATED", function(){
-          $scope.userInfo.name = ApplicationStateService.userInfo.name;
-          $scope.userInfo.email = ApplicationStateService.userInfo.email; 
-      });
-
-      $scope.$on("PAGE_UPDATED", function(){
-        $scope.page = TopbarService.getName();
-      });
+    $scope.userInfo = {
+        name: "",
+        email: ""
     };
-    $scope.bootstrapModule();
+    $scope.applicationsList = [];
 
-    console.log($scope.authOK)
+    $scope.$on("APPLICATIONS_LIST_UPDATED", function() {
+      $scope.applicationsList = ApplicationStateService.applicationsList;
+    });
+
+    $scope.$on("USER_INFO_UPDATED", function(){
+        $scope.userInfo.name = ApplicationStateService.userInfo.name;
+        $scope.userInfo.email = ApplicationStateService.userInfo.email; 
+    });
 
     $scope.sendItemSearchEvent = function(){
       ItemSearchService.updateSearchData($scope.itemName);
@@ -139,40 +122,37 @@ angular.module('Wazza.controllers', [
     };
 }])
 
-.controller('SideBarController', [
-  '$scope',
-  'ApplicationStateService',
-  function (
-    $scope,
-
-    ApplicationStateService
-  ) {
-
-    $scope.applicationName = ""
-
-      $scope.$on("APPLICATION_NAME_UPDATED", function(){
-        $scope.applicationName = ApplicationStateService.applicationName;
-      });
-
-}])
-
 .controller('AppController', [
   '$scope',
+  'ApplicationStateService',
+  'TopbarService',
   function (
-    $scope
+    $scope,
+    ApplicationStateService,
+    TopbarService
   ) {
 
+    $scope.applicationName = "";
     $scope.authOK = false;
 
-      $scope.$on("LOGIN_SUCCESS", function(event, data){
-        document.body.className = "skin-blue";
-        $scope.authOK = true;
-      });
+    $scope.$on("LOGIN_SUCCESS", function(event, data){
+      document.body.className = "skin-blue";
+      $scope.authOK = true;
+    });
 
-      $scope.$on("LOGOUT_SUCCESS", function(event, data){
-        document.body.className = "skin-blue login-screen";
-        $scope.authOK = false;
-      });
+    $scope.$on("LOGOUT_SUCCESS", function(event, data){
+      document.body.className = "skin-blue login-screen";
+      $scope.authOK = false;
+      $location.path(url.value);
+    });
+
+    $scope.$on("APPLICATION_NAME_UPDATED", function(){
+      $scope.applicationName = ApplicationStateService.applicationName;
+    });
+
+    $scope.$on("PAGE_UPDATED", function(){
+      $scope.page = TopbarService.getName();
+    });
 
 }])
 
