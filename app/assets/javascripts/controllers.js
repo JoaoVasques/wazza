@@ -96,8 +96,6 @@ angular.module('Wazza.controllers', [
     TopbarService
   ) {
 
-    $scope.page = "Dashboard";
-
     $scope.userInfo = {
         name: "",
         email: ""
