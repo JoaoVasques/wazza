@@ -58,7 +58,7 @@ var dashboard = angular.module('DashboardModule', ['ItemModule.services'])
                     },
                     title: {
                         useHTML: true,
-                        text: '<span class="pull-right">Sales per time<i class="fa fa-android fa-fw"></i></span>'
+                        text: '<span class="pull-right">Sales per time</span>'
                     },
                     subtitle: {
                         text: document.ontouchstart === undefined ?
