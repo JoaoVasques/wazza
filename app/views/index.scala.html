@@ -43,13 +43,12 @@
 @stylesheets = {
   <!-- Bootstrap core CSS -->
   <link rel="stylesheet" type="text/css" media="screen" href="@routes.WebJarAssets.at(WebJarAssets.locate("bootstrap.min.css"))">
-  <!-- TODO: Optimize CSS again.. -->
-  
 
   <link rel="stylesheet" type="text/css" media="screen" href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css">
   <link rel="stylesheet" type="text/css" media="screen" href='http://fonts.googleapis.com/css?family=Titillium+Web:400,600,300,200&subset=latin,latin-ext'>
   <link rel="shortcut icon" href="@routes.Assets.at("images/wazza_icon_black-01.png")">
 
+  <!-- TODO: Optimize CSS again.. -->
   <!-- Ionicons -->
   <link rel="stylesheet" type="text/css" media="screen" href="http://code.ionicframework.com/ionicons/1.4.1/css/ionicons.min.css"/>
   <!-- Theme style -->
@@ -71,6 +70,7 @@
     @javascripts
   </head>
 <body class="login-screen" ng-controller="AppController">
+
       @views.html.navigationBar.render()
       <section ng-hide="authOK">
         <div class="bg-black" ng-controller="LoginController">
@@ -123,17 +123,17 @@
                               <small><a href="/analyticsRevenue"><!--i class="fa fa-dashboard"></i--> Revenue</a></small>
                               <small><a href="/analyticsDevice"><!--i class="fa fa-dashboard"></i--> Device</a></small>
                         </span>
-                        
                     </h1>
                 </section>
 
                 <!-- Main content -->
                 <section class="content">
                   <div ng-view></div>
-                </section><!-- /.content -->
+                </section>
 
-            </aside><!-- /.right-side -->
-        </div><!-- ./wrapper -->
+            </aside>
+        </div>
       </section>
+
   </body>
 </html>
