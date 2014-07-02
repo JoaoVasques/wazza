@@ -76,6 +76,19 @@ angular.module('Wazza.controllers', [
 
 .controller('NavBarController',[
   '$scope',
+  'LoginLogoutService',
+  function (
+    $scope,
+    LoginLogoutService
+  ) {
+
+    $scope.logout = function(){
+      LoginLogoutService.logout();
+    };
+}])
+
+.controller('AppController', [
+  '$scope',
   'cookiesManagerService',
   '$http',
   '$location',
@@ -96,41 +109,7 @@ angular.module('Wazza.controllers', [
     TopbarService
   ) {
 
-    $scope.userInfo = {
-        name: "",
-        email: ""
-    };
-    $scope.applicationsList = [];
-
-    $scope.$on("APPLICATIONS_LIST_UPDATED", function() {
-      $scope.applicationsList = ApplicationStateService.applicationsList;
-    });
-
-    $scope.$on("USER_INFO_UPDATED", function(){
-        $scope.userInfo.name = ApplicationStateService.userInfo.name;
-        $scope.userInfo.email = ApplicationStateService.userInfo.email; 
-    });
-
-    $scope.sendItemSearchEvent = function(){
-      ItemSearchService.updateSearchData($scope.itemName);
-    };
-
-    $scope.logout = function(){
-      LoginLogoutService.logout();
-    };
-}])
-
-.controller('AppController', [
-  '$scope',
-  'ApplicationStateService',
-  'TopbarService',
-  function (
-    $scope,
-    ApplicationStateService,
-    TopbarService
-  ) {
-
-    $scope.applicationName = "";
+    //auth related
     $scope.authOK = false;
 
     $scope.$on("LOGIN_SUCCESS", function(event, data){
@@ -138,18 +117,40 @@ angular.module('Wazza.controllers', [
       $scope.authOK = true;
     });
 
-    $scope.$on("LOGOUT_SUCCESS", function(event, data){
+    $scope.$on("LOGOUT_SUCCESS", function(event, url){
       document.body.className = "skin-blue login-screen";
       $scope.authOK = false;
       $location.path(url.value);
     });
 
+    //app related
+    $scope.applicationName = "";
+    $scope.applicationsList = [];
+
     $scope.$on("APPLICATION_NAME_UPDATED", function(){
       $scope.applicationName = ApplicationStateService.applicationName;
     });
 
+    $scope.$on("APPLICATIONS_LIST_UPDATED", function() {
+      $scope.applicationsList = ApplicationStateService.applicationsList;
+    });
+
+    //current page related
+    $scope.page = "Dashboard";
+
     $scope.$on("PAGE_UPDATED", function(){
       $scope.page = TopbarService.getName();
+    });
+
+    //user related
+    $scope.userInfo = {
+        name: "",
+        email: ""
+    };
+
+    $scope.$on("USER_INFO_UPDATED", function(){
+        $scope.userInfo.name = ApplicationStateService.userInfo.name;
+        $scope.userInfo.email = ApplicationStateService.userInfo.email; 
     });
 
 }])

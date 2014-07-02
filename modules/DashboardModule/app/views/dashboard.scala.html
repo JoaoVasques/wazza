@@ -106,7 +106,7 @@ items: List[models.application.Item]
     </div><!-- ./col -->
     <div class="col-lg-2 col-xs-6">
       <!-- small box -->
-      <a href="/notavailableyet">
+      <!--a ng-click="$location.path('/notavailableyet');"-->
         <div class="small-box bg-green">
           <div class="inner">
             <h3>
@@ -119,11 +119,11 @@ items: List[models.application.Item]
           <div class="icon">
             <i class="ion ion-pie-graph"></i>
           </div>
-          <a href="#" class="small-box-footer">
+          <a href="/notavailableyet" class="small-box-footer">
             More info <i class="fa fa-arrow-circle-right"></i>
           </a>
         </div>
-      </a>
+      <!--/a-->
     </div><!-- ./col -->
    </div><!-- /.row -->
 
@@ -137,3 +137,4 @@ items: List[models.application.Item]
     <a class="btn btn-default btn-lg" ng-href='/newapp'><span class="fa fa-edit fa-fw"></span>New Application</a>
   </p>
 }
+
