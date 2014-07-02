@@ -9,13 +9,12 @@
 			<div class="col-xs-6">
 				<h4 class="product-name"><strong>{{item.name}}</strong></h4>
 				<h4 class="boxed-text"><small>{{item.description}}</small></h4>
-				<br>
-				
+
 				<strong style="margin-right: 5px">{{item.currency.value}}<span class="glyphicon-euro"></span></strong>
-				<button type="button" class="btn btn-link" ng-click="alert('TODO')">
+				<button type="button" class="btn btn-link btn-no-shadow" ng-click="alert('TODO')">
 					<span class="glyphicon glyphicon-edit"></span>
 				</button>
-				<button type="button" class="btn btn-link" ng-click="deleteItem(item.name, item.imageInfo.name)">
+				<button type="button" class="btn btn-link btn-no-shadow" ng-click="deleteItem(item.name, item.imageInfo.name)">
 					<span class="glyphicon glyphicon-trash"></span>
 				</button>
 			</div>
