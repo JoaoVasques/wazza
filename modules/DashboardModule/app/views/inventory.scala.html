@@ -1,17 +1,21 @@
 
 @itemView = {
-<div class="panel panel-default">
+<div class="panel panel-default panel-dimensions">
 	<div class="panel-body">
 		<div class="row">
-			<div class="col-xs-6"><img class="img-responsive" ng-src="{{item.imageInfo.url}}">
+			<div class="col-xs-6">
+				<img class="img-responsive" ng-src="{{item.imageInfo.url}}">
 			</div>
-			<div class="col-xs-5">
-				<h4 class="product-name"><strong>{{item._id}}</strong></h4><h4><small>{{item.description}}</small></h4>
-				<h5><strong>{{item.currency.value}}<span class="glyphicon-euro"></span></strong></h5>
-			</div>
-			<div class="col-xs-1">
-				<button type="button" class="btn btn-link btn-xs" ng-click="deleteItem(item.name, item.imageInfo.name)">
-					<span class="glyphicon glyphicon-trash"> </span>
+			<div class="col-xs-6">
+				<h4 class="product-name"><strong>{{item.name}}</strong></h4>
+				<h4 class="boxed-text"><small>{{item.description}}</small></h4>
+
+				<strong style="margin-right: 5px">{{item.currency.value}}<span class="glyphicon-euro"></span></strong>
+				<button type="button" class="btn btn-link btn-no-shadow" ng-click="alert('TODO')">
+					<span class="glyphicon glyphicon-edit"></span>
+				</button>
+				<button type="button" class="btn btn-link btn-no-shadow" ng-click="deleteItem(item.name, item.imageInfo.name)">
+					<span class="glyphicon glyphicon-trash"></span>
 				</button>
 			</div>
 		</div>
@@ -24,6 +28,25 @@
 	<div class="col-xs-12 col-md-4" ng-repeat="item in items | filter:itemSearch">
 		@itemView
 	</div>
+
+	<div class="col-xs-12 col-md-4">
+		<a href="#" ng-click="addItem()">
+			<div class="panel panel-default panel-dimensions">
+				<div class="panel-body">
+					<div class="row">
+						<div class="col-xs-6">
+							<img class="img-responsive" ng-src="http://www.clker.com/cliparts/A/P/L/b/V/G/blue-plus-sign-md.png">
+						</div>
+						<div class="col-xs-6">
+							<h4 class=""><strong>Add more items</strong></h4>
+						</div>
+					</div>
+				</div>
+			</div>
+		</a>
+	</div>
+
+
 </div> 
 }
 

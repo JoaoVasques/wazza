@@ -14,4 +14,8 @@ class Application extends Controller with Security{
 	 Ok(views.html.index())
   }
 
+  def notavailableyet = Action {
+    Ok(views.html.notavailableyet())
+  }
+
 }

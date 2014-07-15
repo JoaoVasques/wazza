@@ -62,19 +62,32 @@ angular.module('Wazza.controllers', [
       );
   };
 
-    $scope.loginForm = {
-      "email": "",
-      "password": ""
-    };
-    $scope.errors = {
-      "content": "",
-      "show": false
-    };
-    $scope.canRedirectToDashboard();
+  $scope.loginForm = {
+    "email": "",
+    "password": ""
+  };
+  $scope.errors = {
+    "content": "",
+    "show": false
+  };
 
+  $scope.canRedirectToDashboard();
 }])
 
 .controller('NavBarController',[
+  '$scope',
+  'LoginLogoutService',
+  function (
+    $scope,
+    LoginLogoutService
+  ) {
+
+    $scope.logout = function(){
+      LoginLogoutService.logout();
+    };
+}])
+
+.controller('AppController', [
   '$scope',
   'cookiesManagerService',
   '$http',
@@ -96,83 +109,49 @@ angular.module('Wazza.controllers', [
     TopbarService
   ) {
 
-    $scope.page = "Dashboard";
-
-    $scope.bootstrapModule = function(){
-      $scope.applicationName = "";
-      $scope.userInfo = {
-          name: "",
-          email: ""
-      };
-      $scope.applicationsList = [];
-      $scope.$on("APPLICATION_NAME_UPDATED", function(){
-        $scope.applicationName = ApplicationStateService.applicationName;
-      });
-
-      $scope.$on("APPLICATIONS_LIST_UPDATED", function() {
-        $scope.applicationsList = ApplicationStateService.applicationsList;
-      });
-        
-      $scope.$on("LOGOUT_SUCCESS", function(event, url){
-        $location.path(url.value);
-      });
-       
-      $scope.$on("USER_INFO_UPDATED", function(){
-          $scope.userInfo.name = ApplicationStateService.userInfo.name;
-          $scope.userInfo.email = ApplicationStateService.userInfo.email; 
-      });
-
-      $scope.$on("PAGE_UPDATED", function(){
-        $scope.page = TopbarService.getName();
-      });
-    };
-    $scope.bootstrapModule();
-
-    console.log($scope.authOK)
-
-    $scope.sendItemSearchEvent = function(){
-      ItemSearchService.updateSearchData($scope.itemName);
-    };
-
-    $scope.logout = function(){
-      LoginLogoutService.logout();
-    };
-}])
-
-.controller('SideBarController', [
-  '$scope',
-  'ApplicationStateService',
-  function (
-    $scope,
-
-    ApplicationStateService
-  ) {
-
-    $scope.applicationName = ""
-
-      $scope.$on("APPLICATION_NAME_UPDATED", function(){
-        $scope.applicationName = ApplicationStateService.applicationName;
-      });
-
-}])
-
-.controller('AppController', [
-  '$scope',
-  function (
-    $scope
-  ) {
-
+    //auth related
     $scope.authOK = false;
 
-      $scope.$on("LOGIN_SUCCESS", function(event, data){
-        document.body.className = "skin-blue";
-        $scope.authOK = true;
-      });
+    $scope.$on("LOGIN_SUCCESS", function(event, data){
+      document.body.className = "skin-blue";
+      $scope.authOK = true;
+    });
 
-      $scope.$on("LOGOUT_SUCCESS", function(event, data){
-        document.body.className = "skin-blue login-screen";
-        $scope.authOK = false;
-      });
+    $scope.$on("LOGOUT_SUCCESS", function(event, url){
+      document.body.className = "skin-blue login-screen";
+      $scope.authOK = false;
+      $location.path(url.value);
+    });
+
+    //app related
+    $scope.applicationName = "";
+    $scope.applicationsList = [];
+
+    $scope.$on("APPLICATION_NAME_UPDATED", function(){
+      $scope.applicationName = ApplicationStateService.applicationName;
+    });
+
+    $scope.$on("APPLICATIONS_LIST_UPDATED", function() {
+      $scope.applicationsList = ApplicationStateService.applicationsList;
+    });
+
+    //current page related
+    $scope.page = "Dashboard";
+
+    $scope.$on("PAGE_UPDATED", function(){
+      $scope.page = TopbarService.getName();
+    });
+
+    //user related
+    $scope.userInfo = {
+        name: "",
+        email: ""
+    };
+
+    $scope.$on("USER_INFO_UPDATED", function(){
+        $scope.userInfo.name = ApplicationStateService.userInfo.name;
+        $scope.userInfo.email = ApplicationStateService.userInfo.email; 
+    });
 
 }])
 

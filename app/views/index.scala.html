@@ -3,16 +3,16 @@
 <!DOCTYPE html>
 
 @javascripts = {
-  <script src="@routes.WebJarAssets.at(WebJarAssets.locate("1.2.16/angular.min.js"))"></script>
-  <script src="@routes.WebJarAssets.at(WebJarAssets.locate("1.2.16/angular-route.min.js"))"></script>
-  <script src="@routes.WebJarAssets.at(WebJarAssets.locate("1.2.16/angular-cookies.min.js"))"></script>
+  <script src="@routes.WebJarAssets.at(WebJarAssets.locate("1.2.18/angular.min.js"))"></script>
+  <script src="@routes.WebJarAssets.at(WebJarAssets.locate("1.2.18/angular-route.min.js"))"></script>
+  <script src="@routes.WebJarAssets.at(WebJarAssets.locate("1.2.18/angular-cookies.min.js"))"></script>
   <script defer src="@routes.WebJarAssets.at(WebJarAssets.locate("underscore-min.js"))"></script>
   <script defer src="@routes.Assets.at("javascripts/angular-file-upload.min.js")"></script>
   <script defer src="@routes.Assets.at("javascripts/angular-file-upload-html5-shim.min.js")"></script>
   <script defer src="@routes.Assets.at("javascripts/app.js")"></script>
   <script defer src="@routes.Assets.at("javascripts/services.js")"></script>
   <script defer src="@routes.Assets.at("javascripts/controllers.js")"></script>
-  <script defer src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+  <script defer src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
   <script defer src="@routes.WebJarAssets.at(WebJarAssets.locate("bootstrap.min.js"))"></script>
 
   <!-- controllers -->
@@ -43,17 +43,16 @@
 @stylesheets = {
   <!-- Bootstrap core CSS -->
   <link rel="stylesheet" type="text/css" media="screen" href="@routes.WebJarAssets.at(WebJarAssets.locate("bootstrap.min.css"))">
-  <!-- TODO: Optimize CSS again.. -->
-  
 
   <link rel="stylesheet" type="text/css" media="screen" href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css">
   <link rel="stylesheet" type="text/css" media="screen" href='http://fonts.googleapis.com/css?family=Titillium+Web:400,600,300,200&subset=latin,latin-ext'>
   <link rel="shortcut icon" href="@routes.Assets.at("images/wazza_icon_black-01.png")">
 
+  <!-- TODO: Optimize CSS again.. -->
   <!-- Ionicons -->
-  <link rel="stylesheet" type="text/css" href="http://code.ionicframework.com/ionicons/1.4.1/css/ionicons.min.css"/>
+  <link rel="stylesheet" type="text/css" media="screen" href="http://code.ionicframework.com/ionicons/1.4.1/css/ionicons.min.css"/>
   <!-- Theme style -->
-  <link rel="stylesheet" type="text/css" href="@routes.Assets.at("stylesheets/AdminLTE.css")" />
+  <link rel="stylesheet" type="text/css" media="screen" href="@routes.Assets.at("stylesheets/AdminLTE.css")" />
 
   <link rel="stylesheet" type="text/css" media="screen" href="@routes.Assets.at("stylesheets/appEditor.css")">
 
@@ -71,6 +70,7 @@
     @javascripts
   </head>
 <body class="login-screen" ng-controller="AppController">
+
       @views.html.navigationBar.render()
       <section ng-hide="authOK">
         <div class="bg-black" ng-controller="LoginController">
@@ -111,7 +111,7 @@
             <!-- Right side column. Contains the navbar and content of the page -->
             <aside class="right-side">
                 <!-- Content Header (Page header) -->
-                <section class="content-header" ng-controller="NavBarController" ng-show="showNavBar" ng-model="page">
+                <section class="content-header" ng-controller="NavBarController" ng-model="page">
                     <h1>
                         {{page}}
                         <span ng-show="page === 'Dashboard'">
@@ -123,17 +123,17 @@
                               <small><a href="/analyticsRevenue"><!--i class="fa fa-dashboard"></i--> Revenue</a></small>
                               <small><a href="/analyticsDevice"><!--i class="fa fa-dashboard"></i--> Device</a></small>
                         </span>
-                        
                     </h1>
                 </section>
 
                 <!-- Main content -->
                 <section class="content">
                   <div ng-view></div>
-                </section><!-- /.content -->
+                </section>
 
-            </aside><!-- /.right-side -->
-        </div><!-- ./wrapper -->
+            </aside>
+        </div>
       </section>
+
   </body>
 </html>

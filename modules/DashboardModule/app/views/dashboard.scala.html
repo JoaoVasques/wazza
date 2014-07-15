@@ -8,24 +8,22 @@ items: List[models.application.Item]
 
 @if(exist){
 
-  <div class="row">
-   <!-- Small boxes (Stat box) -->
    <div class="row">
     <div class="col-lg-2 col-xs-6">
       <!-- small box -->
       <div class="small-box bg-aqua">
         <div class="inner">
           <h3>
-            1500
+            $0.89
           </h3>
           <p>
-            USERS
+            ARPU
           </p>
         </div>
         <div class="icon">
           <i class="ion ion-person-add"></i>
         </div>
-        <a href="#" class="small-box-footer">
+        <a href="/analyticsUser" class="small-box-footer">
           More info <i class="fa fa-arrow-circle-right"></i>
         </a>
       </div>
@@ -38,7 +36,7 @@ items: List[models.application.Item]
             53<sup style="font-size: 20px">%</sup>
           </h3>
           <p>
-            Bounce Rate
+            Paying Users
           </p>
         </div>
         <div class="icon">
@@ -63,7 +61,7 @@ items: List[models.application.Item]
         <div class="icon">
           <i class="ion ion-bag"></i>
         </div>
-        <a href="#" class="small-box-footer">
+        <a href="/analyticsApp" class="small-box-footer">
           More info <i class="fa fa-arrow-circle-right"></i>
         </a>
       </div>
@@ -76,7 +74,7 @@ items: List[models.application.Item]
             $650.99
           </h3>
           <p>
-            Revenue Android
+            Total Revenue
           </p>
         </div>
         <div class="icon">
@@ -95,7 +93,7 @@ items: List[models.application.Item]
             1:27s
           </h3>
           <p>
-            Session Time
+            First Purchase
           </p>
         </div>
         <div class="icon">
@@ -108,25 +106,27 @@ items: List[models.application.Item]
     </div><!-- ./col -->
     <div class="col-lg-2 col-xs-6">
       <!-- small box -->
-      <div class="small-box bg-green">
-        <div class="inner">
-          <h3>
-            +
-          </h3>
-          <p>
-            Add your own
-          </p>
+      <!--a ng-click="$location.path('/notavailableyet');"-->
+        <div class="small-box bg-green">
+          <div class="inner">
+            <h3>
+              +
+            </h3>
+            <p>
+              Add your own
+            </p>
+          </div>
+          <div class="icon">
+            <i class="ion ion-pie-graph"></i>
+          </div>
+          <a href="/notavailableyet" class="small-box-footer">
+            More info <i class="fa fa-arrow-circle-right"></i>
+          </a>
         </div>
-        <div class="icon">
-          <i class="ion ion-pie-graph"></i>
-        </div>
-        <a href="#" class="small-box-footer">
-          More info <i class="fa fa-arrow-circle-right"></i>
-        </a>
-      </div>
+      <!--/a-->
     </div><!-- ./col -->
    </div><!-- /.row -->
-  </div>
+
   <div class="row">
     <div id="revenueDashboard" style="width:100%; height:400px;"></div>
   </div>
@@ -137,3 +137,4 @@ items: List[models.application.Item]
     <a class="btn btn-default btn-lg" ng-href='/newapp'><span class="fa fa-edit fa-fw"></span>New Application</a>
   </p>
 }
+

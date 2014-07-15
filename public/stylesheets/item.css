@@ -25,3 +25,23 @@
 .login-screen {
 	background-color: #222222 !important;
 }
+
+.panel-dimensions{
+  height:170px;
+}
+
+.panel-dimensions .img-responsive {
+  max-height: 140px;
+}
+
+.boxed-text {
+    -o-text-overflow: ellipsis;   /* Opera */
+    text-overflow:    ellipsis;   /* IE, Safari (WebKit) */
+    overflow:hidden;              /* don't show excess chars */
+    width: 120px;                 /* fixed width */
+    height: 45px;
+}
+
+.btn-no-shadow {
+  box-shadow: initial;
+}

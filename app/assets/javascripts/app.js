@@ -86,6 +86,10 @@ angular.module('Wazza', ['ngRoute', 'Wazza.controllers', 'ItemModule', 'UserModu
         templateUrl : '/user',
         controller : ''
       })
+      //TODO
+      .when('/notavailableyet', {
+        templateUrl : '/notavailableyet'
+      })
       .otherwise({redirectTo:"/"});
 
 
