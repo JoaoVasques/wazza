@@ -10,14 +10,18 @@ import java.util.Date
 import play.api.Logger
 import play.api.libs.json.JsResultException
 import service.analytics.definitions.AnalyticsService
-import service.security.definitions.InternalService
+import service.application.definitions.ApplicationService
 import play.api.Play
-import models.security.CompanyData
+import models.application.CompanyData
 import scala.concurrent._
 import ExecutionContext.Implicits.global
 
 case class TotalDailyRevenue()
 case class TopItems()
+case class SessionLength()
+case class RevenuePerUser()
+case class ActiveUsers()
+case class PayingUsers()
 
 private trait Time
 private case class Today() extends Time
@@ -26,7 +30,7 @@ private case class Yesterday() extends Time
 class AnalyticsJobSchedulerActor extends Actor {
 
   private val analyticsService = Play.current.global.getControllerInstance(classOf[AnalyticsService])
-  private val securityService = Play.current.global.getControllerInstance(classOf[InternalService])
+  private val appService = Play.current.global.getControllerInstance(classOf[ApplicationService])
 
   def getDate(time: Time) = {
     val df = new SimpleDateFormat("yyyy/MM/dd")
@@ -41,44 +45,82 @@ class AnalyticsJobSchedulerActor extends Actor {
   }
 
   def receive = {
-    case TopItems => {
-      println("schedule top items..")
-      val yesterday = getDate(new Yesterday)
-      val today = getDate(new Today)
+    case SessionLength => runSessionLength
+    case TopItems => runTopItems
+    case TotalDailyRevenue => runTotalDailyRevenue
+    case PayingUsers => runPayingUsers
+  }
 
-      for {
-        data <- securityService.getCompanies
-        app <- data.apps
-      } analyticsService.calculateTopItems(data.name, app, yesterday, today, 10) map { result =>
-        println(s"TOP ITEMS RESULT $result")
-      }
-      // get current date and last week ()
+  private def runSessionLength() = {
+    println("calculate session length")
+    val yesterday = getDate(new Yesterday)
+    val today = getDate(new Today)
+
+    for {
+      data <- appService.getCompanies
+      app <- data.apps
+    }  analyticsService.calculateAverageSessionLength(
+      data.name,
+      app,
+      yesterday,
+      today
+    ) map { result =>
+      println(s"session length result")
     }
+  }
 
-    case TotalDailyRevenue => {
+  private def runTopItems() = {
+    val yesterday = getDate(new Yesterday)
+    val today = getDate(new Today)
 
-      val yesterday = getDate(new Yesterday)
-      val today = getDate(new Today)
-      for {
-        data <- securityService.getCompanies
-        app <- data.apps
-      } analyticsService.calculateTotalRevenue(data.name, app, yesterday, today) map { result =>
-        try {
-          val jobResult = (result \ "status").as[String]
-          jobResult match {
-            case "STARTED" => {
-              Logger.info(s"Calculate Revenue of app $app from ${data.name} started")
-            }
-            case _ => {
-              Logger.error(s"Unkown job server reply status - $jobResult")
-            }
+    for {
+      data <- appService.getCompanies
+      app <- data.apps
+    } analyticsService.calculateTopItems(data.name, app, yesterday, today, 10) map { result =>
+      println(s"TOP ITEMS RESULT $result")
+    }
+    // get current date and last week ()
+  }
+
+  private def runTotalDailyRevenue() = {
+    val yesterday = getDate(new Yesterday)
+    val today = getDate(new Today)
+    for {
+      data <- appService.getCompanies
+      app <- data.apps
+    } analyticsService.calculateTotalRevenue(data.name, app, yesterday, today) map { result =>
+      try {
+        val jobResult = (result \ "status").as[String]
+        jobResult match {
+          case "STARTED" => {
+            Logger.info(s"Calculate Revenue of app $app from ${data.name} started")
           }
-        } catch {
-          case e: JsResultException => {
-            Logger.error("Parse job result exception", e)
+          case _ => {
+            Logger.error(s"Unkown job server reply status - $jobResult")
           }
         }
+      } catch {
+        case e: JsResultException => {
+          Logger.error("Parse job result exception", e)
+        }
       }
+    }
+  }
+
+  private def runPayingUsers() = {
+    val yesterday = getDate(new Yesterday)
+    val today = getDate(new Today)
+
+    for {
+      data <- appService.getCompanies
+      app <- data.apps
+    }  analyticsService.calculateNumberPayingUsers(
+      data.name,
+      app,
+      yesterday,
+      today
+    ) map { result =>
+      println(s"paying users result $result")
     }
   }
 }
