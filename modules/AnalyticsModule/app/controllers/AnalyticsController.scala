@@ -37,7 +37,7 @@ class AnalyticsController @Inject()(
     endDateStr: String
   ) = Action.async {implicit request =>
     analyticsService.getTotalRevenue(companyName, applicationName, new Date, new Date) map {res =>
-      Ok
+      Ok(res)
     }
   }
 

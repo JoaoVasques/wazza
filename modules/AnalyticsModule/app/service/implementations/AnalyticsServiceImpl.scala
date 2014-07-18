@@ -4,8 +4,11 @@ import java.text.SimpleDateFormat
 import models.user.MobileSession
 import models.user.PurchaseInfo
 import org.bson.BSONObject
+import play.api.libs.json.JsObject
 import play.api.libs.json.JsValue
+import play.api.libs.json.Json
 import play.api.libs.ws.WS
+import scala.collection.immutable.StringOps
 import scala.collection.mutable.HashMap
 import scala.collection.mutable.SynchronizedMap
 import scala.util.Failure
@@ -43,9 +46,17 @@ class AnalyticsServiceImpl @Inject()(
     Future {
       val collection = Metrics.totalRevenueCollection(companyName, applicationName)
       val fields = ("lowerDate", "upperDate")
+      var totalRevenue = 0
+      val results = new JsArray(databaseService.getCollectionElements(collection) map {(el: JsValue) => {
+        val ops = new StringOps((el \ "lowerDate" \ "$date").as[String])
+        val date = (new SimpleDateFormat("yyyy-MM-dd").parse(ops.take(ops.indexOf('T'))).getTime()) / 1000
+        Json.obj(
+          "timestamp" -> date,
+          "value" -> (el \ "totalRevenue").as[Int]
+         )
+      }})
 
-      databaseService.getCollectionElements(collection) foreach {println(_)}
-
+      promise.success(results)
       //promise.success(databaseService.getDocumentsWithinTimeRange(collection, fields, start, end))
     }
 
