@@ -12,9 +12,14 @@ object Metrics {
     companyName: String
   ) = s"${applicationName}_SessionLength_${companyName}"
 
-  def numberPayingUsers (
+  def numberPayingUsersCollection(
     applicationName: String,
     companyName: String
   ) = s"${applicationName}_nrPayingUsers_${companyName}"
+
+  def activeUsersCollection(
+    applicationName: String,
+    companyName: String
+  ) = s"${applicationName}_activeUsers_${companyName}"
 }
 

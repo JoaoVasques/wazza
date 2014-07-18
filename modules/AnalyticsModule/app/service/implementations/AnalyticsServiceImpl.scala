@@ -35,6 +35,39 @@ class AnalyticsServiceImpl @Inject()(
     null
   }
 
+  def getARPU(
+    companyName: String,
+    applicationName: String,
+    start: Date,
+    end: Date
+  ): Future[JsArray] = {
+    val promise = Promise[JsArray]
+    val revenueCollection = Metrics.totalRevenueCollection(companyName, applicationName)
+    val activeUsersCollection = Metrics.activeUsersCollection(companyName, applicationName)
+    promise.future
+  }
+
+  def getTotalARPU(
+    companyName: String,
+    applicationName: String,
+    start: Date,
+    end: Date
+  ): Future[JsValue] = {
+    val promise = Promise[JsValue]
+    val revenueCollection = Metrics.totalRevenueCollection(companyName, applicationName)
+    val revenue = databaseService.getCollectionElements(revenueCollection).foldLeft(0.0)((sum, obj) => {
+      sum + (obj \ "totalRevenue").as[Double]
+    })
+
+    val activeUsersCollection = Metrics.activeUsersCollection(companyName, applicationName)
+    val activeUsers = databaseService.getCollectionElements(activeUsersCollection).foldLeft(0)((sum, obj) => {
+      sum + (obj \ "activeUsers").as[Int]
+    })
+
+    promise.success(Json.obj("value" -> (revenue / activeUsers)))
+    promise.future
+  }
+
   def getTotalRevenue(
     companyName: String,
     applicationName: String,
@@ -46,7 +79,6 @@ class AnalyticsServiceImpl @Inject()(
     Future {
       val collection = Metrics.totalRevenueCollection(companyName, applicationName)
       val fields = ("lowerDate", "upperDate")
-      var totalRevenue = 0
       val results = new JsArray(databaseService.getCollectionElements(collection) map {(el: JsValue) => {
         val ops = new StringOps((el \ "lowerDate" \ "$date").as[String])
         val date = (new SimpleDateFormat("yyyy-MM-dd").parse(ops.take(ops.indexOf('T'))).getTime()) / 1000
