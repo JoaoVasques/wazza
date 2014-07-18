@@ -8,22 +8,11 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 trait AnalyticsService {
 
-  def calculateTopItems(
-    companyName: String,
-    applicationName: String,
-    start: Date,
-    end: Date,
-    limit: Int
-  ): Future[JsValue]
-
-  def calculateTotalRevenue(
-    companyName: String,
-    applicationName: String,
-    start: Date,
-    end: Date
-  ): Future[JsValue]
-
   def getTopTenItems(companyName: String, applicationName: String, start: Date, end: Date): Future[JsArray]
+
+  def getARPU(companyName: String, applicationName: String, start: Date, end: Date): Future[JsArray]
+
+  def getTotalARPU(companyName: String, applicationName: String, start: Date, end: Date): Future[JsValue]
 
   def getTotalRevenue(companyName: String, applicationName: String, start: Date, end: Date): Future[JsArray]
 }

@@ -11,9 +11,9 @@ import play.api.libs.json._
 import play.api.libs.functional.syntax._
 import scala.util.Failure
 import scala.util.Success
-import service.user.definitions.MobileSessionService
-import service.user.definitions.MobileUserService
-import service.user.definitions.{PurchaseService}
+import service.user.definitions._
+//import service.user.definitions.MobileUserService
+//import service.user.definitions.{PurchaseService}
 import models.user.{PurchaseInfo}
 import scala.util.Try
 import com.google.inject._

@@ -30,6 +30,17 @@ class AnalyticsController @Inject()(
     }
   }
 
+  def getDetailedARPU(
+    companyName: String,
+    applicationName: String,
+    startDateStr: String,
+    endDateStr: String
+  ) = Action.async {implicit request =>
+    analyticsService.getTotalARPU(companyName, applicationName, new Date, new Date) map { res =>
+      Ok(res)
+    }
+  }
+
   def getTotalRevenue(
     companyName: String,
     applicationName: String,
@@ -37,7 +48,7 @@ class AnalyticsController @Inject()(
     endDateStr: String
   ) = Action.async {implicit request =>
     analyticsService.getTotalRevenue(companyName, applicationName, new Date, new Date) map {res =>
-      Ok
+      Ok(res)
     }
   }
 

@@ -54,7 +54,10 @@ class ApplicationServiceImpl @Inject()(
     val collection = WazzaApplication.getCollection(companyName, application.name)
     if(! databaseService.exists(collection, WazzaApplication.Key, application.name)) {
       databaseService.insert(collection, application) match {
-        case Success(_) => Success(application)
+        case Success(_) => {
+          addApplication(companyName, application.name)
+          Success(application)
+        }
         case Failure(f) => Failure(f)
       }
     } else {
@@ -231,4 +234,67 @@ class ApplicationServiceImpl @Inject()(
   def virtualCurrencyExists(companyName: String, currencyName: String, applicationName: String): Boolean = {
     false
   }
+
+  /**
+    Private collection with information about all companies and apps
+  **/
+  def addCompany(companyName: String): Try[Unit] = {
+    if(!companyExists(companyName)) {
+      val data = new CompanyData(companyName, List[String]())
+      databaseService.insert(
+        CompanyData.Collection,
+        Json.toJson(data)
+      )
+    } else {
+      new Success
+    }
+  }
+
+  def addApplication(companyName: String, applicationName: String) = {
+    if(!applicationExists(companyName, applicationName)) {
+      databaseService.addElementToArray[String](
+        CompanyData.Collection,
+        CompanyData.Key,
+        companyName,
+        CompanyData.Apps,
+        applicationName
+      )
+    }
+  }
+
+  def getCompanies(): List[CompanyData] = {
+    databaseService.getCollectionElements(CompanyData.Collection) map {el =>
+      new CompanyData(
+        (el \ "name").as[String],
+        (el \ "apps").as[List[String]]
+      )
+    }
+    List(new CompanyData("CompanyTest", List("RecTestApp"))) //TODO dummy
+  }
+
+  private def companyExists(companyName: String): Boolean = {
+    databaseService.exists(
+      CompanyData.Collection,
+      CompanyData.Key,
+      companyName
+    )
+  }
+
+  private def applicationExists(companyName: String, applicationName: String): Boolean = {
+    databaseService.getElementsOfArray(
+      CompanyData.Collection,
+      CompanyData.Key,
+      companyName,
+      CompanyData.Apps,
+      None
+    ).toList.find((app: JsValue) => {
+      //TODO
+      println("app : " + app)
+      true
+    }) match {
+      case Some(_) => true
+      case None => false
+    }
+  }
+
 }

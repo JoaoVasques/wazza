@@ -1,4 +1,4 @@
-package models.security
+package models.application
 
 import play.api.Play.current
 import play.api.libs.json._

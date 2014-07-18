@@ -3,4 +3,7 @@
 
 GET   /totalrevenue/:company/:application/:start/:end   @controllers.analytics.AnalyticsController.getTotalRevenue(company: String, application: String, start: String, end: String)
 
+GET  /totalarpu/:company/:application/:start/:end @controllers.analytics.AnalyticsController.getDetailedARPU(company: String, application: String, start: String, end: String)
+  
 GET   /test     @controllers.analytics.AnalyticsController.test()
+  

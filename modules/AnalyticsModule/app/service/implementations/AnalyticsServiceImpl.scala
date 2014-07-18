@@ -1,10 +1,14 @@
 package service.analytics.implementations
 
 import java.text.SimpleDateFormat
+import models.user.MobileSession
 import models.user.PurchaseInfo
 import org.bson.BSONObject
+import play.api.libs.json.JsObject
 import play.api.libs.json.JsValue
+import play.api.libs.json.Json
 import play.api.libs.ws.WS
+import scala.collection.immutable.StringOps
 import scala.collection.mutable.HashMap
 import scala.collection.mutable.SynchronizedMap
 import scala.util.Failure
@@ -22,54 +26,45 @@ class AnalyticsServiceImpl @Inject()(
   databaseService: DatabaseService
 ) extends AnalyticsService {
 
-  private val AnalyticsUrl = Play.current.configuration.getConfig("analytics") match {
-    case Some(conf) =>conf.underlying.root.get("url").render.filter(_ != '"')
-    case _ => promise.failure(new Exception("No analytics config"))
-  }
-
-  /**
-    Format: inputCollectionName outputCollectionName startEnd endDate
-  **/
-  private def generateContent(companyName: String, applicationName: String, start: Date, end: Date): String = {
-    val df = new SimpleDateFormat("yyyy/MM/dd")
-    val inputCollection = PurchaseInfo.getCollection(companyName, applicationName)
-    val outputCollection = Metrics.totalRevenueCollection(companyName, applicationName)
-    s"input=$inputCollection $outputCollection ${df.format(start)} ${df.format(end)}"
-  }
-
-  def calculateTopItems(
+  def getTopTenItems(
     companyName: String,
     applicationName: String,
     start: Date,
-    end: Date,
-    limit: Int
-  ): Future[JsValue] = {
-    val promise = Promise[JsValue]
-    val url = s"${AnalyticsUrl}jobs?appName=test&classPath=spark.jobserver.TopItems"
-    WS.url(url).post(generateContent(companyName, applicationName, start, end)).map {response =>
-      promise.success(response.json)
-    }
-
-    promise.future
-  }
-
-  def getTopTenItems(companyName: String, applicationName: String, start: Date, end: Date): Future[JsArray] = {
+    end: Date
+  ): Future[JsArray] = {
     null
   }
 
-  def calculateTotalRevenue(
+  def getARPU(
+    companyName: String,
+    applicationName: String,
+    start: Date,
+    end: Date
+  ): Future[JsArray] = {
+    val promise = Promise[JsArray]
+    val revenueCollection = Metrics.totalRevenueCollection(companyName, applicationName)
+    val activeUsersCollection = Metrics.activeUsersCollection(companyName, applicationName)
+    promise.future
+  }
+
+  def getTotalARPU(
     companyName: String,
     applicationName: String,
     start: Date,
     end: Date
   ): Future[JsValue] = {
     val promise = Promise[JsValue]
-    
-    val url = s"${AnalyticsUrl}jobs?appName=test&classPath=spark.jobserver.TotalRevenue"
-    WS.url(url).post(generateContent(companyName, applicationName, start, end)).map {response =>
-      promise.success(response.json)
-    }
+    val revenueCollection = Metrics.totalRevenueCollection(companyName, applicationName)
+    val revenue = databaseService.getCollectionElements(revenueCollection).foldLeft(0.0)((sum, obj) => {
+      sum + (obj \ "totalRevenue").as[Double]
+    })
 
+    val activeUsersCollection = Metrics.activeUsersCollection(companyName, applicationName)
+    val activeUsers = databaseService.getCollectionElements(activeUsersCollection).foldLeft(0)((sum, obj) => {
+      sum + (obj \ "activeUsers").as[Int]
+    })
+
+    promise.success(Json.obj("value" -> (revenue / activeUsers)))
     promise.future
   }
 
@@ -84,7 +79,17 @@ class AnalyticsServiceImpl @Inject()(
     Future {
       val collection = Metrics.totalRevenueCollection(companyName, applicationName)
       val fields = ("lowerDate", "upperDate")
-      promise.success(databaseService.getDocumentsWithinTimeRange(collection, fields, start, end))
+      val results = new JsArray(databaseService.getCollectionElements(collection) map {(el: JsValue) => {
+        val ops = new StringOps((el \ "lowerDate" \ "$date").as[String])
+        val date = (new SimpleDateFormat("yyyy-MM-dd").parse(ops.take(ops.indexOf('T'))).getTime()) / 1000
+        Json.obj(
+          "timestamp" -> date,
+          "value" -> (el \ "totalRevenue").as[Int]
+         )
+      }})
+
+      promise.success(results)
+      //promise.success(databaseService.getDocumentsWithinTimeRange(collection, fields, start, end))
     }
 
     promise.future

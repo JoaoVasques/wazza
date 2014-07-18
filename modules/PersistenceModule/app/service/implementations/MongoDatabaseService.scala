@@ -229,7 +229,8 @@ class MongoDatabaseService extends DatabaseService {
     end: Date
   ): JsArray = {
     val query = (dateFields._1 $lte start $gt end) ++ (dateFields._2 $lte start $gt end)
-    new JsArray(this.getCollection(collectionName).find(query).map {doc =>
+    val sortCriteria = MongoDBObject(dateFields._1 -> 1)
+    new JsArray(this.getCollection(collectionName).find(query).sort(sortCriteria).map {doc =>
       Json.parse(doc.toString)
     }.toSeq)
   }
