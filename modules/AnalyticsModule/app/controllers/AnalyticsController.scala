@@ -105,7 +105,12 @@ class AnalyticsController @Inject()(
     startDateStr: String,
     endDateStr: String
   ) = Action.async {implicit request =>
-    null
+    executeRequest(
+      companyName,
+      applicationName,
+      startDateStr,
+      endDateStr,
+      analyticsService.getRevenue)
   }
 }
 
