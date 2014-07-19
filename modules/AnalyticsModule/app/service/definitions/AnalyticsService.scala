@@ -14,6 +14,8 @@ trait AnalyticsService {
 
   def getTotalARPU(companyName: String, applicationName: String, start: Date, end: Date): Future[JsValue]
 
-  def getTotalRevenue(companyName: String, applicationName: String, start: Date, end: Date): Future[JsArray]
+  def getTotalRevenue(companyName: String, applicationName: String, start: Date, end: Date): Future[JsValue]
+
+  def getRevenue(companyName: String, applicationName: String, start: Date, end: Date): Future[JsArray]
 }
 
