@@ -47,10 +47,15 @@
 }
 
 .clickable{
-    cursor: pointer;   
+    cursor: pointer;
 }
 
 .panel-heading span {
   margin-top: -20px;
   font-size: 15px;
 }
+
+.fixed-height {
+  height:300px;
+}
+

@@ -369,8 +369,6 @@ dashboard
             });
         });
 
-
-
         $(function () {
 
             var colors = Highcharts.getOptions().colors,
