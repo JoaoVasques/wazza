@@ -8,128 +8,83 @@ items: List[models.application.Item]
 
 @if(exist){
 
-   <div class="row">
-    <div class="col-lg-2 col-xs-6">
-      <!-- small box -->
-      <div class="small-box bg-aqua">
-        <div class="inner">
-          <h3>
-            $0.89
-          </h3>
-          <p>
-            ARPU
-          </p>
-        </div>
-        <div class="icon">
-          <i class="ion ion-person-add"></i>
-        </div>
-        <a href="/analyticsUser" class="small-box-footer">
-          More info <i class="fa fa-arrow-circle-right"></i>
-        </a>
-      </div>
-    </div><!-- ./col -->
-    <div class="col-lg-2 col-xs-6">
-      <!-- small box -->
-      <div class="small-box bg-green">
-        <div class="inner">
-          <h3>
-            53<sup style="font-size: 20px">%</sup>
-          </h3>
-          <p>
-            Paying Users
-          </p>
-        </div>
-        <div class="icon">
-          <i class="ion ion-stats-bars"></i>
-        </div>
-        <a href="#" class="small-box-footer">
-          More info <i class="fa fa-arrow-circle-right"></i>
-        </a>
-      </div>
-    </div><!-- ./col -->
-    <div class="col-lg-2 col-xs-6">
-      <!-- small box -->
-      <div class="small-box bg-yellow">
-        <div class="inner">
-          <h3>
-            44
-          </h3>
-          <p>
-            Purchases
-          </p>
-        </div>
-        <div class="icon">
-          <i class="ion ion-bag"></i>
-        </div>
-        <a href="/analyticsApp" class="small-box-footer">
-          More info <i class="fa fa-arrow-circle-right"></i>
-        </a>
-      </div>
-    </div><!-- ./col -->
-    <div class="col-lg-2 col-xs-6">
-      <!-- small box -->
-      <div class="small-box bg-red">
-        <div class="inner">
-          <h3>
-            $650.99
-          </h3>
-          <p>
-            Total Revenue
-          </p>
-        </div>
-        <div class="icon">
-          <i class="ion ion-pie-graph"></i>
-        </div>
-        <a href="#" class="small-box-footer">
-          More info <i class="fa fa-arrow-circle-right"></i>
-        </a>
-      </div>
-    </div><!-- ./col -->
-    <div class="col-lg-2 col-xs-6">
-      <!-- small box -->
-      <div class="small-box bg-red">
-        <div class="inner">
-          <h3>
-            1:27s
-          </h3>
-          <p>
-            First Purchase
-          </p>
-        </div>
-        <div class="icon">
-          <i class="ion ion-pie-graph"></i>
-        </div>
-        <a href="#" class="small-box-footer">
-          More info <i class="fa fa-arrow-circle-right"></i>
-        </a>
-      </div>
-    </div><!-- ./col -->
-    <div class="col-lg-2 col-xs-6">
-      <!-- small box -->
-      <!--a ng-click="$location.path('/notavailableyet');"-->
-        <div class="small-box bg-green">
-          <div class="inner">
-            <h3>
-              +
-            </h3>
-            <p>
-              Add your own
-            </p>
-          </div>
-          <div class="icon">
-            <i class="ion ion-pie-graph"></i>
-          </div>
-          <a href="/notavailableyet" class="small-box-footer">
-            More info <i class="fa fa-arrow-circle-right"></i>
-          </a>
-        </div>
-      <!--/a-->
-    </div><!-- ./col -->
-   </div><!-- /.row -->
 
-  <div class="row">
+    <div class="row">
+      <div class="col-md-4 col-lg-4">
+        <div class="panel panel-primary">
+          <div class="panel-heading">
+            <h3 class="panel-title">ARPU</h3>
+            <span class="pull-right clickable"><i class="glyphicon glyphicon-chevron-up"></i></span>
+          </div>
+          <div class="panel-body">
+            <linechart data="arpu" options="options" mode=""></linechart>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4 col-lg-4">
+        <div class="panel panel-success">
+          <div class="panel-heading">
+            <h3 class="panel-title">Revenue</h3>
+            <span class="pull-right clickable"><i class="glyphicon glyphicon-chevron-up"></i></span>
+          </div>
+          <div class="panel-body">
+            <linechart data="revenue" options="options" mode=""></linechart>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4 col-lg-4">
+        <div class="panel panel-info">
+          <div class="panel-heading">
+            <h3 class="panel-title">Purchases</h3>
+            <span class="pull-right clickable"><i class="glyphicon glyphicon-chevron-up"></i></span>
+          </div>
+          <div class="panel-body">
+            <linechart data="purchases" options="options" mode=""></linechart>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-4 col-lg-4">
+        <div class="panel panel-primary">
+          <div class="panel-heading">
+            <h3 class="panel-title">Time to 1st buy</h3>
+            <span class="pull-right clickable"><i class="glyphicon glyphicon-chevron-up"></i></span>
+          </div>
+          <div class="panel-body">
+            <linechart data="1stbuy" options="options" mode=""></linechart>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4 col-lg-4">
+        <div class="panel panel-success">
+          <div class="panel-heading">
+            <h3 class="panel-title">Success Rate</h3>
+            <span class="pull-right clickable"><i class="glyphicon glyphicon-chevron-up"></i></span>
+          </div>
+          <div class="panel-body">
+            <linechart data="success" options="options" mode=""></linechart>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4 col-lg-4">
+        <div class="panel panel-info">
+          <div class="panel-heading">
+            <h3 class="panel-title">Add your own</h3>
+            <span class="pull-right clickable"><i class="glyphicon glyphicon-chevron-up"></i></span>
+          </div>
+          <div class="panel-body">
+            <img class="img-responsive" src="http://www.clker.com/cliparts/A/P/L/b/V/G/blue-plus-sign-md.png">
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+  <!--div class="row">
     <div id="revenueDashboard" style="width:100%; height:400px;"></div>
-  </div>
+  </div-->
 
 } else {
   <h2>It seems you have not registered any application yet.</h2>
