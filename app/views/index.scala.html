@@ -108,11 +108,34 @@
 
       <section ng-show="authOK">
      
+        <div class="wrapper row-offcanvas row-offcanvas-left">
+            <!-- Left side column. contains the logo and sidebar -->
+            @views.html.sidebar.render()
+
+            <!-- Right side column. Contains the navbar and content of the page -->
+            <aside class="right-side">
+                <!-- Content Header (Page header) -->
+                <section class="content-header" ng-controller="NavBarController" ng-model="page">
+                    <h1>
+                        {{page}}
+                        <span ng-show="page === 'Dashboard'">
+                              <small>Control panel</small>
+                        </span>
+                        <span ng-show="page === 'Analytics'">
+                              <small><a href="/analyticsApp"><!--i class="fa fa-dashboard"></i--> App</a></small>
+                              <small><a href="/analyticsUser"><!--i class="fa fa-dashboard"></i--> User</a></small>
+                              <small><a href="/analyticsRevenue"><!--i class="fa fa-dashboard"></i--> Revenue</a></small>
+                              <small><a href="/analyticsDevice"><!--i class="fa fa-dashboard"></i--> Device</a></small>
+                        </span>
+                    </h1>
+                </section>
+
                 <!-- Main content -->
                 <section class="content">
                   <div ng-view></div>
                 </section>
 
+            </aside>
         </div>
       </section>
 
