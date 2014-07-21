@@ -9,37 +9,18 @@
                 <h4>{{applicationName}}</h4>
             </div>
 
-            <div class="pull-right info">
-                <!-- Tasks: style can be found in dropdown.less -->
-                <div class="dropdown tasks-menu nav navbar-nav">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                        <i class="fa fa-tasks"></i>
-                        Change
-                        <!--span class="label label-danger">9</span-->
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li class="header" ng-show="applicationsList.length > 1">You have {{applicationsList.length}} apps:</li>
-                        <li class="header" ng-hide="applicationsList.length > 1">You have one app:</li>
-                        <li>
-                            <ul class="menu">
-                                <li ng-repeat="app in applicationsList">
-                                    <a href="#">
-                                        <h3>
-                                            {{app}}
-                                        </h3>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="/newapp" class="btn btn-default btn-lg" style="color:#666;">Add new App</a>
-                                </li>
-                            </ul>
-                        </li>
-                    </ul>
-                </div>
-            </div>
+
 
         </div>
-
+        <!-- search form -->
+        <form action="#" method="get" class="sidebar-form">
+            <div class="input-group">
+                <input type="text" name="q" class="form-control" placeholder="Search..."/>
+                <span class="input-group-btn">
+                    <button type='submit' name='seach' id='search-btn' class="btn btn-flat"><i class="fa fa-search"></i></button>
+                </span>
+            </div>
+        </form>
         <!-- /.search form -->
         <!-- sidebar menu: : style can be found in sidebar.less -->
         <ul class="sidebar-menu">
@@ -63,11 +44,11 @@
                     <i class="fa fa-edit"></i> <span>Management</span>
                 </a>
             </li>
-            <!--li>
+            <li>
                 <a href="/campaigns">
                     <i class="fa fa-bar-chart-o"></i> <span>Campaigns</span>
                 </a>
-            </li-->
+            </li>
         </ul>
     </section>
 </aside>
