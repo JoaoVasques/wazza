@@ -16,5 +16,5 @@
 
 | Request type  | Endpoint|
 | ------------- |:-------------:|
-| Total | /revenue/total/{company name}/{application name }/{start date}/{end date}|
-| Detailed      | /revenue/detail/{company name}/{application name }/{start date}/{end date}|
+| Total | /arpu/total/{company name}/{application name }/{start date}/{end date}|
+| Detailed      | /arpu/detail/{company name}/{application name }/{start date}/{end date}|
