@@ -1,9 +1,10 @@
 # Analytics routes
 # ~~~~
 
-GET   /totalrevenue/:company/:application/:start/:end   @controllers.analytics.AnalyticsController.getTotalRevenue(company: String, application: String, start: String, end: String)
+GET   /revenue/total/:company/:application/:start/:end   @controllers.analytics.AnalyticsController.getTotalRevenue(company: String, application: String, start: String, end: String)
 
-GET  /totalarpu/:company/:application/:start/:end @controllers.analytics.AnalyticsController.getDetailedARPU(company: String, application: String, start: String, end: String)
-  
-GET   /test     @controllers.analytics.AnalyticsController.test()
-  
+GET   /revenue/detail/:company/:application/:start/:end  @controllers.analytics.AnalyticsController.getDetailedTotalRevenue(company: String, application: String, start: String, end: String)
+
+GET  /arpu/total/:company/:application/:start/:end @controllers.analytics.AnalyticsController.getTotalARPU(company: String, application: String, start: String, end: String)
+
+GET  /arpu/detail/:company/:application/:start/:end @controllers.analytics.AnalyticsController.getDetailedARPU(company: String, application: String, start: String, end: String)

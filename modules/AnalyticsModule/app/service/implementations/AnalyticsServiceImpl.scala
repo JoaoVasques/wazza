@@ -26,12 +26,18 @@ class AnalyticsServiceImpl @Inject()(
   databaseService: DatabaseService
 ) extends AnalyticsService {
 
+  private def getUnixDate(dateStr: String): Long = {
+    val ops = new StringOps(dateStr)
+    (new SimpleDateFormat("yyyy-MM-dd").parse(ops.take(ops.indexOf('T'))).getTime()) / 1000
+  }
+
   def getTopTenItems(
     companyName: String,
     applicationName: String,
     start: Date,
     end: Date
   ): Future[JsArray] = {
+    //TODO
     null
   }
 
@@ -42,8 +48,36 @@ class AnalyticsServiceImpl @Inject()(
     end: Date
   ): Future[JsArray] = {
     val promise = Promise[JsArray]
-    val revenueCollection = Metrics.totalRevenueCollection(companyName, applicationName)
-    val activeUsersCollection = Metrics.activeUsersCollection(companyName, applicationName)
+
+    Future {
+      val revenueCollection = Metrics.totalRevenueCollection(companyName, applicationName)
+      val activeUsersCollection = Metrics.activeUsersCollection(companyName, applicationName)
+      val fields = ("lowerDate", "upperDate")
+
+      val revenue = databaseService.getDocumentsWithinTimeRange(
+        revenueCollection,
+        fields,
+        start,
+        end
+      ).value
+
+      val active = databaseService.getDocumentsWithinTimeRange(
+        activeUsersCollection,
+        fields,
+        start,
+        end
+      ).value
+
+      val result = new JsArray((revenue zip active) map {
+        case (r, a) => {
+          Json.obj(
+            "timestamp" -> getUnixDate((r \ "lowerDate" \ "$date").as[String]),
+            "value" -> (r \ "totalRevenue").as[Double] / (a \ "activeUsers").as[Int]
+          )
+        }
+      })
+      promise.success(result)
+    }
     promise.future
   }
 
@@ -54,17 +88,30 @@ class AnalyticsServiceImpl @Inject()(
     end: Date
   ): Future[JsValue] = {
     val promise = Promise[JsValue]
-    val revenueCollection = Metrics.totalRevenueCollection(companyName, applicationName)
-    val revenue = databaseService.getCollectionElements(revenueCollection).foldLeft(0.0)((sum, obj) => {
-      sum + (obj \ "totalRevenue").as[Double]
-    })
 
-    val activeUsersCollection = Metrics.activeUsersCollection(companyName, applicationName)
-    val activeUsers = databaseService.getCollectionElements(activeUsersCollection).foldLeft(0)((sum, obj) => {
-      sum + (obj \ "activeUsers").as[Int]
-    })
+    Future {
+      val fields = ("lowerDate", "upperDate")
+      val revenue = databaseService.getDocumentsWithinTimeRange(
+        Metrics.totalRevenueCollection(companyName, applicationName),
+        fields,
+        start,
+        end
+      ).value.foldLeft(0.0)((sum, obj) => {
+        sum + (obj \ "totalRevenue").as[Double]
+      })
 
-    promise.success(Json.obj("value" -> (revenue / activeUsers)))
+      val activeUsers = databaseService.getDocumentsWithinTimeRange(
+        Metrics.activeUsersCollection(companyName, applicationName),
+        fields,
+        start,
+        end
+      ).value.foldLeft(0)((sum, obj) => {
+        sum + (obj \ "activeUsers").as[Int]
+      })
+
+      promise.success(Json.obj("value" -> (revenue / activeUsers)))      
+    }
+
     promise.future
   }
 
@@ -73,23 +120,43 @@ class AnalyticsServiceImpl @Inject()(
     applicationName: String,
     start: Date,
     end: Date
-  ): Future[JsArray] = {
+  ): Future[JsValue] = {
+    val promise = Promise[JsValue]
+    Future {
+      val fields = ("lowerDate", "upperDate")
+      val revenue = databaseService.getDocumentsWithinTimeRange(
+        Metrics.totalRevenueCollection(companyName, applicationName),
+        fields,
+        start,
+        end
+      ).value.foldLeft(0.0)((sum, obj) => {
+        sum + (obj \ "totalRevenue").as[Double]
+      })
+      promise.success(Json.obj("value" -> revenue))
+    }
 
+    promise.future
+  }
+
+  def getRevenue(
+    companyName: String,
+    applicationName: String,
+    start: Date,
+    end: Date
+  ): Future[JsArray] = {
     val promise = Promise[JsArray]
     Future {
       val collection = Metrics.totalRevenueCollection(companyName, applicationName)
       val fields = ("lowerDate", "upperDate")
-      val results = new JsArray(databaseService.getCollectionElements(collection) map {(el: JsValue) => {
-        val ops = new StringOps((el \ "lowerDate" \ "$date").as[String])
-        val date = (new SimpleDateFormat("yyyy-MM-dd").parse(ops.take(ops.indexOf('T'))).getTime()) / 1000
+      val results = new JsArray(
+        databaseService.getDocumentsWithinTimeRange(collection, fields, start, end).value map {(el: JsValue) => {
         Json.obj(
-          "timestamp" -> date,
+          "timestamp" -> getUnixDate((el \ "lowerDate" \ "$date").as[String]),
           "value" -> (el \ "totalRevenue").as[Int]
-         )
+        )
       }})
 
       promise.success(results)
-      //promise.success(databaseService.getDocumentsWithinTimeRange(collection, fields, start, end))
     }
 
     promise.future
