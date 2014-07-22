@@ -13,10 +13,10 @@ GET     /campaigns                    @controllers.dashboard.DashboardController
 GET     /store/android                @controllers.dashboard.DashboardController.storeAndroid
 GET     /store/apple                  @controllers.dashboard.DashboardController.storeApple
 GET     /store/amazon                 @controllers.dashboard.DashboardController.storeAmazon
-GET     /analyticsApp                 @controllers.dashboard.DashboardController.analyticsApp
-GET     /analyticsUser                @controllers.dashboard.DashboardController.analyticsUser
-GET     /analyticsRevenue             @controllers.dashboard.DashboardController.analyticsRevenue
-GET     /analyticsDevice              @controllers.dashboard.DashboardController.analyticsDevice
+GET     /arpu		                  @controllers.dashboard.DashboardController.arpu
+GET     /ltv			              @controllers.dashboard.DashboardController.ltv
+GET     /revenue        		      @controllers.dashboard.DashboardController.revenue
+GET     /churn			              @controllers.dashboard.DashboardController.churn
 GET     /settings                     @controllers.dashboard.DashboardController.settingsSection
 
 # Map static resources from the /public folder to the /assets URL path

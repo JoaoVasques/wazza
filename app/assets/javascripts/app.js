@@ -46,21 +46,21 @@ angular.module('Wazza', ['ngRoute', 'Wazza.controllers', 'ItemModule', 'UserModu
         controller: 'DashboardController'
       })
       //analytics
-      .when('/analyticsUser', {
-        templateUrl: '/dashboard/analyticsUser',
-        controller: 'AnalyticsController'
+      .when('/churn', {
+        templateUrl: '/dashboard/churn',
+        controller: 'ChurnController'
       })
-      .when('/analyticsRevenue', {
-        templateUrl: '/dashboard/analyticsRevenue',
-        controller: 'AnalyticsController'
+      .when('/revenue', {
+        templateUrl: '/dashboard/revenue',
+        controller: 'RevenueController'
       })
-      .when('/analyticsApp', {
-        templateUrl: '/dashboard/analyticsApp',
+      .when('/arpu', {
+        templateUrl: '/dashboard/arpu',
         controller: 'ArpuController'
       })
-      .when('/analyticsDevice', {
-        templateUrl: '/dashboard/analyticsDevice',
-        controller: 'AnalyticsController'
+      .when('/ltv', {
+        templateUrl: '/dashboard/ltv',
+        controller: 'ltvController'
       })
       //settings
       .when('/settings', {

@@ -77,50 +77,51 @@ class DashboardController @Inject()(
     }
   }
 
-  def analyticsApp = HasToken() {token => userId => implicit request =>
-    Ok(views.html.analyticsApp())
+
+  //analytics
+  def arpu = HasToken() {token => userId => implicit request =>
+    Ok(views.html.analytics.arpu())
   }
   
-  def analyticsUser = HasToken() {token => userId => implicit request =>
-    Ok(views.html.analyticsUser())
+  def churn = HasToken() {token => userId => implicit request =>
+    Ok(views.html.analytics.churn())
   }
 
-  def analyticsRevenue = HasToken() {token => userId => implicit request =>
-    Ok(views.html.analyticsRevenue())
+  def revenue = HasToken() {token => userId => implicit request =>
+    Ok(views.html.analytics.revenue())
   }
   
-  def analyticsDevice = HasToken() {token => userId => implicit request =>
-    Ok(views.html.analyticsDevice())
+  def ltv = HasToken() {token => userId => implicit request =>
+    Ok(views.html.analytics.ltv())
   }
   
+  //store
   def storeAndroid = HasToken() {token => userId => implicit request =>
-    Ok(views.html.storeAndroid())
+    Ok(views.html.store.storeAndroid())
   }
 
   def storeApple = HasToken() {token => userId => implicit request =>
-    Ok(views.html.storeApple())
+    Ok(views.html.store.storeApple())
   }
 
   def storeAmazon = HasToken() {token => userId => implicit request =>
-    Ok(views.html.storeAmazon())
+    Ok(views.html.store.storeAmazon())
   }
 
-  def settingsSection = HasToken() {token => userId => implicit request =>
-    Ok(views.html.settings())
-  }
-
+  //inventory
   def inventory = HasToken() {token => userId => implicit request =>
-    Ok(views.html.inventory())
+    Ok(views.html.inventory.inventory())
   }
 
   def inventoryCRUD = HasToken() {token => userId => implicit request =>
-    Ok(views.html.inventoryCRUD())
+    Ok(views.html.inventory.inventoryCRUD())
   }
 
   def inventoryVirtualCurrencies = HasToken() {token => userId => implicit request =>
-    Ok(views.html.inventoryVirtualCurrencies())
+    Ok(views.html.inventory.inventoryVirtualCurrencies())
   }
 
+  //others
   def recommendation = HasToken() {token => userId => implicit request =>
     Ok(views.html.recommendation())
   }
@@ -128,5 +129,10 @@ class DashboardController @Inject()(
   def campaigns = HasToken() {token => userId => implicit request =>
     Ok(views.html.campaigns())
   }
+
+  def settingsSection = HasToken() {token => userId => implicit request =>
+    Ok(views.html.settings())
+  }
+
 
 }
