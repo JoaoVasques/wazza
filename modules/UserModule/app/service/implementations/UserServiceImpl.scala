@@ -8,11 +8,9 @@ import scala.util.Try
 import service.user.definitions.{UserService}
 import com.google.inject._
 import service.persistence.definitions.{DatabaseService}
-import service.security.definitions.InternalService
 
 class UserServiceImpl @Inject()(
   databaseService: DatabaseService
-  //internalService: InternalService
 ) extends UserService {
 
   private val UserId = "email"

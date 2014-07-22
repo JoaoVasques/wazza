@@ -1,10 +1,14 @@
 package service.analytics.implementations
 
 import java.text.SimpleDateFormat
+import models.user.MobileSession
 import models.user.PurchaseInfo
 import org.bson.BSONObject
+import play.api.libs.json.JsObject
 import play.api.libs.json.JsValue
+import play.api.libs.json.Json
 import play.api.libs.ws.WS
+import scala.collection.immutable.StringOps
 import scala.collection.mutable.HashMap
 import scala.collection.mutable.SynchronizedMap
 import scala.util.Failure
@@ -22,52 +26,90 @@ class AnalyticsServiceImpl @Inject()(
   databaseService: DatabaseService
 ) extends AnalyticsService {
 
-  private val AnalyticsUrl = Play.current.configuration.getConfig("analytics") match {
-    case Some(conf) =>conf.underlying.root.get("url").render.filter(_ != '"')
-    case _ => promise.failure(new Exception("No analytics config"))
+  private def getUnixDate(dateStr: String): Long = {
+    val ops = new StringOps(dateStr)
+    (new SimpleDateFormat("yyyy-MM-dd").parse(ops.take(ops.indexOf('T'))).getTime()) / 1000
   }
 
-  /**
-    Format: inputCollectionName outputCollectionName startEnd endDate
-  **/
-  private def generateContent(companyName: String, applicationName: String, start: Date, end: Date): String = {
-    val df = new SimpleDateFormat("yyyy/MM/dd")
-    val inputCollection = PurchaseInfo.getCollection(companyName, applicationName)
-    val outputCollection = Metrics.totalRevenueCollection(companyName, applicationName)
-    s"input=$inputCollection $outputCollection ${df.format(start)} ${df.format(end)}"
-  }
-
-  def calculateTopItems(
+  def getTopTenItems(
     companyName: String,
     applicationName: String,
     start: Date,
-    end: Date,
-    limit: Int
-  ): Future[JsValue] = {
-    val promise = Promise[JsValue]
-    val url = s"${AnalyticsUrl}jobs?appName=test&classPath=spark.jobserver.TopItems"
-    WS.url(url).post(generateContent(companyName, applicationName, start, end)).map {response =>
-      promise.success(response.json)
-    }
-
-    promise.future
-  }
-
-  def getTopTenItems(companyName: String, applicationName: String, start: Date, end: Date): Future[JsArray] = {
+    end: Date
+  ): Future[JsArray] = {
+    //TODO
     null
   }
 
-  def calculateTotalRevenue(
+  def getARPU(
+    companyName: String,
+    applicationName: String,
+    start: Date,
+    end: Date
+  ): Future[JsArray] = {
+    val promise = Promise[JsArray]
+
+    Future {
+      val revenueCollection = Metrics.totalRevenueCollection(companyName, applicationName)
+      val activeUsersCollection = Metrics.activeUsersCollection(companyName, applicationName)
+      val fields = ("lowerDate", "upperDate")
+
+      val revenue = databaseService.getDocumentsWithinTimeRange(
+        revenueCollection,
+        fields,
+        start,
+        end
+      ).value
+
+      val active = databaseService.getDocumentsWithinTimeRange(
+        activeUsersCollection,
+        fields,
+        start,
+        end
+      ).value
+
+      val result = new JsArray((revenue zip active) map {
+        case (r, a) => {
+          Json.obj(
+            "timestamp" -> getUnixDate((r \ "lowerDate" \ "$date").as[String]),
+            "value" -> (r \ "totalRevenue").as[Double] / (a \ "activeUsers").as[Int]
+          )
+        }
+      })
+      promise.success(result)
+    }
+    promise.future
+  }
+
+  def getTotalARPU(
     companyName: String,
     applicationName: String,
     start: Date,
     end: Date
   ): Future[JsValue] = {
     val promise = Promise[JsValue]
-    
-    val url = s"${AnalyticsUrl}jobs?appName=test&classPath=spark.jobserver.TotalRevenue"
-    WS.url(url).post(generateContent(companyName, applicationName, start, end)).map {response =>
-      promise.success(response.json)
+
+    Future {
+      val fields = ("lowerDate", "upperDate")
+      val revenue = databaseService.getDocumentsWithinTimeRange(
+        Metrics.totalRevenueCollection(companyName, applicationName),
+        fields,
+        start,
+        end
+      ).value.foldLeft(0.0)((sum, obj) => {
+        sum + (obj \ "totalRevenue").as[Double]
+      })
+
+      val activeUsers = databaseService.getDocumentsWithinTimeRange(
+        Metrics.activeUsersCollection(companyName, applicationName),
+        fields,
+        start,
+        end
+      ).value.foldLeft(0)((sum, obj) => {
+        sum + (obj \ "activeUsers").as[Int]
+      })
+
+      promise.success(Json.obj("value" -> (revenue / activeUsers)))      
     }
 
     promise.future
@@ -78,13 +120,43 @@ class AnalyticsServiceImpl @Inject()(
     applicationName: String,
     start: Date,
     end: Date
-  ): Future[JsArray] = {
+  ): Future[JsValue] = {
+    val promise = Promise[JsValue]
+    Future {
+      val fields = ("lowerDate", "upperDate")
+      val revenue = databaseService.getDocumentsWithinTimeRange(
+        Metrics.totalRevenueCollection(companyName, applicationName),
+        fields,
+        start,
+        end
+      ).value.foldLeft(0.0)((sum, obj) => {
+        sum + (obj \ "totalRevenue").as[Double]
+      })
+      promise.success(Json.obj("value" -> revenue))
+    }
 
+    promise.future
+  }
+
+  def getRevenue(
+    companyName: String,
+    applicationName: String,
+    start: Date,
+    end: Date
+  ): Future[JsArray] = {
     val promise = Promise[JsArray]
     Future {
       val collection = Metrics.totalRevenueCollection(companyName, applicationName)
       val fields = ("lowerDate", "upperDate")
-      promise.success(databaseService.getDocumentsWithinTimeRange(collection, fields, start, end))
+      val results = new JsArray(
+        databaseService.getDocumentsWithinTimeRange(collection, fields, start, end).value map {(el: JsValue) => {
+        Json.obj(
+          "timestamp" -> getUnixDate((el \ "lowerDate" \ "$date").as[String]),
+          "value" -> (el \ "totalRevenue").as[Int]
+        )
+      }})
+
+      promise.success(results)
     }
 
     promise.future

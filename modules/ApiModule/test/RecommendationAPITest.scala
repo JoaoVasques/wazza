@@ -55,19 +55,22 @@ class RecommendationAPITest extends Specification {
   private val NumberDays = 5
   private val NrItems = 10
   private val MaxPrice = 10
-  private val NrMobileUsers = 200
-  private val NrPurchases = 150
+  private val NrMobileUsers = 20
+  private val NrPurchases = 40
+  private val MaxSessionLength = 120
 
   private def generateApp() = {
+    this.mobileSessionService = new MobileSessionServiceImpl(this.databaseService)
+    this.purchaseService = new PurchaseServiceImpl(this.mobileUserService, this.databaseService, this.mobileSessionService)
     val photosService = new PhotosServiceImpl
     val secretGeneratorService = new SecretGeneratorServiceImpl
-    this.applicationService = new ApplicationServiceImpl(photosService, this.databaseService)
+    this.applicationService = new ApplicationServiceImpl(photosService, this.databaseService, purchaseService)
     val application = new WazzaApplication(
       AppName,
       "http://www.test.com",
       "image",
       "com.test",
-      Some(WazzaApplication.applicationTypes.last), //Android
+      WazzaApplication.applicationTypes,
       new Credentials(
         secretGeneratorService.generateSecret(Id),
         secretGeneratorService.generateSecret(ApiKey),
@@ -108,7 +111,6 @@ class RecommendationAPITest extends Specification {
   }
 
   private def generateMobileUsers() = {
-    this.mobileSessionService = new MobileSessionServiceImpl(this.databaseService)
     this.mobileUserService = new MobileUserServiceImpl(this.databaseService)
     var i = 0
     val cal = Calendar.getInstance()
@@ -125,7 +127,7 @@ class RecommendationAPITest extends Specification {
       val sessionJson = Json.obj(
         "id" -> i.toString,
         "userId" -> (s"user-" + i.toString),
-        "sessionLength" -> 0,
+        "sessionLength" -> Math.random() * MaxSessionLength,
         "startTime" -> format.format(cal.getTime),
         "deviceInfo" -> Json.obj(
           "osType" -> "osType",
@@ -142,17 +144,23 @@ class RecommendationAPITest extends Specification {
   }
 
   private def generatePurchases() = {
-    this.purchaseService = new PurchaseServiceImpl(this.mobileUserService, this.databaseService, this.mobileSessionService)
     var i = 0
+    var j = 1
     val cal = Calendar.getInstance()
     val format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z")
     val r = new Random
     for(i <- 1 to NrPurchases) {
       cal.add(Calendar.DATE, (r.nextInt(NumberDays) * -1))
+      var sessionId = (j % NrMobileUsers)
+      if(sessionId == 0) {
+        j+= 1
+        sessionId = (j % NrMobileUsers)
+      }
+
       val json = Json.obj(
         "id" -> (s"purchase-id-$i"),
-        "sessionId" -> i.toString,
-        "userId" ->  (s"user-" + i.toString),
+        "sessionId" -> sessionId.toString,
+        "userId" ->  (s"user-" + (j % NrMobileUsers).toString),
         "name" -> this.app.name,
         "itemId" -> s"name-${i % NrItems}",
         "price" -> i % MaxPrice,
@@ -164,6 +172,7 @@ class RecommendationAPITest extends Specification {
           "deviceModel" -> "model"
         )
       )
+      j+= 1
       val purchase = this.purchaseService.create(json)
       this.purchaseService.save(
         CompanyName,
