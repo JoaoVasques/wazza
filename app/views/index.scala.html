@@ -9,6 +9,7 @@
   <script defer src="@routes.WebJarAssets.at(WebJarAssets.locate("underscore-min.js"))"></script>
   <script defer src="@routes.WebJarAssets.at(WebJarAssets.locate("ui-bootstrap.js"))"></script>
   <script defer src="@routes.WebJarAssets.at(WebJarAssets.locate("ui-bootstrap-tpls.min.js"))"></script>
+  <script defer src="@routes.WebJarAssets.at(WebJarAssets.locate("moment.min.js"))"></script>
   <script defer src="@routes.Assets.at("javascripts/angular-file-upload.min.js")"></script>
   <script defer src="@routes.Assets.at("javascripts/angular-file-upload-html5-shim.min.js")"></script>
   <script defer src="@routes.Assets.at("javascripts/app.js")"></script>
@@ -148,7 +149,9 @@
                 <button type="button" class="btn btn-default" ng-click="openEndDate($event)"><i class="glyphicon glyphicon-calendar"></i></button>
               </span>
             </p>
-        </div>
+        </div class="col-md-2">
+          <button type="button" class="btn btn-success" ng-click="updateMetrics()">Update</button>
+        <div>
     </div>
                 </section>
 

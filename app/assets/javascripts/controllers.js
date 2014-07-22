@@ -78,14 +78,18 @@ angular.module('Wazza.controllers', [
 .controller('NavBarController',[
   '$scope',
   'LoginLogoutService',
+  'GetMainKPIsService',
   function (
     $scope,
-    LoginLogoutService
+    LoginLogoutService,
+    GetMainKPIsService
   ) {
 
     $scope.logout = function(){
       LoginLogoutService.logout();
     };
+
+    $scope.format = 'dd-MMMM-yyyy';
 
    $scope.today = function() {
       $scope.beginDate = new Date();
@@ -93,9 +97,11 @@ angular.module('Wazza.controllers', [
     };
     $scope.today();
 
-    $scope.clear = function () {
-      $scope.beginDate = null;
+    $scope.initDateInterval = function(){
+      $scope.beginDate = new Date(moment().subtract('days', 7));
+      $scope.endDate = new Date;
     };
+    $scope.initDateInterval();
 
     // Disable weekend selection
     $scope.disabled = function(date, mode) {
@@ -103,7 +109,7 @@ angular.module('Wazza.controllers', [
     };
 
     $scope.toggleMin = function() {
-      $scope.minDate = $scope.minDate ? null : new Date();
+      $scope.minDate = moment().subtract('years', 1).format('d-M-YYYY');
     };
     $scope.toggleMin();
 
@@ -123,10 +129,12 @@ angular.module('Wazza.controllers', [
       $scope.endDateOpened = true;
     };
 
+    $scope.updateMetrics = function(){
+      console.log("update metrics");
+    };
+
 
   $scope.initDate = $scope.today;
-  $scope.format = 'dd-MMMM-yyyy';
-
 }])
 
 .controller('AppController', [
