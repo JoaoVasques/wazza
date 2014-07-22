@@ -5,7 +5,8 @@ angular.module('Wazza.controllers', [
     'ItemModule',
     'ngCookies',
     'SecurityModule',
-    'DashboardModule'
+    'DashboardModule',
+    'ui.bootstrap'
 ])
 
 .controller('LoginController',[
@@ -22,7 +23,7 @@ angular.module('Wazza.controllers', [
     $location,
     submitLoginCredentialsService,
     cookiesManagerService,
-    $rootScope, 
+    $rootScope,
     redirectToDashboardService,
     LoginLogoutService,
     ApplicationStateService
@@ -85,6 +86,47 @@ angular.module('Wazza.controllers', [
     $scope.logout = function(){
       LoginLogoutService.logout();
     };
+
+   $scope.today = function() {
+      $scope.beginDate = new Date();
+      $scope.endDate = new Date();
+    };
+    $scope.today();
+
+    $scope.clear = function () {
+      $scope.beginDate = null;
+    };
+
+    // Disable weekend selection
+    $scope.disabled = function(date, mode) {
+      return ( mode === 'day' && ( date.getDay() === 0 || date.getDay() === 6 ) );
+    };
+
+    $scope.toggleMin = function() {
+      $scope.minDate = $scope.minDate ? null : new Date();
+    };
+    $scope.toggleMin();
+
+    $scope.maxDate = new Date();
+
+    $scope.openBeginDate = function($event) {
+      $event.preventDefault();
+      $event.stopPropagation();
+
+      $scope.beginDateOpened = true;
+    };
+
+    $scope.openEndDate = function($event) {
+      $event.preventDefault();
+      $event.stopPropagation();
+
+      $scope.endDateOpened = true;
+    };
+
+
+  $scope.initDate = $scope.today;
+  $scope.format = 'dd-MMMM-yyyy';
+
 }])
 
 .controller('AppController', [
@@ -150,7 +192,7 @@ angular.module('Wazza.controllers', [
 
     $scope.$on("USER_INFO_UPDATED", function(){
         $scope.userInfo.name = ApplicationStateService.userInfo.name;
-        $scope.userInfo.email = ApplicationStateService.userInfo.email; 
+        $scope.userInfo.email = ApplicationStateService.userInfo.email;
     });
 
 }])

@@ -10,56 +10,23 @@ items: List[models.application.Item]
 
 <div ng-controller="DashboardController">
   <div class="row">
-    <div class="col-md-4 col-lg-4">
+    <div class="col-md-4 col-lg-4" ng-repeat="kpi in kpis">
       <div class="panel kpi">
         <div class="panel-heading">
-          <h2>Average Revenue Per User</h2>
+          <h2>{{kpi.name}}</h2>
         </div>
         <div class="row">
           <div class="col-md-6">
-            <div class="kpi value">$2.33</div>
+            <div class="kpi value">{{kpi.unit}}{{kpi.value}}</div>
           </div>
-          <div class="col-md-6">
-            <!-- <button type="button" ng-click="" class="btn btn-primary">More info</button> -->
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-4 col-lg-4">
-      <div class="panel kpi">
-        <div class="panel-heading">
-          <h2>Average Revenue Per User</h2>
-        </div>
-        <div class="row">
-          <div class="col-md-6">
-            <div class="kpi value">$2.33</div>
-          </div>
-          <div class="col-md-6">
-            <!-- <button type="button" ng-click="" class="btn btn-primary">More info</button> -->
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-4 col-lg-4">
-      <div class="panel kpi">
-        <div class="panel-heading">
-          <h2>Average Revenue Per User</h2>
-        </div>
-        <div class="row">
-          <div class="col-md-6">
-            <div class="kpi value">$2.33</div>
-          </div>
-          <div class="col-md-6">
-            <!-- <button type="button" ng-click="" class="btn btn-primary">More info</button> -->
+          <div class="col-md-6 kpi link">
+            <button type="button" ng-click="switchDetailedView(kpi.link)" class="btn btn-lg btn-info">More info</button>
           </div>
         </div>
       </div>
     </div>
   </div>
-
-  <!--div class="row">
-    <div id="revenueDashboard" style="width:100%; height:400px;"></div>
-  </div-->
+</div>
 
 } else {
   <h2>It seems you have not registered any application yet.</h2>

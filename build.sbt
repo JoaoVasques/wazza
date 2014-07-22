@@ -18,7 +18,8 @@ lazy val dependencies = Seq(
   "commons-codec" % "commons-codec" % "1.9",
   "org.mongodb" % "casbah_2.10" % "2.7.0",
   "com.typesafe.akka" %% "akka-actor" % "2.2.3",
-  "com.typesafe.akka" %% "akka-slf4j" % "2.2.3"
+  "com.typesafe.akka" %% "akka-slf4j" % "2.2.3",
+  "org.webjars" % "angular-ui-bootstrap" % "0.11.0-2"
 )
 
 libraryDependencies ++= dependencies

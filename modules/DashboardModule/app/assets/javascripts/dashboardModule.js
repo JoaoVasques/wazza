@@ -1,8 +1,21 @@
 'use strict';
 
-var dashboard = angular.module('DashboardModule', ['ItemModule.services'])
+var dashboard = angular.module('DashboardModule', ['ItemModule.services']);
 
-.controller('DashboardController', [
+dashboard.value('KpiData', [
+  {
+    name: "Total Revenue",
+    link: "revenue link",
+    unitType: "€"
+  },
+  {
+    name: "Average Revenue Per User",
+    link: "arpu link",
+    unitType: "€"
+  }
+]);
+
+dashboard.controller('DashboardController', [
   '$scope',
   '$location',
   '$rootScope',
@@ -13,6 +26,7 @@ var dashboard = angular.module('DashboardModule', ['ItemModule.services'])
   'ItemSearchService',
   'TopbarService',
   'GetMainKPIsService',
+  'KpiData',
   function (
         $scope,
         $location,
@@ -23,8 +37,18 @@ var dashboard = angular.module('DashboardModule', ['ItemModule.services'])
         ApplicationStateService,
         ItemSearchService,
         TopbarService,
-        GetMainKPIsService
+        GetMainKPIsService,
+        KpiData
     ) {
+
+        var KpiContext = function(name, value, unit, link){
+          this.name = name;
+          this.value = value;
+          this.unit = unit;
+          this.link = link;
+        };
+
+        $scope.kpis = [];
 
         $scope.bootstrapSuccessCallback = function (data) {
             var push = function (origin, destination) {
@@ -50,7 +74,7 @@ var dashboard = angular.module('DashboardModule', ['ItemModule.services'])
                   return app.name;
               })
             );
-            
+
             TopbarService.setName("Dashboard");
 
             $scope.options = {
@@ -84,7 +108,7 @@ var dashboard = angular.module('DashboardModule', ['ItemModule.services'])
 
         $scope.bootstrapFailureCallback = function (errorData) {
             console.log(errorData);
-        }
+        };
 
         $scope.bootstrapModule = function () {
             $scope.applicationName = "";
@@ -103,21 +127,28 @@ var dashboard = angular.module('DashboardModule', ['ItemModule.services'])
             $scope.$on("APPLICATIONS_LIST_UPDATED", function() {
                 $scope.applications = ApplicationStateService.applicationsList;
             });
-            
+
             BootstrapDashboardService.execute()
                 .then(
                     $scope.bootstrapSuccessCallback,
                     $scope.bootstrapFailureCallback);
             GetMainKPIsService.execute("CompanyTest", "RecTestApp", "2014-07-22", "2014-07-22")
                 .then(function(results) {
-                    console.log(results);
+                    _.each(results, function(value, i) {
+                      $scope.kpis.push(new KpiContext(KpiData[i].name, value.data.value, KpiData[i].unitType, KpiData[i].link))
+                    });
                 });
         };
         $scope.bootstrapModule();
 
-    }])
+        $scope.switchDetailedView = function(url) {
+          //TODO
+          console.log(url);
+        };
+    }]
+);
 
-.factory('BootstrapDashboardService', ['$http', '$q',
+dashboard.factory('BootstrapDashboardService', ['$http', '$q',
     function ($http, $q) {
         var service = {};
 
@@ -133,20 +164,24 @@ var dashboard = angular.module('DashboardModule', ['ItemModule.services'])
         };
 
         return service;
-}])
+}]);
 
-.factory('GetMainKPIsService', ['$http', '$q',
+dashboard.factory('GetMainKPIsService', ['$http', '$q',
     function($http, $q) {
       var service = {};
 
       service.execute = function(companyName, applicationName, startDate, endDate) {
-        var revUrl = '/analytics/revenue/total/' + companyName + '/' + applicationName + '/'+ startDate +'/' + endDate;
+        var buildUrl = function(urlType, subType) {
+          return '/analytics/' + urlType + '/' + subType +'/' + companyName + '/' + applicationName + '/'+ startDate +'/' + endDate;
+        };
+
+        var revUrl = buildUrl('revenue', 'total');
         var totalRevenue = $http({
             url: revUrl,
             method: 'GET'
         });
 
-        var arpuUrl = '/analytics/arpu/total/' + companyName + '/' + applicationName + '/'+ startDate +'/' + endDate;
+        var arpuUrl = buildUrl('arpu', 'total');
         var totalARPU = $http({
             url: arpuUrl,
             method: 'GET'
@@ -156,9 +191,9 @@ var dashboard = angular.module('DashboardModule', ['ItemModule.services'])
       };
 
       return service;
-}])
+}]);
 
-.factory('ApplicationStateService', ['$rootScope',
+dashboard.factory('ApplicationStateService', ['$rootScope',
     function ($rootScope) {
         var service = {};
         service.applicationName = "";
@@ -178,7 +213,7 @@ var dashboard = angular.module('DashboardModule', ['ItemModule.services'])
             service.companyName = newName;
             $rootScope.$broadcast("COMPANY_NAME_UPDATED");
         };
-        
+
         service.updateApplicationsList = function (newList) {
             service.applicationsList = newList.slice(0);
             $rootScope.$broadcast("APPLICATIONS_LIST_UPDATED");
@@ -190,9 +225,9 @@ var dashboard = angular.module('DashboardModule', ['ItemModule.services'])
         };
 
         return service;
-}])
+}]);
 
-.factory('FetchItemsService', ['$http', '$q',
+dashboard.factory('FetchItemsService', ['$http', '$q',
     function ($http, $q) {
         var service = {};
 
@@ -208,9 +243,9 @@ var dashboard = angular.module('DashboardModule', ['ItemModule.services'])
         };
 
         return service;
-}])
+}]);
 
-.factory('DeleteItemService', ['$http', '$q',
+dashboard.factory('DeleteItemService', ['$http', '$q',
     function ($http, $q) {
         var service = function (id, name, imageName) {
             var request = $http.post("/app/item/delete/" + id, {
@@ -224,6 +259,4 @@ var dashboard = angular.module('DashboardModule', ['ItemModule.services'])
         };
 
         return service;
-}])
-
-;
+}]);
