@@ -7,6 +7,8 @@
 
 <h3>Revenue</h3>
 
+TODO: add return value
+
 | Request type  | Endpoint|
 | ------------- |:-------------:|
 | Total | /revenue/total/{company name}/{application name }/{start date}/{end date}|
