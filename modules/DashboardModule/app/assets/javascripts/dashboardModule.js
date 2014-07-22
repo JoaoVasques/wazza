@@ -12,6 +12,7 @@ var dashboard = angular.module('DashboardModule', ['ItemModule.services'])
   'ApplicationStateService',
   'ItemSearchService',
   'TopbarService',
+  'GetMainKPIsService',
   function (
         $scope,
         $location,
@@ -21,7 +22,8 @@ var dashboard = angular.module('DashboardModule', ['ItemModule.services'])
         DeleteItemService,
         ApplicationStateService,
         ItemSearchService,
-        TopbarService
+        TopbarService,
+        GetMainKPIsService
     ) {
 
         $scope.bootstrapSuccessCallback = function (data) {
@@ -106,6 +108,10 @@ var dashboard = angular.module('DashboardModule', ['ItemModule.services'])
                 .then(
                     $scope.bootstrapSuccessCallback,
                     $scope.bootstrapFailureCallback);
+            GetMainKPIsService.execute("CompanyTest", "RecTestApp", "2014-07-22", "2014-07-22")
+                .then(function(results) {
+                    console.log(results);
+                });
         };
         $scope.bootstrapModule();
 
@@ -127,6 +133,29 @@ var dashboard = angular.module('DashboardModule', ['ItemModule.services'])
         };
 
         return service;
+}])
+
+.factory('GetMainKPIsService', ['$http', '$q',
+    function($http, $q) {
+      var service = {};
+
+      service.execute = function(companyName, applicationName, startDate, endDate) {
+        var revUrl = '/analytics/revenue/total/' + companyName + '/' + applicationName + '/'+ startDate +'/' + endDate;
+        var totalRevenue = $http({
+            url: revUrl,
+            method: 'GET'
+        });
+
+        var arpuUrl = '/analytics/arpu/total/' + companyName + '/' + applicationName + '/'+ startDate +'/' + endDate;
+        var totalARPU = $http({
+            url: arpuUrl,
+            method: 'GET'
+        });
+
+        return $q.all([totalRevenue, totalARPU]);
+      };
+
+      return service;
 }])
 
 .factory('ApplicationStateService', ['$rootScope',

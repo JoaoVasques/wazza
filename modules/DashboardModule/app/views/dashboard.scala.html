@@ -8,87 +8,54 @@ items: List[models.application.Item]
 
 @if(exist){
 
-
-    <div class="row">
-      <div class="col-md-4 col-lg-4">
-        <div class="panel panel-primary">
-          <div class="panel-heading">
-            <h3 class="panel-title">ARPU</h3>
-            <span class="pull-right clickable"><i class="glyphicon glyphicon-chevron-up"></i></span>
-          </div>
-          <div class="panel-body fixed-height">
-            <linechart data="arpu" options="options" mode=""></linechart>
-          </div>
-          <a href="/analyticsUser" class="small-box-footer text-center">
-            More info <i class="fa fa-arrow-circle-right"></i>
-          </a>
+<div ng-controller="DashboardController">
+  <div class="row">
+    <div class="col-md-4 col-lg-4">
+      <div class="panel kpi">
+        <div class="panel-heading">
+          <h2>Average Revenue Per User</h2>
         </div>
-      </div>
-      <div class="col-md-4 col-lg-4">
-        <div class="panel panel-success">
-          <div class="panel-heading">
-            <h3 class="panel-title">Revenue</h3>
-            <span class="pull-right clickable"><i class="glyphicon glyphicon-chevron-up"></i></span>
+        <div class="row">
+          <div class="col-md-6">
+            <div class="kpi value">$2.33</div>
           </div>
-          <div class="panel-body fixed-height">
-            <linechart data="revenue" options="options" mode=""></linechart>
-          </div>
-          <a href="/analyticsRevenue" class="small-box-footer text-center">
-            More info <i class="fa fa-arrow-circle-right"></i>
-          </a>
-        </div>
-      </div>
-      <div class="col-md-4 col-lg-4">
-        <div class="panel panel-info">
-          <div class="panel-heading">
-            <h3 class="panel-title">Purchases</h3>
-            <span class="pull-right clickable"><i class="glyphicon glyphicon-chevron-up"></i></span>
-          </div>
-          <div class="panel-body fixed-height">
-            <linechart data="purchases" options="options" mode=""></linechart>
-          </div>
-          <a href="/analyticsApp" class="small-box-footer text-center">
-            More info <i class="fa fa-arrow-circle-right"></i>
-          </a>
-        </div>
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="col-md-4 col-lg-4">
-        <div class="panel panel-primary">
-          <div class="panel-heading">
-            <h3 class="panel-title">Time to 1st buy</h3>
-            <span class="pull-right clickable"><i class="glyphicon glyphicon-chevron-up"></i></span>
-          </div>
-          <div class="panel-body fixed-height">
-            <linechart data="1stbuy" options="options" mode=""></linechart>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-4 col-lg-4">
-        <div class="panel panel-success">
-          <div class="panel-heading">
-            <h3 class="panel-title">Success Rate</h3>
-            <span class="pull-right clickable"><i class="glyphicon glyphicon-chevron-up"></i></span>
-          </div>
-          <div class="panel-body fixed-height">
-            <linechart data="success" options="options" mode=""></linechart>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-4 col-lg-4">
-        <div class="panel panel-info">
-          <div class="panel-heading">
-            <h3 class="panel-title">Add your own</h3>
-            <span class="pull-right clickable"><i class="glyphicon glyphicon-chevron-up"></i></span>
-          </div>
-          <div class="panel-body fixed-height">
-            <img class="img-responsive" src="http://www.clker.com/cliparts/A/P/L/b/V/G/blue-plus-sign-md.png" style="height:250px">
+          <div class="col-md-6">
+            <!-- <button type="button" ng-click="" class="btn btn-primary">More info</button> -->
           </div>
         </div>
       </div>
     </div>
+    <div class="col-md-4 col-lg-4">
+      <div class="panel kpi">
+        <div class="panel-heading">
+          <h2>Average Revenue Per User</h2>
+        </div>
+        <div class="row">
+          <div class="col-md-6">
+            <div class="kpi value">$2.33</div>
+          </div>
+          <div class="col-md-6">
+            <!-- <button type="button" ng-click="" class="btn btn-primary">More info</button> -->
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4 col-lg-4">
+      <div class="panel kpi">
+        <div class="panel-heading">
+          <h2>Average Revenue Per User</h2>
+        </div>
+        <div class="row">
+          <div class="col-md-6">
+            <div class="kpi value">$2.33</div>
+          </div>
+          <div class="col-md-6">
+            <!-- <button type="button" ng-click="" class="btn btn-primary">More info</button> -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!--div class="row">
     <div id="revenueDashboard" style="width:100%; height:400px;"></div>
@@ -100,4 +67,3 @@ items: List[models.application.Item]
     <a class="btn btn-default btn-lg" ng-href='/newapp'><span class="fa fa-edit fa-fw"></span>New Application</a>
   </p>
 }
-
