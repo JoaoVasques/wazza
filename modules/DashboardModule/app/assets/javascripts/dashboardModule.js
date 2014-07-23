@@ -1,6 +1,6 @@
 'use strict';
 
-var dashboard = angular.module('DashboardModule', ['ItemModule.services']);
+var dashboard = angular.module('DashboardModule', ['ItemModule.services', 'DashboardModule.services']);
 
 dashboard.value('KpiData', [
   {
@@ -41,6 +41,57 @@ dashboard.controller('DashboardController', [
         KpiData
     ) {
 
+        $scope.logout = function(){
+          LoginLogoutService.logout();
+        };
+
+        $scope.format = 'dd-MMMM-yyyy';
+
+        $scope.today = function() {
+          $scope.beginDate = new Date();
+          $scope.endDate = new Date();
+        };
+        $scope.today();
+
+        $scope.initDateInterval = function(){
+          $scope.beginDate = new Date(moment().subtract('days', 7));
+          $scope.endDate = new Date;
+        };
+        $scope.initDateInterval();
+
+        // Disable weekend selection
+        $scope.disabled = function(date, mode) {
+          return ( mode === 'day' && ( date.getDay() === 0 || date.getDay() === 6 ) );
+        };
+
+        $scope.toggleMin = function() {
+          $scope.minDate = moment().subtract('years', 1).format('d-M-YYYY');
+          $scope.endDateMin = $scope.beginDate;
+        };
+        $scope.toggleMin();
+
+        $scope.updateEndDateMin = function(){
+          $scope.endDateMin = $scope.beginDate;
+        };
+
+        $scope.maxDate = new Date();
+
+        $scope.openBeginDate = function($event) {
+          $event.preventDefault();
+          $event.stopPropagation();
+
+          $scope.beginDateOpened = true;
+        };
+
+        $scope.openEndDate = function($event) {
+          $event.preventDefault();
+          $event.stopPropagation();
+
+          $scope.endDateOpened = true;
+        };
+
+        $scope.initDate = $scope.today;
+
         var KpiContext = function(name, value, unit, link){
           this.name = name;
           this.value = value;
@@ -49,6 +100,21 @@ dashboard.controller('DashboardController', [
         };
 
         $scope.kpis = [];
+
+        $scope.updateKPIs = function(){
+          $scope.kpis = [];
+          GetMainKPIsService.execute(
+            ApplicationStateService.companyName,
+            ApplicationStateService.applicationName,
+            moment($scope.beginDate).format('DD-MM-YYYY'),
+            moment($scope.endDate).format('DD-MM-YYYY')
+            )
+            .then(function(results) {
+                _.each(results, function(value, i) {
+                  $scope.kpis.push(new KpiContext(KpiData[i].name, value.data.value, KpiData[i].unitType, KpiData[i].link))
+              });
+            });
+        };
 
         $scope.bootstrapSuccessCallback = function (data) {
             var push = function (origin, destination) {
@@ -75,7 +141,10 @@ dashboard.controller('DashboardController', [
               })
             );
 
+            ApplicationStateService.updateCompanyName(data.data.companyName);
             TopbarService.setName("Dashboard");
+
+            $scope.updateKPIs();
 
             $scope.options = {
               axes: {
@@ -132,12 +201,6 @@ dashboard.controller('DashboardController', [
                 .then(
                     $scope.bootstrapSuccessCallback,
                     $scope.bootstrapFailureCallback);
-            GetMainKPIsService.execute("CompanyTest", "RecTestApp", "2014-07-22", "2014-07-22")
-                .then(function(results) {
-                    _.each(results, function(value, i) {
-                      $scope.kpis.push(new KpiContext(KpiData[i].name, value.data.value, KpiData[i].unitType, KpiData[i].link))
-                    });
-                });
         };
         $scope.bootstrapModule();
 

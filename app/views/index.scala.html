@@ -131,28 +131,6 @@
                               <small><a href="/analyticsRevenue"><!--i class="fa fa-dashboard"></i--> Revenue</a></small>
                               <small><a href="/analyticsDevice"><!--i class="fa fa-dashboard"></i--> Device</a></small>
                         </span>
-<!-- <pre>Selected date is: <em>{{dt | date:'fullDate' }}</em></pre> -->
-
-    <div class="row">
-        <div class="col-md-2">
-            <p class="input-group">
-              <input type="text" class="form-control" datepicker-popup="{{format}}" ng-model="beginDate" is-open="beginDateOpened" min-date="minDate" max-date="maxDate" date-disabled="disabled(date, mode)" ng-required="true" close-text="Close" />
-              <span class="input-group-btn">
-                <button type="button" class="btn btn-default" ng-click="openBeginDate($event)"><i class="glyphicon glyphicon-calendar"></i></button>
-              </span>
-            </p>
-        </div>
-        <div class="col-md-2">
-            <p class="input-group">
-              <input type="text" class="form-control" datepicker-popup="{{format}}" ng-model="endDate" is-open="endDateOpened" min-date="minDate" max-date="maxDate" date-disabled="disabled(date, mode)" ng-required="true" close-text="Close" />
-              <span class="input-group-btn">
-                <button type="button" class="btn btn-default" ng-click="openEndDate($event)"><i class="glyphicon glyphicon-calendar"></i></button>
-              </span>
-            </p>
-        </div class="col-md-2">
-          <button type="button" class="btn btn-success" ng-click="updateMetrics()">Update</button>
-        <div>
-    </div>
                 </section>
 
                 <!-- Main content -->
