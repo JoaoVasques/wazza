@@ -1,0 +1,27 @@
+.kpi {
+  max-height: 300px;
+  font-size: 100%;
+  padding-left: 15px;
+  padding-bottom: 15px;
+
+}
+
+.kpi h2 {
+  color: #6C7A89;
+}
+
+.kpi .value {
+  color: #22A7F0;
+  font-size: 4em;
+  max-width: 50%;
+}
+
+.kpi .link {
+  padding-top: 22px;
+  padding-left: 32px;
+}
+
+.kpi .row {
+  padding-left: 1em;
+  padding-top: 2.5em;
+}

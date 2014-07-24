@@ -2,21 +2,27 @@
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
 
-# Home page
+# root
 GET     /                             @controllers.dashboard.DashboardController.index
 GET     /bootstrap                    @controllers.dashboard.DashboardController.bootstrapDashboard
+
+# inventory
 GET     /inventory                    @controllers.dashboard.DashboardController.inventory
 GET     /inventory/crud               @controllers.dashboard.DashboardController.inventoryCRUD
 GET     /inventory/virtualCurrencies  @controllers.dashboard.DashboardController.inventoryVirtualCurrencies
-GET     /recommendation				  @controllers.dashboard.DashboardController.recommendation
-GET     /campaigns                    @controllers.dashboard.DashboardController.campaigns
+
+# analytics
+GET     /arpu		                  @controllers.dashboard.DashboardController.arpu
+GET     /ltv			              @controllers.dashboard.DashboardController.ltv
+GET     /revenue        		      @controllers.dashboard.DashboardController.revenue
+GET     /churn			              @controllers.dashboard.DashboardController.churn
+
 GET     /store/android                @controllers.dashboard.DashboardController.storeAndroid
 GET     /store/apple                  @controllers.dashboard.DashboardController.storeApple
 GET     /store/amazon                 @controllers.dashboard.DashboardController.storeAmazon
-GET     /analyticsApp                 @controllers.dashboard.DashboardController.analyticsApp
-GET     /analyticsUser                @controllers.dashboard.DashboardController.analyticsUser
-GET     /analyticsRevenue             @controllers.dashboard.DashboardController.analyticsRevenue
-GET     /analyticsDevice              @controllers.dashboard.DashboardController.analyticsDevice
+
+# other
+GET     /campaigns                    @controllers.dashboard.DashboardController.campaigns
 GET     /settings                     @controllers.dashboard.DashboardController.settingsSection
 
 # Map static resources from the /public folder to the /assets URL path

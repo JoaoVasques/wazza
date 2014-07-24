@@ -109,7 +109,7 @@ class AnalyticsServiceImpl @Inject()(
         sum + (obj \ "activeUsers").as[Int]
       })
 
-      promise.success(Json.obj("value" -> (revenue / activeUsers)))      
+      promise.success(Json.obj("value" -> (if(activeUsers > 0) (revenue / activeUsers) else 0)))
     }
 
     promise.future

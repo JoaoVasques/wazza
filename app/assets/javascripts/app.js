@@ -9,15 +9,22 @@ angular.module('Wazza', ['ngRoute', 'Wazza.controllers', 'ItemModule', 'UserModu
         templateUrl: '/dashboard',
         controller: 'DashboardController'
       })
-      //recommendation
-      .when('/recommendation', {
-        templateUrl: '/dashboard/recommendation',
-        controller: 'RecommendationController'
+      //analytics
+      .when('/churn', {
+        templateUrl: '/dashboard/churn',
+        controller: 'ChurnController'
       })
-      //recommendation
-      .when('/campaigns', {
-        templateUrl: '/dashboard/campaigns',
-        controller: 'CampaignsController'
+      .when('/revenue', {
+        templateUrl: '/dashboard/revenue',
+        controller: 'RevenueController'
+      })
+      .when('/arpu', {
+        templateUrl: '/dashboard/arpu',
+        controller: 'ArpuController'
+      })
+      .when('/ltv', {
+        templateUrl: '/dashboard/ltv',
+        controller: 'ltvController'
       })
       //inventory
       .when('/inventory', {
@@ -45,28 +52,6 @@ angular.module('Wazza', ['ngRoute', 'Wazza.controllers', 'ItemModule', 'UserModu
         templateUrl: '/dashboard/store/amazon',
         controller: 'DashboardController'
       })
-      //analytics
-      .when('/analyticsUser', {
-        templateUrl: '/dashboard/analyticsUser',
-        controller: 'AnalyticsController'
-      })
-      .when('/analyticsRevenue', {
-        templateUrl: '/dashboard/analyticsRevenue',
-        controller: 'AnalyticsController'
-      })
-      .when('/analyticsApp', {
-        templateUrl: '/dashboard/analyticsApp',
-        controller: 'AnalyticsController'
-      })
-      .when('/analyticsDevice', {
-        templateUrl: '/dashboard/analyticsDevice',
-        controller: 'AnalyticsController'
-      })
-      //settings
-      .when('/settings', {
-        templateUrl: '/dashboard/settings',
-        controller: 'DashboardController'
-      })
       //users
       .when('/register', {
         templateUrl: '/user/register',
@@ -85,6 +70,16 @@ angular.module('Wazza', ['ngRoute', 'Wazza.controllers', 'ItemModule', 'UserModu
       .when('/user', {
         templateUrl : '/user',
         controller : ''
+      })
+      //settings
+      .when('/settings', {
+        templateUrl: '/dashboard/settings',
+        controller: 'DashboardController'
+      })
+      //campaigns
+      .when('/campaigns', {
+        templateUrl: '/dashboard/campaigns',
+        controller: 'CampaignsController'
       })
       //TODO
       .when('/notavailableyet', {

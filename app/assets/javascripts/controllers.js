@@ -5,7 +5,8 @@ angular.module('Wazza.controllers', [
     'ItemModule',
     'ngCookies',
     'SecurityModule',
-    'DashboardModule'
+    'DashboardModule',
+    'ui.bootstrap'
 ])
 
 .controller('LoginController',[
@@ -22,7 +23,7 @@ angular.module('Wazza.controllers', [
     $location,
     submitLoginCredentialsService,
     cookiesManagerService,
-    $rootScope, 
+    $rootScope,
     redirectToDashboardService,
     LoginLogoutService,
     ApplicationStateService
@@ -77,14 +78,13 @@ angular.module('Wazza.controllers', [
 .controller('NavBarController',[
   '$scope',
   'LoginLogoutService',
+  'GetMainKPIsService',
   function (
     $scope,
-    LoginLogoutService
+    LoginLogoutService,
+    GetMainKPIsService
   ) {
 
-    $scope.logout = function(){
-      LoginLogoutService.logout();
-    };
 }])
 
 .controller('AppController', [
@@ -150,7 +150,7 @@ angular.module('Wazza.controllers', [
 
     $scope.$on("USER_INFO_UPDATED", function(){
         $scope.userInfo.name = ApplicationStateService.userInfo.name;
-        $scope.userInfo.email = ApplicationStateService.userInfo.email; 
+        $scope.userInfo.email = ApplicationStateService.userInfo.email;
     });
 
 }])
