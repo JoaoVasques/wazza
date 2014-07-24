@@ -11,7 +11,7 @@ dashboard
   'ApplicationStateService',
   'ItemSearchService',
   'TopbarService',
-  'LTVService',
+  'GetKPIService',
   function (
         $scope,
         $location,
@@ -22,7 +22,7 @@ dashboard
         ApplicationStateService,
         ItemSearchService,
         TopbarService,
-        LTVService
+        GetKPIService
     ) {
 
         TopbarService.setName("Lifetime Value - Details");
@@ -54,34 +54,11 @@ dashboard
           {x: 5, value: 42, otherValue: 45}
         ];
 
-        LTVService.execute($scope.companyName, $scope.applicationName, "2014-07-22", "2014-07-22")
+        GetKPIService.execute($scope.companyName, $scope.applicationName, "2014-07-22", "2014-07-22", "ltv")
             .then(function(results) {
                 console.log(results);
                 //$scope.data = results;
         });
 
 
-}])
-
-.factory('LTVService', ['$http', '$q',
-    function($http, $q) {
-      var service = {};
-
-      service.execute = function(companyName, applicationName, startDate, endDate) {
-        var totalUrl = '/analytics/ltv/total/' + companyName + '/' + applicationName + '/'+ startDate +'/' + endDate;
-        var totalLTV = $http({
-            url: totalUrl,
-            method: 'GET'
-        });
-
-        var detailUrl = '/analytics/ltv/detail/' + companyName + '/' + applicationName + '/'+ startDate +'/' + endDate;
-        var detailLTV = $http({
-            url: detailUrl,
-            method: 'GET'
-        });
-
-        return $q.all([totalLTV, detailLTV]);
-      };
-
-      return service;
-}])
+}]);

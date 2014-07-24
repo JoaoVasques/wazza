@@ -11,7 +11,7 @@ dashboard
   'ApplicationStateService',
   'ItemSearchService',
   'TopbarService',
-  'ChurnService',
+  'GetKPIService',
   function (
         $scope,
         $location,
@@ -22,7 +22,7 @@ dashboard
         ApplicationStateService,
         ItemSearchService,
         TopbarService,
-        ChurnService
+        GetKPIService
     ) {
 
         TopbarService.setName("Churn - Details");
@@ -54,34 +54,11 @@ dashboard
           {x: 5, value: 42, otherValue: 45}
         ];
 
-        ChurnService.execute($scope.companyName, $scope.applicationName, "2014-07-22", "2014-07-22")
+        GetKPIService.execute($scope.companyName, $scope.applicationName, "2014-07-22", "2014-07-22", "churn")
             .then(function(results) {
                 console.log(results);
                 //$scope.data = results;
         });
 
 
-}])
-
-.factory('ChurnService', ['$http', '$q',
-    function($http, $q) {
-      var service = {};
-
-      service.execute = function(companyName, applicationName, startDate, endDate) {
-        var totalUrl = '/analytics/churn/total/' + companyName + '/' + applicationName + '/'+ startDate +'/' + endDate;
-        var totalChurn = $http({
-            url: totalUrl,
-            method: 'GET'
-        });
-
-        var detailUrl = '/analytics/churn/detail/' + companyName + '/' + applicationName + '/'+ startDate +'/' + endDate;
-        var detailChurn = $http({
-            url: detailUrl,
-            method: 'GET'
-        });
-
-        return $q.all([totalChurn, detailChurn]);
-      };
-
-      return service;
-}])
+}]);

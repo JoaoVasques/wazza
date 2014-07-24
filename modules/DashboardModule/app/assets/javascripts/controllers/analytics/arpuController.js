@@ -11,7 +11,7 @@ dashboard
   'ApplicationStateService',
   'ItemSearchService',
   'TopbarService',
-  'ARPUService',
+  'GetKPIService',
   function (
         $scope,
         $location,
@@ -22,7 +22,7 @@ dashboard
         ApplicationStateService,
         ItemSearchService,
         TopbarService,
-        ARPUService
+        GetKPIService
     ) {
 
         TopbarService.setName("ARPU - Details");
@@ -54,34 +54,11 @@ dashboard
           {x: 5, value: 42, otherValue: 45}
         ];
 
-        ARPUService.execute($scope.companyName, $scope.applicationName, "2014-07-22", "2014-07-22")
+        GetKPIService.execute($scope.companyName, $scope.applicationName, "2014-07-22", "2014-07-22", "arpu")
             .then(function(results) {
                 console.log(results);
                 //$scope.data = results;
         });
 
 
-}])
-
-.factory('ARPUService', ['$http', '$q',
-    function($http, $q) {
-      var service = {};
-
-      service.execute = function(companyName, applicationName, startDate, endDate) {
-        var totalUrl = '/analytics/arpu/total/' + companyName + '/' + applicationName + '/'+ startDate +'/' + endDate;
-        var totalARPU = $http({
-            url: totalUrl,
-            method: 'GET'
-        });
-
-        var detailUrl = '/analytics/arpu/detail/' + companyName + '/' + applicationName + '/'+ startDate +'/' + endDate;
-        var detailARPU = $http({
-            url: detailUrl,
-            method: 'GET'
-        });
-
-        return $q.all([totalARPU, detailARPU]);
-      };
-
-      return service;
-}])
+}]);

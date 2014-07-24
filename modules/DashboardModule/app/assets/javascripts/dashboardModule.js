@@ -1,6 +1,6 @@
 'use strict';
 
-var dashboard = angular.module('DashboardModule', ['ItemModule.services', 'DashboardModule.services']);
+var dashboard = angular.module('DashboardModule', ['ItemModule.services', 'DashboardModule.services', 'DashboardModule.controllers']);
 
 dashboard.value('KpiData', [
   {

@@ -9,10 +9,22 @@ angular.module('Wazza', ['ngRoute', 'Wazza.controllers', 'ItemModule', 'UserModu
         templateUrl: '/dashboard',
         controller: 'DashboardController'
       })
-      //campaigns
-      .when('/campaigns', {
-        templateUrl: '/dashboard/campaigns',
-        controller: 'CampaignsController'
+      //analytics
+      .when('/churn', {
+        templateUrl: '/dashboard/churn',
+        controller: 'ChurnController'
+      })
+      .when('/revenue', {
+        templateUrl: '/dashboard/revenue',
+        controller: 'RevenueController'
+      })
+      .when('/arpu', {
+        templateUrl: '/dashboard/arpu',
+        controller: 'ArpuController'
+      })
+      .when('/ltv', {
+        templateUrl: '/dashboard/ltv',
+        controller: 'ltvController'
       })
       //inventory
       .when('/inventory', {
@@ -40,28 +52,6 @@ angular.module('Wazza', ['ngRoute', 'Wazza.controllers', 'ItemModule', 'UserModu
         templateUrl: '/dashboard/store/amazon',
         controller: 'DashboardController'
       })
-      //analytics
-      .when('/churn', {
-        templateUrl: '/dashboard/churn',
-        controller: 'ChurnController'
-      })
-      .when('/revenue', {
-        templateUrl: '/dashboard/revenue',
-        controller: 'RevenueController'
-      })
-      .when('/arpu', {
-        templateUrl: '/dashboard/arpu',
-        controller: 'ArpuController'
-      })
-      .when('/ltv', {
-        templateUrl: '/dashboard/ltv',
-        controller: 'ltvController'
-      })
-      //settings
-      .when('/settings', {
-        templateUrl: '/dashboard/settings',
-        controller: 'DashboardController'
-      })
       //users
       .when('/register', {
         templateUrl: '/user/register',
@@ -80,6 +70,16 @@ angular.module('Wazza', ['ngRoute', 'Wazza.controllers', 'ItemModule', 'UserModu
       .when('/user', {
         templateUrl : '/user',
         controller : ''
+      })
+      //settings
+      .when('/settings', {
+        templateUrl: '/dashboard/settings',
+        controller: 'DashboardController'
+      })
+      //campaigns
+      .when('/campaigns', {
+        templateUrl: '/dashboard/campaigns',
+        controller: 'CampaignsController'
       })
       //TODO
       .when('/notavailableyet', {
