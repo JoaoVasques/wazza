@@ -4,9 +4,11 @@ import com.google.inject._
 import java.security.MessageDigest
 import models.user.MobileSession
 import org.apache.commons.codec.binary.Hex
+import org.joda.time.Seconds
 import play.api._
 import play.api.libs.json.JsError
 import play.api.libs.json.JsSuccess
+import play.api.libs.json.JsValue
 import play.api.libs.json.{JsArray, Json}
 import play.api.mvc._
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -16,6 +18,8 @@ import service.user.definitions.MobileUserService
 import service.user.definitions.MobileSessionService
 import scala.concurrent._
 import ExecutionContext.Implicits.global
+import org.joda.time.format.DateTimeFormat
+import org.joda.time.Interval
 
 class SessionController @Inject()(
   mobileUserService: MobileUserService,
@@ -39,25 +43,29 @@ class SessionController @Inject()(
     }
   }
 
-  private def createNewSessionInfo(content: String) = {
+  private def createNewSessionInfo(content: JsValue) = {
     def generateHash(content: String) = {
       val md = MessageDigest.getInstance("SHA-256")
       md.update(content.getBytes("UTF-8"))
       Hex.encodeHexString(md.digest())
     }
 
-    val jsonContent = Json.parse(content)
+    val formatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss Z")
+    val start = formatter.parseDateTime((content \ "startTime").as[String])
+    val end = formatter.parseDateTime((content \ "endTime").as[String])
+
+
     sessionService.create(Json.obj(
-      "id" -> generateHash(content),
-      "userId" -> (jsonContent \ "userId").as[String],
-      "sessionLength" -> 0,
-      "startTime" -> (jsonContent \ "startTime").as[String],
-      "deviceInfo" -> (jsonContent \ "deviceInfo"),
+      "id" -> generateHash(content.toString),
+      "userId" -> (content \ "userId").as[String],
+      "sessionLength" -> (new Interval(start, end).toDurationMillis() / 1000),
+      "startTime" -> (content \ "startTime").as[String],
+      "deviceInfo" -> (content \ "deviceInfo"),
       "purchases" -> List[String]()
     )) match {
       case Success(session) => {
-        val companyName = (jsonContent \ "companyName").as[String]
-        val applicationName = (jsonContent \ "applicationName").as[String]
+        val companyName = (content \ "companyName").as[String]
+        val applicationName = (content \ "applicationName").as[String]
         sessionService.insert(companyName, applicationName, session) match {
           case Success(_) => Ok
           case Failure(_) => BadRequest
@@ -69,25 +77,17 @@ class SessionController @Inject()(
     }
   }
 
-  def newSession(companyName: String, applicationName: String) = Action(parse.json) {implicit request =>
-    val content = (request.body \ "content").as[String].replace("\\", "")
-    val userId = ((Json.parse(content)) \ "userId").as[String]
-    createMobileUser(companyName, applicationName, userId)
-    createNewSessionInfo(content)
-  }
+  def saveSession(companyName: String, applicationName: String) = Action(parse.json) {implicit request =>
+    println("save session")
+    val content = (Json.parse((request.body \ "content").as[String].replace("\\", "")) \ "session").as[JsValue]
+    val userId = (content  \ "userId").as[String]
 
-  def endSession(companyName: String, applicationName: String) = Action(parse.json) {implicit request =>
-    val content = (request.body \ "content").as[String].replace("\\", "")
-    val json = Json.parse(content)
-    val hash = (json \ "hash").as[String]
+    println(content)
 
-    sessionService.get(hash) match {
-      case Some(session) => {
-        println(s"$session")
-        sessionService.calculateSessionLength(session, (json \ "date").as[String])
-        Ok
-      }
-      case None => BadRequest("session does not exist")
+    if(!mobileUserService.exists(companyName, applicationName, userId)) {
+      mobileUserService.createMobileUser(companyName, applicationName, userId)
     }
+
+    createNewSessionInfo(content)
   }
 }
