@@ -85,56 +85,6 @@ angular.module('Wazza.controllers', [
     GetMainKPIsService
   ) {
 
-    $scope.logout = function(){
-      LoginLogoutService.logout();
-    };
-
-    $scope.format = 'dd-MMMM-yyyy';
-
-   $scope.today = function() {
-      $scope.beginDate = new Date();
-      $scope.endDate = new Date();
-    };
-    $scope.today();
-
-    $scope.initDateInterval = function(){
-      $scope.beginDate = new Date(moment().subtract('days', 7));
-      $scope.endDate = new Date;
-    };
-    $scope.initDateInterval();
-
-    // Disable weekend selection
-    $scope.disabled = function(date, mode) {
-      return ( mode === 'day' && ( date.getDay() === 0 || date.getDay() === 6 ) );
-    };
-
-    $scope.toggleMin = function() {
-      $scope.minDate = moment().subtract('years', 1).format('d-M-YYYY');
-    };
-    $scope.toggleMin();
-
-    $scope.maxDate = new Date();
-
-    $scope.openBeginDate = function($event) {
-      $event.preventDefault();
-      $event.stopPropagation();
-
-      $scope.beginDateOpened = true;
-    };
-
-    $scope.openEndDate = function($event) {
-      $event.preventDefault();
-      $event.stopPropagation();
-
-      $scope.endDateOpened = true;
-    };
-
-    $scope.updateMetrics = function(){
-      console.log("update metrics");
-    };
-
-
-  $scope.initDate = $scope.today;
 }])
 
 .controller('AppController', [
