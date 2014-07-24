@@ -9,12 +9,7 @@ angular.module('Wazza', ['ngRoute', 'Wazza.controllers', 'ItemModule', 'UserModu
         templateUrl: '/dashboard',
         controller: 'DashboardController'
       })
-      //recommendation
-      .when('/recommendation', {
-        templateUrl: '/dashboard/recommendation',
-        controller: 'RecommendationController'
-      })
-      //recommendation
+      //campaigns
       .when('/campaigns', {
         templateUrl: '/dashboard/campaigns',
         controller: 'CampaignsController'

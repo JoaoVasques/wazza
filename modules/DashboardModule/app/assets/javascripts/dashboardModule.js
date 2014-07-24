@@ -5,14 +5,15 @@ var dashboard = angular.module('DashboardModule', ['ItemModule.services', 'Dashb
 dashboard.value('KpiData', [
   {
     name: "Total Revenue",
-    link: "revenue link",
+    link: "/revenue",
     unitType: "€"
   },
   {
     name: "Average Revenue Per User",
-    link: "arpu link",
+    link: "/arpu",
     unitType: "€"
   }
+  //TODO: all other metrics
 ]);
 
 dashboard.controller('DashboardController', [
@@ -145,7 +146,6 @@ dashboard.controller('DashboardController', [
             TopbarService.setName("Dashboard");
 
             $scope.updateKPIs();
-
         }
 
         $scope.bootstrapFailureCallback = function (errorData) {
@@ -175,11 +175,13 @@ dashboard.controller('DashboardController', [
                     $scope.bootstrapSuccessCallback,
                     $scope.bootstrapFailureCallback);
         };
-        $scope.bootstrapModule();
 
         $scope.switchDetailedView = function(url) {
-          //TODO
+          $location.path(url);
           console.log(url);
         };
+
+        $scope.bootstrapModule();
+
     }]
 );
