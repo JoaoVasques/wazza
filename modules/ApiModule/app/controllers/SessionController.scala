@@ -63,7 +63,6 @@ class SessionController @Inject()(
       "purchases" -> List[String]()
     )) match {
       case Success(session) => {
-        println("HEY")
         val companyName = (content \ "companyName").as[String]
         val applicationName = (content \ "applicationName").as[String]
         sessionService.insert(companyName, applicationName, session) match {
@@ -71,19 +70,13 @@ class SessionController @Inject()(
           case Failure(_) => BadRequest
         }
       }
-      case Failure(f) => {
-        println("blee")
-        BadRequest
-      }
+      case Failure(f) => BadRequest
     }
   }
 
   def saveSession(companyName: String, applicationName: String) = Action(parse.json) {implicit request =>
-    println("save session")
     val content = (Json.parse((request.body \ "content").as[String].replace("\\", "")) \ "session").as[JsValue]
     val userId = (content  \ "userId").as[String]
-
-    println(content)
 
     if(!mobileUserService.exists(companyName, applicationName, userId)) {
       mobileUserService.createMobileUser(companyName, applicationName, userId)
