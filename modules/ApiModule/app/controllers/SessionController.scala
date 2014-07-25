@@ -54,7 +54,6 @@ class SessionController @Inject()(
     val start = formatter.parseDateTime((content \ "startTime").as[String])
     val end = formatter.parseDateTime((content \ "endTime").as[String])
 
-
     sessionService.create(Json.obj(
       "id" -> generateHash(content.toString),
       "userId" -> (content \ "userId").as[String],
@@ -64,6 +63,7 @@ class SessionController @Inject()(
       "purchases" -> List[String]()
     )) match {
       case Success(session) => {
+        println("HEY")
         val companyName = (content \ "companyName").as[String]
         val applicationName = (content \ "applicationName").as[String]
         sessionService.insert(companyName, applicationName, session) match {
@@ -72,6 +72,7 @@ class SessionController @Inject()(
         }
       }
       case Failure(f) => {
+        println("blee")
         BadRequest
       }
     }
