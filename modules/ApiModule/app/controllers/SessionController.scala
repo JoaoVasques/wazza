@@ -75,13 +75,19 @@ class SessionController @Inject()(
   }
 
   def saveSession(companyName: String, applicationName: String) = Action(parse.json) {implicit request =>
-    val content = (Json.parse((request.body \ "content").as[String].replace("\\", "")) \ "session").as[JsValue]
-    val userId = (content  \ "userId").as[String]
+    val content = (Json.parse((request.body \ "content").as[String].replace("\\", "")) \ "session").as[JsArray]
+    
+    content.value.map{(session: JsValue) => {
+      val userId = (session  \ "userId").as[String]
 
-    if(!mobileUserService.exists(companyName, applicationName, userId)) {
-      mobileUserService.createMobileUser(companyName, applicationName, userId)
+      if(!mobileUserService.exists(companyName, applicationName, userId)) {
+        mobileUserService.createMobileUser(companyName, applicationName, userId)
+      }
+
+      createNewSessionInfo(session)
+    }}.contains(BadRequest) match {
+      case true => BadRequest
+      case _ => Ok
     }
-
-    createNewSessionInfo(content)
   }
 }
