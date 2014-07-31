@@ -38,7 +38,23 @@
       location: #optional{
         latitude: [double],
         longitude: [double]
-      }
+      },
+      purchases:[
+        {
+          id: [string],
+          userId: [string],
+          applicationName: [string],
+          itemId: [string],
+          price: [double],
+          time: [double],
+          deviceInfo: {
+            osName: [string],
+            osVersion: [string],
+            deviceModel: [string]
+          }
+        },
+        ...
+      ]
     }
   ```
 
