@@ -15,13 +15,16 @@ import scala.util.Failure
 import scala.util.Success
 import scala.util.Try
 import service.analytics.definitions.AnalyticsService
+import org.joda.time.format.DateTimeFormat
+import org.joda.time.Interval
+import org.joda.time.Days
 
 class AnalyticsController @Inject()(
   analyticsService: AnalyticsService
 ) extends Controller {
 
   private def validateDate(dateStr: String): Try[Date] = {
-    val df = new SimpleDateFormat("yyyy-MM-dd")
+    val df = new SimpleDateFormat("dd-MM-yyyy")
     try {
       val date = df.parse(dateStr)
       new Success(date)
@@ -32,6 +35,14 @@ class AnalyticsController @Inject()(
     }
   }
 
+  private def getPreviousDates(startStr: String, endStr: String): (Date, Date) = {
+    val formatter = DateTimeFormat.forPattern("dd-MM-yyyy")
+    val start = formatter.parseDateTime(startStr)
+    val end = formatter.parseDateTime(endStr)
+    val difference = Days.daysBetween(start, end).getDays()
+    (start.minusDays(difference).toDate, end.minusDays(difference).toDate)
+  }
+
   private def executeRequest[T <: JsValue](
     companyName: String,
     applicationName: String,
@@ -39,11 +50,13 @@ class AnalyticsController @Inject()(
     endDateStr: String,
     f:(String, String, Date, Date) => Future[T]
   ) = {
+
     val start = validateDate(startDateStr)
     val end = validateDate(endDateStr)
-    
+
     (start, end) match {
       case (Success(s), Success(e)) => {
+        val dates = getPreviousDates(startDateStr, endDateStr)
         f(companyName, applicationName, s, e) map { res =>
           Ok(res)
         }
