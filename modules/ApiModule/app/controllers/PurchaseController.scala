@@ -37,7 +37,7 @@ class PurchaseController @Inject()(
         case Failure(_) => BadRequest
       }
     } else {
-      BadRequest
+      BadRequest("Item does not exist")
     }
   }
 
