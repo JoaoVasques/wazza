@@ -6,9 +6,8 @@ GET     /items/details/:companyName/:appName     @controllers.api.ItemsControlle
 GET     /item/:companyName/:applicationName/:id  @controllers.api.ItemsController.getItemDetails(companyName: String, id: String, applicationName: String)    
 POST    /purchase/:companyName/:applicationName  @controllers.api.PurchaseController.handlePurchase(companyName: String, applicationName: String)
 
-# Sessoion routes
-POST    /session/new/:companyName/:applicationName   @controllers.api.SessionController.newSession(companyName: String, applicationName: String)
-POST    /session/end/:companyName/:applicationName   @controllers.api.SessionController.endSession(companyName: String, applicationName: String)
+# Session routes
+POST    /session/new/:companyName/:applicationName   @controllers.api.SessionController.saveSession(companyName: String, applicationName: String)
   
 #Recommendation routes
 GET     /rec/user/items/:companyName/:appName/:userId          @controllers.api.RecommendationController.recommendItemsToUser(companyName: String, appName: String, userId: String, limit: Int = -1)
