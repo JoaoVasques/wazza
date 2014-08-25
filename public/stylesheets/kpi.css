@@ -12,8 +12,31 @@
 
 .kpi .value {
   color: #22A7F0;
-  font-size: 4em;
+  font-size: 3em;
   max-width: 50%;
+}
+
+.kpi .delta {
+  color: grey;
+  font-size: 3em;
+}
+
+.kpi-delta,
+.kpi-delta-positive,
+.kpi-delta-negative {
+  font-size: 3em;
+}
+
+.kpi-delta {
+  color: grey;
+}
+
+.kpi-delta-positive {
+  color: #1E824C;
+}
+
+.kpi-delta-negative {
+  color: #e74c3c;
 }
 
 .kpi .link {

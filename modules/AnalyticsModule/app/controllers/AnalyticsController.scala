@@ -18,6 +18,8 @@ import service.analytics.definitions.AnalyticsService
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.Interval
 import org.joda.time.Days
+import play.api.libs.json.Json
+import play.api.libs.json.JsValue
 
 class AnalyticsController @Inject()(
   analyticsService: AnalyticsService
@@ -51,14 +53,36 @@ class AnalyticsController @Inject()(
     f:(String, String, Date, Date) => Future[T]
   ) = {
 
+    def calculateDelta(current: JsValue, previous: JsValue): JsValue = {
+      val currentValue = (current \ "value").as[Double]
+      val previousValue = (current \ "value").as[Double]
+
+      val delta = if(currentValue > 0) { 
+        (currentValue - previousValue) / currentValue
+      } else 0
+
+      Json.obj(
+        "value" -> currentValue,
+        "delta" -> delta
+      )
+    }
+
     val start = validateDate(startDateStr)
     val end = validateDate(endDateStr)
 
     (start, end) match {
       case (Success(s), Success(e)) => {
         val dates = getPreviousDates(startDateStr, endDateStr)
-        f(companyName, applicationName, s, e) map { res =>
-          Ok(res)
+
+        val res: Future[JsValue] = for {
+          currentDates <- f(companyName, applicationName, s, e)
+          previousDates <- f(companyName, applicationName, dates._1, dates._2)
+        } yield calculateDelta(currentDates, previousDates)
+
+        res map {r =>
+          Ok(r)
+        } recover {
+          case _ => BadRequest("Error ocurred")
         }
       }
       case _ => {
