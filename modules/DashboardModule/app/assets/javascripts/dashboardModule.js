@@ -6,15 +6,21 @@ dashboard.value('KpiData', [
   {
     name: "Total Revenue",
     link: "/revenue",
+    delta: 0,
     unitType: "€"
   },
   {
     name: "Average Revenue Per User",
     link: "/arpu",
+    delta: 0,
     unitType: "€"
   }
   //TODO: all other metrics
 ]);
+
+dashboard.value("KpiDelta",{css: "kpi-delta", icon: "glyphicon glyphicon-minus"});
+dashboard.value("KpiPositiveDelta", {css: "kpi-delta-positive", icon: "glyphicon glyphicon-arrow-up"});
+dashboard.value("KpiNegativeDelta", {css: "kpi-delta-negative", icon: "glyphicon glyphicon-arrow-down"});
 
 dashboard.controller('DashboardController', [
   '$scope',
@@ -28,20 +34,25 @@ dashboard.controller('DashboardController', [
   'TopbarService',
   'GetMainKPIsService',
   'KpiData',
+  "KpiDelta",
+  "KpiPositiveDelta",
+  "KpiNegativeDelta",
   function (
-        $scope,
-        $location,
-        $rootScope,
-        FetchItemsService,
-        BootstrapDashboardService,
-        DeleteItemService,
-        ApplicationStateService,
-        ItemSearchService,
-        TopbarService,
-        GetMainKPIsService,
-        KpiData
-    ) {
-
+    $scope,
+    $location,
+    $rootScope,
+    FetchItemsService,
+    BootstrapDashboardService,
+    DeleteItemService,
+    ApplicationStateService,
+    ItemSearchService,
+    TopbarService,
+    GetMainKPIsService,
+    KpiData,
+    KpiDelta,
+    KpiPositiveDelta,
+    KpiNegativeDelta
+  ) {
         $scope.logout = function(){
           LoginLogoutService.logout();
         };
@@ -93,11 +104,14 @@ dashboard.controller('DashboardController', [
 
         $scope.initDate = $scope.today;
 
-        var KpiContext = function(name, value, unit, link){
+        var KpiContext = function(name, value, delta, unit, link, css, icon) {
           this.name = name;
           this.value = value;
+          this.delta = delta;
           this.unit = unit;
           this.link = link;
+          this.css = css;
+          this.icon = icon;
         };
 
         $scope.kpis = [];
@@ -112,7 +126,24 @@ dashboard.controller('DashboardController', [
             )
             .then(function(results) {
                 _.each(results, function(value, i) {
-                  $scope.kpis.push(new KpiContext(KpiData[i].name, value.data.value, KpiData[i].unitType, KpiData[i].link))
+                  var delta = value.data.delta
+                  var css = (value.data.delta > 0) ? KpiPositiveDelta.css :
+                        ((value.data.delta < 0) ? KpiNegativeDelta.css : KpiDelta.css);
+
+                  var icon = (value.data.delta > 0) ? KpiPositiveDelta.icon :
+                        ((value.data.delta < 0) ? KpiNegativeDelta.icon : KpiDelta.icon);
+
+                  $scope.kpis.push(
+                      new KpiContext(
+                          KpiData[i].name,
+                          value.data.value,
+                          delta,
+                          KpiData[i].unitType,
+                          KpiData[i].link,
+                          css,
+                          icon
+                      )
+                  )
               });
             });
         };

@@ -46,7 +46,12 @@ items: List[models.application.Item]
           <div class="col-md-6">
             <div class="kpi value">{{kpi.unit}}{{kpi.value}}</div>
           </div>
-          <div class="col-md-6 kpi link">
+          <div class="col-md-6">
+            <div ng-class="kpi.css">
+              <span ng-class="kpi.icon"></span> {{kpi.delta}}%
+            </div>
+          </div>
+          <div class="col-md-12 kpi link">
             <button type="button" ng-click="switchDetailedView(kpi.link)" class="btn btn-lg btn-info">More info</button>
           </div>
         </div>
