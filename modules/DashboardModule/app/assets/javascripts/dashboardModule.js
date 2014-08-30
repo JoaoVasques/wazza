@@ -1,6 +1,11 @@
 'use strict';
 
-var dashboard = angular.module('DashboardModule', ['ItemModule.services', 'DashboardModule.services', 'DashboardModule.controllers']);
+var dashboard = angular.module('DashboardModule', [
+    'ItemModule.services',
+    'DashboardModule.services',
+    'DashboardModule.controllers',
+    'chartjs'
+]);
 
 dashboard.value('KpiData', [
   {
@@ -209,7 +214,6 @@ dashboard.controller('DashboardController', [
 
         $scope.switchDetailedView = function(url) {
           $location.path(url);
-          console.log(url);
         };
 
         $scope.bootstrapModule();

@@ -25,6 +25,9 @@ class AnalyticsController @Inject()(
   analyticsService: AnalyticsService
 ) extends Controller {
 
+  private lazy val Total = 0
+  private lazy val Detailed = 1
+
   private def validateDate(dateStr: String): Try[Date] = {
     val df = new SimpleDateFormat("dd-MM-yyyy")
     try {
@@ -50,14 +53,14 @@ class AnalyticsController @Inject()(
     applicationName: String,
     startDateStr: String,
     endDateStr: String,
-    f:(String, String, Date, Date) => Future[T]
+    f:(String, String, Date, Date) => Future[T],
+    requestType: Int
   ) = {
-
     def calculateDelta(current: JsValue, previous: JsValue): JsValue = {
       val currentValue = (current \ "value").as[Double]
       val previousValue = (current \ "value").as[Double]
 
-      val delta = if(currentValue > 0) { 
+      val delta = if(currentValue > 0) {
         (currentValue - previousValue) / currentValue
       } else 0
 
@@ -67,22 +70,42 @@ class AnalyticsController @Inject()(
       )
     }
 
+    def handleTotalRequest(startDateStr: String, endDateStr: String, s: Date, e: Date) = {
+      val dates = getPreviousDates(startDateStr, endDateStr)
+      val res: Future[JsValue] = for {
+        currentDates <- f(companyName, applicationName, s, e)
+        previousDates <- f(companyName, applicationName, dates._1, dates._2)
+      } yield calculateDelta(currentDates, previousDates)
+
+      res map {r =>
+        Ok(r)
+      } recover {
+        case ex: Exception => {
+          println(ex)
+          BadRequest("Error ocurred")
+        }
+      }
+    }
+
+    def handleDetailedRequest(start: Date, end: Date) = {
+      f(companyName, applicationName, start, end) map {result =>
+        Ok(result)
+      } recover {
+        case ex: Exception => {
+          println(ex)
+          BadRequest("Error ocurred")
+        }
+      }
+    }
+
     val start = validateDate(startDateStr)
     val end = validateDate(endDateStr)
 
     (start, end) match {
       case (Success(s), Success(e)) => {
-        val dates = getPreviousDates(startDateStr, endDateStr)
-
-        val res: Future[JsValue] = for {
-          currentDates <- f(companyName, applicationName, s, e)
-          previousDates <- f(companyName, applicationName, dates._1, dates._2)
-        } yield calculateDelta(currentDates, previousDates)
-
-        res map {r =>
-          Ok(r)
-        } recover {
-          case _ => BadRequest("Error ocurred")
+        requestType match {
+          case Total => handleTotalRequest(startDateStr, endDateStr, s, e)
+          case Detailed => handleDetailedRequest(s, e)
         }
       }
       case _ => {
@@ -105,7 +128,8 @@ class AnalyticsController @Inject()(
       applicationName,
       startDateStr,
       endDateStr,
-      analyticsService.getTotalARPU)
+      analyticsService.getTotalARPU,
+      Total)
   }
 
   def getDetailedARPU(
@@ -119,7 +143,8 @@ class AnalyticsController @Inject()(
       applicationName,
       startDateStr,
       endDateStr,
-      analyticsService.getARPU)
+      analyticsService.getARPU,
+      Detailed)
   }
 
   def getTotalRevenue(
@@ -133,7 +158,8 @@ class AnalyticsController @Inject()(
       applicationName,
       startDateStr,
       endDateStr,
-      analyticsService.getTotalRevenue)
+      analyticsService.getTotalRevenue,
+      Total)
   }
 
   def getDetailedTotalRevenue(
@@ -147,7 +173,7 @@ class AnalyticsController @Inject()(
       applicationName,
       startDateStr,
       endDateStr,
-      analyticsService.getRevenue)
+      analyticsService.getRevenue,
+      Detailed)
   }
 }
-

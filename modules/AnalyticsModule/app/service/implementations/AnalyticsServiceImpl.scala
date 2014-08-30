@@ -8,6 +8,7 @@ import play.api.libs.json.JsObject
 import play.api.libs.json.JsValue
 import play.api.libs.json.Json
 import play.api.libs.ws.WS
+import scala.collection.mutable.ListBuffer
 import scala.collection.immutable.StringOps
 import scala.collection.mutable.HashMap
 import scala.collection.mutable.SynchronizedMap
@@ -21,6 +22,9 @@ import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import utils.analytics.Metrics
 import com.google.inject._
 import service.persistence.definitions.DatabaseService
+import org.joda.time.Days
+import org.joda.time.LocalDate
+import org.joda.time.DurationFieldType
 
 class AnalyticsServiceImpl @Inject()(
   databaseService: DatabaseService
@@ -68,14 +72,29 @@ class AnalyticsServiceImpl @Inject()(
         end
       ).value
 
-      val result = new JsArray((revenue zip active) map {
-        case (r, a) => {
+      val result = if(active.isEmpty) {
+        val dates = new ListBuffer[String]()
+        val s = new LocalDate(start)
+        val e = new LocalDate(end)
+        val days = Days.daysBetween(s, e).getDays()+1
+        
+        new JsArray(List.range(0, days) map {i =>{
           Json.obj(
-            "timestamp" -> getUnixDate((r \ "lowerDate" \ "$date").as[String]),
-            "value" -> (r \ "totalRevenue").as[Double] / (a \ "activeUsers").as[Int]
+            "day" -> s.withFieldAdded(DurationFieldType.days(), i).toString("dd MMM"),
+            "val" -> 0
           )
-        }
-      })
+        }})
+      } else {
+        new JsArray((revenue zip active) map {
+          case (r, a) => {
+            Json.obj(
+              "day" -> getUnixDate((r \ "lowerDate" \ "$date").as[String]),
+              "value" -> (r \ "totalRevenue").as[Double] / (a \ "activeUsers").as[Int]
+            )
+          }
+        })
+      }
+
       promise.success(result)
     }
     promise.future

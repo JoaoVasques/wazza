@@ -1,64 +1,107 @@
 'use strict';
 
+dashboard.value("LineChartConfiguration", {
+  fillColor: "rgba(220,220,220,0.2)",
+  strokeColor: "rgba(220,220,220,1)",
+  pointColor: "rgba(220,220,220,1)",
+  pointStrokeColor: "#fff",
+  pointHighlightFill: "#fff",
+  pointHighlightStroke: "rgba(220,220,220,1)"
+});
+
 dashboard
 .controller('ArpuController', [
   '$scope',
   '$location',
   '$rootScope',
-  'FetchItemsService',
-  'BootstrapDashboardService',
-  'DeleteItemService',
   'ApplicationStateService',
-  'ItemSearchService',
   'TopbarService',
-  'GetKPIService',
+  'GetMainKPIsService',
+  'LineChartConfiguration',
   function (
-        $scope,
-        $location,
-        $rootScope,
-        FetchItemsService,
-        BootstrapDashboardService,
-        DeleteItemService,
-        ApplicationStateService,
-        ItemSearchService,
-        TopbarService,
-        GetKPIService
-    ) {
+    $scope,
+    $location,
+    $rootScope,
+    ApplicationStateService,
+    TopbarService,
+    GetKPIService,
+    LineChartConfiguration
+  ) {
+    TopbarService.setName("ARPU - Details");
 
-        TopbarService.setName("ARPU - Details");
-
-        $scope.options = {
-          axes: {
-            x: {key: 'x', labelFunction: function(value) {return value;}, type: 'linear'},
-            y: {type: 'linear', min: 0, max: 100},
-            y2: {type: 'linear', min: 0, max: 100}
-          },
-          series: [
-            {y: 'value', color: 'steelblue', thickness: '2px', type: 'area', striped: true, label: 'Pouet'},
-            {y: 'otherValue', axis: 'y2', color: 'lightsteelblue', visible: false, drawDots: true}
-          ],
-          lineMode: 'linear',
-          tension: 0.7,
-          tooltip: {mode: 'scrubber', formatter: function(x, y, series) {return 'pouet';}},
-          drawLegend: true,
-          drawDots: true,
-          columnsHGap: 5
+    $scope.chartData = {
+      labels: [
+        '20 Aug',
+        '21 Aug',
+        '22 Aug',
+        '23 Aug',
+        '24 Aug',
+        '25 Aug',
+        '26 Aug',
+        '27 Aug'
+      ],
+      datasets: [
+        {
+          label: "BUAA",
+          fillColor: "rgba(220,220,220,0.2)",
+          strokeColor: "rgba(220,220,220,1)",
+          pointColor: "rgba(220,220,220,1)",
+          pointStrokeColor: "#fff",
+          pointHighlightFill: "#fff",
+          pointHighlightStroke: "rgba(220,220,220,1)",
+          data: [
+            20,
+            50,
+            10,
+            70,
+            25,
+            61,
+            40,
+            100
+          ]
+      }
+      ]
+    };
+      
+    /**$scope.chartData = {
+      labels: [],
+      datasets: [
+        {
+          label: "BUAA",
+          fillColor: "rgba(220,220,220,0.2)",
+          strokeColor: "rgba(220,220,220,1)",
+          pointColor: "rgba(220,220,220,1)",
+          pointStrokeColor: "#fff",
+          pointHighlightFill: "#fff",
+          pointHighlightStroke: "rgba(220,220,220,1)",
+          data: []
         }
+      ]
+    };**/
+/**
+  
+    /*GetKPIService.getDetailedKPIData(
+      ApplicationStateService.companyName,
+      ApplicationStateService.applicationName,
+      "20-08-2014",
+      "27-08-2014",
+      "arpu"  
+    ).then(function(results) {
+      kpiDataSuccessHandler(results);
+    },function(err) {console.log(err);}
+    );*/
 
-        $scope.data = [
-          {x: 0, value: 4, otherValue: 14},
-          {x: 1, value: 8, otherValue: 1},
-          {x: 2, value: 15, otherValue: 11},
-          {x: 3, value: 16, otherValue: 147},
-          {x: 4, value: 23, otherValue: 87},
-          {x: 5, value: 42, otherValue: 45}
-        ];
-
-        GetKPIService.execute($scope.companyName, $scope.applicationName, "2014-07-22", "2014-07-22", "arpu")
-            .then(function(results) {
-                console.log(results);
-                //$scope.data = results;
-        });
-
-
+    /**
+    $rootScope.$on('$routeChangeStart', function () {
+      alert('refresh');
+    });**/
+   
+    var kpiDataSuccessHandler = function(data) {
+      _.each(data.data, function(element) {
+        $scope.chartData.labels.push(element.day);
+        $scope.chartData.datasets[0].data.push(element.val);
+      });
+      console.log($scope.chartData);
+    };
+      
 }]);
