@@ -2,9 +2,30 @@
 
 
 // Declare app level module which depends on filters, and services
-angular.module('Wazza', ['ngRoute', 'Wazza.controllers', 'ItemModule', 'UserModule', 'SecurityModule', 'DashboardModule', 'n3-line-chart']).
-  config([ '$routeProvider', '$locationProvider' , function($routeProvider, $locationProvider) {
-    $routeProvider
+angular.module('Wazza', ['ui.router', 'ngRoute', 'Wazza.controllers', 'ItemModule', 'UserModule', 'SecurityModule', 'DashboardModule', 'n3-line-chart']).
+
+config(function($stateProvider, $urlRouterProvider){
+      
+      // For any unmatched url, send to /dashboard
+      $urlRouterProvider.otherwise("/dashboard")
+      
+      $stateProvider
+        .state('dashboard', {
+            url: "/dashboard",
+            templateUrl: '/dashboard',
+            controller: 'DashboardController'
+        })
+          .state('revenue', {
+              url: "/revenue",
+              templateUrl: '/dashboard/revenue',
+              controller: 'RevenueController'
+          })
+
+    }).
+
+
+  config([ '$locationProvider' , function($locationProvider) {
+   /* $routeProvider
       .when('/', {
         templateUrl: '/dashboard',
         controller: 'DashboardController'
@@ -87,7 +108,7 @@ angular.module('Wazza', ['ngRoute', 'Wazza.controllers', 'ItemModule', 'UserModu
       })
       .otherwise({redirectTo:"/"});
 
-
+*/
     $locationProvider.html5Mode(true);
     }
   ])
