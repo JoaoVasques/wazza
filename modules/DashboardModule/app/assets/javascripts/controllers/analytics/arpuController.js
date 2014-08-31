@@ -1,12 +1,11 @@
 'use strict';
 
 dashboard.value("LineChartConfiguration", {
-  fillColor: "rgba(220,220,220,0.2)",
-  strokeColor: "rgba(220,220,220,1)",
-  pointColor: "rgba(220,220,220,1)",
-  pointStrokeColor: "#fff",
-  pointHighlightFill: "#fff",
-  pointHighlightStroke: "rgba(220,220,220,1)"
+  fillColor : "rgba(151,187,205,0.5)",
+  strokeColor : "rgba(151,187,205,1)",
+  pointColor : "rgba(151,187,205,1)",
+  pointStrokeColor : "#fff",
+  data: []
 });
 
 dashboard
@@ -29,58 +28,26 @@ dashboard
   ) {
     TopbarService.setName("ARPU - Details");
 
-    $scope.chartData = {
-      labels: [
-        '20 Aug',
-        '21 Aug',
-        '22 Aug',
-        '23 Aug',
-        '24 Aug',
-        '25 Aug',
-        '26 Aug',
-        '27 Aug'
-      ],
-      datasets: [
-        {
-          label: "BUAA",
-          fillColor: "rgba(220,220,220,0.2)",
-          strokeColor: "rgba(220,220,220,1)",
-          pointColor: "rgba(220,220,220,1)",
-          pointStrokeColor: "#fff",
-          pointHighlightFill: "#fff",
-          pointHighlightStroke: "rgba(220,220,220,1)",
-          data: [
-            20,
-            50,
-            10,
-            70,
-            25,
-            61,
-            40,
-            100
+    $scope.updateChart = function(name, labels, values) {
+      $scope.chart = {
+        "data": {
+          "labels": labels,
+          "datasets": [
+            {
+              fillColor : "rgba(151,187,205,0.5)",
+              strokeColor : "rgba(151,187,205,1)",
+              pointColor : "rgba(151,187,205,1)",
+              pointStrokeColor : "#fff",
+              data : values
+            }
           ]
-      }
-      ]
+        },
+        "options": {"width": '100%'}
+      };
     };
+    $scope.updateChart("Average Revenue Per User", [],[]);
       
-    /**$scope.chartData = {
-      labels: [],
-      datasets: [
-        {
-          label: "BUAA",
-          fillColor: "rgba(220,220,220,0.2)",
-          strokeColor: "rgba(220,220,220,1)",
-          pointColor: "rgba(220,220,220,1)",
-          pointStrokeColor: "#fff",
-          pointHighlightFill: "#fff",
-          pointHighlightStroke: "rgba(220,220,220,1)",
-          data: []
-        }
-      ]
-    };**/
-/**
-  
-    /*GetKPIService.getDetailedKPIData(
+    GetKPIService.getDetailedKPIData(
       ApplicationStateService.companyName,
       ApplicationStateService.applicationName,
       "20-08-2014",
@@ -89,19 +56,16 @@ dashboard
     ).then(function(results) {
       kpiDataSuccessHandler(results);
     },function(err) {console.log(err);}
-    );*/
-
-    /**
-    $rootScope.$on('$routeChangeStart', function () {
-      alert('refresh');
-    });**/
-   
-    var kpiDataSuccessHandler = function(data) {
-      _.each(data.data, function(element) {
-        $scope.chartData.labels.push(element.day);
-        $scope.chartData.datasets[0].data.push(element.val);
-      });
-      console.log($scope.chartData);
-    };
+    );
       
+    var kpiDataSuccessHandler = function(data) {
+      var labels = [];
+      var values = [];
+      _.each(data.data, function(element) {
+        labels.push(element.day);
+        values.push(element.val);
+      });
+
+      $scope.updateChart("Average Revenue Per User", labels, values);
+    };
 }]);

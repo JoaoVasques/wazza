@@ -4,7 +4,7 @@ var dashboard = angular.module('DashboardModule', [
     'ItemModule.services',
     'DashboardModule.services',
     'DashboardModule.controllers',
-    'chartjs'
+    'chartjs-directive'
 ]);
 
 dashboard.value('KpiData', [
