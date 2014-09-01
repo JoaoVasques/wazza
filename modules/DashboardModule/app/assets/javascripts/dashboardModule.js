@@ -42,6 +42,7 @@ dashboard.controller('DashboardController', [
   "KpiDelta",
   "KpiPositiveDelta",
   "KpiNegativeDelta",
+  "DashboardModel",
   function (
     $scope,
     $location,
@@ -56,7 +57,8 @@ dashboard.controller('DashboardController', [
     KpiData,
     KpiDelta,
     KpiPositiveDelta,
-    KpiNegativeDelta
+    KpiNegativeDelta,
+    DashboardModel
   ) {
         $scope.logout = function(){
           LoginLogoutService.logout();
@@ -65,16 +67,11 @@ dashboard.controller('DashboardController', [
         $scope.format = 'dd-MMMM-yyyy';
 
         $scope.today = function() {
-          $scope.beginDate = new Date();
-          $scope.endDate = new Date();
+          DashboardModel.initDateInterval();
+          $scope.beginDate = DashboardModel.startDate;
+          $scope.endDate = DashboardModel.endDate;
         };
         $scope.today();
-
-        $scope.initDateInterval = function(){
-          $scope.beginDate = new Date(moment().subtract('days', 7));
-          $scope.endDate = new Date;
-        };
-        $scope.initDateInterval();
 
         // Disable weekend selection
         $scope.disabled = function(date, mode) {
@@ -126,8 +123,8 @@ dashboard.controller('DashboardController', [
           GetMainKPIsService.execute(
             ApplicationStateService.companyName,
             ApplicationStateService.applicationName,
-            moment($scope.beginDate).format('DD-MM-YYYY'),
-            moment($scope.endDate).format('DD-MM-YYYY')
+            DashboardModel.formatDate($scope.beginDate),
+            DashboardModel.formatDate($scope.endDate)
             )
             .then(function(results) {
                 _.each(results, function(value, i) {
