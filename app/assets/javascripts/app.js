@@ -6,15 +6,46 @@ angular.module('Wazza', ['ui.router', 'ngRoute', 'Wazza.controllers', 'ItemModul
 
 config(function($stateProvider, $urlRouterProvider){
       
+      $urlRouterProvider.when("/home","/home/dashboard/"); //Default to the dashboard
       // For any unmatched url, send to /dashboard
-      $urlRouterProvider.otherwise("/dashboard")
-      
+      /*$urlRouterProvider.otherwise(function($injector, $location){
+        if($scope.authOK === false)
+            $state.to("login");
+        else
+            $state.to("home.dashboard");
+      });
+      */
+      $urlRouterProvider.otherwise('/login');
+
       $stateProvider
-        .state('dashboard', {
+        .state('login', {
+            url: "/login",
+            templateUrl: '/login',
+            controller: 'LoginController'
+        })
+        .state('/home', {
+            url: "/home",
+            templateUrl: '/home',
+            controller: 'DashboardController'
+        })
+
+        .state('home', {
+            url: "/home",
+            templateUrl: '/home',
+            controller: 'DashboardController'
+        })
+
+        .state('home.dashboard', {
+            url: "^/dashboard",
+            templateUrl: '/dashboard',
+            controller: 'DashboardController'
+        })
+        .state('dashboard.sidebar', {
             url: "/dashboard",
             templateUrl: '/dashboard',
             controller: 'DashboardController'
         })
+
           .state('revenue', {
               url: "/revenue",
               templateUrl: '/dashboard/revenue',

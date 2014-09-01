@@ -1,0 +1,19 @@
+
+        <div class="wrapper row-offcanvas row-offcanvas-left">
+            <!-- Left side column. contains the logo and sidebar -->
+            @views.html.sidebar.render()
+
+            <!-- Right side column. Contains the navbar and content of the page -->
+            <aside class="right-side">
+                <!-- Content Header (Page header) -->
+                <section class="content-header" ng-controller="NavBarController" ng-model="page">
+                    <h1>{{page}}</h1>
+                </section>
+
+                <!-- Main content -->
+                <section class="content">
+                  <div ui-view></div>
+                </section>
+
+            </aside>
+        </div>

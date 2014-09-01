@@ -11,7 +11,7 @@ angular.module('Wazza.controllers', [
 
 .controller('LoginController',[
   '$scope',
-  '$location',
+  '$state',
   'submitLoginCredentialsService',
   'cookiesManagerService',
   '$rootScope',
@@ -20,7 +20,7 @@ angular.module('Wazza.controllers', [
   'ApplicationStateService',
   function (
     $scope,
-    $location,
+    $state,
     submitLoginCredentialsService,
     cookiesManagerService,
     $rootScope,
@@ -34,7 +34,7 @@ angular.module('Wazza.controllers', [
       then(
         function(){
           LoginLogoutService.login();
-          $location.path("/home");
+          $state.go("home.dashboard");
         }
       );
   };
@@ -47,7 +47,8 @@ angular.module('Wazza.controllers', [
     });
     ApplicationStateService.updateCompanyName(success.data.companyName);
     LoginLogoutService.login();
-    $location.path(success.data.url);
+    //str.substring(0, str.length-1);
+    $state.go(success.data.url);
   };
 
   $scope.handleLoginFailure = function(error){
@@ -91,7 +92,7 @@ angular.module('Wazza.controllers', [
   '$scope',
   'cookiesManagerService',
   '$http',
-  '$location',
+  '$state',
   '$rootScope',
   'LoginLogoutService',
   'ItemSearchService',
@@ -101,7 +102,7 @@ angular.module('Wazza.controllers', [
     $scope,
     cookiesManagerService,
     $http,
-    $location,
+    $state,
     $rootScope,
     LoginLogoutService,
     ItemSearchService,
@@ -120,7 +121,7 @@ angular.module('Wazza.controllers', [
     $scope.$on("LOGOUT_SUCCESS", function(event, url){
       document.body.className = "skin-blue login-screen";
       $scope.authOK = false;
-      $location.path(url.value);
+      $state.go(url.value);
     });
 
     //app related
