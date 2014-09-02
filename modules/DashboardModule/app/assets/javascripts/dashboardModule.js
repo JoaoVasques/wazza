@@ -65,6 +65,7 @@ dashboard.controller('DashboardController', [
   '$scope',
   '$location',
   '$rootScope',
+  "$anchorScroll",
   'FetchItemsService',
   'BootstrapDashboardService',
   'DeleteItemService',
@@ -78,10 +79,12 @@ dashboard.controller('DashboardController', [
   "KpiNegativeDelta",
   "DashboardModel",
   "KpiModel",
+  "AnchorSmoothScroll",
   function (
     $scope,
     $location,
     $rootScope,
+    $anchorScroll,
     FetchItemsService,
     BootstrapDashboardService,
     DeleteItemService,
@@ -94,11 +97,18 @@ dashboard.controller('DashboardController', [
     KpiPositiveDelta,
     KpiNegativeDelta,
     DashboardModel,
-    KpiModel
+    KpiModel,
+    AnchorSmoothScroll
   ) {
     $scope.logout = function(){
       LoginLogoutService.logout();
     };
+
+    $rootScope.$on('ChangeDashboardSection', function(event, newSection) {
+      var eId = newSection.section;
+      $location.hash(eId);
+      AnchorSmoothScroll.scrollTo(eId);
+    });
     
     /** General KPIs **/
     $scope.totalRevenue = new KpiModel("Total Revenue", "/revenue");
