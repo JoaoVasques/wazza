@@ -47,8 +47,9 @@ angular.module('Wazza.controllers', [
     });
     ApplicationStateService.updateCompanyName(success.data.companyName);
     LoginLogoutService.login();
-    //str.substring(0, str.length-1);
-    $state.go(success.data.url);
+    var url = success.data.url;
+    url = url.substring(1, url.length) //HACK: ditch out the / from the response
+    $state.go(url);
   };
 
   $scope.handleLoginFailure = function(error){

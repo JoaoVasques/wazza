@@ -23,11 +23,6 @@ config(function($stateProvider, $urlRouterProvider){
             templateUrl: '/login',
             controller: 'LoginController'
         })
-        .state('/home', {
-            url: "/home",
-            templateUrl: '/home',
-            controller: 'DashboardController'
-        })
 
         .state('home', {
             url: "/home",
