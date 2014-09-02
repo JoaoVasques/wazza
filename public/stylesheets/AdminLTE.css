@@ -1,7 +1,7 @@
 @import url(//fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,300italic,400italic,600italic);
 
 @import url(//fonts.googleapis.com/css?family=Kaushan+Script);
-/*! 
+/*!
  *   AdminLTE v1.2
  *   Author: AlmsaeedStudio.com
  *   License: Open source - MIT
@@ -335,7 +335,7 @@ body > .header {
   max-height: 100px;
   z-index: 1030;
 }
-body > .header .navbar {
+Body > .header .navbar {
   height: 50px;
   margin-bottom: 0;
   margin-left: 220px;
@@ -405,6 +405,7 @@ body > .header .logo {
   font-weight: 500;
   height: 50px;
   display: block;
+  background-color: #2C3E50 !important;
 }
 body > .header .logo .icon {
   margin-right: 10px;
@@ -620,7 +621,7 @@ body > .header .logo .icon {
     left: 0px;
   }
 }
-/* 
+/*
     Dropdown menus
 ----------------------------
 */
@@ -2415,7 +2416,8 @@ Component: timeline
 */
 /* skin-blue navbar */
 .skin-blue .navbar {
-  background-color: #3c8dbc;
+  /*background-color: #3c8dbc;*/
+  background-color: #2C3E50;
 }
 .skin-blue .navbar .nav a {
   color: rgba(255, 255, 255, 0.8);

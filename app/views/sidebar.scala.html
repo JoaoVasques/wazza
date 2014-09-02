@@ -8,49 +8,32 @@
             <div class="pull-left info">
                 <h4>{{applicationName}}</h4>
             </div>
-
-
-
         </div>
-        <!-- search form >
-        <form action="#" method="get" class="sidebar-form">
-            <div class="input-group">
-                <input type="text" name="q" class="form-control" placeholder="Search..."/>
-                <span class="input-group-btn">
-                    <button type='submit' name='seach' id='search-btn' class="btn btn-flat"><i class="fa fa-search"></i></button>
-                </span>
-            </div>
-        </form-->
-        <!-- /.search form -->
-        <!-- sidebar menu: : style can be found in sidebar.less -->
+        
         <ul class="sidebar-menu">
             <li class="active">
                 <a href="/home">
                     <i class="fa fa-dashboard"></i> <span>Dashboard</span>
                 </a>
             </li>
-            <li>
-                <span style="padding: 12px 5px 12px 15px;"><i class="fa fa-bar-chart-o"></i> Analytics</span>
-                <a href="/arpu">
-                    ARPU
-                </a>
-                <a href="/revenue">
-                    Revenue
-                </a>
-                <!--//TODO: add other metrics -->
+            <li class="treeview">
+              <a href="#">
+                <i class="fa fa-bar-chart-o"></i>
+                <span>Analytics</span>
+                <i class="fa fa-angle-left pull-right"></i>
+              </a>
+              <ul class="treeview-menu">
+                <li><a href="/arpu"><i class="fa fa-angle-right"></i> Average Revenue Per User</a></li>
+                <li><a href="/revenue"><i class="fa fa-angle-right"></i> Total Revenue</a></li>
+              </ul>
             </li>
             <li>
-                <span style="padding: 12px 5px 12px 15px;"><i class="fa fa-edit"></i> Management</span>
-                <a href="/inventory">
-                    Inventory
-                </a>
-                <span style="padding: 12px 5px 12px 15px;"><i class="fa fa-edit"></i>APP related stuff</span>
+                <a href="/inventory"><i class="fa fa-edit"></i> Inventory</span></a>
             </li>
             <li>
-                <a href="/settings">
-                    <i class="fa fa-gears"></i> <span>Settings</span>
-                </a>
+                <a href="/settings"><i class="fa fa-gears"></i> <span>Settings</span></a>
             </li>
         </ul>
     </section>
 </aside>
+

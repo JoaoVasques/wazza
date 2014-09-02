@@ -1,8 +1,37 @@
 'use strict';
 
-angular.module('DashboardModule.services', [])
+var dashboardServices = angular.module('DashboardModule.services', []);
 
-.factory('BootstrapDashboardService', ['$http', '$q',
+dashboardServices.value("RevenueUrlType", {
+    kpiType: "revenue",
+    total: "total",
+    detailed: ""
+});
+dashboardServices.value("ArpuUrlType", {
+    kpiType: "arpu",
+    total: "total",
+    detailed: ""
+});
+
+dashboardServices.factory('DashboardModel', function() {
+  var model = function() {
+    this.startDate = new Date();
+    this.endDate = new Date();
+  };
+
+  model.initDateInterval = function() {
+    this.startDate= new Date(moment().subtract('days', 7));
+    this.endDate = new Date();
+  };
+
+  model.formatDate = function(date) {
+    return moment(date).format('DD-MM-YYYY');
+  };
+    
+  return model;
+});
+
+dashboardServices.factory('BootstrapDashboardService', ['$http', '$q',
     function ($http, $q) {
         var service = {};
 
@@ -18,10 +47,9 @@ angular.module('DashboardModule.services', [])
         };
 
         return service;
-}])
+}]);
 
-
-.factory('GetKPIService', ['$http', '$q',
+dashboardServices.factory('GetKPIService', ['$http', '$q',
     function($http, $q) {
       var service = {};
 
@@ -44,26 +72,31 @@ angular.module('DashboardModule.services', [])
       };
 
       return service;
-}])
+}]);
 
-
-//TODO: refactor this to use GetKPIService instead
-.factory('GetMainKPIsService', ['$http', '$q',
-    function($http, $q) {
+dashboardServices.factory('GetMainKPIsService', ['$http','$q',
+  function($http,$q) {
       var service = {};
 
+      var buildUrl = function(companyName, applicationName, urlType, subType, startDate, endDate) {
+        return '/analytics/' +
+         urlType + '/' +
+         subType + '/' +
+         companyName + '/' +
+         applicationName + '/'+
+         startDate + '/' +
+         endDate;
+      };
+        
       service.execute = function(companyName, applicationName, startDate, endDate) {
-        var buildUrl = function(urlType, subType) {
-          return '/analytics/' + urlType + '/' + subType +'/' + companyName + '/' + applicationName + '/'+ startDate +'/' + endDate;
-        };
 
-        var revUrl = buildUrl('revenue', 'total');
+        var revUrl = buildUrl(companyName, applicationName, 'revenue', 'total', startDate, endDate);
         var totalRevenue = $http({
             url: revUrl,
             method: 'GET'
         });
 
-        var arpuUrl = buildUrl('arpu', 'total');
+        var arpuUrl = buildUrl(companyName, applicationName, 'arpu', 'total', startDate, endDate);
         var totalARPU = $http({
             url: arpuUrl,
             method: 'GET'
@@ -72,10 +105,23 @@ angular.module('DashboardModule.services', [])
         return $q.all([totalRevenue, totalARPU]);
       };
 
-      return service;
-}])
+      service.getDetailedKPIData = function(companyName, applicationName, start, end, kpiName) {
+        console.log("company - " + companyName);
+        console.log("app - " + applicationName);
+        var request = $http({
+          url: buildUrl(companyName, applicationName, kpiName, "detail", start, end),
+          method: 'GET'
+        });
 
-.factory('ApplicationStateService', ['$rootScope',
+        var deferred = $q.defer();
+        deferred.resolve(request);
+        return deferred.promise;
+      };
+
+      return service;
+}]);
+
+dashboardServices.factory('ApplicationStateService', ['$rootScope',
     function ($rootScope) {
         var service = {};
         service.applicationName = "";
@@ -107,9 +153,9 @@ angular.module('DashboardModule.services', [])
         };
 
         return service;
-}])
+}]);
 
-.factory('FetchItemsService', ['$http', '$q',
+dashboardServices.factory('FetchItemsService', ['$http', '$q',
     function ($http, $q) {
         var service = {};
 
@@ -125,9 +171,9 @@ angular.module('DashboardModule.services', [])
         };
 
         return service;
-}])
+}]);
 
-.factory('DeleteItemService', ['$http', '$q',
+dashboardServices.factory('DeleteItemService', ['$http', '$q',
     function ($http, $q) {
         var service = function (id, name, imageName) {
             var request = $http.post("/app/item/delete/" + id, {
