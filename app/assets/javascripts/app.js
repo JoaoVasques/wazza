@@ -32,20 +32,25 @@ config(function($stateProvider, $urlRouterProvider, $locationProvider){
             controller: 'DashboardController'
         })
 
-        .state('home.dashboard', {
+        .state('home.overview', {
             url: "^/overview",
-            views: {
-              'sidebar': {
-                templateUrl: '/dashboard/sidebar'
-//                controller: function($scope){ ... controller stuff just for sidebar view ... }
-              },
-              'content': {
-                templateUrl: '/dashboard',
-                controller: 'DashboardController'
-              }
-            }
+            templateUrl: '/overview',
+            controller: 'DashboardController'
         })
 
+        .state('home.dashboard', {
+            url: "^/overview",
+            templateUrl: '/dashboard',
+            controller: 'DashboardController'
+        })
+
+        .state('home.analytics', {
+            url: "^/analytics",
+            templateUrl: '/home',
+            controller: 'DashboardController'
+        })
+
+/*
         .state('home.applications', {
             url: "^/applications",
             views: {
@@ -59,20 +64,7 @@ config(function($stateProvider, $urlRouterProvider, $locationProvider){
               }
             }
         })
-
-        .state('home.application', {
-            url: "^/analytics",
-            views: {
-              'sidebar': {
-                templateUrl: '/dashboard/sidebar'
-//                controller: function($scope){ ... controller stuff just for sidebar view ... }
-              },
-              'content': {
-                templateUrl: '/dashboard',
-                controller: 'DashboardController'
-              }
-            }
-        })
+*/
 
         .state('home.inventory', {
             url: "^/dashboard",
