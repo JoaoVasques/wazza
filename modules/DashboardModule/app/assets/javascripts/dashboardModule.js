@@ -23,6 +23,40 @@ dashboard.value('KpiData', [
   //TODO: all other metrics
 ]);
 
+dashboard.factory("KpiModel", function() {
+  var kpiModel = function(name, link) {
+    this.name = name;
+    this.link = link;
+    this.delta = 0;
+    this.value = 0;
+    this.unitType = "€";
+    this.css = "kpi-delta";
+    this.icon = "glyphicon glyphicon-minus";
+  };
+
+  kpiModel.updateKpiValue = function(value) {
+    var positiveKpiUpdate = function() {
+      kpiModel.css = "kpi-delta-positive";
+      kpiModel.icon = "glyphicon glyphicon-arrow-up";
+    };
+
+    var negativeKpiUpdate = function() {
+      kpiModel.css = "kpi-delta-negative";
+      kpiModel.icon = "glyphicon glyphicon-arrow-down";
+    };
+
+    var defaultKpi = function() {
+      kpiModel.css = "kpi-delta";
+      kpiModel.icon = "glyphicon glyphicon-minus";
+    };
+      
+    kpiModel.value = value;
+    (value > 0) ? positiveKpiUpdate() : ((value < 0) ? negativeKpiUpdate(): defaultKpi());
+  };
+
+  return kpiModel;
+});
+
 dashboard.value("KpiDelta",{css: "kpi-delta", icon: "glyphicon glyphicon-minus"});
 dashboard.value("KpiPositiveDelta", {css: "kpi-delta-positive", icon: "glyphicon glyphicon-arrow-up"});
 dashboard.value("KpiNegativeDelta", {css: "kpi-delta-negative", icon: "glyphicon glyphicon-arrow-down"});
@@ -43,6 +77,7 @@ dashboard.controller('DashboardController', [
   "KpiPositiveDelta",
   "KpiNegativeDelta",
   "DashboardModel",
+  "KpiModel",
   function (
     $scope,
     $location,
@@ -58,12 +93,17 @@ dashboard.controller('DashboardController', [
     KpiDelta,
     KpiPositiveDelta,
     KpiNegativeDelta,
-    DashboardModel
+    DashboardModel,
+    KpiModel
   ) {
         $scope.logout = function(){
           LoginLogoutService.logout();
         };
 
+        $scope.totalRevenue = new KpiModel("Total Revenue", "/revenue");
+        $scope.arpu = new KpiModel("Average Revenue Per User", "/arpu");
+        $scope.avgRevSession = new KpiModel("Average Revenue per Session", "#")
+      
         $scope.format = 'dd-MMMM-yyyy';
 
         $scope.today = function() {
