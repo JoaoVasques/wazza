@@ -1,4 +1,4 @@
-<aside class="left-side sidebar-offcanvas" ng-show="authOK" id="sidebar">
+<aside class="left-side sidebar-offcanvas" ng-show="authOK" id="sidebar" ng-controller="SidebarController">
     <section class="sidebar">
         <!-- Sidebar user panel -->
         <div class="user-panel" ng-model="applicationName">
@@ -11,26 +11,61 @@
         </div>
         
         <ul class="sidebar-menu">
-            <li class="active">
-                <a href="/home">
-                    <i class="fa fa-dashboard"></i> <span>Dashboard</span>
-                </a>
+
+            <!-- Dashboard -->
+            <li class="treeview">
+                <a href="/home"><span><h5><b>Dashboard</b></h5></span></a>
             </li>
             <li class="treeview">
+              <a href="#" ng-click="selectDashboardSection('general')"><i class="fa fa-shopping-cart"></i> <span>Revenue</span></a>
+            </li>
+            <li class="treeview">
+              <a href="#" ng-click="selectDashboardSection('users')"><i class="fa fa-user"></i> Users</a>
+            </li>
+            <li class="treeview">
+              <a href="#" ng-click="selectDashboardSection('sessions')"><i class="fa fa-clock-o"></i> Sessions</a>
+            </li>
+
+            <!-- Analytics -->
+            <li class="treeview">
+              <a href="#"><span><h5><b>Analytics</b></h5></span></a>
+            </li>
+             <li class="treeview">
               <a href="#">
                 <i class="fa fa-bar-chart-o"></i>
-                <span>Analytics</span>
+                <span>Metrics</span>
                 <i class="fa fa-angle-left pull-right"></i>
               </a>
               <ul class="treeview-menu">
-                <li><a href="/arpu"><i class="fa fa-angle-right"></i> Average Revenue Per User</a></li>
-                <li><a href="/revenue"><i class="fa fa-angle-right"></i> Total Revenue</a></li>
+                <li><a href="#"><b>Revenue</b></a></li>
+                <li><a href="/revenue"><i class="fa fa-shopping-cart"></i> Total Revenue</a></li>
+                <li><a href="/arpu"><i class="fa fa-shopping-cart"></i> Avg Revenue Per User</a></li>
+                <li><a href="#"><i class="fa fa-shopping-cart"></i> Avg Revenue Per Session</a></li>
+
+                <li><a href="#"><b>Users</b></a></li>
+                <li><a href="/revenue"><i class="fa fa-user"></i> Total Revenue</a></li>
+                <li><a href="/arpu"><i class="fa fa-user"></i> Avg Revenue Per User</a></li>
+                <li><a href="#"><i class="fa fa-user"></i> Avg Revenue Per Session</a></li>
+
+                <li><a href="#"><b>Sessions</b></a></li>
+                <li><a href="/revenue"><i class="fa fa-clock-o"></i> Total Revenue</a></li>
+                <li><a href="/arpu"><i class="fa fa-clock-o"></i> Avg Revenue Per User</a></li>
+                <li><a href="#"><i class="fa fa-clock-o"></i> Avg Revenue Per Session</a></li>
               </ul>
             </li>
-            <li>
+
+           <!-- Management -->
+            <li class="treeview">
+              <a href="#"><span><h5><b>Management</b></h5></span></a>
+            </li>
+            <li class="treeview">
                 <a href="/inventory"><i class="fa fa-edit"></i> Inventory</span></a>
             </li>
-            <li>
+           <!-- Settings -->
+           <li class="treeview">
+              <a href="#"><span><h5><b>Configuration</b></h5></span></a>
+            </li>
+            <li class="treeview">
                 <a href="/settings"><i class="fa fa-gears"></i> <span>Settings</span></a>
             </li>
         </ul>

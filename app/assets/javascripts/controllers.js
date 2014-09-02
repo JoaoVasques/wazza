@@ -89,6 +89,12 @@ angular.module('Wazza.controllers', [
 
 }])
 
+.controller('SidebarController', ['$scope','$rootScope', function($scope, $rootScope) {
+    $scope.selectDashboardSection = function(sectionId) {
+      $rootScope.$broadcast('ChangeDashboardSection', {section: sectionId});
+    };
+}])
+
 .controller('AppController', [
   '$scope',
   'cookiesManagerService',

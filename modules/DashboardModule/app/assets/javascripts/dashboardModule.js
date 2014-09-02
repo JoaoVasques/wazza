@@ -23,6 +23,40 @@ dashboard.value('KpiData', [
   //TODO: all other metrics
 ]);
 
+dashboard.factory("KpiModel", function() {
+  var kpiModel = function(name, link) {
+    this.name = name;
+    this.link = link;
+    this.delta = 0;
+    this.value = 0;
+    this.unitType = "€";
+    this.css = "kpi-delta";
+    this.icon = "glyphicon glyphicon-minus";
+  };
+
+  kpiModel.updateKpiValue = function(value) {
+    var positiveKpiUpdate = function() {
+      kpiModel.css = "kpi-delta-positive";
+      kpiModel.icon = "glyphicon glyphicon-arrow-up";
+    };
+
+    var negativeKpiUpdate = function() {
+      kpiModel.css = "kpi-delta-negative";
+      kpiModel.icon = "glyphicon glyphicon-arrow-down";
+    };
+
+    var defaultKpi = function() {
+      kpiModel.css = "kpi-delta";
+      kpiModel.icon = "glyphicon glyphicon-minus";
+    };
+      
+    kpiModel.value = value;
+    (value > 0) ? positiveKpiUpdate() : ((value < 0) ? negativeKpiUpdate(): defaultKpi());
+  };
+
+  return kpiModel;
+});
+
 dashboard.value("KpiDelta",{css: "kpi-delta", icon: "glyphicon glyphicon-minus"});
 dashboard.value("KpiPositiveDelta", {css: "kpi-delta-positive", icon: "glyphicon glyphicon-arrow-up"});
 dashboard.value("KpiNegativeDelta", {css: "kpi-delta-negative", icon: "glyphicon glyphicon-arrow-down"});
@@ -31,6 +65,7 @@ dashboard.controller('DashboardController', [
   '$scope',
   '$location',
   '$rootScope',
+  "$anchorScroll",
   'FetchItemsService',
   'BootstrapDashboardService',
   'DeleteItemService',
@@ -43,10 +78,13 @@ dashboard.controller('DashboardController', [
   "KpiPositiveDelta",
   "KpiNegativeDelta",
   "DashboardModel",
+  "KpiModel",
+  "AnchorSmoothScroll",
   function (
     $scope,
     $location,
     $rootScope,
+    $anchorScroll,
     FetchItemsService,
     BootstrapDashboardService,
     DeleteItemService,
@@ -58,13 +96,37 @@ dashboard.controller('DashboardController', [
     KpiDelta,
     KpiPositiveDelta,
     KpiNegativeDelta,
-    DashboardModel
+    DashboardModel,
+    KpiModel,
+    AnchorSmoothScroll
   ) {
-        $scope.logout = function(){
-          LoginLogoutService.logout();
-        };
+    $scope.logout = function(){
+      LoginLogoutService.logout();
+    };
 
-        $scope.format = 'dd-MMMM-yyyy';
+    $rootScope.$on('ChangeDashboardSection', function(event, newSection) {
+      var eId = newSection.section;
+      $location.hash(eId);
+      AnchorSmoothScroll.scrollTo(eId);
+    });
+    
+    /** General KPIs **/
+    $scope.totalRevenue = new KpiModel("Total Revenue", "/revenue");
+    $scope.arpu = new KpiModel("Avg Revenue Per User", "/arpu");
+    $scope.avgRevSession = new KpiModel("Avg Revenue per Session", "#");
+    
+    /** User KPIs **/
+    $scope.ltv = new KpiModel("Life Time Value", "#");
+    $scope.payingUsers = new KpiModel("% Paying Users", "#");
+    $scope.todo = new KpiModel("TODO", "#");
+
+    /** Session KPIs **/
+    $scope.purchasesPerSession = new KpiModel("Purchases per Session", "#");
+    $scope.avgTimeFirstPurchase = new KpiModel("Avg Time 1st Purchase", "#");
+    $scope.avgTimeBetweenPurchases = new KpiModel("Avg Time Between Purchases", "#");
+
+
+      $scope.format = 'dd-MMMM-yyyy';
 
         $scope.today = function() {
           DashboardModel.initDateInterval();
