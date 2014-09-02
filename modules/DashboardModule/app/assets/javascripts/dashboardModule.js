@@ -96,15 +96,27 @@ dashboard.controller('DashboardController', [
     DashboardModel,
     KpiModel
   ) {
-        $scope.logout = function(){
-          LoginLogoutService.logout();
-        };
+    $scope.logout = function(){
+      LoginLogoutService.logout();
+    };
+    
+    /** General KPIs **/
+    $scope.totalRevenue = new KpiModel("Total Revenue", "/revenue");
+    $scope.arpu = new KpiModel("Avg Revenue Per User", "/arpu");
+    $scope.avgRevSession = new KpiModel("Avg Revenue per Session", "#");
+    
+    /** User KPIs **/
+    $scope.ltv = new KpiModel("Life Time Value", "#");
+    $scope.payingUsers = new KpiModel("% Paying Users", "#");
+    $scope.todo = new KpiModel("TODO", "#");
 
-        $scope.totalRevenue = new KpiModel("Total Revenue", "/revenue");
-        $scope.arpu = new KpiModel("Average Revenue Per User", "/arpu");
-        $scope.avgRevSession = new KpiModel("Average Revenue per Session", "#")
-      
-        $scope.format = 'dd-MMMM-yyyy';
+    /** Session KPIs **/
+    $scope.purchasesPerSession = new KpiModel("Purchases per Session", "#");
+    $scope.avgTimeFirstPurchase = new KpiModel("Avg Time 1st Purchase", "#");
+    $scope.avgTimeBetweenPurchases = new KpiModel("Avg Time Between Purchases", "#");
+
+
+      $scope.format = 'dd-MMMM-yyyy';
 
         $scope.today = function() {
           DashboardModel.initDateInterval();
