@@ -4,8 +4,10 @@
 // Declare app level module which depends on filters, and services
 angular.module('Wazza', ['ui.router', 'ngRoute', 'Wazza.controllers', 'ItemModule', 'UserModule', 'SecurityModule', 'DashboardModule', 'n3-line-chart']).
 
-config(function($stateProvider, $urlRouterProvider){
+config(function($stateProvider, $urlRouterProvider, $locationProvider){
       
+      $locationProvider.html5Mode(true);
+
       $urlRouterProvider.when("/home","/home/dashboard/"); //Default to the dashboard
       // For any unmatched url, send to /dashboard
       /*$urlRouterProvider.otherwise(function($injector, $location){
@@ -31,27 +33,66 @@ config(function($stateProvider, $urlRouterProvider){
         })
 
         .state('home.dashboard', {
+            url: "^/overview",
+            views: {
+              'sidebar': {
+                templateUrl: '/dashboard/sidebar'
+//                controller: function($scope){ ... controller stuff just for sidebar view ... }
+              },
+              'content': {
+                templateUrl: '/dashboard',
+                controller: 'DashboardController'
+              }
+            }
+        })
+
+        .state('home.applications', {
+            url: "^/applications",
+            views: {
+              'sidebar': {
+                templateUrl: '/dashboard/sidebar'
+//                controller: function($scope){ ... controller stuff just for sidebar view ... }
+              },
+              'content': {
+                templateUrl: '/dashboard/application',
+                controller: 'ApplicationController'
+              }
+            }
+        })
+
+        .state('home.application', {
+            url: "^/analytics",
+            views: {
+              'sidebar': {
+                templateUrl: '/dashboard/sidebar'
+//                controller: function($scope){ ... controller stuff just for sidebar view ... }
+              },
+              'content': {
+                templateUrl: '/dashboard',
+                controller: 'DashboardController'
+              }
+            }
+        })
+
+        .state('home.inventory', {
             url: "^/dashboard",
-            templateUrl: '/dashboard',
-            controller: 'DashboardController'
+            views: {
+              'sidebar': {
+                templateUrl: '/dashboard/sidebar'
+//                controller: function($scope){ ... controller stuff just for sidebar view ... }
+              },
+              'content': {
+                templateUrl: '/dashboard',
+                controller: 'DashboardController'
+              }
+            }
         })
-        .state('dashboard.sidebar', {
-            url: "/dashboard",
-            templateUrl: '/dashboard',
-            controller: 'DashboardController'
-        })
 
-          .state('revenue', {
-              url: "/revenue",
-              templateUrl: '/dashboard/revenue',
-              controller: 'RevenueController'
-          })
+    });
 
-    }).
-
-
+/*
   config([ '$locationProvider' , function($locationProvider) {
-   /* $routeProvider
+    $routeProvider
       .when('/', {
         templateUrl: '/dashboard',
         controller: 'DashboardController'
@@ -134,8 +175,9 @@ config(function($stateProvider, $urlRouterProvider){
       })
       .otherwise({redirectTo:"/"});
 
-*/
+
     $locationProvider.html5Mode(true);
     }
   ])
 ;
+*/

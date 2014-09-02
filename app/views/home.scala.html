@@ -1,6 +1,7 @@
         <div class="wrapper row-offcanvas row-offcanvas-left">
             <!-- Left side column. contains the logo and sidebar -->
-            @views.html.sidebar.render()
+            /*@views.html.sidebar.render()*/
+            <div ui-view="sidebar"></div>
 
             <!-- Right side column. Contains the navbar and content of the page -->
             <aside class="right-side">
@@ -11,7 +12,7 @@
 
                 <!-- Main content -->
                 <section class="content">
-                  <div ui-view></div>
+                  <div ui-view="content"></div>
                 </section>
 
             </aside>

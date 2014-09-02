@@ -130,5 +130,8 @@ class DashboardController @Inject()(
     Ok(views.html.settings())
   }
 
+  def sidebar = HasToken() {token => userId => implicit request =>
+    Ok(views.html.sidebar())
+  }
 
 }

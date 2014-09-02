@@ -4,7 +4,13 @@
 
 # root
 GET     /                             @controllers.dashboard.DashboardController.index
+GET     /sidebar                      @controllers.dashboard.DashboardController.sidebar
 GET     /bootstrap                    @controllers.dashboard.DashboardController.bootstrapDashboard
+
+# company
+GET     /company                      @controllers.dashboard.DashboardController.inventory
+GET     /inventory/crud               @controllers.dashboard.DashboardController.inventoryCRUD
+GET     /inventory/virtualCurrencies  @controllers.dashboard.DashboardController.inventoryVirtualCurrencies
 
 # inventory
 GET     /inventory                    @controllers.dashboard.DashboardController.inventory
