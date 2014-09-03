@@ -16,6 +16,7 @@
   font-size: 3em;
   max-width: 50%;
   padding-left: 15px;
+  text-align: center;
 }
 
 .kpi hr {
@@ -27,6 +28,7 @@
   padding-left: 15px;
   color: grey;
   font-size: 3em;
+  text-align: center;
 }
 
 .kpi-delta,
