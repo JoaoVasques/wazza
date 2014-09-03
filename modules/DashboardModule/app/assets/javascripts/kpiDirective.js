@@ -14,6 +14,7 @@ dashboard.directive('kpi', ['$location', function($location) {
             '<div class="panel kpi">' +
              '<div class="panel-heading">' +
               '<h2>{{kpi.name}}</h2>' +
+              '<hr>'+
              '</div>'+
              '<div class="row">'+
               '<div class="col-md-6">'+

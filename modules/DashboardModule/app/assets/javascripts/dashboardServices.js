@@ -161,8 +161,6 @@ dashboardServices.factory('GetMainKPIsService', ['$http','$q',
       };
 
       service.getDetailedKPIData = function(companyName, applicationName, start, end, kpiName) {
-        console.log("company - " + companyName);
-        console.log("app - " + applicationName);
         var request = $http({
           url: buildUrl(companyName, applicationName, kpiName, "detail", start, end),
           method: 'GET'
