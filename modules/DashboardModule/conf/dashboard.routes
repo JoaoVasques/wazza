@@ -4,13 +4,8 @@
 
 # root
 GET     /                             @controllers.dashboard.DashboardController.index
-GET     /sidebar                      @controllers.dashboard.DashboardController.sidebar
 GET     /bootstrap                    @controllers.dashboard.DashboardController.bootstrapDashboard
-
-# company
-GET     /company                      @controllers.dashboard.DashboardController.inventory
-GET     /inventory/crud               @controllers.dashboard.DashboardController.inventoryCRUD
-GET     /inventory/virtualCurrencies  @controllers.dashboard.DashboardController.inventoryVirtualCurrencies
+GET     /overview                     @controllers.dashboard.DashboardController.overview
 
 # inventory
 GET     /inventory                    @controllers.dashboard.DashboardController.inventory
@@ -18,6 +13,7 @@ GET     /inventory/crud               @controllers.dashboard.DashboardController
 GET     /inventory/virtualCurrencies  @controllers.dashboard.DashboardController.inventoryVirtualCurrencies
 
 # analytics
+GET     /analytics	                  @controllers.dashboard.DashboardController.analytics
 GET     /arpu		                  @controllers.dashboard.DashboardController.arpu
 GET     /ltv			              @controllers.dashboard.DashboardController.ltv
 GET     /revenue        		      @controllers.dashboard.DashboardController.revenue

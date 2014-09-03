@@ -79,6 +79,10 @@ class DashboardController @Inject()(
 
 
   //analytics
+  def analytics = HasToken() {token => userId => implicit request =>
+    Ok(views.html.analytics.analytics())
+  }
+
   def arpu = HasToken() {token => userId => implicit request =>
     Ok(views.html.analytics.arpu())
   }
@@ -130,8 +134,8 @@ class DashboardController @Inject()(
     Ok(views.html.settings())
   }
 
-  def sidebar = HasToken() {token => userId => implicit request =>
-    Ok(views.html.sidebar())
+  def overview = HasToken() {token => userId => implicit request =>
+    Ok(views.html.overview())
   }
 
 }
