@@ -24,7 +24,7 @@ dashboard.value('KpiData', [
 ]);
 
 dashboard.factory("KpiModel", function() {
-  var kpiModel = function(name, link) {
+  function KpiModel(name, link) {
     this.name = name;
     this.link = link;
     this.delta = 0;
@@ -34,32 +34,28 @@ dashboard.factory("KpiModel", function() {
     this.icon = "glyphicon glyphicon-minus";
   };
 
-  kpiModel.updateKpiValue = function(value) {
-    var positiveKpiUpdate = function() {
-      kpiModel.css = "kpi-delta-positive";
-      kpiModel.icon = "glyphicon glyphicon-arrow-up";
-    };
-
-    var negativeKpiUpdate = function() {
-      kpiModel.css = "kpi-delta-negative";
-      kpiModel.icon = "glyphicon glyphicon-arrow-down";
-    };
-
-    var defaultKpi = function() {
-      kpiModel.css = "kpi-delta";
-      kpiModel.icon = "glyphicon glyphicon-minus";
-    };
-      
-    kpiModel.value = value;
-    (value > 0) ? positiveKpiUpdate() : ((value < 0) ? negativeKpiUpdate(): defaultKpi());
+  KpiModel.prototype = {
+    updateKpiValue: function(value, delta) {
+      this.value = value;
+      this.delta = delta;
+      if(this.value > 0) {
+        this.css = "kpi-delta-positive";
+        this.icon = "glyphicon glyphicon-arrow-up";
+      } else if(this.value < 0){
+        this.css = "kpi-delta-negative";
+        this.icon = "glyphicon glyphicon-arrow-down";
+      } else {
+        this.css = "kpi-delta";
+        this.icon = "glyphicon glyphicon-minus";
+      }
+    },
+    updateUnitType: function(newType) {
+      this.unitType = newType;
+    }
   };
 
-  return kpiModel;
+  return KpiModel;
 });
-
-dashboard.value("KpiDelta",{css: "kpi-delta", icon: "glyphicon glyphicon-minus"});
-dashboard.value("KpiPositiveDelta", {css: "kpi-delta-positive", icon: "glyphicon glyphicon-arrow-up"});
-dashboard.value("KpiNegativeDelta", {css: "kpi-delta-negative", icon: "glyphicon glyphicon-arrow-down"});
 
 dashboard.controller('DashboardController', [
   '$scope',
@@ -74,9 +70,6 @@ dashboard.controller('DashboardController', [
   'TopbarService',
   'GetMainKPIsService',
   'KpiData',
-  "KpiDelta",
-  "KpiPositiveDelta",
-  "KpiNegativeDelta",
   "DashboardModel",
   "KpiModel",
   "AnchorSmoothScroll",
@@ -93,9 +86,6 @@ dashboard.controller('DashboardController', [
     TopbarService,
     GetMainKPIsService,
     KpiData,
-    KpiDelta,
-    KpiPositiveDelta,
-    KpiNegativeDelta,
     DashboardModel,
     KpiModel,
     AnchorSmoothScroll
@@ -168,20 +158,7 @@ dashboard.controller('DashboardController', [
 
         $scope.initDate = $scope.today;
 
-        var KpiContext = function(name, value, delta, unit, link, css, icon) {
-          this.name = name;
-          this.value = value;
-          this.delta = delta;
-          this.unit = unit;
-          this.link = link;
-          this.css = css;
-          this.icon = icon;
-        };
-
-        $scope.kpis = [];
-
         $scope.updateKPIs = function(){
-          $scope.kpis = [];
           GetMainKPIsService.execute(
             ApplicationStateService.companyName,
             ApplicationStateService.applicationName,
@@ -189,30 +166,14 @@ dashboard.controller('DashboardController', [
             DashboardModel.formatDate($scope.endDate)
             )
             .then(function(results) {
-                _.each(results, function(value, i) {
-                  var delta = value.data.delta
-                  var css = (value.data.delta > 0) ? KpiPositiveDelta.css :
-                        ((value.data.delta < 0) ? KpiNegativeDelta.css : KpiDelta.css);
-
-                  var icon = (value.data.delta > 0) ? KpiPositiveDelta.icon :
-                        ((value.data.delta < 0) ? KpiNegativeDelta.icon : KpiDelta.icon);
-
-                  $scope.kpis.push(
-                      new KpiContext(
-                          KpiData[i].name,
-                          value.data.value,
-                          delta,
-                          KpiData[i].unitType,
-                          KpiData[i].link,
-                          css,
-                          icon
-                      )
-                  )
-              });
+              /** Total Revenue **/
+              $scope.totalRevenue.updateKpiValue(results[0].data.value, results[0].data.delta);
+              /** ARPU **/
+              $scope.arpu.updateKpiValue(results[1].data.value, results[1].data.delta);
             });
         };
 
-        $scope.bootstrapSuccessCallback = function (data) {
+        var bootstrapSuccessCallback = function (data) {
             var push = function (origin, destination) {
                 _.each(origin, function (el) {
                     destination.push(el);
@@ -241,9 +202,9 @@ dashboard.controller('DashboardController', [
             TopbarService.setName("Dashboard");
 
             $scope.updateKPIs();
-        }
+        };
 
-        $scope.bootstrapFailureCallback = function (errorData) {
+        var bootstrapFailureCallback = function (errorData) {
             console.log(errorData);
         };
 
@@ -267,8 +228,8 @@ dashboard.controller('DashboardController', [
 
             BootstrapDashboardService.execute()
                 .then(
-                    $scope.bootstrapSuccessCallback,
-                    $scope.bootstrapFailureCallback);
+                    bootstrapSuccessCallback,
+                    bootstrapFailureCallback);
         };
 
         $scope.switchDetailedView = function(url) {
