@@ -108,12 +108,12 @@ dashboard.controller('DashboardController', [
     /** User KPIs **/
     $scope.ltv = new KpiModel("Life Time Value", "#");
     $scope.payingUsers = new KpiModel("% Paying Users", "#");
-    $scope.todo = new KpiModel("TODO", "#");
+    $scope.todo = new KpiModel("Paying Users Growth", "#");
 
     /** Session KPIs **/
     $scope.purchasesPerSession = new KpiModel("Purchases per Session", "#");
     $scope.avgTimeFirstPurchase = new KpiModel("Avg Time 1st Purchase", "#");
-    $scope.avgTimeBetweenPurchases = new KpiModel("Avg Time Between Purchases", "#");
+    $scope.avgTimeBetweenPurchases = new KpiModel("Avg Time Bet. Purchases", "#");
 
 
       $scope.format = 'dd-MMMM-yyyy';
