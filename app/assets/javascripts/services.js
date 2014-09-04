@@ -52,7 +52,7 @@ angular.module('Wazza.services', []).
 
   factory('TopbarService', ['$rootScope', function ($rootScope) {
         var service = {};
-        service.pagename = 'Dashboard';
+        service.pagename = '';
 
         service.getName = function () {
                 return pagename;

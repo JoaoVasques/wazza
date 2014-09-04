@@ -1,6 +1,6 @@
 'use strict';
 
-dashboard.controller('OverviewController', [
+dashboard.controller('DashboardController', [
   '$scope',
   '$location',
   '$rootScope',
@@ -33,8 +33,9 @@ dashboard.controller('OverviewController', [
     KpiModel,
     AnchorSmoothScroll
   ) {
-
-    TopbarService.setName("Overview");
+    $scope.logout = function(){
+      LoginLogoutService.logout();
+    };
 
     $rootScope.$on('ChangeDashboardSection', function(event, newSection) {
       var eId = newSection.section;
@@ -42,6 +43,21 @@ dashboard.controller('OverviewController', [
       AnchorSmoothScroll.scrollTo(eId);
     });
     
+    /** General KPIs **/
+    $scope.totalRevenue = new KpiModel("Total Revenue", "/revenue");
+    $scope.arpu = new KpiModel("Avg Revenue Per User", "/arpu");
+    $scope.avgRevSession = new KpiModel("Avg Revenue per Session", "#");
+    
+    /** User KPIs **/
+    $scope.ltv = new KpiModel("Life Time Value", "#");
+    $scope.payingUsers = new KpiModel("% Paying Users", "#");
+    $scope.todo = new KpiModel("TODO", "#");
+
+    /** Session KPIs **/
+    $scope.purchasesPerSession = new KpiModel("Purchases per Session", "#");
+    $scope.avgTimeFirstPurchase = new KpiModel("Avg Time 1st Purchase", "#");
+    $scope.avgTimeBetweenPurchases = new KpiModel("Avg Time Between Purchases", "#");
+
 
       $scope.format = 'dd-MMMM-yyyy';
 
@@ -126,6 +142,7 @@ dashboard.controller('OverviewController', [
             );
 
             ApplicationStateService.updateCompanyName(data.data.companyName);
+            TopbarService.setName("Dashboard");
 
             $scope.updateKPIs();
         };

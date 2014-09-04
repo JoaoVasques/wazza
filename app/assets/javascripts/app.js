@@ -131,7 +131,8 @@ config(function($stateProvider, $urlRouterProvider, $locationProvider){
       //not available yet
         .state('home.notavailableyet', {
             url: "^/notavailableyet",
-            templateUrl : '/notavailableyet'
+            templateUrl : '/notavailableyet',
+            controller: 'NotAvailableYetController'
         })
 
     });
