@@ -1,12 +1,13 @@
 .kpi {
   max-height: 300px;
   font-size: 100%;
-  padding-left: 15px;
+  //padding-left: 15px;
   padding-bottom: 15px;
 
 }
 
 .kpi h2 {
+  text-align: center;
   color: #6C7A89;
 }
 
@@ -14,17 +15,27 @@
   color: #2574A9;
   font-size: 3em;
   max-width: 50%;
+  padding-left: 15px;
+  text-align: center;
+}
+
+.kpi hr {
+  margin-top: 0px;
+  margin-bottom: 0px;
 }
 
 .kpi .delta {
+  padding-left: 15px;
   color: grey;
   font-size: 3em;
+  text-align: center;
 }
 
 .kpi-delta,
 .kpi-delta-positive,
 .kpi-delta-negative {
   font-size: 3em;
+  padding-left: 15px;
 }
 
 .kpi-delta {

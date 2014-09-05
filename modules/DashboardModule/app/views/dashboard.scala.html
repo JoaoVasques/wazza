@@ -33,32 +33,45 @@ items: List[models.application.Item]
             </span>
           </p>
       </div class="col-md-4">
-        <button type="button" class="btn btn-success" ng-click="updateKPIs()">Update</button>
+        <button type="button" class="btn btn-warning" ng-click="updateKPIs()">Update</button>
       <div>
   </div>
-  <div class="row kpi">
-    <div class="col-md-4 col-lg-4" ng-repeat="kpi in kpis">
-      <div class="panel kpi">
-        <div class="panel-heading">
-          <h2>{{kpi.name}}</h2>
-        </div>
-        <div class="row">
-          <div class="col-md-6">
-            <div class="kpi value">{{kpi.unit}}{{kpi.value}}</div>
-          </div>
-          <div class="col-md-6">
-            <div ng-class="kpi.css">
-              <span ng-class="kpi.icon"></span> {{kpi.delta}}%
-            </div>
-          </div>
-          <div class="col-md-12 kpi link">
-            <button type="button" ng-click="switchDetailedView(kpi.link)" class="btn btn-lg btn-info">More info</button>
-          </div>
-        </div>
+
+  <!-- General KPIs -->
+  <div class="panel panel-kpi-container">
+    <div class="panel-heading" id="general"><i class="fa fa-money"></i> General </div>
+    <div class="panel-body">
+      <div class="row kpi">
+        <kpi info="totalRevenue"></kpi>
+        <kpi info="arpu"></kpi>
+        <kpi info="avgRevSession"></kpi>
       </div>
     </div>
   </div>
-</div>
+
+    <!-- User KPIs -->
+  <div class="panel panel-kpi-container">
+    <div class="panel-heading" id="users"><i class="fa fa-user"></i> User</div>
+    <div class="panel-body">
+      <div class="row kpi">
+        <kpi info="ltv"></kpi>
+        <kpi info="payingUsers"></kpi>
+        <kpi info="todo"></kpi>
+      </div>
+    </div>
+  </div>
+
+    <!-- Session KPIs -->
+  <div class="panel panel-kpi-container">
+    <div class="panel-heading" id="sessions"><i class="fa fa-clock-o"></i> Session</div>
+    <div class="panel-body">
+      <div class="row kpi">
+        <kpi info="purchasesPerSession"></kpi>
+        <kpi info="avgTimeFirstPurchase"></kpi>
+        <kpi info="avgTimeBetweenPurchases"></kpi>
+      </div>
+    </div>
+  </div>
 
 } else {
   <h2>It seems you have not registered any application yet.</h2>
