@@ -24,12 +24,10 @@ application.controller('AppController', [
     $scope.authOK = false;
 
     $scope.$on("LOGIN_SUCCESS", function(event, data){
-      document.body.className = "skin-blue";
       $scope.authOK = true;
     });
 
     $scope.$on("LOGOUT_SUCCESS", function(event, url){
-      document.body.className = "skin-blue login-screen";
       $scope.authOK = false;
       $state.go(url.value);
     });

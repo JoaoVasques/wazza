@@ -20,7 +20,9 @@ dashboard.value('KpiData', [
     delta: 0,
     unitType: "€"
   }
+
   //TODO: all other metrics
+
 ]);
 
 dashboard.factory("KpiModel", function() {

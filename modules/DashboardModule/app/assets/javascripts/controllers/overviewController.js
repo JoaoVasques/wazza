@@ -13,7 +13,6 @@ dashboard.controller('OverviewController', [
   'TopbarService',
   'GetMainKPIsService',
   'KpiData',
-  "DashboardModel",
   "KpiModel",
   "AnchorSmoothScroll",
   function (
@@ -29,12 +28,12 @@ dashboard.controller('OverviewController', [
     TopbarService,
     GetMainKPIsService,
     KpiData,
-    DashboardModel,
     KpiModel,
     AnchorSmoothScroll
   ) {
 
     TopbarService.setName("Overview");
+
 
         var bootstrapSuccessCallback = function (data) {
             var push = function (origin, destination) {
@@ -62,8 +61,6 @@ dashboard.controller('OverviewController', [
             );
 
             ApplicationStateService.updateCompanyName(data.data.companyName);
-
-            $scope.updateKPIs();
         };
 
         var bootstrapFailureCallback = function (errorData) {
@@ -92,10 +89,6 @@ dashboard.controller('OverviewController', [
                 .then(
                     bootstrapSuccessCallback,
                     bootstrapFailureCallback);
-        };
-
-        $scope.switchDetailedView = function(url) {
-          $location.path(url);
         };
 
         $scope.bootstrapModule();
