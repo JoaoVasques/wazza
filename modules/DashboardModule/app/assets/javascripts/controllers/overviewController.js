@@ -32,9 +32,6 @@ dashboard.controller('OverviewController', [
     AnchorSmoothScroll
   ) {
 
-    TopbarService.setName("Overview");
-
-
         var bootstrapSuccessCallback = function (data) {
             var push = function (origin, destination) {
                 _.each(origin, function (el) {
@@ -93,5 +90,6 @@ dashboard.controller('OverviewController', [
 
         $scope.bootstrapModule();
 
+        TopbarService.setName("Overview");
     }]
 );

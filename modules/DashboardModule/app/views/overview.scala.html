@@ -2,16 +2,31 @@
 <div ng-controller="DashboardController">
 
   <div class="row kpi">
-    <div class="col-md-4 col-lg-4" ng-repeat="app in apps">
+    <div class="col-md-4 col-lg-4" ng-repeat="app in applicationsList">
       <div class="panel kpi">
         <div class="panel-heading">
-          <h2>{{app.name}}</h2>
+          <h2>{{app}}</h2>
         </div>
         <div class="row">
-          <div class="col-md-6">
+          <div class="col-md-2">
+            <h4>Revenue</h4>
+          </div>
+          <div class="col-md-4">
             <div class="kpi value">{{app.unit}}{{app.value}}</div>
           </div>
-          <div class="col-md-6">
+          <div class="col-md-4">
+            <div ng-class="kpi.css">
+              <span ng-class="kpi.icon"></span> {{app.delta}}%
+            </div>
+          </div>
+        <div class="row">
+          <div class="col-md-2">
+            <h4>LTV</h4>
+          </div>
+          <div class="col-md-4">
+            <div class="kpi value">{{app.unit}}{{app.value}}</div>
+          </div>
+          <div class="col-md-4">
             <div ng-class="kpi.css">
               <span ng-class="kpi.icon"></span> {{app.delta}}%
             </div>
