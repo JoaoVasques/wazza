@@ -64,5 +64,25 @@ angular.module('Wazza.services', []).
         };
 
         return service;
-    }])
+    }]).
+
+
+    factory('DateModel', function() {
+      var model = function() {
+        this.startDate = new Date();
+        this.endDate = new Date();
+      };
+
+      model.initDateInterval = function() {
+        this.startDate= new Date(moment().subtract('days', 7));
+        this.endDate = new Date();
+      };
+
+      model.formatDate = function(date) {
+        return moment(date).format('DD-MM-YYYY');
+      };
+        
+      return model;
+    })
 ;
+

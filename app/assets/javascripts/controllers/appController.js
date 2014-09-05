@@ -47,7 +47,7 @@ application.controller('AppController', [
     });
 
     //current page related
-    $scope.page = "Dashboard";
+    $scope.page = "Overview";
 
     $scope.$on("PAGE_UPDATED", function(){
       $scope.page = TopbarService.getName();

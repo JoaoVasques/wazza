@@ -8,12 +8,12 @@
     <!-- Header Navbar: style can be found in header.less -->
     <nav class="navbar navbar-static-top" role="navigation">
         <!-- Sidebar toggle button-->
-        <!--a href="#" class="navbar-btn sidebar-toggle" data-toggle="offcanvas" role="button">
+        <a href="#" class="navbar-btn sidebar-toggle" data-toggle="offcanvas" role="button">
             <span class="sr-only">Toggle navigation</span>
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
-        </a-->
+        </a>
         <div class="navbar-right">
             <ul class="nav navbar-nav">
               <li class="dropdown tasks-menu">
@@ -46,35 +46,8 @@
                         <span>{{userInfo.name}} <i class="caret"></i></span>
                     </a>
                     <ul class="dropdown-menu">
-                        <!-- User image -->
-                        <li class="user-header bg-light-blue">
-                            <img src="https://scontent-a-lhr.xx.fbcdn.net/hphotos-prn1/t1.0-9/p526x296/10313730_10202032360951646_6599789807152582529_n.jpg" class="img-circle" alt="User Image" />
-                            <p>
-                                {{userInfo.name}} - Web Developer
-                                <small>Member since Nov. 2012</small>
-                            </p>
-                        </li>
-                        <!-- Menu Body -->
-                        <li class="user-body">
-                            <div class="col-xs-4 text-center">
-                                <a href="/settings">Settings</a>
-                            </div>
-                            <div class="col-xs-4 text-center">
-                                <a href="#">Sales</a>
-                            </div>
-                            <div class="col-xs-4 text-center">
-                                <a href="#">Friends</a>
-                            </div>
-                        </li>
-                        <!-- Menu Footer-->
-                        <li class="user-footer">
-                            <div class="pull-left">
-                                <a href="#" class="btn btn-default btn-flat">Profile</a>
-                            </div>
-                            <div class="pull-right">
-                                <a href="#" ng-click="logout()" class="btn btn-default btn-flat">Sign out</a>
-                            </div>
-                        </li>
+                        <a ui-sref="home.notavailableyet" class="btn btn-default btn-flat" style="color:black">Settings</a>
+                        <a ng-click="logout()" class="btn btn-default btn-flat" style="color:black">Sign out</a>
                     </ul>
                 </li>
             </ul>

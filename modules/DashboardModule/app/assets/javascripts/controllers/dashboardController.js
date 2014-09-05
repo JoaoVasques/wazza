@@ -13,7 +13,7 @@ dashboard.controller('DashboardController', [
   'TopbarService',
   'GetMainKPIsService',
   'KpiData',
-  "DashboardModel",
+  "DateModel",
   "KpiModel",
   "AnchorSmoothScroll",
   function (
@@ -29,13 +29,10 @@ dashboard.controller('DashboardController', [
     TopbarService,
     GetMainKPIsService,
     KpiData,
-    DashboardModel,
+    DateModel,
     KpiModel,
     AnchorSmoothScroll
   ) {
-    $scope.logout = function(){
-      LoginLogoutService.logout();
-    };
 
     $rootScope.$on('ChangeDashboardSection', function(event, newSection) {
       var eId = newSection.section;
@@ -57,56 +54,14 @@ dashboard.controller('DashboardController', [
     $scope.purchasesPerSession = new KpiModel("Purchases per Session", "#");
     $scope.avgTimeFirstPurchase = new KpiModel("Avg Time 1st Purchase", "#");
     $scope.avgTimeBetweenPurchases = new KpiModel("Avg Time Between Purchases", "#");
-
-
-      $scope.format = 'dd-MMMM-yyyy';
-
-        $scope.today = function() {
-          DashboardModel.initDateInterval();
-          $scope.beginDate = DashboardModel.startDate;
-          $scope.endDate = DashboardModel.endDate;
-        };
-        $scope.today();
-
-        // Disable weekend selection
-        $scope.disabled = function(date, mode) {
-          return ( mode === 'day' && ( date.getDay() === 0 || date.getDay() === 6 ) );
-        };
-
-        $scope.toggleMin = function() {
-          $scope.minDate = moment().subtract('years', 1).format('d-M-YYYY');
-          $scope.endDateMin = $scope.beginDate;
-        };
-        $scope.toggleMin();
-
-        $scope.updateEndDateMin = function(){
-          $scope.endDateMin = $scope.beginDate;
-        };
-
-        $scope.maxDate = new Date();
-
-        $scope.openBeginDate = function($event) {
-          $event.preventDefault();
-          $event.stopPropagation();
-
-          $scope.beginDateOpened = true;
-        };
-
-        $scope.openEndDate = function($event) {
-          $event.preventDefault();
-          $event.stopPropagation();
-
-          $scope.endDateOpened = true;
-        };
-
-        $scope.initDate = $scope.today;
+    
 
         $scope.updateKPIs = function(){
           GetMainKPIsService.execute(
             ApplicationStateService.companyName,
             ApplicationStateService.applicationName,
-            DashboardModel.formatDate($scope.beginDate),
-            DashboardModel.formatDate($scope.endDate)
+            DateModel.formatDate($scope.beginDate),
+            DateModel.formatDate($scope.endDate)
             )
             .then(function(results) {
               /** Total Revenue **/
