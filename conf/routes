@@ -4,7 +4,6 @@
 
 # Home page
 GET     /                     @controllers.Application.index
-GET     /home                 @controllers.Application.home
 GET		/notavailableyet	  @controllers.Application.notavailableyet
 GET     /login                @controllers.LoginLogoutController.login
 POST    /login                @controllers.LoginLogoutController.authenticate
