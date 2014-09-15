@@ -7,29 +7,13 @@ dashboardServices.value("RevenueUrlType", {
     total: "total",
     detailed: ""
 });
+
 dashboardServices.value("ArpuUrlType", {
     kpiType: "arpu",
     total: "total",
     detailed: ""
 });
 
-dashboardServices.factory('DashboardModel', function() {
-  var model = function() {
-    this.startDate = new Date();
-    this.endDate = new Date();
-  };
-
-  model.initDateInterval = function() {
-    this.startDate= new Date(moment().subtract('days', 7));
-    this.endDate = new Date();
-  };
-
-  model.formatDate = function(date) {
-    return moment(date).format('DD-MM-YYYY');
-  };
-    
-  return model;
-});
 
 dashboardServices.factory('AnchorSmoothScroll', function() {
 
@@ -172,40 +156,6 @@ dashboardServices.factory('GetMainKPIsService', ['$http','$q',
       };
 
       return service;
-}]);
-
-dashboardServices.factory('ApplicationStateService', ['$rootScope',
-    function ($rootScope) {
-        var service = {};
-        service.applicationName = "";
-        service.companyName = "";
-        service.applicationsList = [];
-        service.userInfo = {
-            name: "",
-            email: ""
-        };
-
-        service.updateApplicationName = function (newName) {
-            service.applicationName = newName;
-            $rootScope.$broadcast("APPLICATION_NAME_UPDATED");
-        };
-
-        service.updateCompanyName = function(newName) {
-            service.companyName = newName;
-            $rootScope.$broadcast("COMPANY_NAME_UPDATED");
-        };
-
-        service.updateApplicationsList = function (newList) {
-            service.applicationsList = newList.slice(0);
-            $rootScope.$broadcast("APPLICATIONS_LIST_UPDATED");
-        };
-
-        service.updateUserInfo = function (newInfo) {
-            service.userInfo = newInfo;
-            $rootScope.$broadcast("USER_INFO_UPDATED");
-        };
-
-        return service;
 }]);
 
 dashboardServices.factory('FetchItemsService', ['$http', '$q',

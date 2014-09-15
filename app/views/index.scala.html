@@ -1,11 +1,15 @@
 @(title: String = "Wazza - In-App Purchases made simple")
 
 <!DOCTYPE html>
+<!--[if IE 8]>          <html class="ie ie8"> <![endif]-->
+<!--[if IE 9]>          <html class="ie ie9"> <![endif]-->
+<!--[if gt IE 9]><!-->  <html> <!--<![endif]-->
 
 @javascripts = {
   <script src="@routes.WebJarAssets.at(WebJarAssets.locate("1.2.20/angular.min.js"))"></script>
   <script src="@routes.WebJarAssets.at(WebJarAssets.locate("1.2.20/angular-route.min.js"))"></script>
   <script src="@routes.WebJarAssets.at(WebJarAssets.locate("1.2.20/angular-cookies.min.js"))"></script>
+  <script src="@routes.WebJarAssets.at(WebJarAssets.locate("angular-ui-router.min.js"))"></script>
   <script defer src="@routes.WebJarAssets.at(WebJarAssets.locate("underscore-min.js"))"></script>
   <script defer src="@routes.WebJarAssets.at(WebJarAssets.locate("ui-bootstrap.js"))"></script>
   <script defer src="@routes.WebJarAssets.at(WebJarAssets.locate("ui-bootstrap-tpls.min.js"))"></script>
@@ -15,25 +19,20 @@
   <script defer src="@routes.Assets.at("javascripts/app.js")"></script>
   <script defer src="@routes.Assets.at("javascripts/services.js")"></script>
   <script defer src="@routes.Assets.at("javascripts/controllers.js")"></script>
+  <script defer src="@routes.Assets.at("javascripts/controllers/appController.js")"></script>
+  <script defer src="@routes.Assets.at("javascripts/controllers/loginController.js")"></script>
   <script defer src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
   <script defer src="@routes.WebJarAssets.at(WebJarAssets.locate("bootstrap.min.js"))"></script>
   <script defer src="@routes.WebJarAssets.at(WebJarAssets.locate("1.0.1-beta.2/Chart.min.js"))"></script>
   <script defer src="@routes.Assets.at("javascripts/chartjs-directive.js")"></script>
   
-  <!-- controllers -->
+  <!-- external controllers -->
   @views.html.applicationJavascripts.render()
-
   @views.html.userJavascripts.render()
-
   @views.html.securityJavascripts.render()
-
   @views.html.dashboardJavascripts.render()
 
   <!-- Charts -->
-  <script defer src="http://code.highcharts.com/highcharts.js"></script>
-
-  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js"></script>
-
   <script defer src="@routes.Assets.at("line-chart.min.js")"></script>
 
   <!-- AdminLTE App -->
@@ -53,7 +52,10 @@
   <!-- Bootstrap core CSS -->
   <link rel="stylesheet" type="text/css" media="screen" href="@routes.WebJarAssets.at(WebJarAssets.locate("bootstrap.min.css"))">
 
-  <link rel="stylesheet" type="text/css" media="screen" href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css">
+  <link rel="stylesheet" href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,300italic,400italic,600,600italic,700,700italic,800,800italic' type='text/css'>
+  <link rel="stylesheet" href='http://fonts.googleapis.com/css?family=Raleway:400,100,200,300,500,600,700,800,900' type='text/css'>
+  <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css">
+
   <link rel="stylesheet" type="text/css" media="screen" href='http://fonts.googleapis.com/css?family=Titillium+Web:400,600,300,200&subset=latin,latin-ext'>
   <link rel="shortcut icon" href="@routes.Assets.at("images/wazza_icon_black-01.png")">
 
@@ -62,13 +64,9 @@
   <link rel="stylesheet" type="text/css" media="screen" href="http://code.ionicframework.com/ionicons/1.4.1/css/ionicons.min.css"/>
   <!-- Theme style -->
   <link rel="stylesheet" type="text/css" media="screen" href="@routes.Assets.at("stylesheets/AdminLTE.css")" />
-
   <link rel="stylesheet" type="text/css" media="screen" href="@routes.Assets.at("stylesheets/appEditor.css")">
-
   <link rel="stylesheet" type="text/css" media="screen" href="@routes.Assets.at("stylesheets/item.css")">
-
-  <link rel="stylesheet" type="text/css" media="screen" href="@routes.Assets.at("stylesheets/dashboard.css")">
-  
+  <link rel="stylesheet" type="text/css" media="screen" href="@routes.Assets.at("stylesheets/dashboard.css")">  
   <link rel="stylesheet" type="text/css" media="screen" href="@routes.Assets.at("stylesheets/kpi.css")">
 }
 
@@ -82,69 +80,10 @@
     @stylesheets
     @javascripts
   </head>
-<body class="login-screen" ng-controller="AppController">
+  <body ng-controller="AppController" class="skin-blue">
 
-      @views.html.navigationBar.render()
-      <section ng-hide="authOK">
-        <div class="bg-black" ng-controller="LoginController">
-            <div class="row text-center">
-              <br><br><br><br>
-              <img src="@routes.Assets.at("images/wazza_lettering_white-01.png")"/>
-            </div>
-
-                <div class="form-box" id="login-box">
-                    <div class="header">Sign In</div>
-                    <form accept-charset="UTF-8" role="form" method="post" ng-submit="signIn()">
-                        <fieldset class="body bg-gray">
-                          <div class="form-group has-error" ng-class="loginForm.css">
-                            <label class="control-label" ng-show="errors.show" for="loginEmail">{{errors.content}}</label>
-                            <input id="loginEmail" class="form-control" ng-model="loginForm.email" placeholder="E-mail" name="email" type="email" required>
-                          </div>
-                          <div class="form-group has-error" ng-class="loginForm.css">
-                            <label class="control-label" ng-show="errors.show" for="loginPassword">{{errors.content}}</label>
-                            <input id="loginPassword" class="form-control" ng-model="loginForm.password" placeholder="Password" name="password" type="password" value="" required>
-                          </div>
-                          <!--input class="btn btn-lg btn-success btn-block" type="submit" value="Login"-->
-                        </fieldset>
-                        <div class="footer">
-                            <button type="submit" class="btn bg-olive btn-block" value="Login">Sign me in</button>
-                            <!--a class="btn bg-olive btn-block text-center" href="/register">Register a new membership</a-->
-                        </div>
-                    </form>
-                </div>
-        </div>
-      </section>
-
-      <section ng-show="authOK">
-
-        <div class="wrapper row-offcanvas row-offcanvas-left">
-            <!-- Left side column. contains the logo and sidebar -->
-            @views.html.sidebar.render()
-
-            <!-- Right side column. Contains the navbar and content of the page -->
-            <aside class="right-side">
-                <!-- Content Header (Page header) -->
-                <section class="content-header" ng-controller="NavBarController" ng-model="page">
-                    <h1>
-                        {{page}}
-                        <span ng-show="page === 'Dashboard'">
-                        </span>
-                        <span ng-show="page === 'Analytics'">
-                              <small><a href="/analyticsApp"><!--i class="fa fa-dashboard"></i--> App</a></small>
-                              <small><a href="/analyticsUser"><!--i class="fa fa-dashboard"></i--> User</a></small>
-                              <small><a href="/analyticsRevenue"><!--i class="fa fa-dashboard"></i--> Revenue</a></small>
-                              <small><a href="/analyticsDevice"><!--i class="fa fa-dashboard"></i--> Device</a></small>
-                        </span>
-                </section>
-
-                <!-- Main content -->
-                <section class="content">
-                  <div ng-view></div>
-                </section>
-
-            </aside>
-        </div>
-      </section>
-
+ 	@views.html.navigationBar.render()
+    <div ui-view></div>
+      
   </body>
 </html>

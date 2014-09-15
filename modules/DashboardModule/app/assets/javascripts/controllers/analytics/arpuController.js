@@ -17,7 +17,7 @@ dashboard
   'TopbarService',
   'GetMainKPIsService',
   'LineChartConfiguration',
-  'DashboardModel',
+  'DateModel',
   function (
     $scope,
     $location,
@@ -26,12 +26,12 @@ dashboard
     TopbarService,
     GetKPIService,
     LineChartConfiguration,
-    DashboardModel
+    DateModel
   ) {
     TopbarService.setName("ARPU - Details");
 
-    $scope.beginDate = DashboardModel.startDate;
-    $scope.endDate = DashboardModel.endDate;
+    $scope.beginDate = DateModel.startDate;
+    $scope.endDate = DateModel.endDate;
 
     var KpiId = "arpu";
       
@@ -57,8 +57,8 @@ dashboard
     GetKPIService.getDetailedKPIData(
       ApplicationStateService.companyName,
       ApplicationStateService.applicationName,
-      DashboardModel.formatDate($scope.beginDate),
-      DashboardModel.formatDate($scope.endDate),
+      DateModel.formatDate($scope.beginDate),
+      DateModel.formatDate($scope.endDate),
       KpiId
     ).then(function(results) {
       kpiDataSuccessHandler(results);
