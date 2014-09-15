@@ -36,7 +36,7 @@
                     <span><h5><b>Dashboard</b></h5></span>
                 </a>
             </li>
-            <ul id="collapseDashboard" class="collapse">
+            <ul id="collapseDashboard" class="sidebar-menu collapse">
                 <li class="treeview">
                   <a href="#" ng-click="selectDashboardSection('general')"><i class="fa fa-money"></i> <span> Revenue</span></a>
                 </li>
@@ -55,10 +55,10 @@
                 </a>
             </li>
 
-              <ul id="collapseAnalytics" class="collapse" class="treeview-menu">
+              <ul id="collapseAnalytics" class="sidebar-menu collapse">
                     <li><a href="#"><b>Revenue</b></a></li>
                     <li><a href="/revenue"><i class="fa fa-shopping-cart"></i> Total Revenue</a></li>
-                    <li><a href="/arpu"><i class="fa fa-shopping-cart"></i> Avg Revenue Per User</a></li>
+                    <li><a ui-sref="home.arpu"><i class="fa fa-shopping-cart"></i> Avg Revenue Per User</a></li>
                     <li><a href="#"><i class="fa fa-shopping-cart"></i> Avg Revenue Per Session</a></li>
 
                     <li><a href="#"><b>Users</b></a></li>

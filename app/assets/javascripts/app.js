@@ -63,7 +63,7 @@ config(function($stateProvider, $urlRouterProvider, $locationProvider){
             controller: 'RevenueController'
         })
 
-        .state('home.analytics.arpu', {
+        .state('home.arpu', {
             url: "^/analytics",
             templateUrl: '/dashboard/arpu',
             controller: 'ArpuController'
