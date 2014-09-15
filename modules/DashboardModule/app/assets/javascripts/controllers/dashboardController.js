@@ -107,6 +107,9 @@ dashboard.controller('DashboardController', [
         };
 
         $scope.bootstrapModule = function () {
+
+
+          
             $scope.applicationName = "";
             $scope.applications = [];
             $scope.credentials = {};
