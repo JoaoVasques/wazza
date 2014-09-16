@@ -123,8 +123,7 @@ dashboard
     updateTotalValues();
 
     var totalValueHandler = function(data) {
-      $scope.context.model.value = data.data.value;
-      $scope.context.model.delta = data.data.delta;
+      $scope.context.model.updateKpiValue(data.data.value, data.data.delta);
     };
       
     var kpiDataSuccessHandler = function(data) {
