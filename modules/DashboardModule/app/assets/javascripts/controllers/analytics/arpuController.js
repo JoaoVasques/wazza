@@ -39,11 +39,6 @@ dashboard
       $scope.endDate = $scope.context.endDate;
     };
     $scope.today();
-
-    // Disable weekend selection
-    $scope.disabled = function(date, mode) {
-      return ( mode === 'day' && ( date.getDay() === 0 || date.getDay() === 6 ) );
-    };
     
     $scope.toggleMin = function() {
       $scope.minDate = moment().subtract('years', 1).format('d-M-YYYY');
@@ -73,46 +68,59 @@ dashboard
       
     var KpiId = "arpu";
       
-    $scope.updateChart = function(name, labels, values) {
+    $scope.updateChart = function(name) {
       $scope.chart = {
         "data": {
-          "labels": labels,
+          "labels": $scope.context.labels,
           "datasets": [
             {
               fillColor : "rgba(151,187,205,0.5)",
               strokeColor : "rgba(151,187,205,1)",
               pointColor : "rgba(151,187,205,1)",
               pointStrokeColor : "#fff",
-              data : values
+              data : $scope.context.values
             }
           ]
         },
         "options": {"width": 800}
       };
     };
-    $scope.updateChart("Average Revenue Per User", [],[]);
-      
-    GetMainKPIsService.getDetailedKPIData(
-      ApplicationStateService.companyName,
-      ApplicationStateService.applicationName,
-      DateModel.formatDate($scope.beginDate),
-      DateModel.formatDate($scope.endDate),
-      KpiId
-    ).then(function(results) {
-      kpiDataSuccessHandler(results);
-    },function(err) {console.log(err);}
-    );
 
-    GetMainKPIsService.getTotalKpiData(
-      ApplicationStateService.companyName,
-      ApplicationStateService.applicationName,
-      DateModel.formatDate($scope.beginDate),
-      DateModel.formatDate($scope.endDate),
-      KpiId
-    ).then(function(results) {
-      totalValueHandler(results);
-    },function(err) {console.log(err);}
-    );
+    $scope.updateChart("Average Revenue Per User");
+
+    $scope.updateOnChangedDate = function() {
+      updateChartData();
+      updateTotalValues();
+    };
+
+    var updateChartData = function() {
+      GetMainKPIsService.getDetailedKPIData(
+        ApplicationStateService.companyName,
+        ApplicationStateService.applicationName,
+        DashboardModel.formatDate($scope.beginDate),
+        DashboardModel.formatDate($scope.endDate),
+        KpiId
+      ).then(function(results) {
+        kpiDataSuccessHandler(results);
+      },function(err) {console.log(err);}
+      );
+    };
+
+    var updateTotalValues = function() {
+      GetMainKPIsService.getTotalKpiData(
+        ApplicationStateService.companyName,
+        ApplicationStateService.applicationName,
+        DashboardModel.formatDate($scope.beginDate),
+        DashboardModel.formatDate($scope.endDate),
+        KpiId
+      ).then(function(results) {
+        totalValueHandler(results);
+      },function(err) {console.log(err);}
+      );
+    };
+
+    updateChartData();
+    updateTotalValues();
 
     var totalValueHandler = function(data) {
       $scope.context.model.value = data.data.value;
@@ -120,13 +128,7 @@ dashboard
     };
       
     var kpiDataSuccessHandler = function(data) {
-      var labels = [];
-      var values = [];
-      _.each(data.data, function(element) {
-        labels.push(element.day);
-        values.push(element.val);
-      });
-
-      $scope.updateChart("Average Revenue Per User", labels, values);
+      $scope.context.updateChartData(data);
+      $scope.updateChart("Average Revenue Per User");
     };
 }]);

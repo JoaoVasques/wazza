@@ -36,6 +36,7 @@ dashboardServices.factory('DashboardModel', function() {
 });
 >>>>>>> Updates Arpu controller with model and logic to change date
 **/
+
 dashboardServices.factory('AnchorSmoothScroll', function() {
 
   var service = {};

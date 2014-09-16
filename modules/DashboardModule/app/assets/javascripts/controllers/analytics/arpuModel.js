@@ -14,9 +14,14 @@ dashboard.factory('ArpuModel', ['KpiModel', function(KpiModel) {
       this.beginDate = begin;
       this.endDate = end;
     },
-    updateChartData: function(newLabels, newValues) {
-      this.labels = newLabels;
-      this.values = newValues;
+    updateChartData: function(chartData) {
+      var _this = this;
+      this.labels = [];
+      this.values = [];
+      _.each(chartData.data, function(el) {
+        _this.labels.push(el.day);
+        _this.values.push(el.val);
+      });
     }
   };
     
