@@ -97,8 +97,8 @@ dashboard
       GetMainKPIsService.getDetailedKPIData(
         ApplicationStateService.companyName,
         ApplicationStateService.applicationName,
-        DashboardModel.formatDate($scope.beginDate),
-        DashboardModel.formatDate($scope.endDate),
+        DateModel.formatDate($scope.beginDate),
+        DateModel.formatDate($scope.endDate),
         KpiId
       ).then(function(results) {
         kpiDataSuccessHandler(results);
@@ -110,8 +110,8 @@ dashboard
       GetMainKPIsService.getTotalKpiData(
         ApplicationStateService.companyName,
         ApplicationStateService.applicationName,
-        DashboardModel.formatDate($scope.beginDate),
-        DashboardModel.formatDate($scope.endDate),
+        DateModel.formatDate($scope.beginDate),
+        DateModel.formatDate($scope.endDate),
         KpiId
       ).then(function(results) {
         totalValueHandler(results);
