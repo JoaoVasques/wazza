@@ -18,7 +18,7 @@ dashboard
   'GetMainKPIsService',
   'LineChartConfiguration',
   'DateModel',
-  'DetailedKpiModel',
+  'ArpuModel',
   function (
     $scope,
     $location,
@@ -28,10 +28,10 @@ dashboard
     GetMainKPIsService,
     LineChartConfiguration,
     DateModel,
-    DetailedKpiModel
+    ArpuModel
   ) {
     TopbarService.setName("Average Revenue Per User");
-    $scope.context = new DetailedKpiModel(DateModel.startDate, DateModel.endDate, "Average Revenue Per User");
+    $scope.context = new ArpuModel(DateModel.startDate, DateModel.endDate);
     
     $scope.format = 'dd-MMMM-yyyy';
     $scope.today = function() {

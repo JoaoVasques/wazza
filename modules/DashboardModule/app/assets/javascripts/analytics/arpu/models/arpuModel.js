@@ -1,15 +1,15 @@
 'use strict';
 
-dashboard.factory('DetailedKpiModel', ['KpiModel', function(KpiModel) {
-  function DetailedKpiModel(beginDate, endDate, name) {
+dashboard.factory('ArpuModel', ['KpiModel', function(KpiModel) {
+  function ArpuModel(beginDate, endDate) {
     this.beginDate = beginDate;
     this.endDate = endDate;
     this.labels = [];
     this.values = [];
-    this.model = new KpiModel(name, "");
+    this.model = new KpiModel("Average Revenue Per User", "");
   };
 
-  DetailedKpiModel.prototype = {
+  ArpuModel.prototype = {
     updateDates: function(begin, end) {
       this.beginDate = begin;
       this.endDate = end;
@@ -25,5 +25,5 @@ dashboard.factory('DetailedKpiModel', ['KpiModel', function(KpiModel) {
     }
   };
     
-  return DetailedKpiModel;
+  return ArpuModel;
 }]);
