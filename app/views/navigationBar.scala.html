@@ -22,10 +22,11 @@
                         <i class="glyphicon glyphicon-user"></i>
                         <span>{{userInfo.name}} <i class="caret"></i></span>
                     </a>
-                    <ul class="dropdown-menu">
-                        <a ui-sref="home.notavailableyet" class="btn btn-default btn-flat" style="color:black">Settings</a>
-                        <a ng-click="logout()" class="btn btn-default btn-flat" style="color:black">Sign out</a>
-                    </ul>
+                      <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+                        <li role="presentation"><a ui-sref="home.notavailableyet" class="btn btn-default btn-flat" style="color:black">Settings</a></li>
+                        <li role="presentation" class="divider"></li>
+                        <li role="presentation"><a ng-click="logout()" class="btn btn-default btn-flat" style="color:black">Sign out</a></li>
+                      </ul>
                 </li>
             </ul>
         </div>
