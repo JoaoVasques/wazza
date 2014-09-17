@@ -147,6 +147,36 @@ class AnalyticsController @Inject()(
       Detailed)
   }
 
+  def getTotalAverageRevenuePerSession(
+    companyName: String,
+    applicationName: String,
+    startDateStr: String,
+    endDateStr: String
+  ) = Action.async {implicit request =>
+    executeRequest(
+      companyName,
+      applicationName,
+      startDateStr,
+      endDateStr,
+      analyticsService.getTotalAverageRevenuePerSession,
+      Total)
+  }
+
+  /**def getDetailedAverageRevenuePerSession(
+    companyName: String,
+    applicationName: String,
+    startDateStr: String,
+    endDateStr: String
+  ) = Action.async {implicit request =>
+    executeRequest(
+      companyName,
+      applicationName,
+      startDateStr,
+      endDateStr,
+      analyticsService.getAverageRevenuePerSession,
+      Total)
+  }**/
+
   def getTotalRevenue(
     companyName: String,
     applicationName: String,
@@ -159,7 +189,7 @@ class AnalyticsController @Inject()(
       startDateStr,
       endDateStr,
       analyticsService.getTotalRevenue,
-      Total)
+      Detailed)
   }
 
   def getDetailedTotalRevenue(

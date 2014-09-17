@@ -1,5 +1,13 @@
 'use strict';
 
+dashboard.value("LineChartConfiguration", {
+  fillColor : "rgba(151,187,205,0.5)",
+  strokeColor : "rgba(151,187,205,1)",
+  pointColor : "rgba(151,187,205,1)",
+  pointStrokeColor : "#fff",
+  data: []
+});
+
 dashboard
 .controller('ArpuController', [
   '$scope',
@@ -8,6 +16,7 @@ dashboard
   'ApplicationStateService',
   'TopbarService',
   'GetMainKPIsService',
+  'LineChartConfiguration',
   'DateModel',
   'DetailedKpiModel',
   function (
@@ -17,11 +26,12 @@ dashboard
     ApplicationStateService,
     TopbarService,
     GetMainKPIsService,
+    LineChartConfiguration,
     DateModel,
     DetailedKpiModel
   ) {
     TopbarService.setName("Average Revenue Per User");
-    $scope.context = new DetailedKpiModel(DateModel.startDate, DateModel.endDate, "Average Revenue Per User");
+    $scope.context = new DetailedKpiModel(DateModel.startDate, DateModel.endDate);
     
     $scope.format = 'dd-MMMM-yyyy';
     $scope.today = function() {

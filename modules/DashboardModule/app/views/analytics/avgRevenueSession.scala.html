@@ -1,0 +1,40 @@
+
+
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <div class="col-md-1">
+        <h4>From</h4>
+      </div>
+      <div class="col-md-2">
+          <p class="input-group">
+            <input type="text" class="form-control" ng-change="updateEndDateMin()" show-button-bar="false" datepicker-popup="{{format}}" ng-model="beginDate" is-open="beginDateOpened" min-date="minDate" max-date="maxDate" date-disabled="disabled(date, mode)" ng-required="true" close-text="Close" />
+            <span class="input-group-btn">
+              <button type="button" class="btn btn-default" ng-click="openBeginDate($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+            </span>
+          </p>
+      </div>
+      <div class="col-md-1">
+        <h4>To</h4>
+      </div>
+      <div class="col-md-2">
+          <p class="input-group">
+            <input type="text" class="form-control" show-button-bar="false" datepicker-popup="{{format}}" ng-model="endDate" is-open="endDateOpened" min-date="endDateMin" max-date="maxDate" date-disabled="disabled(date, mode)" ng-required="true" close-text="Close" />
+            <span class="input-group-btn">
+              <button type="button" class="btn btn-default" ng-click="openEndDate($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+            </span>
+          </p>
+      </div class="col-md-2">
+        <button type="button" class="btn btn-warning" ng-click="updateOnChangedDate()">Update</button>
+      <div>
+  </div>
+    </div>
+    <div class="panel-body">
+      <chart value="chart"></chart>
+      <div class="col-md-6">
+        <h1 ng-model="value">{{context.model.value}}<h1>
+      </div>
+      <div class="col-md-6">
+        <h1><span ng-class="context.model.icon"></span> {{context.model.delta}}%</h1>
+      </div>
+      <h2>hello world</h2>
+</div>

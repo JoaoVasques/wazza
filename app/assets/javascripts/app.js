@@ -69,6 +69,12 @@ config(function($stateProvider, $urlRouterProvider, $locationProvider){
             controller: 'ArpuController'
         })
 
+        .state('home.avgRevenueSession', {
+            url: "^/analytics",
+            templateUrl: '/dashboard/avgRevenueSession',
+            controller: 'AvgRevenueSessionController'
+        })
+    
         .state('home.analytics.ltv', {
             url: "^/analytics",
             templateUrl: '/dashboard/ltv',

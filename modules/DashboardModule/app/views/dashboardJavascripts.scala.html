@@ -1,13 +1,22 @@
-<script src="@controllers.dashboard.routes.Assets.at("javascripts/dashboardModule.js")"></script>
-<script src="@controllers.dashboard.routes.Assets.at("javascripts/dashboardServices.js")"></script>
-<script src="@controllers.dashboard.routes.Assets.at("javascripts/kpiDirective.js")"></script>
+<!-- Dashboard -->
+<script src="@controllers.dashboard.routes.Assets.at("javascripts/dashboard/dashboardModule.js")"></script>
+<script src="@controllers.dashboard.routes.Assets.at("javascripts/dashboard/services/dashboardServices.js")"></script>
+<script src="@controllers.dashboard.routes.Assets.at("javascripts/dashboard/controllers/dashboardController.js")"></script>
+<script src="@controllers.dashboard.routes.Assets.at("javascripts/analytics/detailedKpiModel.js")"></script>
+<script src="@controllers.dashboard.routes.Assets.at("javascripts/dashboard/directives/kpiDirective.js")"></script>
+
 <script src="@controllers.dashboard.routes.Assets.at("javascripts/controllers/overviewController.js")"></script>
-<script src="@controllers.dashboard.routes.Assets.at("javascripts/controllers/dashboardController.js")"></script>
 <script src="@controllers.dashboard.routes.Assets.at("javascripts/controllers/campaignsController.js")"></script>
 <script src="@controllers.dashboard.routes.Assets.at("javascripts/controllers/inventoryController.js")"></script>
 <script src="@controllers.dashboard.routes.Assets.at("javascripts/controllers/controllers.js")"></script>
-<script src="@controllers.dashboard.routes.Assets.at("javascripts/controllers/analytics/arpuController.js")"></script>
-<script src="@controllers.dashboard.routes.Assets.at("javascripts/controllers/analytics/arpuModel.js")"></script>
+
+<!-- ARPU -->
+<script src="@controllers.dashboard.routes.Assets.at("javascripts/analytics/arpu/controllers/arpuController.js")"></script>
+
+<!-- Average Revenue Per Session -->
+<script src="@controllers.dashboard.routes.Assets.at("javascripts/analytics/avgRevenueSession/controllers/avgRevenueSessionController.js")"></script>
+
+<!-- Churn -->
 <script src="@controllers.dashboard.routes.Assets.at("javascripts/controllers/analytics/churnController.js")"></script>
 <script src="@controllers.dashboard.routes.Assets.at("javascripts/controllers/analytics/ltvController.js")"></script>
 <script src="@controllers.dashboard.routes.Assets.at("javascripts/controllers/analytics/revenueController.js")"></script>

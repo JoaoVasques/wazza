@@ -134,6 +134,28 @@ class AnalyticsServiceImpl @Inject()(
     promise.future
   }
 
+  def getAverageRevenuePerSession(
+    companyName: String,
+    applicationName: String,
+    start: Date,
+    end: Date
+  ): Future[JsValue] = {
+    val promise = Promise[JsValue]
+    //TODO
+    promise.future
+  }
+
+  def getTotalAverageRevenuePerSession(
+    companyName: String,
+    applicationName: String,
+    start: Date,
+    end: Date
+  ): Future[JsValue] = {
+    val promise = Promise[JsValue]
+    //TODO
+    promise.future
+  }
+
   def getTotalRevenue(
     companyName: String,
     applicationName: String,

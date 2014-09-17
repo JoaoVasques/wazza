@@ -86,7 +86,11 @@ class DashboardController @Inject()(
   def arpu = HasToken() {token => userId => implicit request =>
     Ok(views.html.analytics.arpu())
   }
-  
+
+  def avgRevenueSession = HasToken() {token => userId => implicit request =>
+    Ok(views.html.analytics.avgRevenueSession())
+  }
+
   def churn = HasToken() {token => userId => implicit request =>
     Ok(views.html.analytics.churn())
   }

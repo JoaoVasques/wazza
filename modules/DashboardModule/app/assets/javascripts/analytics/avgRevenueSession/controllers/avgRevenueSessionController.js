@@ -1,7 +1,7 @@
 'use strict';
 
 dashboard
-.controller('ArpuController', [
+.controller('AvgRevenueSessionController', [
   '$scope',
   '$location',
   '$rootScope',
@@ -20,8 +20,8 @@ dashboard
     DateModel,
     DetailedKpiModel
   ) {
-    TopbarService.setName("Average Revenue Per User");
-    $scope.context = new DetailedKpiModel(DateModel.startDate, DateModel.endDate, "Average Revenue Per User");
+    TopbarService.setName("Average Revenue Per Session");
+    $scope.context = new DetailedKpiModel(DateModel.startDate, DateModel.endDate, "Average Revenue Per Session");
     
     $scope.format = 'dd-MMMM-yyyy';
     $scope.today = function() {
@@ -56,7 +56,7 @@ dashboard
 
     $scope.initDate = $scope.today;
       
-    var KpiId = "arpu";
+    var KpiId = "avgRevenueSession";
       
     $scope.updateChart = function(name) {
       $scope.chart = {
@@ -76,7 +76,7 @@ dashboard
       };
     };
 
-    $scope.updateChart("Average Revenue Per User");
+    $scope.updateChart("Average Revenue Per Session");
 
     $scope.updateOnChangedDate = function() {
       updateChartData();
@@ -118,6 +118,6 @@ dashboard
       
     var kpiDataSuccessHandler = function(data) {
       $scope.context.updateChartData(data);
-      $scope.updateChart("Average Revenue Per User");
+      $scope.updateChart("Average Revenue Per Session");
     };
 }]);
