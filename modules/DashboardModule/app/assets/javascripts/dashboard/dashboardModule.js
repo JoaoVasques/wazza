@@ -58,3 +58,4 @@ dashboard.factory("KpiModel", function() {
 
   return KpiModel;
 });
+

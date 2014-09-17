@@ -51,13 +51,13 @@ config(function($stateProvider, $urlRouterProvider, $locationProvider){
             controller: 'DashboardController'
         })
 
-        .state('home.analytics.churn', {
+        .state('home.churn', {
             url: "^/analytics",
             templateUrl: '/dashboard/churn',
             controller: 'ChurnController'
         })
 
-        .state('home.analytics.revenue', {
+        .state('home.revenue', {
             url: "^/analytics",
             templateUrl: '/dashboard/revenue',
             controller: 'RevenueController'
@@ -75,7 +75,7 @@ config(function($stateProvider, $urlRouterProvider, $locationProvider){
             controller: 'AvgRevenueSessionController'
         })
     
-        .state('home.analytics.ltv', {
+        .state('home.ltv', {
             url: "^/analytics",
             templateUrl: '/dashboard/ltv',
             controller: 'ltvController'
