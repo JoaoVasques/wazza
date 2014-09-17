@@ -45,7 +45,7 @@ dashboard.controller('DashboardController', [
     
     /** General KPIs **/
     $scope.totalRevenue = new KpiModel("Total Revenue", "/revenue");
-    $scope.arpu = new KpiModel("Avg Revenue Per User", "/arpu");
+    $scope.arpu = new KpiModel("Avg Revenue Per User", "home.arpu");
     $scope.avgRevSession = new KpiModel("Avg Revenue per Session", "#");
     
     /** User KPIs **/

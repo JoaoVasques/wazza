@@ -25,7 +25,7 @@ var application = angular.module('Wazza.controllers', [
      };
 
 
-        $scope.format = 'dd-MM-yyyy';
+        $scope.format = 'dd-MMM-yyyy';
 
         $scope.today = function() {
           DateModel.initDateInterval();

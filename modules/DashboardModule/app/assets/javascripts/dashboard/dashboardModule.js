@@ -10,13 +10,13 @@ var dashboard = angular.module('DashboardModule', [
 dashboard.value('KpiData', [
   {
     name: "Total Revenue",
-    link: "/revenue",
+    link: "home.revenue",
     delta: 0,
     unitType: "€"
   },
   {
     name: "Average Revenue Per User",
-    link: "/arpu",
+    link: "home.arpu",
     delta: 0,
     unitType: "€"
   }

@@ -16,7 +16,7 @@
           </div>
           <div class="col-md-4">
             <div ng-class="kpi.css">
-              <span ng-class="kpi.icon"></span> {{app.delta}}%
+              <span ng-class="kpi.icon"></span> ${{app.delta}}
             </div>
           </div>
         <div class="row">
@@ -28,12 +28,13 @@
           </div>
           <div class="col-md-4">
             <div ng-class="kpi.css">
-              <span ng-class="kpi.icon"></span> {{app.delta}}%
+              <span ng-class="kpi.icon"></span> ${{app.delta}}
             </div>
           </div>
           <div class="col-md-12 kpi link">
-            <a ui-sref="home.dashboard">More info</a>
-            <button type="button" ng-click="switchDetailedView(kpi.link)" class="btn btn-lg btn-info">More info</button>
+            <a ui-sref="home.dashboard">
+              <button type="button" class="btn btn-lg btn-info">More info</button>
+            </a>
           </div>
         </div>
       </div>
