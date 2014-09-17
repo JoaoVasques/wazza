@@ -14,7 +14,6 @@ dashboardServices.value("ArpuUrlType", {
     detailed: ""
 });
 
-
 dashboardServices.factory('AnchorSmoothScroll', function() {
 
   var service = {};
@@ -30,7 +29,7 @@ dashboardServices.factory('AnchorSmoothScroll', function() {
       if (document.body.scrollTop) return document.body.scrollTop;
       return 0;
     }
-    
+
     function elmYPosition(eID) {
       var elm = document.getElementById(eID);
       var y = elm.offsetTop;
@@ -40,10 +39,10 @@ dashboardServices.factory('AnchorSmoothScroll', function() {
         y += node.offsetTop;
       } return y;
     }
-      
+
     // This scrolling function
     // is from http://www.itnewb.com/tutorial/Creating-the-Smooth-Scroll-Effect-with-JavaScript
-        
+
     var startY = currentYPosition();
     var stopY = elmYPosition(eID);
     var distance = stopY > startY ? stopY - startY : startY - stopY;
@@ -126,7 +125,7 @@ dashboardServices.factory('GetMainKPIsService', ['$http','$q',
          startDate + '/' +
          endDate;
       };
-        
+
       service.execute = function(companyName, applicationName, startDate, endDate) {
 
         var revUrl = buildUrl(companyName, applicationName, 'revenue', 'total', startDate, endDate);
@@ -144,6 +143,17 @@ dashboardServices.factory('GetMainKPIsService', ['$http','$q',
         return $q.all([totalRevenue, totalARPU]);
       };
 
+      service.getTotalKpiData = function(companyName, applicationName, start, end, kpiName) {
+        var request = $http({
+          url: buildUrl(companyName, applicationName, kpiName, "total", start, end),
+          method: 'GET'
+        });
+        
+        var deferred = $q.defer();
+        deferred.resolve(request);
+        return deferred.promise;
+      };
+      
       service.getDetailedKPIData = function(companyName, applicationName, start, end, kpiName) {
         var request = $http({
           url: buildUrl(companyName, applicationName, kpiName, "detail", start, end),

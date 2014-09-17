@@ -2,7 +2,7 @@
 
 angular.module('chartjs-directive', []).
   directive('chart', function () {
-    var baseWidth = 600;
+    var baseWidth = 900;
     var baseHeight = 400;
 
     return {
