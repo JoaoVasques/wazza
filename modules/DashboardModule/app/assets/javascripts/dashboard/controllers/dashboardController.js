@@ -33,6 +33,9 @@ dashboard.controller('DashboardController', [
     KpiModel,
     AnchorSmoothScroll
   ) {
+    $scope.logout = function(){
+      LoginLogoutService.logout();
+    };
 
     $rootScope.$on('ChangeDashboardSection', function(event, newSection) {
       var eId = newSection.section;
@@ -48,13 +51,50 @@ dashboard.controller('DashboardController', [
     /** User KPIs **/
     $scope.ltv = new KpiModel("Life Time Value", "#");
     $scope.payingUsers = new KpiModel("% Paying Users", "#");
-    $scope.todo = new KpiModel("TODO", "#");
+    $scope.todo = new KpiModel("Paying Users Growth", "#");
 
     /** Session KPIs **/
     $scope.purchasesPerSession = new KpiModel("Purchases per Session", "#");
     $scope.avgTimeFirstPurchase = new KpiModel("Avg Time 1st Purchase", "#");
-    $scope.avgTimeBetweenPurchases = new KpiModel("Avg Time Between Purchases", "#");
-    
+    $scope.avgTimeBetweenPurchases = new KpiModel("Avg Time Bet. Purchases", "#");
+
+
+      $scope.format = 'dd-MMMM-yyyy';
+
+        $scope.today = function() {
+          DateModel.initDateInterval();
+          $scope.beginDate = DateModel.startDate;
+          $scope.endDate = DateModel.endDate;
+        };
+        $scope.today();
+
+        $scope.toggleMin = function() {
+          $scope.minDate = moment().subtract('years', 1).format('d-M-YYYY');
+          $scope.endDateMin = $scope.beginDate;
+        };
+        $scope.toggleMin();
+
+        $scope.updateEndDateMin = function(){
+          $scope.endDateMin = $scope.beginDate;
+        };
+
+        $scope.maxDate = new Date();
+
+        $scope.openBeginDate = function($event) {
+          $event.preventDefault();
+          $event.stopPropagation();
+
+          $scope.beginDateOpened = true;
+        };
+
+        $scope.openEndDate = function($event) {
+          $event.preventDefault();
+          $event.stopPropagation();
+
+          $scope.endDateOpened = true;
+        };
+
+        $scope.initDate = $scope.today;
 
         $scope.updateKPIs = function(){
           GetMainKPIsService.execute(
@@ -107,20 +147,15 @@ dashboard.controller('DashboardController', [
         };
 
         $scope.bootstrapModule = function () {
-
-
-          
             $scope.applicationName = "";
             $scope.applications = [];
             $scope.credentials = {};
             $scope.virtualCurrencies = [];
             $scope.items = [];
             $scope.isCollapsed = true;
-            
             $scope.$on("ITEM_SEARCH_EVENT", function () {
                 $scope.itemSearch = ItemSearchService.searchData
             });
-            
             $scope.$on("APPLICATION_NAME_UPDATED", function () {
                 $scope.applicationName = ApplicationStateService.applicationName;
             });

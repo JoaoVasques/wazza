@@ -1,12 +1,12 @@
 'use strict';
 
 dashboard.factory('DetailedKpiModel', ['KpiModel', function(KpiModel) {
-  function DetailedKpiModel(beginDate, endDate) {
+  function DetailedKpiModel(beginDate, endDate, name) {
     this.beginDate = beginDate;
     this.endDate = endDate;
     this.labels = [];
     this.values = [];
-    this.model = new KpiModel("Average Revenue Per User", "");
+    this.model = new KpiModel(name, "");
   };
 
   DetailedKpiModel.prototype = {
