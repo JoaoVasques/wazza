@@ -101,7 +101,7 @@ dashboardServices.factory('GetKPIService', ['$http', '$q',
             method: 'GET'
         });
 
-		var getDetailed = $http({
+		    var getDetailed = $http({
             url: buildUrl(metric, 'detail'),
             method: 'GET'
         });
