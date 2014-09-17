@@ -32,40 +32,7 @@ dashboard
   ) {
     TopbarService.setName("Average Revenue Per User");
     $scope.context = new DetailedKpiModel(DateModel.startDate, DateModel.endDate);
-    
-    $scope.format = 'dd-MMMM-yyyy';
-    $scope.today = function() {
-      $scope.beginDate = $scope.context.beginDate;
-      $scope.endDate = $scope.context.endDate;
-    };
-    $scope.today();
-    
-    $scope.toggleMin = function() {
-      $scope.minDate = moment().subtract('years', 1).format('d-M-YYYY');
-      $scope.endDateMin = $scope.beginDate;
-    };
-    $scope.toggleMin();
-
-    $scope.updateEndDateMin = function(){
-      $scope.endDateMin = $scope.beginDate;
-    };
-    
-    $scope.maxDate = new Date();
-
-    $scope.openBeginDate = function($event) {
-      $event.preventDefault();
-      $event.stopPropagation();
-      $scope.beginDateOpened = true;
-    };
-
-    $scope.openEndDate = function($event) {
-      $event.preventDefault();
-      $event.stopPropagation();  
-      $scope.endDateOpened = true;
-    };
-
-    $scope.initDate = $scope.today;
-      
+          
     var KpiId = "arpu";
       
     $scope.updateChart = function(name) {
