@@ -22,6 +22,7 @@ application.controller('AppController', [
 
     //auth related
     $scope.authOK = false;
+    $scope.datepickersVisible = true;
 
     $scope.$on("LOGIN_SUCCESS", function(event, data){
       document.body.className = "skin-blue";
