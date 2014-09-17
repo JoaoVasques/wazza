@@ -1,13 +1,5 @@
 'use strict';
 
-dashboard.value("LineChartConfiguration", {
-  fillColor : "rgba(151,187,205,0.5)",
-  strokeColor : "rgba(151,187,205,1)",
-  pointColor : "rgba(151,187,205,1)",
-  pointStrokeColor : "#fff",
-  data: []
-});
-
 dashboard
 .controller('RevenueController', [
   '$scope',
@@ -18,7 +10,6 @@ dashboard
   'GetMainKPIsService',
   'DateModel',
   'DetailedKpiModel',
-  'LineChartConfiguration',
   function (
         $scope,
         $location,
@@ -27,12 +18,11 @@ dashboard
         TopbarService,
         GetMainKPIsService,
         DateModel,
-        DetailedKpiModel,
-        LineChartConfiguration
+        DetailedKpiModel
       ) {
 
         TopbarService.setName("Total Revenue");
-        $scope.context = new DetailedKpiModel(DateModel.startDate, DateModel.endDate);
+        $scope.context = new DetailedKpiModel(DateModel.startDate, DateModel.endDate, "Total Revenue");
 
         var KpiId = "revenue";
           
