@@ -35,6 +35,20 @@ class AnalyticsServiceImpl @Inject()(
     (new SimpleDateFormat("yyyy-MM-dd").parse(ops.take(ops.indexOf('T'))).getTime()) / 1000
   }
 
+  private def fillEmptyResult(start: Date, end: Date): JsArray = {
+    val dates = new ListBuffer[String]()
+    val s = new LocalDate(start)
+    val e = new LocalDate(end)
+    val days = Days.daysBetween(s, e).getDays()+1
+    
+    new JsArray(List.range(0, days) map {i =>{
+      Json.obj(
+        "day" -> s.withFieldAdded(DurationFieldType.days(), i).toString("dd MMM"),
+        "val" -> 0
+      )
+    }})
+  }
+
   def getTopTenItems(
     companyName: String,
     applicationName: String,
@@ -73,17 +87,7 @@ class AnalyticsServiceImpl @Inject()(
       ).value
 
       val result = if(active.isEmpty) {
-        val dates = new ListBuffer[String]()
-        val s = new LocalDate(start)
-        val e = new LocalDate(end)
-        val days = Days.daysBetween(s, e).getDays()+1
-        
-        new JsArray(List.range(0, days) map {i =>{
-          Json.obj(
-            "day" -> s.withFieldAdded(DurationFieldType.days(), i).toString("dd MMM"),
-            "val" -> 0
-          )
-        }})
+        fillEmptyResult(start, end)
       } else {
         new JsArray((revenue zip active) map {
           case (r, a) => {
@@ -141,7 +145,67 @@ class AnalyticsServiceImpl @Inject()(
     end: Date
   ): Future[JsValue] = {
     val promise = Promise[JsValue]
-    println(s"getAverageRevenuePerSession $companyName | $applicationName")
+    Future {
+      val sessions = databaseService.getDocumentsByTimeRange(
+        Metrics.mobileSessionsCollection(companyName, applicationName),
+        "startTime",
+        start,
+        end
+      ).value
+
+      val fields = ("lowerDate", "upperDate")
+      val revenue = databaseService.getDocumentsWithinTimeRange(
+        Metrics.totalRevenueCollection(companyName, applicationName),
+        fields,
+        start,
+        end
+      ).value
+
+      val result = if(sessions.isEmpty) {
+        fillEmptyResult(start, end)
+      } else {
+        val dates = new ListBuffer[String]()
+        val s = new LocalDate(start)
+        val e = new LocalDate(end)
+        val days = Days.daysBetween(s, e).getDays()+1
+
+        val coll = revenue zip sessions
+        for(d <- List.range(0, days)) {
+          val day = s.withFieldAdded(DurationFieldType.days(), d)
+          coll.filter({el: Tuple2[JsValue, JsValue] =>
+            val revenueDate = null
+            val sessionDate = null
+            true
+          })
+        }
+
+        null
+
+        /**
+          val dates = new ListBuffer[String]()
+          val s = new LocalDate(start)
+          val e = new LocalDate(end)
+          val days = Days.daysBetween(s, e).getDays()+1
+          
+          new JsArray(List.range(0, days) map {i =>{
+          Json.obj(
+          "day" -> s.withFieldAdded(DurationFieldType.days(), i).toString("dd MMM"),
+          "val" -> 0
+          )
+          }})
+        
+          var i = 0
+        new JsArray((revenue zip active) map {
+          case (r, a) => {
+            Json.obj(
+              "day" -> s.withFieldAdded(DurationFieldType.days(), i++).toString("dd MMM"),
+              "value" -> (r \ "totalRevenue").as[Double] / (a \ "activeUsers").as[Int]
+            )
+          }
+          })**/
+      }
+      promise.success(result)
+    }
     //TODO
     promise.future
   }
@@ -153,26 +217,27 @@ class AnalyticsServiceImpl @Inject()(
     end: Date
   ): Future[JsValue] = {
     val promise = Promise[JsValue]
-    println(s"getTotalAverageRevenuePerSession $companyName | $applicationName")
+    Future {
+      val sessions = databaseService.getDocumentsByTimeRange(
+        Metrics.mobileSessionsCollection(companyName, applicationName),
+        "startTime",
+        start,
+        end
+      ).value.size
 
-    val sessions = databaseService.getDocumentsByTimeRange(
-      Metrics.mobileSessionsCollection(companyName, applicationName),
-      "startTime",
-      start,
-      end
-    ).value.size
+      val fields = ("lowerDate", "upperDate")
+      val revenue = databaseService.getDocumentsWithinTimeRange(
+        Metrics.totalRevenueCollection(companyName, applicationName),
+        fields,
+        start,
+        end
+      ).value.foldLeft(0.0)((sum, obj) => {
+        sum + (obj \ "totalRevenue").as[Double]
+      })
 
-    val fields = ("lowerDate", "upperDate")
-    val revenue = databaseService.getDocumentsWithinTimeRange(
-      Metrics.totalRevenueCollection(companyName, applicationName),
-      fields,
-      start,
-      end
-    ).value.foldLeft(0.0)((sum, obj) => {
-      sum + (obj \ "totalRevenue").as[Double]
-    })
+      promise.success(Json.obj("value" -> (if(sessions > 0) (revenue / sessions) else 0)))
+    }
 
-    promise.success(Json.obj("value" -> (if(sessions > 0) (revenue / sessions) else 0)))
     promise.future
   }
 
