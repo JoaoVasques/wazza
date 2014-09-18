@@ -82,7 +82,6 @@ var application = angular.module('Wazza.controllers', [
     TopbarService
    ) {
     TopbarService.setName("Not available yet :(");
-    $scope.datepickersVisible = false;
 
 }])
 

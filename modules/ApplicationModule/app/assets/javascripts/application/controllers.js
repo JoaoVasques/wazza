@@ -17,7 +17,6 @@ angular.module('ApplicationModule.controllers', ['ApplicationModule.services', '
     ) {
 
     TopbarService.setName("New Application");
-    $scope.datepickersVisible = false;
 
     $scope.noImageThumbnailUrl = "http://allaboutuarts.ca/wp-content/uploads/2012/07/placeholder_2.jpg";
     $scope.storeOptions = ['iOS', 'Android'];

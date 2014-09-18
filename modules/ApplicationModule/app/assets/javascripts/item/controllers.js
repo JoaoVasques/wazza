@@ -23,7 +23,6 @@ angular.module('ItemModule.controllers', ['ItemModule.services', 'angularFileUpl
       GetLanguagesService
     ) {
       //TODO: add TopbarService
-      $scope.datepickersVisible = false;
       $scope.itemSearch = false;
       $scope.currencyOptions = ["Real","Virtual"];
       $scope.showCurrencyInputs = {
