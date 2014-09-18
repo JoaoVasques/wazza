@@ -14,12 +14,12 @@ trait AnalyticsService {
 
   def getTotalARPU(companyName: String, applicationName: String, start: Date, end: Date): Future[JsValue]
 
- /** def getAverageRevenuePerSession(
+  def getAverageRevenuePerSession(
     companyName: String,
     applicationName: String,
     start: Date,
     end: Date
-  ): Future[JsValue]**/
+  ): Future[JsValue]
 
   def getTotalAverageRevenuePerSession(
     companyName: String,

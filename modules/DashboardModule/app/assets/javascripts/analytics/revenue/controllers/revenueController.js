@@ -13,7 +13,11 @@ dashboard
   '$scope',
   '$location',
   '$rootScope',
+  'FetchItemsService',
+  'BootstrapDashboardService',
+  'DeleteItemService',
   'ApplicationStateService',
+  'ItemSearchService',
   'TopbarService',
   'GetMainKPIsService',
   'DateModel',
@@ -23,79 +27,54 @@ dashboard
         $scope,
         $location,
         $rootScope,
+        FetchItemsService,
+        BootstrapDashboardService,
+        DeleteItemService,
         ApplicationStateService,
+        ItemSearchService,
         TopbarService,
+        GetKPIService,
         GetMainKPIsService,
         DateModel,
         DetailedKpiModel,
         LineChartConfiguration
-      ) {
+  ) {
 
-        TopbarService.setName("Total Revenue");
+        TopbarService.setName("Revenue - Details");
         $scope.context = new DetailedKpiModel(DateModel.startDate, DateModel.endDate);
 
-        var KpiId = "revenue";
-          
-        $scope.updateChart = function(name) {
-          $scope.chart = {
-            "data": {
-              "labels": $scope.context.labels,
-              "datasets": [
-                {
-                  fillColor : "rgba(151,187,205,0.5)",
-                  strokeColor : "rgba(151,187,205,1)",
-                  pointColor : "rgba(151,187,205,1)",
-                  pointStrokeColor : "#fff",
-                  data : $scope.context.values
-                }
-              ]
-            },
-            "options": {"width": 800}
-          };
-        };
+        $scope.options = {
+          axes: {
+            x: {key: 'x', labelFunction: function(value) {return value;}, type: 'linear'},
+            y: {type: 'linear', min: 0, max: 100},
+            y2: {type: 'linear', min: 0, max: 100}
+          },
+          series: [
+            {y: 'value', color: 'steelblue', thickness: '2px', type: 'area', striped: true, label: 'Pouet'},
+            {y: 'otherValue', axis: 'y2', color: 'lightsteelblue', visible: false, drawDots: true}
+          ],
+          lineMode: 'linear',
+          tension: 0.7,
+          tooltip: {mode: 'scrubber', formatter: function(x, y, series) {return 'pouet';}},
+          drawLegend: true,
+          drawDots: true,
+          columnsHGap: 5
+        }
 
-        $scope.updateChart("Total Revenue");
+        $scope.data = [
+          {x: 0, value: 4, otherValue: 14},
+          {x: 1, value: 8, otherValue: 1},
+          {x: 2, value: 15, otherValue: 11},
+          {x: 3, value: 16, otherValue: 147},
+          {x: 4, value: 23, otherValue: 87},
+          {x: 5, value: 42, otherValue: 45}
+        ];
 
-        $scope.updateOnChangedDate = function() {
-          updateChartData();
-          updateTotalValues();
-        };
+        GetKPIService.execute($scope.companyName, $scope.applicationName, "2014-07-22", "2014-07-22", "revenue")
+            .then(function(results) {
+                console.log(results);
+                //$scope.data = results;
+        });
 
-        var updateChartData = function() {
-          GetMainKPIsService.getDetailedKPIData(
-            ApplicationStateService.companyName,
-            ApplicationStateService.applicationName,
-            DateModel.formatDate($scope.beginDate),
-            DateModel.formatDate($scope.endDate),
-            KpiId
-          ).then(function(results) {
-            kpiDataSuccessHandler(results);
-          },function(err) {console.log(err);}
-          );
-        };
 
-        var updateTotalValues = function() {
-          GetMainKPIsService.getTotalKpiData(
-            ApplicationStateService.companyName,
-            ApplicationStateService.applicationName,
-            DateModel.formatDate($scope.beginDate),
-            DateModel.formatDate($scope.endDate),
-            KpiId
-          ).then(function(results) {
-            totalValueHandler(results);
-          },function(err) {console.log(err);}
-          );
-        };
-
-        updateChartData();
-        updateTotalValues();
-
-        var totalValueHandler = function(data) {
-          $scope.context.model.updateKpiValue(data.data.value, data.data.delta);
-        };
-          
-        var kpiDataSuccessHandler = function(data) {
-          $scope.context.updateChartData(data);
-          $scope.updateChart("Total Revenue");
-        };
 }]);

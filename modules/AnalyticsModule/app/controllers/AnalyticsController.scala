@@ -162,7 +162,7 @@ class AnalyticsController @Inject()(
       Total)
   }
 
-  /**def getDetailedAverageRevenuePerSession(
+  def getDetailedAverageRevenuePerSession(
     companyName: String,
     applicationName: String,
     startDateStr: String,
@@ -174,8 +174,8 @@ class AnalyticsController @Inject()(
       startDateStr,
       endDateStr,
       analyticsService.getAverageRevenuePerSession,
-      Total)
-  }**/
+      Detailed)
+  }
 
   def getTotalRevenue(
     companyName: String,
