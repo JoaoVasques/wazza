@@ -141,6 +141,7 @@ class AnalyticsServiceImpl @Inject()(
     end: Date
   ): Future[JsValue] = {
     val promise = Promise[JsValue]
+    println(s"getAverageRevenuePerSession $companyName | $applicationName")
     //TODO
     promise.future
   }
@@ -152,7 +153,26 @@ class AnalyticsServiceImpl @Inject()(
     end: Date
   ): Future[JsValue] = {
     val promise = Promise[JsValue]
-    //TODO
+    println(s"getTotalAverageRevenuePerSession $companyName | $applicationName")
+
+    val sessions = databaseService.getDocumentsByTimeRange(
+      Metrics.mobileSessionsCollection(companyName, applicationName),
+      "startTime",
+      start,
+      end
+    ).value.size
+
+    val fields = ("lowerDate", "upperDate")
+    val revenue = databaseService.getDocumentsWithinTimeRange(
+      Metrics.totalRevenueCollection(companyName, applicationName),
+      fields,
+      start,
+      end
+    ).value.foldLeft(0.0)((sum, obj) => {
+      sum + (obj \ "totalRevenue").as[Double]
+    })
+
+    promise.success(Json.obj("value" -> (if(sessions > 0) (revenue / sessions) else 0)))
     promise.future
   }
 

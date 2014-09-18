@@ -33,17 +33,14 @@ dashboard
         ApplicationStateService,
         ItemSearchService,
         TopbarService,
-        GetKPIService
-    ) {
-
-        TopbarService.setName("Revenue - Details");
+        GetKPIService,
         GetMainKPIsService,
         DateModel,
         DetailedKpiModel,
         LineChartConfiguration
-      ) {
+  ) {
 
-        TopbarService.setName("Total Revenue");
+        TopbarService.setName("Revenue - Details");
         $scope.context = new DetailedKpiModel(DateModel.startDate, DateModel.endDate);
 
         $scope.options = {

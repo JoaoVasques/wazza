@@ -3,23 +3,28 @@ package utils.analytics
 object Metrics {
 
   def totalRevenueCollection(
-    applicationName: String,
-    companyName: String
-  ) = s"${applicationName}_TotalRevenue_${companyName}"
+    companyName: String,
+    applicationName: String
+  ) = s"${companyName}_TotalRevenue_${applicationName}"
 
   def avgSessionLengthCollection(
-    applicationName: String,
-    companyName: String
-  ) = s"${applicationName}_SessionLength_${companyName}"
+    companyName: String,
+    applicationName: String
+  ) = s"${companyName}_SessionLength_${applicationName}"
 
   def numberPayingUsersCollection(
-    applicationName: String,
-    companyName: String
-  ) = s"${applicationName}_nrPayingUsers_${companyName}"
+    companyName: String,
+    applicationName: String
+  ) = s"${companyName}_nrPayingUsers_${applicationName}"
 
   def activeUsersCollection(
-    applicationName: String,
-    companyName: String
-  ) = s"${applicationName}_activeUsers_${companyName}"
+    companyName: String,
+    applicationName: String
+  ) = s"${companyName}_activeUsers_${applicationName}"
+
+  def mobileSessionsCollection(
+    companyName: String,
+    applicationName: String
+  ) = s"${companyName}_mobileSessions_${applicationName}"
 }
 

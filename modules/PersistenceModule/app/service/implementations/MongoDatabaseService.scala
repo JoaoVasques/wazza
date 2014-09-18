@@ -235,6 +235,19 @@ class MongoDatabaseService extends DatabaseService {
     }.toSeq)
   }
 
+  def getDocumentsByTimeRange(
+    collectionName: String,
+    dateField: String,
+    start: Date,
+    end: Date
+  ): JsArray = {
+    val query = (dateField $lte start $gt end)
+    val sortCriteria = MongoDBObject(dateField -> 1)
+    new JsArray(this.getCollection(collectionName).find(query).sort(sortCriteria).map {doc =>
+      Json.parse(doc.toString)
+    }.toSeq)
+  }
+
   /**
     Array operations
   **/

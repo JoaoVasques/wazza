@@ -40,7 +40,19 @@ trait DatabaseService {
   /**
     Time-ranged queries
   **/
-  def getDocumentsWithinTimeRange(collectionName: String, dateFields: Tuple2[String, String], start: Date, end: Date): JsArray
+  def getDocumentsWithinTimeRange(
+    collectionName: String,
+    dateFields: Tuple2[String, String],
+    start: Date,
+    end: Date
+  ): JsArray
+
+  def getDocumentsByTimeRange(
+    collectionName: String,
+    dateField: String,
+    start: Date,
+    end: Date
+  ): JsArray
 
   /**
     Array operations
