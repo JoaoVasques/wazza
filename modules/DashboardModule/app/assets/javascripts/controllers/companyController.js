@@ -75,7 +75,7 @@ dashboard
             $scope.credentials = {};
             $scope.virtualCurrencies = [];
             $scope.items = [];
-            $scope.isCollapsed = true;
+
             $scope.$on("ITEM_SEARCH_EVENT", function () {
                 $scope.itemSearch = ItemSearchService.searchData
             });

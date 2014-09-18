@@ -3,29 +3,24 @@
 
         <ul class="sidebar-menu">
 
-              <li class="treeview dropdown tasks-menu">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                        <i class="fa fa-tasks"></i>
-                        Change App
+            <li class="treeview">
+                <a data-toggle="collapse" data-target="#collapseChangeApp" href="">
+                    <span><h5><b>Change App</b><i class="fa fa-tasks pull-right" style="padding-right: 20px;"></i></h5></span>
+                </a>
+            </li>
+            <ul id="collapseChangeApp" class="sidebar-menu collapse text-center">
+                <h4 class="header">You have {{applicationsList.length}} apps</h4>
+                <li ng-repeat="app in applicationsList" class="sidebar-menu text-center">
+                    <a href="#">
+                        <h3>
+                            {{app}}
+                        </h3>
                     </a>
-                    <ul class="dropdown-menu">
-                        <li class="header">You have {{applicationsList.length}} apps</li>
-                        <li>
-                            <ul class="menu">
-                                <li ng-repeat="app in applicationsList">
-                                    <a href="#">
-                                        <h3>
-                                            {{app}}
-                                        </h3>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="/newapp" class="btn btn-default btn-lg" style="color:#666;">Add new App</a>
-                                </li>
-                            </ul>
-                        </li>
-                    </ul>
                 </li>
+                <li class="treeview">
+                    <a ui-sref='home.newapp' class="btn btn-default btn-lg" style="color:#666; margin: 0 20px 10px 20px;">Add new App</a>
+                </li>
+            </ul>
 
             <li class="treeview">
                 <a ui-sref="home.overview"><span><h5><b>Overview</b></h5></span></a>
@@ -56,8 +51,8 @@
             </li>
 
               <ul id="collapseAnalytics" class="sidebar-menu collapse">
-                    <li><a href="#"><b>Revenue</b></a></li>
-                    <li><a href="/revenue"><i class="fa fa-shopping-cart"></i> Total Revenue</a></li>
+                    <li><a href="#"><b>Revenue</b></a></li> <!-- semantically incorrect-->
+                    <li><a ui-sref="home.revenue"><i class="fa fa-shopping-cart"></i> Total Revenue</a></li>
                     <li><a ui-sref="home.arpu"><i class="fa fa-shopping-cart"></i> Avg Revenue Per User</a></li>
                     <li><a ui-sref="home.avgRevenueSession"><i class="fa fa-shopping-cart"></i> Avg Revenue Per Session</a></li>
 

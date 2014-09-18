@@ -25,7 +25,7 @@ var application = angular.module('Wazza.controllers', [
      };
 
 
-        $scope.format = 'dd-MMMM-yyyy';
+        $scope.format = 'dd-MMM-yyyy';
 
         $scope.today = function() {
           DateModel.initDateInterval();
@@ -91,7 +91,7 @@ var application = angular.module('Wazza.controllers', [
     TopbarService
    ) {
     TopbarService.setName("Not available yet :(");
-
+    $scope.datepickersVisible = false;
 
 }])
 

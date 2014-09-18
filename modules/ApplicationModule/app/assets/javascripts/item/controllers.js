@@ -6,7 +6,7 @@ angular.module('ItemModule.controllers', ['ItemModule.services', 'angularFileUpl
     '$upload',
     'createNewItemService',
     '$routeParams',
-    '$location',
+    '$state',
     'getVirtualCurrenciesService',
     'uploadPhotoService',
     'ApplicationStateService',
@@ -16,13 +16,14 @@ angular.module('ItemModule.controllers', ['ItemModule.services', 'angularFileUpl
       $upload,
       createNewItemService,
       $routeParams,
-      $location,
+      $state,
       getVirtualCurrenciesService,
       uploadPhotoService,
       ApplicationStateService,
       GetLanguagesService
     ) {
-
+      //TODO: add TopbarService
+      $scope.datepickersVisible = false;
       $scope.itemSearch = false;
       $scope.currencyOptions = ["Real","Virtual"];
       $scope.showCurrencyInputs = {
@@ -142,7 +143,7 @@ angular.module('ItemModule.controllers', ['ItemModule.services', 'angularFileUpl
       $scope.errors = false;
       $scope.formErrors = [];
       $scope.itemSearch = true;
-      $location.path("/home");
+      $state.go("home.dashboard");
     }
 
     $scope.handleErrors = function(errors){

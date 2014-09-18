@@ -5,6 +5,7 @@ dashboard.controller('DashboardController', [
   '$location',
   '$rootScope',
   "$anchorScroll",
+  "$state",
   'FetchItemsService',
   'BootstrapDashboardService',
   'DeleteItemService',
@@ -21,6 +22,7 @@ dashboard.controller('DashboardController', [
     $location,
     $rootScope,
     $anchorScroll,
+    $state,
     FetchItemsService,
     BootstrapDashboardService,
     DeleteItemService,
@@ -33,9 +35,6 @@ dashboard.controller('DashboardController', [
     KpiModel,
     AnchorSmoothScroll
   ) {
-    $scope.logout = function(){
-      LoginLogoutService.logout();
-    };
 
     $rootScope.$on('ChangeDashboardSection', function(event, newSection) {
       var eId = newSection.section;
@@ -44,8 +43,8 @@ dashboard.controller('DashboardController', [
     });
     
     /** General KPIs **/
-    $scope.totalRevenue = new KpiModel("Total Revenue", "/revenue");
-    $scope.arpu = new KpiModel("Avg Revenue Per User", "/arpu");
+    $scope.totalRevenue = new KpiModel("Total Revenue", "home.revenue");
+    $scope.arpu = new KpiModel("Avg Revenue Per User", "home.arpu");
     $scope.avgRevSession = new KpiModel("Avg Revenue per Session", "#");
     
     /** User KPIs **/
@@ -152,7 +151,7 @@ dashboard.controller('DashboardController', [
             $scope.credentials = {};
             $scope.virtualCurrencies = [];
             $scope.items = [];
-            $scope.isCollapsed = true;
+
             $scope.$on("ITEM_SEARCH_EVENT", function () {
                 $scope.itemSearch = ItemSearchService.searchData
             });
@@ -170,8 +169,8 @@ dashboard.controller('DashboardController', [
                     bootstrapFailureCallback);
         };
 
-        $scope.switchDetailedView = function(url) {
-          $location.path(url);
+        $scope.switchDetailedView = function(state) {
+          $state.go(state);
         };
 
         $scope.bootstrapModule();
