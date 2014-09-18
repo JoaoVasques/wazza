@@ -43,28 +43,28 @@ config(function($stateProvider, $urlRouterProvider, $locationProvider){
             controller: 'DashboardController'
         })
 
-        .state('home.churn', {
-            url: "^/analytics",
-            templateUrl: '/dashboard/churn',
-            controller: 'ChurnController'
-        })
-
         .state('home.revenue', {
             url: "^/analytics",
-            templateUrl: '/dashboard/revenue',
+            templateUrl: '/dashboard/analytics',
             controller: 'RevenueController'
         })
 
         .state('home.arpu', {
             url: "^/analytics",
-            templateUrl: '/dashboard/arpu',
+            templateUrl: '/dashboard/analytics',
             controller: 'ArpuController'
         })
 
         .state('home.avgRevenueSession', {
             url: "^/analytics",
-            templateUrl: '/dashboard/avgRevenueSession',
+            templateUrl: '/dashboard/analytics',
             controller: 'AvgRevenueSessionController'
+        })
+//TODO
+        .state('home.churn', {
+            url: "^/analytics",
+            templateUrl: '/dashboard/churn',
+            controller: 'ChurnController'
         })
     
         .state('home.ltv', {

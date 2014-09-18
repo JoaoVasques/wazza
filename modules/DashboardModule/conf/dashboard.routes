@@ -14,11 +14,13 @@ GET     /inventory/virtualCurrencies  @controllers.dashboard.DashboardController
 
 # analytics
 GET     /analytics	                  @controllers.dashboard.DashboardController.analytics
-GET     /arpu		                  @controllers.dashboard.DashboardController.arpu
-GET     /avgRevenueSession		      @controllers.dashboard.DashboardController.avgRevenueSession
-GET     /ltv			              @controllers.dashboard.DashboardController.ltv
-GET     /revenue        		      @controllers.dashboard.DashboardController.revenue
-GET     /churn			              @controllers.dashboard.DashboardController.churn
+
+#not needed anymore
+#GET     /arpu		                  @controllers.dashboard.DashboardController.arpu
+#GET     /avgRevenueSession		      @controllers.dashboard.DashboardController.avgRevenueSession
+#GET     /ltv			              @controllers.dashboard.DashboardController.ltv
+#GET     /revenue        		      @controllers.dashboard.DashboardController.revenue
+#GET     /churn			              @controllers.dashboard.DashboardController.churn
 
 GET     /store/android                @controllers.dashboard.DashboardController.storeAndroid
 GET     /store/apple                  @controllers.dashboard.DashboardController.storeApple

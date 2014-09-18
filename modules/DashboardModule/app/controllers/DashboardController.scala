@@ -75,14 +75,15 @@ class DashboardController @Inject()(
         )
       )
     }
-  }
+  } 
 
 
   //analytics
   def analytics = HasToken() {token => userId => implicit request =>
-    Ok(views.html.analytics.analytics())
+    Ok(views.html.analytics.generic())
   }
 
+/* //not needed anymore
   def arpu = HasToken() {token => userId => implicit request =>
     Ok(views.html.analytics.arpu())
   }
@@ -102,7 +103,7 @@ class DashboardController @Inject()(
   def ltv = HasToken() {token => userId => implicit request =>
     Ok(views.html.analytics.ltv())
   }
-  
+*/  
   //store
   def storeAndroid = HasToken() {token => userId => implicit request =>
     Ok(views.html.store.storeAndroid())
