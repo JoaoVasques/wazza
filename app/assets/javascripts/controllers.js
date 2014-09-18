@@ -20,53 +20,44 @@ var application = angular.module('Wazza.controllers', [
     DateModel
   ) {
 
-     $scope.logout = function(){
-       LoginLogoutService.logout();
-     };
+  $scope.logout = function(){
+    LoginLogoutService.logout();
+  };
 
+  $scope.today = function() {
+    DateModel.initDateInterval();
+    $scope.beginDate = DateModel.startDate;
+    $scope.endDate = DateModel.endDate;
+  };
 
-        $scope.format = 'dd-MMM-yyyy';
+  $scope.toggleMin = function() {
+    $scope.minDate = moment().subtract('years', 1).format('d-M-YYYY');
+    $scope.endDateMin = $scope.beginDate;
+  };
 
-        $scope.today = function() {
-          DateModel.initDateInterval();
-          $scope.beginDate = DateModel.startDate;
-          $scope.endDate = DateModel.endDate;
-        };
-        $scope.today();
+  $scope.updateEndDateMin = function(){
+    $scope.endDateMin = $scope.beginDate;
+  };
 
-        // Disable weekend selection
-        $scope.disabled = function(date, mode) {
-          return ( mode === 'day' && ( date.getDay() === 0 || date.getDay() === 6 ) );
-        };
+  $scope.openBeginDate = function($event) {
+    $event.preventDefault();
+    $event.stopPropagation();
 
-        $scope.toggleMin = function() {
-          $scope.minDate = moment().subtract('years', 1).format('d-M-YYYY');
-          $scope.endDateMin = $scope.beginDate;
-        };
-        $scope.toggleMin();
+    $scope.beginDateOpened = true;
+  };
 
-        $scope.updateEndDateMin = function(){
-          $scope.endDateMin = $scope.beginDate;
-        };
+  $scope.openEndDate = function($event) {
+    $event.preventDefault();
+    $event.stopPropagation();
 
-        $scope.maxDate = new Date();
+    $scope.endDateOpened = true;
+  };
 
-        $scope.openBeginDate = function($event) {
-          $event.preventDefault();
-          $event.stopPropagation();
-
-          $scope.beginDateOpened = true;
-        };
-
-        $scope.openEndDate = function($event) {
-          $event.preventDefault();
-          $event.stopPropagation();
-
-          $scope.endDateOpened = true;
-        };
-
-        $scope.initDate = $scope.today;
-
+  $scope.format = 'dd-MMM-yyyy';
+  $scope.today();
+  $scope.toggleMin();
+  $scope.maxDate = new Date();
+  $scope.initDate = $scope.today;
 
 }])
 
