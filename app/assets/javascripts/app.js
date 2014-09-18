@@ -9,14 +9,6 @@ config(function($stateProvider, $urlRouterProvider, $locationProvider){
       $locationProvider.html5Mode(true);
 
       $urlRouterProvider.when("/home","/home/overview/"); //Default to the dashboard
-      // For any unmatched url, send to /dashboard
-      /*$urlRouterProvider.otherwise(function($injector, $location){
-        if($scope.authOK === false)
-            $state.to("login");
-        else
-            $state.to("home.dashboard");
-      });
-      */
       $urlRouterProvider.otherwise('/login');
 
       $stateProvider

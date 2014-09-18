@@ -4,15 +4,15 @@ angular.module('ApplicationModule.controllers', ['ApplicationModule.services', '
   controller(
     'NewApplicationFormController',
     ['$scope',
-    '$location',
     'createNewApplicationService',
     '$route',
+    '$state',
     'TopbarService',
     function(
       $scope,
-      $location,
       createNewApplicationService,
       $route,
+      $state,
       TopbarService
     ) {
 
@@ -37,7 +37,7 @@ angular.module('ApplicationModule.controllers', ['ApplicationModule.services', '
           function(result){
             $scope.formErrors = {};
             $scope.applicationName=$scope.applicationForm.name;
-            $location.path('/home');
+            $state.go('home.overview');
           },
           function(errors){
             angular.extend($scope.formErrors, errors.data.errors);
