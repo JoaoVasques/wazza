@@ -57,44 +57,6 @@ dashboard.controller('DashboardController', [
     $scope.avgTimeFirstPurchase = new KpiModel("Avg Time 1st Purchase", "#");
     $scope.avgTimeBetweenPurchases = new KpiModel("Avg Time Bet. Purchases", "#");
 
-
-      $scope.format = 'dd-MMMM-yyyy';
-
-        $scope.today = function() {
-          DateModel.initDateInterval();
-          $scope.beginDate = DateModel.startDate;
-          $scope.endDate = DateModel.endDate;
-        };
-        $scope.today();
-
-        $scope.toggleMin = function() {
-          $scope.minDate = moment().subtract('years', 1).format('d-M-YYYY');
-          $scope.endDateMin = $scope.beginDate;
-        };
-        $scope.toggleMin();
-
-        $scope.updateEndDateMin = function(){
-          $scope.endDateMin = $scope.beginDate;
-        };
-
-        $scope.maxDate = new Date();
-
-        $scope.openBeginDate = function($event) {
-          $event.preventDefault();
-          $event.stopPropagation();
-
-          $scope.beginDateOpened = true;
-        };
-
-        $scope.openEndDate = function($event) {
-          $event.preventDefault();
-          $event.stopPropagation();
-
-          $scope.endDateOpened = true;
-        };
-
-        $scope.initDate = $scope.today;
-
         $scope.updateKPIs = function(){
           GetMainKPIsService.execute(
             ApplicationStateService.companyName,
