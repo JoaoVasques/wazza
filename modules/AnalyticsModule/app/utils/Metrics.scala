@@ -22,6 +22,11 @@ object Metrics {
     applicationName: String
   ) = s"${companyName}_activeUsers_${applicationName}"
 
+  def numberSessionsCollection(
+    companyName: String,
+    applicationName: String
+  ) = s"${companyName}_numberSessions_${applicationName}"
+
   def mobileSessionsCollection(
     companyName: String,
     applicationName: String

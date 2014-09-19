@@ -2,7 +2,17 @@
 
 
 // Declare app level module which depends on filters, and services
-angular.module('Wazza', ['ui.router', 'ngRoute', 'Wazza.controllers', 'ItemModule', 'UserModule', 'SecurityModule', 'DashboardModule', 'n3-line-chart']).
+angular.module('Wazza', [
+    'ui.router',
+    'ngRoute',
+    'Wazza.controllers',
+    'ItemModule',
+    'UserModule',
+    'SecurityModule',
+    'DashboardModule',
+    'n3-line-chart',
+    'Wazza.broadcastEvents'
+]).
 
 config(function($stateProvider, $urlRouterProvider, $locationProvider){
       
