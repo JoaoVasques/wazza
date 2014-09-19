@@ -107,19 +107,6 @@ config(function($stateProvider, $urlRouterProvider, $locationProvider){
             controller: 'AvgRevenueSessionController'
         })
 
-//TODO
-        .state('home.churn', {
-            url: "^/analytics",
-            templateUrl: '/dashboard/churn',
-            controller: 'ChurnController'
-        })
-    
-        .state('home.ltv', {
-            url: "^/analytics",
-            templateUrl: '/dashboard/ltv',
-            controller: 'ltvController'
-        })
-
       //inventory
         .state('home.inventory', {
             url: "^/inventory",
