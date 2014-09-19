@@ -9,14 +9,6 @@ config(function($stateProvider, $urlRouterProvider, $locationProvider){
       $locationProvider.html5Mode(true);
 
       $urlRouterProvider.when("/home","/home/overview/"); //Default to the dashboard
-      // For any unmatched url, send to /dashboard
-      /*$urlRouterProvider.otherwise(function($injector, $location){
-        if($scope.authOK === false)
-            $state.to("login");
-        else
-            $state.to("home.dashboard");
-      });
-      */
       $urlRouterProvider.otherwise('/login');
 
       $stateProvider
@@ -51,31 +43,31 @@ config(function($stateProvider, $urlRouterProvider, $locationProvider){
             controller: 'DashboardController'
         })
 
-        .state('home.analytics.churn', {
+        .state('home.revenue', {
             url: "^/analytics",
-            templateUrl: '/dashboard/churn',
-            controller: 'ChurnController'
-        })
-
-        .state('home.analytics.revenue', {
-            url: "^/analytics",
-            templateUrl: '/dashboard/revenue',
+            templateUrl: '/dashboard/analytics',
             controller: 'RevenueController'
         })
 
         .state('home.arpu', {
             url: "^/analytics",
-            templateUrl: '/dashboard/arpu',
+            templateUrl: '/dashboard/analytics',
             controller: 'ArpuController'
         })
 
         .state('home.avgRevenueSession', {
             url: "^/analytics",
-            templateUrl: '/dashboard/avgRevenueSession',
+            templateUrl: '/dashboard/analytics',
             controller: 'AvgRevenueSessionController'
         })
+//TODO
+        .state('home.churn', {
+            url: "^/analytics",
+            templateUrl: '/dashboard/churn',
+            controller: 'ChurnController'
+        })
     
-        .state('home.analytics.ltv', {
+        .state('home.ltv', {
             url: "^/analytics",
             templateUrl: '/dashboard/ltv',
             controller: 'ltvController'

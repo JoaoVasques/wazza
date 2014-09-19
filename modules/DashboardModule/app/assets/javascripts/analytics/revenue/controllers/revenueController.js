@@ -1,63 +1,50 @@
 'use strict';
 
+dashboard.value("LineChartConfiguration", {
+  fillColor : "rgba(151,187,205,0.5)",
+  strokeColor : "rgba(151,187,205,1)",
+  pointColor : "rgba(151,187,205,1)",
+  pointStrokeColor : "#fff",
+  data: []
+});
+
 dashboard
-.controller('ArpuController', [
+.controller('RevenueController', [
   '$scope',
   '$location',
   '$rootScope',
+  'FetchItemsService',
+  'BootstrapDashboardService',
+  'DeleteItemService',
   'ApplicationStateService',
+  'ItemSearchService',
   'TopbarService',
   'GetMainKPIsService',
   'DateModel',
   'DetailedKpiModel',
+  'LineChartConfiguration',
   function (
-    $scope,
-    $location,
-    $rootScope,
-    ApplicationStateService,
-    TopbarService,
-    GetMainKPIsService,
-    DateModel,
-    DetailedKpiModel
+        $scope,
+        $location,
+        $rootScope,
+        FetchItemsService,
+        BootstrapDashboardService,
+        DeleteItemService,
+        ApplicationStateService,
+        ItemSearchService,
+        TopbarService,
+        GetKPIService,
+        GetMainKPIsService,
+        DateModel,
+        DetailedKpiModel,
+        LineChartConfiguration
   ) {
-    TopbarService.setName("Average Revenue Per User");
-    $scope.context = new DetailedKpiModel(DateModel.startDate, DateModel.endDate, "Average Revenue Per User");
-    
-    $scope.format = 'dd-MMMM-yyyy';
-    $scope.today = function() {
-      $scope.beginDate = $scope.context.beginDate;
-      $scope.endDate = $scope.context.endDate;
-    };
-    $scope.today();
-    
-    $scope.toggleMin = function() {
-      $scope.minDate = moment().subtract('years', 1).format('d-M-YYYY');
-      $scope.endDateMin = $scope.beginDate;
-    };
-    $scope.toggleMin();
 
-    $scope.updateEndDateMin = function(){
-      $scope.endDateMin = $scope.beginDate;
-    };
-    
-    $scope.maxDate = new Date();
+        TopbarService.setName("Revenue - Details");
+        $scope.context = new DetailedKpiModel(DateModel.startDate, DateModel.endDate, "Revenue - Details");
 
-    $scope.openBeginDate = function($event) {
-      $event.preventDefault();
-      $event.stopPropagation();
-      $scope.beginDateOpened = true;
-    };
+    var KpiId = "revenue";
 
-    $scope.openEndDate = function($event) {
-      $event.preventDefault();
-      $event.stopPropagation();  
-      $scope.endDateOpened = true;
-    };
-
-    $scope.initDate = $scope.today;
-      
-    var KpiId = "arpu";
-      
     $scope.updateChart = function(name) {
       $scope.chart = {
         "data": {
@@ -76,7 +63,7 @@ dashboard
       };
     };
 
-    $scope.updateChart("Average Revenue Per User");
+    $scope.updateChart("Revenue - Details");
 
     $scope.updateOnChangedDate = function() {
       updateChartData();
@@ -115,9 +102,10 @@ dashboard
     var totalValueHandler = function(data) {
       $scope.context.model.updateKpiValue(data.data.value, data.data.delta);
     };
-      
+
     var kpiDataSuccessHandler = function(data) {
       $scope.context.updateChartData(data);
-      $scope.updateChart("Average Revenue Per User");
+      $scope.updateChart("Revenue - Details");
     };
+
 }]);

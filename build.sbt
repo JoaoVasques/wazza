@@ -22,7 +22,7 @@ lazy val dependencies = Seq(
   "org.webjars" % "angular-ui-bootstrap" % "0.11.0-2",
   "org.webjars" % "angular-ui-router" % "0.2.11",
   "org.webjars" % "momentjs" % "2.7.0",
-  "org.webjars" % "chartjs" % "1.0.1-beta.2"
+  "org.webjars" % "chartjs" % "1.0.1-beta.4"
 )
 
 libraryDependencies ++= dependencies

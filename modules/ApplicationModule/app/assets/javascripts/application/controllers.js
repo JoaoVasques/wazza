@@ -4,19 +4,20 @@ angular.module('ApplicationModule.controllers', ['ApplicationModule.services', '
   controller(
     'NewApplicationFormController',
     ['$scope',
-    '$location',
     'createNewApplicationService',
     '$route',
+    '$state',
     'TopbarService',
     function(
       $scope,
-      $location,
       createNewApplicationService,
       $route,
+      $state,
       TopbarService
     ) {
 
     TopbarService.setName("New Application");
+
     $scope.noImageThumbnailUrl = "http://allaboutuarts.ca/wp-content/uploads/2012/07/placeholder_2.jpg";
     $scope.storeOptions = ['iOS', 'Android'];
     $scope.applicationForm = {
@@ -35,7 +36,7 @@ angular.module('ApplicationModule.controllers', ['ApplicationModule.services', '
           function(result){
             $scope.formErrors = {};
             $scope.applicationName=$scope.applicationForm.name;
-            $location.path('/home');
+            $state.go('home.overview');
           },
           function(errors){
             angular.extend($scope.formErrors, errors.data.errors);

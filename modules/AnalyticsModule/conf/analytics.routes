@@ -1,6 +1,7 @@
 # Analytics routes
 # ~~~~
 
+# General Routes  
 GET   /revenue/total/:company/:application/:start/:end   @controllers.analytics.AnalyticsController.getTotalRevenue(company: String, application: String, start: String, end: String)
 
 GET   /revenue/detail/:company/:application/:start/:end  @controllers.analytics.AnalyticsController.getDetailedTotalRevenue(company: String, application: String, start: String, end: String)
@@ -8,3 +9,8 @@ GET   /revenue/detail/:company/:application/:start/:end  @controllers.analytics.
 GET  /arpu/total/:company/:application/:start/:end @controllers.analytics.AnalyticsController.getTotalARPU(company: String, application: String, start: String, end: String)
 
 GET  /arpu/detail/:company/:application/:start/:end @controllers.analytics.AnalyticsController.getDetailedARPU(company: String, application: String, start: String, end: String)
+
+GET  /avgRevenueSession/total/:company/:application/:start/:end @controllers.analytics.AnalyticsController.getTotalAverageRevenuePerSession(company: String, application: String, start: String, end: String)
+
+GET  /avgRevenueSession/detail/:company/:application/:start/:end @controllers.analytics.AnalyticsController.getDetailedAverageRevenuePerSession(company: String, application: String, start: String, end: String)
+ 
