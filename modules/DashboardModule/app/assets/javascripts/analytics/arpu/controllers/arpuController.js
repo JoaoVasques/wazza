@@ -19,6 +19,7 @@ dashboard
   'LineChartConfiguration',
   'DateModel',
   'DetailedKpiModel',
+  'ArpuDateChanged',
   function (
     $scope,
     $location,
@@ -28,10 +29,11 @@ dashboard
     GetMainKPIsService,
     LineChartConfiguration,
     DateModel,
-    DetailedKpiModel
+    DetailedKpiModel,
+    ArpuDateChanged
   ) {
     TopbarService.setName("Average Revenue Per User");
-    $scope.context = new DetailedKpiModel(DateModel.startDate, DateModel.endDate);
+    $scope.context = new DetailedKpiModel(DateModel.startDate, DateModel.endDate, "Average Revenue Per User");
       
     var KpiId = "arpu";
       
@@ -59,13 +61,21 @@ dashboard
       updateChartData();
       updateTotalValues();
     };
+    
+    $scope.$on(ArpuDateChanged, function(ev, data) {
+      $scope.context.beginDate = DateModel.startDate;
+      $scope.context.endDate = DateModel.endDate;
+      updateTotalValues();
+      updateChartData();
+    });
 
+      
     var updateChartData = function() {
       GetMainKPIsService.getDetailedKPIData(
         ApplicationStateService.companyName,
         ApplicationStateService.applicationName,
-        DateModel.formatDate($scope.beginDate),
-        DateModel.formatDate($scope.endDate),
+        DateModel.formatDate($scope.context.beginDate),
+        DateModel.formatDate($scope.context.endDate),
         KpiId
       ).then(function(results) {
         kpiDataSuccessHandler(results);
@@ -77,8 +87,8 @@ dashboard
       GetMainKPIsService.getTotalKpiData(
         ApplicationStateService.companyName,
         ApplicationStateService.applicationName,
-        DateModel.formatDate($scope.beginDate),
-        DateModel.formatDate($scope.endDate),
+        DateModel.formatDate($scope.context.beginDate),
+        DateModel.formatDate($scope.context.endDate),
         KpiId
       ).then(function(results) {
         totalValueHandler(results);

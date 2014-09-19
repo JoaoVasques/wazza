@@ -10,6 +10,7 @@ dashboard
   'GetMainKPIsService',
   'DateModel',
   'DetailedKpiModel',
+  'AvgRevenueSessionDateChanged',
   function (
     $scope,
     $location,
@@ -18,44 +19,12 @@ dashboard
     TopbarService,
     GetMainKPIsService,
     DateModel,
-    DetailedKpiModel
+    DetailedKpiModel,
+    AvgRevenueSessionDateChanged
   ) {
     TopbarService.setName("Average Revenue Per Session");
     $scope.context = new DetailedKpiModel(DateModel.startDate, DateModel.endDate, "Average Revenue Per Session");
-    
-    $scope.format = 'dd-MMMM-yyyy';
-    $scope.today = function() {
-      $scope.beginDate = $scope.context.beginDate;
-      $scope.endDate = $scope.context.endDate;
-    };
-    $scope.today();
-    
-    $scope.toggleMin = function() {
-      $scope.minDate = moment().subtract('years', 1).format('d-M-YYYY');
-      $scope.endDateMin = $scope.beginDate;
-    };
-    $scope.toggleMin();
 
-    $scope.updateEndDateMin = function(){
-      $scope.endDateMin = $scope.beginDate;
-    };
-    
-    $scope.maxDate = new Date();
-
-    $scope.openBeginDate = function($event) {
-      $event.preventDefault();
-      $event.stopPropagation();
-      $scope.beginDateOpened = true;
-    };
-
-    $scope.openEndDate = function($event) {
-      $event.preventDefault();
-      $event.stopPropagation();  
-      $scope.endDateOpened = true;
-    };
-
-    $scope.initDate = $scope.today;
-      
     var KpiId = "avgRevenueSession";
       
     $scope.updateChart = function(name) {
@@ -83,12 +52,19 @@ dashboard
       updateTotalValues();
     };
 
+    $scope.$on(AvgRevenueSessionDateChanged, function(ev, data) {
+      $scope.context.beginDate = DateModel.startDate;
+      $scope.context.endDate = DateModel.endDate;
+      updateTotalValues();
+      updateChartData();
+    });
+
     var updateChartData = function() {
       GetMainKPIsService.getDetailedKPIData(
         ApplicationStateService.companyName,
         ApplicationStateService.applicationName,
-        DateModel.formatDate($scope.beginDate),
-        DateModel.formatDate($scope.endDate),
+        DateModel.formatDate($scope.context.beginDate),
+        DateModel.formatDate($scope.context.endDate),
         KpiId
       ).then(function(results) {
         kpiDataSuccessHandler(results);
@@ -100,8 +76,8 @@ dashboard
       GetMainKPIsService.getTotalKpiData(
         ApplicationStateService.companyName,
         ApplicationStateService.applicationName,
-        DateModel.formatDate($scope.beginDate),
-        DateModel.formatDate($scope.endDate),
+        DateModel.formatDate($scope.context.beginDate),
+        DateModel.formatDate($scope.context.endDate),
         KpiId
       ).then(function(results) {
         totalValueHandler(results);
