@@ -35,6 +35,11 @@ class AnalyticsServiceImpl @Inject()(
     (new SimpleDateFormat("yyyy-MM-dd").parse(ops.take(ops.indexOf('T'))).getTime()) / 1000
   }
 
+  private def getDateFromString(dateStr: String): Date = {
+    val ops = new StringOps(dateStr)
+    new SimpleDateFormat("yyyy-MM-dd").parse(ops.take(ops.indexOf('T')))
+  }
+
   private def fillEmptyResult(start: Date, end: Date): JsArray = {
     val dates = new ListBuffer[String]()
     val s = new LocalDate(start)
@@ -146,14 +151,14 @@ class AnalyticsServiceImpl @Inject()(
   ): Future[JsValue] = {
     val promise = Promise[JsValue]
     Future {
-      val sessions = databaseService.getDocumentsByTimeRange(
-        Metrics.mobileSessionsCollection(companyName, applicationName),
-        "startTime",
+      val fields = ("lowerDate", "upperDate")
+      val sessions = databaseService.getDocumentsWithinTimeRange(
+        Metrics.numberSessionsCollection(companyName, applicationName),
+        fields,
         start,
         end
       ).value
 
-      val fields = ("lowerDate", "upperDate")
       val revenue = databaseService.getDocumentsWithinTimeRange(
         Metrics.totalRevenueCollection(companyName, applicationName),
         fields,
@@ -164,49 +169,36 @@ class AnalyticsServiceImpl @Inject()(
       val result = if(sessions.isEmpty) {
         fillEmptyResult(start, end)
       } else {
-        val dates = new ListBuffer[String]()
         val s = new LocalDate(start)
-        val e = new LocalDate(end)
-        val days = Days.daysBetween(s, e).getDays()+1
+        val days = Days.daysBetween(s, new LocalDate(end)).getDays()+1
 
-        val coll = revenue zip sessions
-        for(d <- List.range(0, days)) {
-          val day = s.withFieldAdded(DurationFieldType.days(), d)
-          coll.filter({el: Tuple2[JsValue, JsValue] =>
-            val revenueDate = null
-            val sessionDate = null
-            true
-          })
-        }
-
-        null
-
-        /**
-          val dates = new ListBuffer[String]()
-          val s = new LocalDate(start)
-          val e = new LocalDate(end)
-          val days = Days.daysBetween(s, e).getDays()+1
-          
-          new JsArray(List.range(0, days) map {i =>{
-          Json.obj(
-          "day" -> s.withFieldAdded(DurationFieldType.days(), i).toString("dd MMM"),
-          "val" -> 0
-          )
+        var coll = revenue zip sessions
+        new JsArray((List.range(0, days)).map {d => {
+          val _d = s.withFieldAdded(DurationFieldType.days(), d)
+          val dailyValues = coll.filter({el: Tuple2[JsValue, JsValue] => {
+            val day = _d.toDate
+            val revenueLowerDate = getDateFromString((el._1 \ "lowerDate" \ "$date").as[String])
+            val revenueUpperDate = getDateFromString((el._1 \ "upperDate" \ "$date").as[String])
+            val sessionLowerDate = getDateFromString((el._2 \ "lowerDate" \ "$date").as[String])
+            val sessionUpperDate = getDateFromString((el._2 \ "upperDate" \ "$date").as[String])
+            (day.after(revenueLowerDate) && day.before(revenueUpperDate)) && (day.after(sessionLowerDate) && day.before(sessionUpperDate))
           }})
-        
-          var i = 0
-        new JsArray((revenue zip active) map {
-          case (r, a) => {
-            Json.obj(
-              "day" -> s.withFieldAdded(DurationFieldType.days(), i++).toString("dd MMM"),
-              "value" -> (r \ "totalRevenue").as[Double] / (a \ "activeUsers").as[Int]
-            )
-          }
-          })**/
+          var totalRevenue = 0.0
+          var nrSessions = 0
+          dailyValues.foreach {value: Tuple2[JsValue, JsValue] => {
+            totalRevenue += (value._1 \ "totalRevenue").as[Double]
+            nrSessions += (value._2 \ "totalSessions").as[Int]
+          }}
+
+          coll = coll.drop(dailyValues.size)
+          Json.obj(
+            "day" -> _d.toString("dd MMM"),
+            "val" -> (if(nrSessions > 0) (totalRevenue / nrSessions) else 0)
+          )
+        }})
       }
       promise.success(result)
     }
-    //TODO
     promise.future
   }
 
