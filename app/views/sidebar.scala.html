@@ -45,7 +45,7 @@
 
             <!-- Analytics -->
             <li class="treeview">
-                <a data-toggle="collapse" data-target="#collapseAnalytics" ui-sref="home.analytics">
+                <a data-toggle="collapse" data-target="#collapseAnalytics" href="">
                     <span><h5><b>Analytics</b></h5></span>
                 </a>
             </li>
@@ -57,14 +57,14 @@
                 <li><a ui-sref="home.avgRevenueSession"><i class="fa fa-shopping-cart"></i> Avg Revenue Per Session</a></li>
 
                 <li><a href="#"><b>Users</b></a></li>
-                <li><a href="#"><i class="fa fa-user"></i> Paying Users</a></li>
-                <li><a href="#"><i class="fa fa-user"></i> Lifetime Value</a></li>
-                <li><a href="#"><i class="fa fa-user"></i> Paying/Churn</a></li>
+                <li><a ui-sref="home.payingUsers"><i class="fa fa-user"></i> Paying Users</a></li>
+                <li><a ui-sref="home.ltv"><i class="fa fa-user"></i> Lifetime Value</a></li>
+                <li><a ui-sref="home.churn"><i class="fa fa-user"></i> Paying/Churn</a></li>
 
                 <li><a href="#"><b>Sessions</b></a></li>
-                <li><a href="#"><i class="fa fa-clock-o"></i> Purchases</a></li>
-                <li><a href="#"><i class="fa fa-clock-o"></i> Avg Time 1st purchase</a></li>
-                <li><a href="#"><i class="fa fa-clock-o"></i> Avg Time between purchase</a></li>
+                <li><a ui-sref="home.purchases"><i class="fa fa-clock-o"></i> Purchases</a></li>
+                <li><a ui-sref="home.avgTime1stPurchase"><i class="fa fa-clock-o"></i> Avg Time 1st purchase</a></li>
+                <li><a ui-sref="home.avgTimebetweenPurchase"><i class="fa fa-clock-o"></i> Avg Time between purchase</a></li>
             </ul>
 
            <!-- Management -->

@@ -70,17 +70,41 @@ config(function($stateProvider, $urlRouterProvider, $locationProvider){
             templateUrl: '/dashboard/analytics',
             controller: 'AvgRevenueSessionController'
         })
-//TODO
-        .state('home.churn', {
+
+        .state('home.payingUsers', {
             url: "^/analytics",
-            templateUrl: '/dashboard/churn',
-            controller: 'ChurnController'
+            templateUrl: '/dashboard/analytics',
+            controller: 'AvgRevenueSessionController'
         })
-    
+
         .state('home.ltv', {
             url: "^/analytics",
-            templateUrl: '/dashboard/ltv',
-            controller: 'ltvController'
+            templateUrl: '/dashboard/analytics',
+            controller: 'AvgRevenueSessionController'
+        })
+
+        .state('home.churn', {
+            url: "^/analytics",
+            templateUrl: '/dashboard/analytics',
+            controller: 'AvgRevenueSessionController'
+        })
+
+        .state('home.purchases', {
+            url: "^/analytics",
+            templateUrl: '/dashboard/analytics',
+            controller: 'AvgRevenueSessionController'
+        })
+
+        .state('home.avgTime1stPurchase', {
+            url: "^/analytics",
+            templateUrl: '/dashboard/analytics',
+            controller: 'AvgRevenueSessionController'
+        })
+
+        .state('home.avgTimebetweenPurchase', {
+            url: "^/analytics",
+            templateUrl: '/dashboard/analytics',
+            controller: 'AvgRevenueSessionController'
         })
 
       //inventory
