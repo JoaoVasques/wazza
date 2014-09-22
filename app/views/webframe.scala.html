@@ -1,0 +1,62 @@
+<head>
+    <link rel="stylesheet" href="@routes.Assets.at("stylesheets/style.css")">
+    <!-- Add custom CSS here -->
+    <!--link rel="stylesheet" href="@routes.Assets.at("stylesheets/custom.css")"-->
+</head>
+
+    <div class="top">
+        <!-- Header -->
+        <nav class="navbar navbar-default navbar-top header" role="navigation">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="/"><img src="@routes.Assets.at("images/wazza_logo_white2.png")" alt="Wazza Logo" class="logo-landing"></a>
+                </div>
+                <div class="collapse navbar-collapse navbar-right navbar-ex1-collapse navbar-mobile">
+                    <ul class="nav navbar-nav">
+                        <li><a href="http://www.wazza.io/about">About</a></li>
+                        <!--li><a href="#pricing">Pricing</a></li-->
+                        <li><a href="http://www.wazza.io/how">How does it work?</a></li>
+                        <li><a href="http://www.wazza.io/login">Log in</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </div>
+
+    <div ui-view></div>
+
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <ul class="list-inline">
+                        <li><a href="/">Home</a></li>
+                        <li>&sdot;</li>
+                        <!--li><a href="/about">About</a></li>
+                        <li>&sdot;</li-->
+                        <li><a href="http://wazza-blog.azurewebsites.net/">Blog</a></li>
+                        <li>&sdot;</li>
+                        <li><a href="/contact">Contact us</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="row">
+            <br>
+                <div class="col-lg-12 text-center">
+                    <ul class="list-inline">
+                        <li><a href="http://www.linkedin.com/company/wazza-mobile"><i class="fa fa-linkedin share-icons"></i></a></li>
+                        <li><a href="https://twitter.com/wazza_io"><i class="fa fa-twitter share-icons"></i></a></li>
+                        <li><a href="https://www.facebook.com/wazzaio"><i class="fa fa-facebook share-icons"></i></a></li>
+                    </ul>                   
+                </div>
+            </div>
+            <p class="copyright text-center medium">Copyright &copy; Wazza 2014. All Rights Reserved</p>
+        </div>
+
+    </footer>

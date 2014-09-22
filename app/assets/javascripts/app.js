@@ -15,14 +15,18 @@ angular.module('Wazza', [
 ]).
 
 config(function($stateProvider, $urlRouterProvider, $locationProvider){
-      
+
       $locationProvider.html5Mode(true);
 
       $urlRouterProvider.when("/home","/home/overview/"); //Default to the dashboard
       $urlRouterProvider.otherwise('/login');
 
       $stateProvider
-        .state('login', {
+        .state('webframe', {
+            templateUrl: '/webframe'
+        })
+
+        .state('webframe.login', {
             url: "/login",
             templateUrl: '/login',
             controller: 'LoginController'
@@ -133,7 +137,7 @@ config(function($stateProvider, $urlRouterProvider, $locationProvider){
             controller : ''
         })
 
-        .state('home.newuser', {
+        .state('webframe.newuser', {
             url: "^/register",
             templateUrl: '/user/register',
             controller: 'UserRegistrationController'

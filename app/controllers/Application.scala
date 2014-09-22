@@ -11,11 +11,15 @@ import com.google.inject._
 class Application extends Controller with Security{
 
   def index = Action {
-	 Ok(views.html.index())
+	Ok(views.html.index())
   }
 
   def home = Action {
     Ok(views.html.home())
+  }
+
+  def webframe = Action {
+    Ok(views.html.webframe())
   }
 
   def notavailableyet = Action {
