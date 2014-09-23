@@ -13,7 +13,6 @@ dashboard.controller('DashboardController', [
   'ItemSearchService',
   'TopbarService',
   'GetMainKPIsService',
-  'KpiData',
   "DateModel",
   "KpiModel",
   "AnchorSmoothScroll",
@@ -30,7 +29,6 @@ dashboard.controller('DashboardController', [
     ItemSearchService,
     TopbarService,
     GetMainKPIsService,
-    KpiData,
     DateModel,
     KpiModel,
     AnchorSmoothScroll

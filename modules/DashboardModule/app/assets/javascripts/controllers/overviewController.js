@@ -12,7 +12,6 @@ dashboard.controller('OverviewController', [
   'ItemSearchService',
   'TopbarService',
   'GetMainKPIsService',
-  'KpiData',
   "KpiModel",
   "AnchorSmoothScroll",
   function (
@@ -27,7 +26,6 @@ dashboard.controller('OverviewController', [
     ItemSearchService,
     TopbarService,
     GetMainKPIsService,
-    KpiData,
     KpiModel,
     AnchorSmoothScroll
   ) {

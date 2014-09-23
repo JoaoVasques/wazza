@@ -7,24 +7,6 @@ var dashboard = angular.module('DashboardModule', [
     'chartjs-directive'
 ]);
 
-dashboard.value('KpiData', [
-  {
-    name: "Total Revenue",
-    link: "home.revenue",
-    delta: 0,
-    unitType: "€"
-  },
-  {
-    name: "Average Revenue Per User",
-    link: "home.arpu",
-    delta: 0,
-    unitType: "€"
-  }
-
-  //TODO: all other metrics
-
-]);
-
 dashboard.factory("KpiModel", function() {
   function KpiModel(name, link) {
     this.name = name;
