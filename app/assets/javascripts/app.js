@@ -48,12 +48,6 @@ config(function($stateProvider, $urlRouterProvider, $locationProvider){
         })
 
       //analytics
-        .state('home.analytics', {
-            url: "^/analytics",
-            templateUrl: '/dashboard/analytics',
-            controller: 'DashboardController'
-        })
-
         .state('home.revenue', {
             url: "^/analytics",
             templateUrl: '/dashboard/analytics',
