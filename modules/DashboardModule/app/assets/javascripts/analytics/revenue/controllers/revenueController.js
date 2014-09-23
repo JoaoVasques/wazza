@@ -13,38 +13,30 @@ dashboard
   '$scope',
   '$location',
   '$rootScope',
-  'FetchItemsService',
-  'BootstrapDashboardService',
-  'DeleteItemService',
   'ApplicationStateService',
-  'ItemSearchService',
   'TopbarService',
   'GetMainKPIsService',
+  'LineChartConfiguration',
   'DateModel',
   'DetailedKpiModel',
-  'LineChartConfiguration',
+  'RevenueDateChanged',
   function (
-        $scope,
-        $location,
-        $rootScope,
-        FetchItemsService,
-        BootstrapDashboardService,
-        DeleteItemService,
-        ApplicationStateService,
-        ItemSearchService,
-        TopbarService,
-        GetKPIService,
-        GetMainKPIsService,
-        DateModel,
-        DetailedKpiModel,
-        LineChartConfiguration
+    $scope,
+    $location,
+    $rootScope,
+    ApplicationStateService,
+    TopbarService,
+    GetMainKPIsService,
+    LineChartConfiguration,
+    DateModel,
+    DetailedKpiModel,
+    RevenueDateChanged
   ) {
-
-        TopbarService.setName("Revenue - Details");
-        $scope.context = new DetailedKpiModel(DateModel.startDate, DateModel.endDate, "Revenue - Details");
-
+    TopbarService.setName("Total Revenue");
+    $scope.context = new DetailedKpiModel(DateModel.startDate, DateModel.endDate, "Total Revenue");
+      
     var KpiId = "revenue";
-
+      
     $scope.updateChart = function(name) {
       $scope.chart = {
         "data": {
@@ -63,19 +55,27 @@ dashboard
       };
     };
 
-    $scope.updateChart("Revenue - Details");
+    $scope.updateChart("Total Revenue");
 
     $scope.updateOnChangedDate = function() {
       updateChartData();
       updateTotalValues();
     };
+    
+    $scope.$on(RevenueDateChanged, function(ev, data) {
+      $scope.context.beginDate = DateModel.startDate;
+      $scope.context.endDate = DateModel.endDate;
+      updateTotalValues();
+      updateChartData();
+    });
 
+      
     var updateChartData = function() {
       GetMainKPIsService.getDetailedKPIData(
         ApplicationStateService.companyName,
         ApplicationStateService.applicationName,
-        DateModel.formatDate($scope.beginDate),
-        DateModel.formatDate($scope.endDate),
+        DateModel.formatDate($scope.context.beginDate),
+        DateModel.formatDate($scope.context.endDate),
         KpiId
       ).then(function(results) {
         kpiDataSuccessHandler(results);
@@ -87,8 +87,8 @@ dashboard
       GetMainKPIsService.getTotalKpiData(
         ApplicationStateService.companyName,
         ApplicationStateService.applicationName,
-        DateModel.formatDate($scope.beginDate),
-        DateModel.formatDate($scope.endDate),
+        DateModel.formatDate($scope.context.beginDate),
+        DateModel.formatDate($scope.context.endDate),
         KpiId
       ).then(function(results) {
         totalValueHandler(results);
@@ -102,10 +102,9 @@ dashboard
     var totalValueHandler = function(data) {
       $scope.context.model.updateKpiValue(data.data.value, data.data.delta);
     };
-
+      
     var kpiDataSuccessHandler = function(data) {
       $scope.context.updateChartData(data);
-      $scope.updateChart("Revenue - Details");
+      $scope.updateChart("Total Revenue");
     };
-
 }]);

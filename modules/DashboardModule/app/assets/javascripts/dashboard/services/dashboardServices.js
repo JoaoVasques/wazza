@@ -168,6 +168,8 @@ var dashboardServices = angular.module('DashboardModule.services', [])
       return service;
 }])
 
+
+//item related. leftover.
 .factory('FetchItemsService', ['$http', '$q',
     function ($http, $q) {
         var service = {};
