@@ -5,23 +5,24 @@ version := "pre-alpha"
 lazy val dependencies = Seq(
   anorm,
   cache,
+  "org.webjars" % "jquery" % "1.11.1",
   "com.google.inject" % "guice" % "3.0",
   "com.tzavellas" % "sse-guice" % "0.7.1",
   "org.webjars" % "webjars-play_2.10" % "2.2.2-1",
-  "org.webjars" % "angularjs" % "1.2.20",
+  "org.webjars" % "angularjs" % "1.2.25",
   "org.webjars" % "bootstrap" % "3.2.0",
   "commons-validator" % "commons-validator" % "1.4.0",
   "com.github.nscala-time" %% "nscala-time" % "1.0.0",
-  "org.webjars" % "underscorejs" % "1.6.0",
+  "org.webjars" % "underscorejs" % "1.6.0-3",
   "com.amazonaws" % "aws-java-sdk" % "1.7.9",
   "org.mindrot" % "jbcrypt" % "0.3m",
   "commons-codec" % "commons-codec" % "1.9",
   "org.mongodb" % "casbah_2.10" % "2.7.0",
   "com.typesafe.akka" %% "akka-actor" % "2.2.3",
   "com.typesafe.akka" %% "akka-slf4j" % "2.2.3",
-  "org.webjars" % "angular-ui-bootstrap" % "0.11.0-2",
+  "org.webjars" % "angular-ui-bootstrap" % "0.11.0-3",
   "org.webjars" % "angular-ui-router" % "0.2.11",
-  "org.webjars" % "momentjs" % "2.7.0",
+  "org.webjars" % "momentjs" % "2.8.3",
   "org.webjars" % "chartjs" % "1.0.1-beta.4"
 )
 
