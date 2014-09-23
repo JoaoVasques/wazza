@@ -1,20 +1,17 @@
 'use strict';
 
-overviewServices.factory('overviewInitService', ['$http', '$q',
+overviewServices.factory('OverviewInitService', ['$http', '$q',
   function($http, $q) {
-    function overviewInitService() {
 
+    var service = {};
+    service.getApplications = function() {
+      var deferred = $q.defer();
+      deferred.resolve($http({
+        url: '/dashboard/overview/bootstrap',
+        method: 'GET'
+      }));
+      return deferred.promise;
     };
 
-    overviewInitService.prototype = {
-      getApplications: function() {
-        var deferred = $.defer();
-        return deferred.resolve($http({
-          url: '/dashboard/overview',
-          method: 'GET'
-        })).promise;
-      }
-    };
-
-    return overviewInitService;
+    return service;
 }]);

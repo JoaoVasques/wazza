@@ -1,4 +1,4 @@
 'use strict';
 
-var overviewServices = angular.module('DashboardModule.overviewServices');
+var overviewServices = angular.module('OverviewServices', []);
 

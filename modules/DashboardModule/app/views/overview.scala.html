@@ -1,24 +1,22 @@
-
-<div ng-controller="DashboardController">
-
-  <div class="row">
-    <div class="col-md-4 col-lg-4" ng-repeat="app in applicationsList">
+<div class="row" ng-controller="OverviewController">
+    <div class="col-md-4 col-lg-4" ng-repeat="app in applications">
       <div class="well profile">
             <div class="col-sm-12">
                 <div class="col-xs-12 col-sm-4 text-center">
                     <figure>
-                        <img src="http://www.localcrimenews.com/wp-content/uploads/2013/07/default-user-icon-profile.png" alt="" class="img-circle img-responsive">
+                        <img ng-src="{{app.imageUrl}}" alt="" class="img-circle img-responsive">
                     </figure>
                 </div>
                 <div class="col-xs-12 col-sm-8">
-                    <h2>{{app}}</h2>
+                    <h2>{{app.name}}</h2>
                 </div>             
             </div>
             <div class="col-xs-12">
                 <p><strong>Description: </strong> Read, out with friends, listen to music, draw and learn new things. </p>
                 <p><strong>Platforms: </strong>
-                  <span class="tags">Android</span> 
-                  <span class="tags">iOS</span>
+                  <div ng-repeat="platform in app.platforms">
+                    <span class="tags">{{platform}}</span>
+                  </div>
                 </p>
             </div>
             <div class="col-xs-12 divider text-center">
@@ -39,5 +37,3 @@
     	</div>                 
 	</div>
 </div>
-
-   

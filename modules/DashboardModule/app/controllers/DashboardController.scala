@@ -53,7 +53,7 @@ class DashboardController @Inject()(
         val application = applicationService.find(companyName, appId).get
         Json.obj(
           "name" -> application.name,
-          "url" -> application.appUrl,
+          "url" -> application.imageName,
           "platforms" -> application.appType
         )
       }))
