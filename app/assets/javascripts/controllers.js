@@ -35,7 +35,7 @@ var application = angular.module('Wazza.controllers', [
     };
 
     $scope.toggleMin = function() {
-      $scope.minDate = moment().subtract('years', 1).format('d-M-YYYY');
+      $scope.minDate = moment().subtract(1, 'years').format('d-M-YYYY');
       $scope.endDateMin = $scope.beginDate;
     };
 
