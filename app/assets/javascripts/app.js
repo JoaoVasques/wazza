@@ -32,8 +32,6 @@ config(function($stateProvider, $urlRouterProvider, $locationProvider){
         })
 
         .state('home', {
-            url: "/home",
-            //'abstract': true,
             templateUrl: '/home'
         })
 
