@@ -9,12 +9,10 @@
                 </a>
             </li>
             <ul id="collapseChangeApp" class="sidebar-menu collapse text-center">
-                <h4 class="header">You have {{applicationsList.length}} apps</h4>
+                <h4 class="header">You have {{applicationsList.length}} apps:</h4>
                 <li ng-repeat="app in applicationsList" class="sidebar-menu text-center">
-                    <a href="#">
-                        <h3>
-                            {{app}}
-                        </h3>
+                    <a href="#" ng-click="chooseApplication(app)">
+                        {{app}}
                     </a>
                 </li>
                 <li class="treeview">
@@ -22,9 +20,11 @@
                 </li>
             </ul>
 
+            <!-- Overview -->
             <li class="treeview">
                 <a ui-sref="home.overview"><span><h5><b>Overview</b></h5></span></a>
             </li>
+
             <!-- Dashboard -->
             <li class="treeview">
                 <a data-toggle="collapse" data-target="#collapseDashboard" ui-sref="home.dashboard">
