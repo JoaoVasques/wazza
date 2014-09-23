@@ -1,8 +1,5 @@
 .panel-kpi-container {
-  padding-top: 1em;
-  padding-left: 1em;
-  padding-right: 1em;
-  padding-bottom: 1em;
+  padding: 0;
   background: transparent;
   border: none;
   border-radius: 0px;
@@ -12,7 +9,7 @@
 
 .panel-kpi-container > .panel-heading {
     background: #C2C2C2;
-    color: white;
+    color: #555;
     font-size: 2em;
 }
 

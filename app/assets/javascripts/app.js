@@ -10,7 +10,6 @@ angular.module('Wazza', [
     'UserModule',
     'SecurityModule',
     'DashboardModule',
-    'n3-line-chart',
     'Wazza.broadcastEvents'
 ]).
 
@@ -33,8 +32,6 @@ config(function($stateProvider, $urlRouterProvider, $locationProvider){
         })
 
         .state('home', {
-            url: "/home",
-            //'abstract': true,
             templateUrl: '/home'
         })
 
@@ -51,12 +48,6 @@ config(function($stateProvider, $urlRouterProvider, $locationProvider){
         })
 
       //analytics
-        .state('home.analytics', {
-            url: "^/analytics",
-            templateUrl: '/dashboard/analytics',
-            controller: 'DashboardController'
-        })
-
         .state('home.revenue', {
             url: "^/analytics",
             templateUrl: '/dashboard/analytics',

@@ -8,13 +8,11 @@
                     <span><h5><b>Change App</b><i class="fa fa-tasks pull-right" style="padding-right: 20px;"></i></h5></span>
                 </a>
             </li>
-            <ul id="collapseChangeApp" class="sidebar-menu collapse text-center">
-                <h4 class="header">You have {{applicationsList.length}} apps</h4>
-                <li ng-repeat="app in applicationsList" class="sidebar-menu text-center">
-                    <a href="#">
-                        <h3>
-                            {{app}}
-                        </h3>
+            <ul id="collapseChangeApp" class="sidebar-menu collapse">
+                <h4 class="header text-center">You have {{applicationsList.length}} apps:</h4>
+                <li ng-repeat="app in applicationsList" class="sidebar-menu">
+                    <a href="#" ng-click="chooseApplication(app)">
+                        {{app}}
                     </a>
                 </li>
                 <li class="treeview">
@@ -22,9 +20,11 @@
                 </li>
             </ul>
 
+            <!-- Overview -->
             <li class="treeview">
                 <a ui-sref="home.overview"><span><h5><b>Overview</b></h5></span></a>
             </li>
+
             <!-- Dashboard -->
             <li class="treeview">
                 <a data-toggle="collapse" data-target="#collapseDashboard" ui-sref="home.dashboard">

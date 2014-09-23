@@ -47,6 +47,10 @@ application.controller('AppController', [
       $scope.applicationsList = ApplicationStateService.applicationsList;
     });
 
+    $scope.chooseApplication = function(app){
+      ApplicationStateService.updateApplicationName(app);
+    }
+
     //current page related
     $scope.page = "Overview";
     TopbarService.setName("Overview");
