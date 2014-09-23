@@ -1,20 +1,20 @@
 'use strict';
 
-var dashboardServices = angular.module('DashboardModule.services', []);
+var dashboardServices = angular.module('DashboardModule.services', [])
 
-dashboardServices.value("RevenueUrlType", {
+.value("RevenueUrlType", {
     kpiType: "revenue",
     total: "total",
     detailed: ""
-});
+})
 
-dashboardServices.value("ArpuUrlType", {
+.value("ArpuUrlType", {
     kpiType: "arpu",
     total: "total",
     detailed: ""
-});
+})
 
-dashboardServices.factory('AnchorSmoothScroll', function() {
+.factory('AnchorSmoothScroll', function() {
 
   var service = {};
   service.scrollTo = function(eID) {
@@ -67,9 +67,9 @@ dashboardServices.factory('AnchorSmoothScroll', function() {
   };
 
   return service;
-});
+})
 
-dashboardServices.factory('BootstrapDashboardService', ['$http', '$q',
+.factory('BootstrapDashboardService', ['$http', '$q',
     function ($http, $q) {
         var service = {};
 
@@ -85,9 +85,9 @@ dashboardServices.factory('BootstrapDashboardService', ['$http', '$q',
         };
 
         return service;
-}]);
+}])
 
-dashboardServices.factory('GetKPIService', ['$http', '$q',
+.factory('GetKPIService', ['$http', '$q',
     function($http, $q) {
       var service = {};
 
@@ -101,7 +101,7 @@ dashboardServices.factory('GetKPIService', ['$http', '$q',
             method: 'GET'
         });
 
-		var getDetailed = $http({
+        var getDetailed = $http({
             url: buildUrl(metric, 'detail'),
             method: 'GET'
         });
@@ -110,9 +110,9 @@ dashboardServices.factory('GetKPIService', ['$http', '$q',
       };
 
       return service;
-}]);
+}])
 
-dashboardServices.factory('GetMainKPIsService', ['$http','$q',
+.factory('GetMainKPIsService', ['$http','$q',
   function($http,$q) {
       var service = {};
 
@@ -166,9 +166,9 @@ dashboardServices.factory('GetMainKPIsService', ['$http','$q',
       };
 
       return service;
-}]);
+}])
 
-dashboardServices.factory('FetchItemsService', ['$http', '$q',
+.factory('FetchItemsService', ['$http', '$q',
     function ($http, $q) {
         var service = {};
 
@@ -184,9 +184,9 @@ dashboardServices.factory('FetchItemsService', ['$http', '$q',
         };
 
         return service;
-}]);
+}])
 
-dashboardServices.factory('DeleteItemService', ['$http', '$q',
+.factory('DeleteItemService', ['$http', '$q',
     function ($http, $q) {
         var service = function (id, name, imageName) {
             var request = $http.post("/app/item/delete/" + id, {
