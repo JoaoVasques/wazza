@@ -10,7 +10,6 @@ angular.module('Wazza', [
     'UserModule',
     'SecurityModule',
     'DashboardModule',
-    'n3-line-chart',
     'Wazza.broadcastEvents'
 ]).
 
