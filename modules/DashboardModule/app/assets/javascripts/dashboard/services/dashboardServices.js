@@ -2,18 +2,6 @@
 
 var dashboardServices = angular.module('DashboardModule.services', [])
 
-.value("RevenueUrlType", {
-    kpiType: "revenue",
-    total: "total",
-    detailed: ""
-})
-
-.value("ArpuUrlType", {
-    kpiType: "arpu",
-    total: "total",
-    detailed: ""
-})
-
 .factory('AnchorSmoothScroll', function() {
 
   var service = {};
