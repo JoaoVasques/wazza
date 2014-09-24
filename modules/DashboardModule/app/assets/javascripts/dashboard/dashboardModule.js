@@ -7,6 +7,15 @@ var dashboard = angular.module('DashboardModule', [
     'chartjs-directive'
 ]);
 
+dashboard.value("LineChartConfiguration", {
+  fillColor : "rgba(151,187,205,0.5)",
+  strokeColor : "rgba(151,187,205,1)",
+  pointColor : "rgba(151,187,205,1)",
+  pointStrokeColor : "#fff",
+  data: []
+});
+
+
 dashboard.factory("KpiModel", function() {
   function KpiModel(name, link) {
     this.name = name;
