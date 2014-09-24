@@ -36,7 +36,7 @@ angular.module('ApplicationModule.controllers', ['ApplicationModule.services', '
           function(result){
             $scope.formErrors = {};
             $scope.applicationName=$scope.applicationForm.name;
-            $state.go('home.overview');
+            $state.go('analytics.overview');
           },
           function(errors){
             angular.extend($scope.formErrors, errors.data.errors);

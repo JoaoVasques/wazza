@@ -142,7 +142,7 @@ angular.module('ItemModule.controllers', ['ItemModule.services', 'angularFileUpl
       $scope.errors = false;
       $scope.formErrors = [];
       $scope.itemSearch = true;
-      $state.go("home.dashboard");
+      $state.go("analytics.dashboard");
     }
 
     $scope.handleErrors = function(errors){

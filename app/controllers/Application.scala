@@ -18,6 +18,10 @@ class Application extends Controller with Security{
     Ok(views.html.home())
   }
 
+  def analyticsframe = Action {
+    Ok(views.html.analyticsFrame())
+  }
+
   def webframe = Action {
     Ok(views.html.webframe())
   }

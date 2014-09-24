@@ -5,6 +5,7 @@
 # Home page
 GET     /                     @controllers.Application.index
 GET     /home                 @controllers.Application.home
+GET		/analyticsframe		  @controllers.Application.analyticsframe
 GET		/notavailableyet	  @controllers.Application.notavailableyet
 GET		/webframe			  @controllers.Application.webframe
 GET     /login                @controllers.LoginLogoutController.login

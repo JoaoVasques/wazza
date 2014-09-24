@@ -24,7 +24,7 @@ application.controller('LoginController',[
       then(
         function(){
           LoginLogoutService.login();
-          $state.go("home.dashboard");
+          $state.go("analytics.dashboard");
         }
       );
   };

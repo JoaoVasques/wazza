@@ -46,7 +46,7 @@ class RegistrationController @Inject()(
         Ok(Json.obj(
           "authToken" -> token,
           "userId" -> user.email,
-          "url" -> "home.overview"// TODO routes.Application.test().url
+          "url" -> "analytics.overview"// TODO routes.Application.test().url
         )).withToken(token)
       }
     )
