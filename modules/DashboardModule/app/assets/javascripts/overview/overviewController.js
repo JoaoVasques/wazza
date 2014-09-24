@@ -11,6 +11,8 @@ dashboard.controller('OverviewController',[
   'AppOverviewModel',
   'GetMainKPIsService',
   'DateModel',
+  'ApplicationStateService',
+  '$q',
   function(
     $scope,
     $location,
@@ -18,11 +20,10 @@ dashboard.controller('OverviewController',[
     OverviewInitService,
     AppOverviewModel,
     GetMainKPIsService,
-    DateModel
+    DateModel,
+    ApplicationStateService,
+    $q
   ) {
-
-    var kpis = ["arpu"];
-
     $scope.applications = [];
     var noImageUrl = "http://www.localcrimenews.com/wp-content/uploads/2013/07/default-user-icon-profile.png";
     OverviewInitService
@@ -37,12 +38,27 @@ dashboard.controller('OverviewController',[
         });
       })
       .then(function(){
+        var companyName = ApplicationStateService.companyName;
+        var revenue = "revenue";
+        var ltv = "arpu"; //TODO LTV
+        var arpu = "arpu";
+        var start = DateModel.formatDate(DateModel.startDate);
+        var end = DateModel.formatDate(DateModel.endDate);
+        
         _.each($scope.applications, function(app) {
           $q.all([
-            GetMainKPIsService.getTotalKpiData("companyName", app.name, DateModel.begin, DateModel.end, "kpiName"),
-            GetMainKPIsService.getTotalKpiData("companyName", app.name, DateModel.begin, DateModel.end, "kpiName"),
-            GetMainKPIsService.getTotalKpiData("companyName", app.name, DateModel.begin, DateModel.end, "kpiName")
+            GetMainKPIsService.getTotalKpiData(companyName, app.name, start, end, revenue),
+            GetMainKPIsService.getTotalKpiData(companyName, app.name, start, end, ltv),
+            GetMainKPIsService.getTotalKpiData(companyName, app.name, start, end, arpu)
           ])
+          .then(function(res) {
+            var extractValue = function(index) {
+              return res[index].data.value;
+            };
+            app.totalRevenue = extractValue(0);
+            app.ltv = extractValue(1);
+            app.arpu = extractValue(2);
+          });
         });
       });
   }
