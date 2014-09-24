@@ -29,13 +29,16 @@ dashboard.controller('OverviewController',[
     OverviewInitService
       .getApplications()
       .then(function(results) {
+        var names = [];
         _.each(results.data, function(appInfo) {
           $scope.applications.push(new AppOverviewModel(
             appInfo.name,
             (appInfo.url == '') ? noImageUrl : appInfo.url,
             appInfo.platforms
           ));
+          names.push(appInfo.name);
         });
+        ApplicationStateService.updateApplicationsList(names);
       })
       .then(function(){
         var companyName = ApplicationStateService.companyName;

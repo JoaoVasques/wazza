@@ -49,6 +49,7 @@ application.controller('AppController', [
 
     $scope.chooseApplication = function(app){
       ApplicationStateService.updateApplicationName(app);
+      $state.go("home.dashboard");
     }
 
     //current page related
