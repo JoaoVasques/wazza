@@ -9,18 +9,25 @@ dashboard.controller('OverviewController',[
   '$state',
   'OverviewInitService',
   'AppOverviewModel',
+  'GetMainKPIsService',
+  'DateModel',
   function(
     $scope,
     $location,
     $state,
     OverviewInitService,
-    AppOverviewModel
+    AppOverviewModel,
+    GetMainKPIsService,
+    DateModel
   ) {
+
+    var kpis = ["arpu"];
 
     $scope.applications = [];
     var noImageUrl = "http://www.localcrimenews.com/wp-content/uploads/2013/07/default-user-icon-profile.png";
-    OverviewInitService.getApplications().then(
-      function(results) {
+    OverviewInitService
+      .getApplications()
+      .then(function(results) {
         _.each(results.data, function(appInfo) {
           $scope.applications.push(new AppOverviewModel(
             appInfo.name,
@@ -28,8 +35,16 @@ dashboard.controller('OverviewController',[
             appInfo.platforms
           ));
         });
-      }
-    )
+      })
+      .then(function(){
+        _.each($scope.applications, function(app) {
+          $q.all([
+            GetMainKPIsService.getTotalKpiData("companyName", app.name, DateModel.begin, DateModel.end, "kpiName"),
+            GetMainKPIsService.getTotalKpiData("companyName", app.name, DateModel.begin, DateModel.end, "kpiName"),
+            GetMainKPIsService.getTotalKpiData("companyName", app.name, DateModel.begin, DateModel.end, "kpiName")
+          ])
+        });
+      });
   }
 ]);
 
