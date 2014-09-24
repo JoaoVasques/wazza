@@ -36,7 +36,8 @@ config(function($stateProvider, $urlRouterProvider, $locationProvider){
         })
 
         .state('analytics', {
-            templateUrl: '/analyticsframe'
+            templateUrl: '/analyticsframe',
+            controller: 'AnalyticsController'
         })
 
         .state('analytics.overview', {
