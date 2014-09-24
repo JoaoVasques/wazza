@@ -7,8 +7,6 @@ dashboard
   '$rootScope',
   'ApplicationStateService',
   'TopbarService',
-  'GetMainKPIsService',
-  'LineChartConfiguration',
   'DateModel',
   'DetailedKpiModel',
   'ArpuDateChanged',
@@ -18,8 +16,6 @@ dashboard
     $rootScope,
     ApplicationStateService,
     TopbarService,
-    GetMainKPIsService,
-    LineChartConfiguration,
     DateModel,
     DetailedKpiModel,
     ArpuDateChanged
