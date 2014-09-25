@@ -1,43 +1,38 @@
-
-<div ng-controller="DashboardController">
-
-  <div class="row kpi">
-    <div class="col-md-4 col-lg-4" ng-repeat="app in applicationsList">
-      <div class="panel kpi">
-        <div class="panel-heading">
-          <h2>{{app}}</h2>
-        </div>
-        <div class="row">
-          <div class="col-md-2">
-            <h4>Revenue</h4>
-          </div>
-          <div class="col-md-4">
-            <div class="kpi value">{{app.unit}}{{app.value}}</div>
-          </div>
-          <div class="col-md-4">
-            <div ng-class="kpi.css">
-              <span ng-class="kpi.icon"></span> ${{app.delta}}
+<div class="row" ng-controller="OverviewController">
+    <div class="col-md-4 col-lg-4" ng-repeat="app in applications">
+      <div class="well profile glow" ng-click="chooseApplication(app.name)">
+            <div class="col-sm-12">
+                <div class="col-xs-12 col-sm-4 text-center">
+                    <figure>
+                        <img ng-src="{{app.imageUrl}}" alt="" class="img-circle img-responsive">
+                    </figure>
+                </div>
+                <div class="col-xs-12 col-sm-8">
+                    <h1>{{app.name}}</h1>
+                </div>             
             </div>
-          </div>
-        <div class="row">
-          <div class="col-md-2">
-            <h4>LTV</h4>
-          </div>
-          <div class="col-md-4">
-            <div class="kpi value">{{app.unit}}{{app.value}}</div>
-          </div>
-          <div class="col-md-4">
-            <div ng-class="kpi.css">
-              <span ng-class="kpi.icon"></span> ${{app.delta}}
+            <div class="col-xs-12" style="padding-top: 1em;">
+                <p><strong>Platforms: </strong>
+                  <span class="tags" ng-repeat="platform in app.platforms">
+                    {{platform}}
+                  </span>
+                </p>
             </div>
-          </div>
-          <div class="col-md-12 kpi link">
-            <a ui-sref="analytics.dashboard" ng-click="chooseApplication(app)">
-              <button type="button" class="btn btn-lg btn-info">More info</button>
-            </a>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+            <div class="col-xs-12 divider text-center">
+                <div class="col-xs-12 col-sm-4 emphasis">
+                    <h2><strong> {{app.totalRevenue}} </strong></h2>                    
+                    <p><small>Total Revenue</small></p>
+                </div>
+                <div class="col-xs-12 col-sm-4 emphasis">
+                    <h2><strong>{{app.ltv}}</strong></h2>                    
+                    <p><small>LTV</small></p>
+                </div>
+                <div class="col-xs-12 col-sm-4 emphasis">
+                    <h2><strong>{{app.arpu}}</strong></h2>                    
+                    <p><small>ARPU</small></p>
+                </div>
+            </div>
+    	 </div>         
+    	</div>                 
+	</div>
 </div>
