@@ -98,13 +98,13 @@ config(function($stateProvider, $urlRouterProvider, $locationProvider){
         .state('analytics.avgTime1stPurchase', {
             url: "^/analytics",
             templateUrl: '/dashboard/analytics',
-            controller: 'AverageTimeBetweenPurchase'
+            controller: 'AverageTimeFirstPurchase'
         })
 
         .state('analytics.avgTimebetweenPurchase', {
             url: "^/analytics",
             templateUrl: '/dashboard/analytics',
-            controller: 'AvgRevenueSessionController'
+            controller: 'AverageTimeBetweenPurchase'
         })
 
       //inventory
