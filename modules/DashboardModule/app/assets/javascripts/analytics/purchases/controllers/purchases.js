@@ -22,7 +22,7 @@ dashboard
   ) {
 
     var title = "Purchase";
-    var KpiId = "purcase";
+    var KpiId = "purchase";
 
     TopbarService.setName(title);
     $scope.context = new DetailedKpiModel(DateModel.startDate, DateModel.endDate, title);
