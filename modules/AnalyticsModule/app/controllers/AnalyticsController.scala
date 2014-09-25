@@ -189,7 +189,7 @@ class AnalyticsController @Inject()(
       startDateStr,
       endDateStr,
       analyticsService.getTotalRevenue,
-      Detailed)
+      Total)
   }
 
   def getDetailedTotalRevenue(
