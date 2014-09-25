@@ -30,6 +30,8 @@ class AnalyticsServiceImpl @Inject()(
   databaseService: DatabaseService
 ) extends AnalyticsService {
 
+  lazy val ProfitMargin = 0.7 // Because Google and Apple take a 30% on every purchase
+
   private def getUnixDate(dateStr: String): Long = {
     val ops = new StringOps(dateStr)
     (new SimpleDateFormat("yyyy-MM-dd").parse(ops.take(ops.indexOf('T'))).getTime()) / 1000
@@ -282,6 +284,10 @@ class AnalyticsServiceImpl @Inject()(
     }
 
     promise.future
+  }
+
+  def getTotalLifeTimeValue(companyName: String, applicationName: String, start: Date, end: Date): Future[JsArray] = {
+    null
   }
 }
 
