@@ -18,7 +18,7 @@ dashboard
     TopbarService,
     DateModel,
     DetailedKpiModel,
-    ATBPDateChanged
+    AT1PDateChanged
   ) {
 
     var title = "Average Time to First Purchases";
@@ -30,7 +30,7 @@ dashboard
     $scope.updateChart(title, $scope.context);
     $scope.updateOnChangedDate($scope.context, KpiId, title);
 
-    $scope.$on(ArpuDateChanged, function(ev, data) {
+    $scope.$on(AT1PDateChanged, function(ev, data) {
       $scope.context.beginDate = DateModel.startDate;
       $scope.context.endDate = DateModel.endDate;
       $scope.updateOnChangedDate($scope.context, KpiId, title);
