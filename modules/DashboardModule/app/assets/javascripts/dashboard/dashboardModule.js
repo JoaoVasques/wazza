@@ -7,23 +7,14 @@ var dashboard = angular.module('DashboardModule', [
     'chartjs-directive'
 ]);
 
-dashboard.value('KpiData', [
-  {
-    name: "Total Revenue",
-    link: "home.revenue",
-    delta: 0,
-    unitType: "€"
-  },
-  {
-    name: "Average Revenue Per User",
-    link: "home.arpu",
-    delta: 0,
-    unitType: "€"
-  }
+dashboard.value("LineChartConfiguration", {
+  fillColor : "rgba(151,187,205,0.5)",
+  strokeColor : "rgba(151,187,205,1)",
+  pointColor : "rgba(151,187,205,1)",
+  pointStrokeColor : "#fff",
+  data: []
+});
 
-  //TODO: all other metrics
-
-]);
 
 dashboard.factory("KpiModel", function() {
   function KpiModel(name, link) {

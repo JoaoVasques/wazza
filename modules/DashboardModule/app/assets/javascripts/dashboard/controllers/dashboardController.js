@@ -13,7 +13,6 @@ dashboard.controller('DashboardController', [
   'ItemSearchService',
   'TopbarService',
   'GetMainKPIsService',
-  'KpiData',
   "DateModel",
   "KpiModel",
   "AnchorSmoothScroll",
@@ -30,7 +29,6 @@ dashboard.controller('DashboardController', [
     ItemSearchService,
     TopbarService,
     GetMainKPIsService,
-    KpiData,
     DateModel,
     KpiModel,
     AnchorSmoothScroll
@@ -43,19 +41,19 @@ dashboard.controller('DashboardController', [
     });
     
     /** General KPIs **/
-    $scope.totalRevenue = new KpiModel("Total Revenue", "home.revenue");
-    $scope.arpu = new KpiModel("Avg Revenue Per User", "home.arpu");
-    $scope.avgRevSession = new KpiModel("Avg Revenue per Session", "#");
+    $scope.totalRevenue = new KpiModel("Total Revenue", "analytics.revenue");
+    $scope.arpu = new KpiModel("Avg Revenue Per User", "analytics.arpu");
+    $scope.avgRevSession = new KpiModel("Avg Revenue per Session", "analytics.avgRevenueSession");
     
     /** User KPIs **/
-    $scope.ltv = new KpiModel("Life Time Value", "#");
-    $scope.payingUsers = new KpiModel("% Paying Users", "#");
-    $scope.todo = new KpiModel("Paying Users Growth", "#");
+    $scope.ltv = new KpiModel("Life Time Value", "analytics.ltv");
+    $scope.payingUsers = new KpiModel("% Paying Users", "analytics.payingUsers");
+    $scope.todo = new KpiModel("Paying Users Growth", "analytics.churn");
 
     /** Session KPIs **/
-    $scope.purchasesPerSession = new KpiModel("Purchases per Session", "#");
-    $scope.avgTimeFirstPurchase = new KpiModel("Avg Time 1st Purchase", "#");
-    $scope.avgTimeBetweenPurchases = new KpiModel("Avg Time Bet. Purchases", "#");
+    $scope.purchasesPerSession = new KpiModel("Purchases per Session", "analytics.purchases");
+    $scope.avgTimeFirstPurchase = new KpiModel("Avg Time 1st Purchase", "analytics.avgTime1stPurchase");
+    $scope.avgTimeBetweenPurchases = new KpiModel("Avg Time Bet. Purchases", "analytics.avgTimebetweenPurchase");
 
         $scope.updateKPIs = function(){
           GetMainKPIsService.execute(

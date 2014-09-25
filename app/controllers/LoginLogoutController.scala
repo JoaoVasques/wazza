@@ -51,7 +51,7 @@ class LoginLogoutController @Inject()(
             "authToken" -> token,
             "userId" -> user.get.email,
             "userName" -> user.get.name,
-            "url" -> "home.overview" // TODO routes.Application.test().url
+            "url" -> "analytics.overview" // TODO routes.Application.test().url
           )).withToken(token)
         }
       }

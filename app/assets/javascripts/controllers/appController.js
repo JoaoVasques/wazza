@@ -31,7 +31,7 @@ application.controller('AppController', [
     $scope.$on("LOGOUT_SUCCESS", function(event, url){
       document.body.className = "skin-blue login-screen";
       $scope.authOK = false;
-      $state.go("login");
+      $state.go("webframe.login");
       //$state.go(url.value);      //TODO: fix this. url.value returns the relative url instead of the state
     });
 
@@ -49,6 +49,7 @@ application.controller('AppController', [
 
     $scope.chooseApplication = function(app){
       ApplicationStateService.updateApplicationName(app);
+      $state.go("analytics.dashboard");
     }
 
     //current page related

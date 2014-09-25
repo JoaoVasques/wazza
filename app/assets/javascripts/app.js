@@ -35,71 +35,76 @@ config(function($stateProvider, $urlRouterProvider, $locationProvider){
             templateUrl: '/home'
         })
 
-        .state('home.overview', {
+        .state('analytics', {
+            templateUrl: '/analyticsframe',
+            controller: 'AnalyticsController'
+        })
+
+        .state('analytics.overview', {
             url: "^/overview",
             templateUrl: '/dashboard/overview',
             controller: 'OverviewController'
         })
 
-        .state('home.dashboard', {
+        .state('analytics.dashboard', {
             url: "^/dashboard",
             templateUrl: '/dashboard',
             controller: 'DashboardController'
         })
 
       //analytics
-        .state('home.revenue', {
+        .state('analytics.revenue', {
             url: "^/analytics",
             templateUrl: '/dashboard/analytics',
             controller: 'RevenueController'
         })
 
-        .state('home.arpu', {
+        .state('analytics.arpu', {
             url: "^/analytics",
             templateUrl: '/dashboard/analytics',
             controller: 'ArpuController'
         })
 
-        .state('home.avgRevenueSession', {
+        .state('analytics.avgRevenueSession', {
             url: "^/analytics",
             templateUrl: '/dashboard/analytics',
             controller: 'AvgRevenueSessionController'
         })
 
-        .state('home.payingUsers', {
+        .state('analytics.payingUsers', {
             url: "^/analytics",
             templateUrl: '/dashboard/analytics',
-            controller: 'AvgRevenueSessionController'
+            controller: 'PayingUsersController'
         })
 
-        .state('home.ltv', {
+        .state('analytics.ltv', {
             url: "^/analytics",
             templateUrl: '/dashboard/analytics',
-            controller: 'AvgRevenueSessionController'
+            controller: 'LifeTimeValueController'
         })
 
-        .state('home.churn', {
+        .state('analytics.churn', {
             url: "^/analytics",
             templateUrl: '/dashboard/analytics',
-            controller: 'AvgRevenueSessionController'
+            controller: 'ChurnController'
         })
 
-        .state('home.purchases', {
+        .state('analytics.purchases', {
             url: "^/analytics",
             templateUrl: '/dashboard/analytics',
-            controller: 'AvgRevenueSessionController'
+            controller: 'PurchaseController'
         })
 
-        .state('home.avgTime1stPurchase', {
+        .state('analytics.avgTime1stPurchase', {
             url: "^/analytics",
             templateUrl: '/dashboard/analytics',
-            controller: 'AvgRevenueSessionController'
+            controller: 'AverageTimeFirstPurchaseController'
         })
 
-        .state('home.avgTimebetweenPurchase', {
+        .state('analytics.avgTimebetweenPurchase', {
             url: "^/analytics",
             templateUrl: '/dashboard/analytics',
-            controller: 'AvgRevenueSessionController'
+            controller: 'AverageTimeBetweenPurchaseController'
         })
 
       //inventory

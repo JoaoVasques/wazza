@@ -266,14 +266,18 @@ class AnalyticsServiceImpl @Inject()(
     Future {
       val collection = Metrics.totalRevenueCollection(companyName, applicationName)
       val fields = ("lowerDate", "upperDate")
-      val results = new JsArray(
-        databaseService.getDocumentsWithinTimeRange(collection, fields, start, end).value map {(el: JsValue) => {
-        Json.obj(
-          "timestamp" -> getUnixDate((el \ "lowerDate" \ "$date").as[String]),
-          "value" -> (el \ "totalRevenue").as[Int]
-        )
-      }})
+      val revenue = databaseService.getDocumentsWithinTimeRange(collection, fields, start, end)
 
+      val results = if(revenue.value.size == 0) {
+        fillEmptyResult(start, end)
+      } else {
+        new JsArray(revenue.value map {(el: JsValue) => {
+        Json.obj(
+          "day" -> getUnixDate((el \ "lowerDate" \ "$date").as[String]),
+          "val" -> (el \ "totalRevenue").as[Int]
+        )
+        }})
+      }
       promise.success(results)
     }
 

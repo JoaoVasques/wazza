@@ -1,7 +1,7 @@
 'use strict';
 
 dashboard
-.controller('ArpuController', [
+.controller('LifeTimeValueController', [
   '$scope',
   '$location',
   '$rootScope',
@@ -9,7 +9,7 @@ dashboard
   'TopbarService',
   'DateModel',
   'DetailedKpiModel',
-  'ArpuDateChanged',
+  'LtvDateChanged',
   function (
     $scope,
     $location,
@@ -18,11 +18,11 @@ dashboard
     TopbarService,
     DateModel,
     DetailedKpiModel,
-    ArpuDateChanged
+    LtvDateChanged
   ) {
 
-    var title = "Average Revenue Per User";
-    var KpiId = "arpu";
+    var title = "Lifetime Value";
+    var KpiId = "ltv";
 
     TopbarService.setName(title);
     $scope.context = new DetailedKpiModel(DateModel.startDate, DateModel.endDate, title);
@@ -30,7 +30,7 @@ dashboard
     $scope.updateChart(title, $scope.context);
     $scope.updateOnChangedDate($scope.context, KpiId, title);
 
-    $scope.$on(ArpuDateChanged, function(ev, data) {
+    $scope.$on(LtvDateChanged, function(ev, data) {
       $scope.context.beginDate = DateModel.startDate;
       $scope.context.endDate = DateModel.endDate;
       $scope.updateOnChangedDate($scope.context, KpiId, title);

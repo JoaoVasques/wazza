@@ -1,0 +1,47 @@
+        <div class="wrapper row-offcanvas row-offcanvas-left">
+            <!-- Left side column. contains the logo and sidebar -->
+            @views.html.sidebar.render()
+
+            <!-- Right side column. Contains the navbar and content of the page -->
+            <aside class="right-side">
+                <!-- Content Header (Page header) -->
+                <section class="content-header" ng-controller="NavBarController" ng-model="page">
+                      <div class="row">
+                        <div class="col-md-5">
+                          <h4 style="font-size:22px">{{page}}</h4>
+                        </div>
+                          <div class="col-md-1">
+                            <h4 style="float:right">From</h4>
+                          </div>
+                            <div class="col-md-2">
+                                <p class="input-group">
+                                  <input type="text" class="form-control" ng-change="updateEndDateMin()" show-button-bar="false" datepicker-popup="{{format}}" ng-model="beginDate" is-open="beginDateOpened" min-date="minDate" max-date="maxDate" date-disabled="disabled(date, mode)" ng-required="true" close-text="Close" />
+                                  <span class="input-group-btn">
+                                    <button type="button" class="btn btn-default" ng-click="openBeginDate($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                                  </span>
+                                </p>
+                            </div>
+                            <div class="col-md-1">
+                              <h4 style="float:right">To</h4>
+                            </div>
+                            <div class="col-md-2">
+                                <p class="input-group">
+                                  <input type="text" class="form-control" show-button-bar="false" datepicker-popup="{{format}}" ng-model="endDate" is-open="endDateOpened" min-date="endDateMin" max-date="maxDate" date-disabled="disabled(date, mode)" ng-required="true" close-text="Close" />
+                                  <span class="input-group-btn">
+                                    <button type="button" class="btn btn-default" ng-click="openEndDate($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                                  </span>
+                                </p>
+                            </div>
+                            <div class="col-md-1">
+                              <button type="button" class="btn btn-success" ng-click="updateKPIs()">Update</button>
+                            </div>
+                      </div>
+                </section>
+
+                <!-- Main content -->
+                <section class="content">
+                  <div ui-view></div>
+                </section>
+
+            </aside>
+        </div>
