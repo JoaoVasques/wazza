@@ -11,6 +11,7 @@ import service.user.definitions._
 import com.google.inject._
 import play.api.libs.json._
 import models.application.{Item, VirtualCurrency, Credentials}
+import java.util.Date
 
 class DashboardController @Inject()(
   applicationService: ApplicationService,
@@ -38,6 +39,24 @@ class DashboardController @Inject()(
           ))
         }
       }
+    }
+  }
+
+  def bootstrapOverview() = HasToken() {token => userId => implicit request =>
+    val applications = userService.getApplications(userId)
+    if(applications.isEmpty) {
+      BadRequest
+    } else {
+      val user = userService.find(userId).get
+      val companyName = user.company
+      Ok(new JsArray(applications map {appId: String =>
+        val application = applicationService.find(companyName, appId).get
+        Json.obj(
+          "name" -> application.name,
+          "url" -> application.imageName,
+          "platforms" -> application.appType
+        )
+      }))
     }
   }
 
@@ -121,5 +140,4 @@ class DashboardController @Inject()(
   def overview = HasToken() {token => userId => implicit request =>
     Ok(views.html.overview())
   }
-
 }

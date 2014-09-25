@@ -6,7 +6,8 @@
 GET     /                             @controllers.dashboard.DashboardController.index
 GET     /bootstrap                    @controllers.dashboard.DashboardController.bootstrapDashboard
 GET     /overview                     @controllers.dashboard.DashboardController.overview
-
+GET     /overview/bootstrap           @controllers.dashboard.DashboardController.bootstrapOverview
+  
 # inventory
 GET     /inventory                    @controllers.dashboard.DashboardController.inventory
 GET     /inventory/crud               @controllers.dashboard.DashboardController.inventoryCRUD
