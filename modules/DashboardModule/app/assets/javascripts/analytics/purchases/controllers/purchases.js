@@ -1,7 +1,7 @@
 'use strict';
 
 dashboard
-.controller('AverageTimeFirstPurchaseController', [
+.controller('PurchaseController', [
   '$scope',
   '$location',
   '$rootScope',
@@ -9,7 +9,7 @@ dashboard
   'TopbarService',
   'DateModel',
   'DetailedKpiModel',
-  'AT1PDateChanged',
+  'PurchaseDateChanged',
   function (
     $scope,
     $location,
@@ -18,11 +18,11 @@ dashboard
     TopbarService,
     DateModel,
     DetailedKpiModel,
-    AT1PDateChanged
+    PurchaseDateChanged
   ) {
 
-    var title = "Average Time to First Purchases";
-    var KpiId = "avgTime1stPurchase";
+    var title = "Purchase";
+    var KpiId = "purcase";
 
     TopbarService.setName(title);
     $scope.context = new DetailedKpiModel(DateModel.startDate, DateModel.endDate, title);
@@ -30,7 +30,7 @@ dashboard
     $scope.updateChart(title, $scope.context);
     $scope.updateOnChangedDate($scope.context, KpiId, title);
 
-    $scope.$on(AT1PDateChanged, function(ev, data) {
+    $scope.$on(PurchaseDateChanged, function(ev, data) {
       $scope.context.beginDate = DateModel.startDate;
       $scope.context.endDate = DateModel.endDate;
       $scope.updateOnChangedDate($scope.context, KpiId, title);

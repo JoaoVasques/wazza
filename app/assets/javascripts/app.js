@@ -86,25 +86,25 @@ config(function($stateProvider, $urlRouterProvider, $locationProvider){
         .state('analytics.churn', {
             url: "^/analytics",
             templateUrl: '/dashboard/analytics',
-            controller: 'AvgRevenueSessionController'
+            controller: 'ChurnController'
         })
 
         .state('analytics.purchases', {
             url: "^/analytics",
             templateUrl: '/dashboard/analytics',
-            controller: 'AvgRevenueSessionController'
+            controller: 'PurchaseController'
         })
 
         .state('analytics.avgTime1stPurchase', {
             url: "^/analytics",
             templateUrl: '/dashboard/analytics',
-            controller: 'AverageTimeFirstPurchase'
+            controller: 'AverageTimeFirstPurchaseController'
         })
 
         .state('analytics.avgTimebetweenPurchase', {
             url: "^/analytics",
             templateUrl: '/dashboard/analytics',
-            controller: 'AverageTimeBetweenPurchase'
+            controller: 'AverageTimeBetweenPurchaseController'
         })
 
       //inventory

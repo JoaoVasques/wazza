@@ -21,18 +21,19 @@ dashboard
     ArpuDateChanged
   ) {
 
-    TopbarService.setName("Average Revenue Per User");
-    $scope.context = new DetailedKpiModel(DateModel.startDate, DateModel.endDate, "Average Revenue Per User");
-
+    var title = "Average Revenue Per User";
     var KpiId = "arpu";
 
-    $scope.updateChart("Average Revenue Per User", $scope.context);
-    $scope.updateOnChangedDate($scope.context, KpiId, "Average Revenue Per User");
+    TopbarService.setName(title);
+    $scope.context = new DetailedKpiModel(DateModel.startDate, DateModel.endDate, title);
+
+    $scope.updateChart(title, $scope.context);
+    $scope.updateOnChangedDate($scope.context, KpiId, title);
 
     $scope.$on(ArpuDateChanged, function(ev, data) {
       $scope.context.beginDate = DateModel.startDate;
       $scope.context.endDate = DateModel.endDate;
-      $scope.updateOnChangedDate($scope.context, KpiId, "Average Revenue Per User");
+      $scope.updateOnChangedDate($scope.context, KpiId, title);
     });
 
 }]);

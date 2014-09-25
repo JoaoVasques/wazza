@@ -1,7 +1,7 @@
 'use strict';
 
 dashboard
-.controller('AverageTimeBetweenPurchase', [
+.controller('AverageTimeBetweenPurchaseController', [
   '$scope',
   '$location',
   '$rootScope',
