@@ -74,13 +74,13 @@ config(function($stateProvider, $urlRouterProvider, $locationProvider){
         .state('analytics.payingUsers', {
             url: "^/analytics",
             templateUrl: '/dashboard/analytics',
-            controller: 'AvgRevenueSessionController'
+            controller: 'PayingUsersController'
         })
 
         .state('analytics.ltv', {
             url: "^/analytics",
             templateUrl: '/dashboard/analytics',
-            controller: 'AvgRevenueSessionController'
+            controller: 'LifeTimeValueController'
         })
 
         .state('analytics.churn', {
