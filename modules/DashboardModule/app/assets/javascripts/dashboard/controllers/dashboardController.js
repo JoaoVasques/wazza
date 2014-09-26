@@ -56,7 +56,7 @@ dashboard.controller('DashboardController', [
     $scope.avgTimeBetweenPurchases = new KpiModel("Avg Time Bet. Purchases", "analytics.avgTimebetweenPurchase");
 
         $scope.updateKPIs = function(){
-          GetMainKPIsService.execute(
+          GetMainKPIsService.getOverviewKpis(
             ApplicationStateService.companyName,
             ApplicationStateService.applicationName,
             DateModel.formatDate($scope.beginDate),
