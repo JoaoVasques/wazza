@@ -97,6 +97,31 @@ class DashboardController @Inject()(
   } 
 
 
+  def overview() = HasToken() {token => userId => implicit request =>
+    val applications = userService.getApplications(userId)
+    if(applications.isEmpty){
+      Ok(views.html.overview(false, "", null, Nil, Nil))
+    } else {
+      request.body.asJson match {
+        case Some(json) => {
+          Ok("skip " + json)
+        }
+        case None => {
+          val companyName = userService.find(userId).get.company
+          val application = applicationService.find(companyName, applications.head).get
+          Ok(views.html.overview(
+            true,
+            application.name,
+            application.credentials,
+            application.virtualCurrencies,
+            application.items
+          ))
+        }
+      }
+    }
+  }
+
+
   //analytics
   def analytics = HasToken() {token => userId => implicit request =>
     Ok(views.html.analytics.generic())
@@ -137,7 +162,4 @@ class DashboardController @Inject()(
     Ok(views.html.settings())
   }
 
-  def overview = HasToken() {token => userId => implicit request =>
-    Ok(views.html.overview())
-  }
 }
