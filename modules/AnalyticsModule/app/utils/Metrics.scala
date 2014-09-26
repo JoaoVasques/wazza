@@ -17,6 +17,11 @@ object Metrics {
     applicationName: String
   ) = s"${companyName}_nrPayingUsers_${applicationName}"
 
+  def payingUsersCollection(
+    companyName: String,
+    applicationName: String
+  ) = s"{companyName}_payingUsers_${applicationName}"
+
   def activeUsersCollection(
     companyName: String,
     applicationName: String

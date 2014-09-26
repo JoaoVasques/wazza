@@ -25,6 +25,7 @@ import service.persistence.definitions.DatabaseService
 import org.joda.time.Days
 import org.joda.time.LocalDate
 import org.joda.time.DurationFieldType
+import org.joda.time.DateMidnight
 
 class AnalyticsServiceImpl @Inject()(
   databaseService: DatabaseService
@@ -40,6 +41,10 @@ class AnalyticsServiceImpl @Inject()(
   private def getDateFromString(dateStr: String): Date = {
     val ops = new StringOps(dateStr)
     new SimpleDateFormat("yyyy-MM-dd").parse(ops.take(ops.indexOf('T')))
+  }
+
+  private def getNumberDaysBetweenDates(d1: Date, d2: Date): Int = {
+    Days.daysBetween(new LocalDate(d1), new LocalDate(d2)).getDays()
   }
 
   private def fillEmptyResult(start: Date, end: Date): JsArray = {
@@ -269,7 +274,7 @@ class AnalyticsServiceImpl @Inject()(
       val collection = Metrics.totalRevenueCollection(companyName, applicationName)
       val fields = ("lowerDate", "upperDate")
       val revenue = databaseService.getDocumentsWithinTimeRange(collection, fields, start, end)
-
+                                  
       val results = if(revenue.value.size == 0) {
         fillEmptyResult(start, end)
       } else {
@@ -286,7 +291,46 @@ class AnalyticsServiceImpl @Inject()(
     promise.future
   }
 
-  def getTotalLifeTimeValue(companyName: String, applicationName: String, start: Date, end: Date): Future[JsArray] = {
+  def getTotalChurnRate(
+    companyName: String,
+    applicationName: String,
+    start: Date,
+    end: Date
+  ): Future[JsValue] = {
+    val promise = Promise[JsValue]
+    val collection = Metrics.payingUsersCollection(companyName, applicationName)
+    val s = new DateMidnight(start)
+    println(s)
+    promise.success(Json.obj("1"->0))
+    /**
+    if(getNumberDaysBetweenDates(start, end) == 0) {
+      
+    } else {
+      val fields = ("lowerDate", "upperDate")
+      val payingUsers = databaseService.getDocumentsWithinTimeRange(collection, fields, start, end)
+
+      val results = if(payingUsers.value.isEmpty) {
+        promise.success(Json.obj("value" -> 0))
+      } else {
+        var users = List[String]()
+        for(c <- payingUsers.value) {
+          val payingUserIds = (c \ "payingUsers").as[List[String]]
+          users = (payingUserIds ++ users).distinct
+        }
+
+        val usersThatBought = users.size
+      }
+    }**/
+    promise.future
+  }
+
+  def getTotalLifeTimeValue(
+    companyName: String,
+    applicationName: String,
+    start: Date,
+    end: Date
+  ): Future[JsArray] = {
+    getTotalChurnRate(companyName, applicationName, start, end)
     null
   }
 }

@@ -206,4 +206,19 @@ class AnalyticsController @Inject()(
       analyticsService.getRevenue,
       Detailed)
   }
+
+  def getTotalLifeTimeValue(
+    companyName: String,
+    applicationName: String,
+    startDateStr: String,
+    endDateStr: String
+  ) = Action.async {implicit request =>
+    executeRequest(
+      companyName,
+      applicationName,
+      startDateStr,
+      endDateStr,
+      analyticsService.getTotalLifeTimeValue,
+      Total)
+  }
 }
