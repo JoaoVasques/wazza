@@ -20,7 +20,7 @@ object Metrics {
   def payingUsersCollection(
     companyName: String,
     applicationName: String
-  ) = s"{companyName}_payingUsers_${applicationName}"
+  ) = s"${companyName}_payingUsers_${applicationName}"
 
   def activeUsersCollection(
     companyName: String,

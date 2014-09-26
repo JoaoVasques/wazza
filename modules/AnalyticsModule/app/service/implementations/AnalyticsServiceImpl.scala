@@ -25,7 +25,7 @@ import service.persistence.definitions.DatabaseService
 import org.joda.time.Days
 import org.joda.time.LocalDate
 import org.joda.time.DurationFieldType
-import org.joda.time.DateMidnight
+import org.joda.time.DateTime
 
 class AnalyticsServiceImpl @Inject()(
   databaseService: DatabaseService
@@ -297,30 +297,47 @@ class AnalyticsServiceImpl @Inject()(
     start: Date,
     end: Date
   ): Future[JsValue] = {
-    val promise = Promise[JsValue]
-    val collection = Metrics.payingUsersCollection(companyName, applicationName)
-    val s = new DateMidnight(start)
-    println(s)
-    promise.success(Json.obj("1"->0))
-    /**
-    if(getNumberDaysBetweenDates(start, end) == 0) {
-      
-    } else {
-      val fields = ("lowerDate", "upperDate")
-      val payingUsers = databaseService.getDocumentsWithinTimeRange(collection, fields, start, end)
 
-      val results = if(payingUsers.value.isEmpty) {
-        promise.success(Json.obj("value" -> 0))
+    val fields = ("lowerDate", "upperDate")
+
+    def calculateNumberPayingCustomers(s: Date, e: Date): Float = {
+      val collection = Metrics.payingUsersCollection(companyName, applicationName)
+      val payingUsers = databaseService.getDocumentsWithinTimeRange(collection, fields, s, e)
+      if(payingUsers.value.isEmpty) {
+        0
       } else {
         var users = List[String]()
         for(c <- payingUsers.value) {
           val payingUserIds = (c \ "payingUsers").as[List[String]]
           users = (payingUserIds ++ users).distinct
         }
-
-        val usersThatBought = users.size
+        users.size
       }
-    }**/
+    }
+
+    var numberPayingUsersLower = 0.0
+    var numberPayingUsersUpper = 0.0
+
+    val promise = Promise[JsValue]
+    if(getNumberDaysBetweenDates(start, end) == 0) {
+      val s = new DateTime(start).withTimeAtStartOfDay
+      val yesterday = s.minusDays(1).withTimeAtStartOfDay
+      val e = s.plusDays(1)
+      numberPayingUsersLower = calculateNumberPayingCustomers(yesterday.toDate, s.toDate)
+      numberPayingUsersUpper = calculateNumberPayingCustomers(s.toDate, e.toDate)
+    } else {
+      val lower_1 = new DateTime(start).withTimeAtStartOfDay
+      val lower = lower_1.plusDays(1).withTimeAtStartOfDay
+      val upper_1 = new DateTime(end).withTimeAtStartOfDay
+      val upper = upper_1.plusDays(1).withTimeAtStartOfDay
+      numberPayingUsersLower = calculateNumberPayingCustomers(lower_1.toDate, lower.toDate)
+      numberPayingUsersUpper = calculateNumberPayingCustomers(upper_1.toDate, upper.toDate)
+    }
+
+    val result = if(numberPayingUsersLower > 0) {
+      (numberPayingUsersUpper - numberPayingUsersLower) / numberPayingUsersLower
+    } else 0
+    promise.success(Json.obj("value"-> result))
     promise.future
   }
 
@@ -331,7 +348,7 @@ class AnalyticsServiceImpl @Inject()(
     end: Date
   ): Future[JsArray] = {
     getTotalChurnRate(companyName, applicationName, start, end)
-    null
+    Future {new JsArray}
   }
 }
 
