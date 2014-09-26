@@ -1,8 +1,5 @@
 'use strict'
 
-/**var overviewController = angular.module('Dashboard.overviewControllers', ['DashboardModule.overviewServices']);
-**/
-
 dashboard.controller('OverviewController',[
   '$scope',
   '$location',
@@ -24,13 +21,16 @@ dashboard.controller('OverviewController',[
     ApplicationStateService,
     $q
   ) {
+
     $scope.applications = [];
     var noImageUrl = "http://www.localcrimenews.com/wp-content/uploads/2013/07/default-user-icon-profile.png";
+
     OverviewInitService
       .getApplications()
       .then(function(results) {
         var names = [];
         _.each(results.data, function(appInfo) {
+          alert(appInfo.url);
           $scope.applications.push(new AppOverviewModel(
             appInfo.name,
             (appInfo.url == '') ? noImageUrl : appInfo.url,
