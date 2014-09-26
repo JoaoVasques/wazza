@@ -38,8 +38,6 @@ dashboard.controller('OverviewController', [
             };
 
             angular.extend($scope.credentials, data.data.credentials);
-            push(data.data.virtualCurrencies, $scope.virtualCurrencies);
-            push(data.data.items, $scope.items);
             push(
                 _.map(data.data.applications, function (element) {
                     return element.name;
@@ -66,12 +64,7 @@ dashboard.controller('OverviewController', [
             $scope.applicationName = "";
             $scope.applications = [];
             $scope.credentials = {};
-            $scope.virtualCurrencies = [];
-            $scope.items = [];
 
-            $scope.$on("ITEM_SEARCH_EVENT", function () {
-                $scope.itemSearch = ItemSearchService.searchData
-            });
             $scope.$on("APPLICATION_NAME_UPDATED", function () {
                 $scope.applicationName = ApplicationStateService.applicationName;
             });
