@@ -29,8 +29,17 @@ application.controller('AppController', [
     });
 
     $scope.$on("LOGOUT_SUCCESS", function(event, url){
-      document.body.className = "skin-blue login-screen";
+      //cleanup!
+      $scope.applicationName = "";
+      $scope.applicationsList = [];
+      $scope.userInfo = {
+        name: "",
+        email: ""
+      };
+
       $scope.authOK = false;
+
+      document.body.className = "skin-blue login-screen";
       $state.go("webframe.login");
       //$state.go(url.value);      //TODO: fix this. url.value returns the relative url instead of the state
     });
