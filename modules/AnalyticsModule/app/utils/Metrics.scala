@@ -36,5 +36,10 @@ object Metrics {
     companyName: String,
     applicationName: String
   ) = s"${companyName}_mobileSessions_${applicationName}"
+
+  def numberSessionsPerUserCollection(
+    companyName: String,
+    applicationName: String
+  ) = s"${companyName}_numberSessionsPerUser_${applicationName}"
 }
 

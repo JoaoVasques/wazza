@@ -341,13 +341,53 @@ class AnalyticsServiceImpl @Inject()(
     promise.future
   }
 
+  def getTotalAverageNumberSessionsPerUser(
+    companyName: String,
+    applicationName: String,
+    start: Date,
+    end: Date
+  ): Future[JsValue] = {
+    val promise = Promise[JsValue]
+    val fields = ("lowerDate", "upperDate")
+    val sessionsPerUser = databaseService.getDocumentsWithinTimeRange(
+      Metrics.numberSessionsPerUserCollection(companyName, applicationName),
+      fields,
+      start,
+      end
+    )
+
+    if(sessionsPerUser.value.isEmpty){
+      promise.success(Json.obj("value" -> 0))
+    } else {
+      var sessionUserMap: Map[String, Int] = Map() 
+      for(
+        el <- sessionsPerUser.value;
+        spuDay <- ((el \ "nrSessionsPerUser").as[List[JsValue]])
+      ) {
+        val userId = (spuDay \ "user").as[String]
+        val nrSessions = (spuDay \ "nrSessions").as[Int]
+        val value = sessionUserMap getOrElse(userId, 0)
+        value match {
+          case 0 => sessionUserMap += (userId ->  nrSessions)
+          case _ => sessionUserMap += (userId -> (value + nrSessions))
+        }
+      }
+      promise.success(Json.obj(
+        "value" -> (sessionUserMap.values.foldLeft(0)(_ + _) / sessionUserMap.values.size)
+      )) 
+    }
+    promise.future
+  }
+
   def getTotalLifeTimeValue(
     companyName: String,
     applicationName: String,
     start: Date,
     end: Date
   ): Future[JsArray] = {
-    getTotalChurnRate(companyName, applicationName, start, end)
+    val futureChurn = getTotalChurnRate(companyName, applicationName, start, end)
+    val futureArpu = getTotalARPU(companyName, applicationName, start, end)
+    val futureAvgSessionUser = getTotalAverageNumberSessionsPerUser(companyName, applicationName, start, end)
     Future {new JsArray}
   }
 }
