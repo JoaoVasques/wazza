@@ -251,7 +251,6 @@ class AnalyticsController @Inject()(
       analyticsService.getTotalChurnRate,
       Total)
   }
-
   
   def getDetailedChurnRate(
     companyName: String,
