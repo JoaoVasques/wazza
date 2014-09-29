@@ -373,7 +373,7 @@ class AnalyticsServiceImpl @Inject()(
         }
       }
       promise.success(Json.obj(
-        "value" -> (sessionUserMap.values.foldLeft(0)(_ + _) / sessionUserMap.values.size)
+        "value" -> (sessionUserMap.values.foldLeft(0.0)(_ + _) / sessionUserMap.values.size)
       )) 
     }
     promise.future
