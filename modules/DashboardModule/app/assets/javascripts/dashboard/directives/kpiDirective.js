@@ -10,9 +10,9 @@ dashboard.directive('kpi', ['$state', function($state) {
         }
       },
       template:
-      '<div class="col-md-4 col-lg-4 well profile glow">'+
-        '<div class="" ng-click="switchDetailedView(kpi.link)">' +
-            '<div>' +
+      '<div class="col-md-4 col-lg-4">'+
+        '<div style="margin:10px, width:inherit" class="well profile glow" ng-click="switchDetailedView(kpi.link)">' +
+            '<div style="200px">' +
                 '<h1>{{kpi.name}}</h1>' +
             '</div>' +
             '<div class="divider text-center">' +
@@ -21,6 +21,7 @@ dashboard.directive('kpi', ['$state', function($state) {
                     '<p><small>Total</small></p>' +
                 '</div>' +
                 '<div class="col-xs-12 col-sm-6 emphasis">' +
+                    '<h2><strong>{{kpi.delta}} % </strong></h2>' +
                     '<p><small>Delta</small></p>' +
                 '</div>' +
             '</div>' +
@@ -28,4 +29,3 @@ dashboard.directive('kpi', ['$state', function($state) {
       '</div>'
     };
 }]);
-
