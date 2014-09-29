@@ -10,8 +10,8 @@ dashboard.directive('kpi', ['$state', function($state) {
         }
       },
       template:
-      '<div class="well profile glow" ng-click="switchDetailedView(kpi.link)">' +
-          '<div class="col-md-4 col-lg-4">'+
+      '<div class="col-md-4 col-lg-4 well profile glow">'+
+        '<div class="" ng-click="switchDetailedView(kpi.link)">' +
             '<div>' +
                 '<h1>{{kpi.name}}</h1>' +
             '</div>' +
@@ -26,7 +26,6 @@ dashboard.directive('kpi', ['$state', function($state) {
             '</div>' +
           '</div>' +
       '</div>'
-      
     };
 }]);
 
