@@ -16,6 +16,6 @@ GET  /avgRevenueSession/detail/:company/:application/:start/:end @controllers.an
 
 GET  /ltv/total/:company/:application/:start/:end @controllers.analytics.AnalyticsController.getTotalLifeTimeValue(company: String, application: String, start: String, end: String)
 
-GET  /ltv/detailed/:company/:application/:start/:end @controllers.analytics.AnalyticsController.getDetailedLifeTimeValue(company: String, application: String, start: String, end: String)
+GET  /ltv/detail/:company/:application/:start/:end @controllers.analytics.AnalyticsController.getDetailedLifeTimeValue(company: String, application: String, start: String, end: String)
 
   
