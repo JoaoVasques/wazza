@@ -384,11 +384,25 @@ class AnalyticsServiceImpl @Inject()(
     applicationName: String,
     start: Date,
     end: Date
-  ): Future[JsArray] = {
-    val futureChurn = getTotalChurnRate(companyName, applicationName, start, end)
-    val futureArpu = getTotalARPU(companyName, applicationName, start, end)
-    val futureAvgSessionUser = getTotalAverageNumberSessionsPerUser(companyName, applicationName, start, end)
-    Future {new JsArray}
+  ): Future[JsValue] = {
+    val promise = Promise[JsValue]
+    val futureLTV = for {
+      churn <- getTotalChurnRate(companyName, applicationName, start, end)
+      arpu <- getTotalARPU(companyName, applicationName, start, end)
+      avgSessionUser <- getTotalAverageNumberSessionsPerUser(companyName, applicationName, start, end)
+    } yield {
+      (1 - ((churn \ "value").as[Float])) *
+      ((arpu \ "value").as[Float]) *
+      ((avgSessionUser \ "value").as[Float]) *
+      ProfitMargin
+    }
+
+    futureLTV map {ltv =>
+      promise.success(Json.obj("value" -> ltv))
+    } recover {
+      case ex: Exception => promise.failure(ex)
+    }
+    promise.future
   }
 }
 
