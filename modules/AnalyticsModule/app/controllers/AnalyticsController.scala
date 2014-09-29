@@ -237,4 +237,34 @@ class AnalyticsController @Inject()(
       Detailed)
   }
 
+  def getTotalChurnRate(
+    companyName: String,
+    applicationName: String,
+    startDateStr: String,
+    endDateStr: String
+  ) = Action.async {implicit request =>
+    executeRequest(
+      companyName,
+      applicationName,
+      startDateStr,
+      endDateStr,
+      analyticsService.getTotalChurnRate,
+      Total)
+  }
+
+  
+  def getDetailedChurnRate(
+    companyName: String,
+    applicationName: String,
+    startDateStr: String,
+    endDateStr: String
+  ) = Action.async {implicit request =>
+    executeRequest(
+      companyName,
+      applicationName,
+      startDateStr,
+      endDateStr,
+      analyticsService.getChurnRate,
+      Detailed)
+  }
 }

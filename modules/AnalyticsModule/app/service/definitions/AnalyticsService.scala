@@ -30,6 +30,20 @@ trait AnalyticsService {
 
   def getTotalRevenue(companyName: String, applicationName: String, start: Date, end: Date): Future[JsValue]
 
+  def getTotalChurnRate(
+    companyName: String,
+    applicationName: String,
+    start: Date,
+    end: Date
+  ): Future[JsValue]
+
+  def getChurnRate(
+    companyName: String,
+    applicationName: String,
+    start: Date,
+    end: Date
+  ): Future[JsArray]
+
   def getRevenue(companyName: String, applicationName: String, start: Date, end: Date): Future[JsArray]
 
   def getTotalLifeTimeValue(companyName: String, applicationName: String, start: Date, end: Date): Future[JsValue]
