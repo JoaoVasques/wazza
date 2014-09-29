@@ -8,11 +8,11 @@
 }
 
 .panel-kpi-container > .panel-heading {
-    background: #C2C2C2;
+    background: #f9f9f9;
     color: #555;
     font-size: 2em;
 }
 
 .panel-kpi-container > .panel-body {
-    background: #F4F4F4;
+    background: #f9f9f9;
 }
