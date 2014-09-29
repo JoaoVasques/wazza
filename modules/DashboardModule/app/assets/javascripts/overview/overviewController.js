@@ -43,7 +43,7 @@ dashboard.controller('OverviewController',[
       .then(function(){
         var companyName = ApplicationStateService.companyName;
         var revenue = "revenue";
-        var ltv = "arpu"; //TODO LTV
+        var ltv = "ltv";
         var arpu = "arpu";
         var start = DateModel.formatDate(DateModel.startDate);
         var end = DateModel.formatDate(DateModel.endDate);
