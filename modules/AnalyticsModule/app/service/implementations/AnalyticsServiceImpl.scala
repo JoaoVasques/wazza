@@ -404,5 +404,32 @@ class AnalyticsServiceImpl @Inject()(
     }
     promise.future
   }
+
+  def getLifeTimeValue(
+    companyName: String,
+    applicationName: String,
+    start: Date,
+    end: Date
+  ): Future[JsArray] = {
+
+    val s = new LocalDate(start)
+    val e = new LocalDate(end)
+    val days = Days.daysBetween(s, e).getDays()+1
+
+    val futureResult = Future.sequence(List.range(0, days) map {dayIndex =>
+      val currentDay = s.withFieldAdded(DurationFieldType.days(), dayIndex)
+      val previousDay = currentDay.minusDays(1)
+      getTotalLifeTimeValue(companyName, applicationName, previousDay.toDate, currentDay.toDate)  map {res: JsValue =>
+        Json.obj(
+          "day" -> currentDay.toString("dd MMM"),
+          "val" -> (res \ "value").as[Float]
+        )
+      }
+    })
+
+    futureResult map {jsonSeq =>
+      new JsArray(jsonSeq)
+    }
+  }
 }
 
