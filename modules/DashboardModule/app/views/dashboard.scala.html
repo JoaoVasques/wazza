@@ -12,17 +12,18 @@ items: List[models.application.Item]
 <div ng-controller="DashboardController">
 
   <!-- General KPIs -->
-  <div class="row">
-    <i class="fa fa-money"></i> General 
-  </div>
-  <div class="row">
+  <div class="panel panel-kpi-container">
+    <div class="panel-heading" id="general">    <i class="fa fa-money"></i> General </div>
+    <div class="panel-body">
+      <div class="row kpi">
         <kpi info="totalRevenue"></kpi>
         <kpi info="arpu"></kpi>
         <kpi info="avgRevSession"></kpi>
+      </div>
+    </div>
   </div>
 
-
-    <!-- User KPIs -->
+  <!-- User KPIs -->
   <div class="panel panel-kpi-container">
     <div class="panel-heading" id="users"><i class="fa fa-user"></i> User</div>
     <div class="panel-body">
@@ -34,7 +35,7 @@ items: List[models.application.Item]
     </div>
   </div>
 
-    <!-- Session KPIs -->
+  <!-- Session KPIs -->
   <div class="panel panel-kpi-container">
     <div class="panel-heading" id="sessions"><i class="fa fa-clock-o"></i> Session</div>
     <div class="panel-body">
