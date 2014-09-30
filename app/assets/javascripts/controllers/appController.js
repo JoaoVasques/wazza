@@ -7,7 +7,6 @@ application.controller('AppController', [
   'LoginLogoutService',
   'ItemSearchService',
   'ApplicationStateService',
-  'TopbarService',
   function (
     $scope,
     cookiesManagerService,
@@ -16,8 +15,7 @@ application.controller('AppController', [
     $rootScope,
     LoginLogoutService,
     ItemSearchService,
-    ApplicationStateService,
-    TopbarService
+    ApplicationStateService
   ) {
 
     //auth related
@@ -63,7 +61,7 @@ application.controller('AppController', [
 
     //current page related
     $scope.$on("PAGE_UPDATED", function(){
-      $scope.page = TopbarService.getName();
+      $scope.page = ApplicationStateService.getPath();
     });
 
     //user related

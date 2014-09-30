@@ -6,7 +6,6 @@ dashboard
   '$location',
   '$rootScope',
   'ApplicationStateService',
-  'TopbarService',
   'DateModel',
   'DetailedKpiModel',
   'AT1PDateChanged',
@@ -15,7 +14,6 @@ dashboard
     $location,
     $rootScope,
     ApplicationStateService,
-    TopbarService,
     DateModel,
     DetailedKpiModel,
     AT1PDateChanged
@@ -24,7 +22,7 @@ dashboard
     var title = "Average Time to First Purchases";
     var KpiId = "avgTime1stPurchase";
 
-    TopbarService.setName(title);
+    ApplicationStateService.setPath(title);
     $scope.context = new DetailedKpiModel(DateModel.startDate, DateModel.endDate, title);
 
     $scope.updateChart(title, $scope.context);

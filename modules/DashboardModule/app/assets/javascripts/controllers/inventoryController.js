@@ -10,7 +10,6 @@ dashboard
   'DeleteItemService',
   'ApplicationStateService',
   'ItemSearchService',
-  'TopbarService',
   function (
         $scope,
         $location,
@@ -19,11 +18,10 @@ dashboard
         BootstrapDashboardService,
         DeleteItemService,
         ApplicationStateService,
-        ItemSearchService,
-        TopbarService
+        ItemSearchService
     ) {
 
-        TopbarService.setName("Management");
+        ApplicationStateService.setPath("Management");
 
         $scope.addItem = function () {
             $location.path("/item/create");
