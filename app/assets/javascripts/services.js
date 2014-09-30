@@ -81,7 +81,8 @@ angular.module('Wazza.services', []).
 
           service.updateApplicationName = function (newName) {
               service.applicationName = newName;
-              $rootScope.$broadcast("APPLICATION_NAME_UPDATED");
+              $rootScope.applicationName = newName;
+              $rootScope.$broadcast("APPLICATION_NAME_UPDATED"); 
           };
 
           service.updateCompanyName = function(newName) {
