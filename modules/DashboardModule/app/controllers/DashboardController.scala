@@ -121,6 +121,9 @@ class DashboardController @Inject()(
     }
   }
 
+  def kpi = HasToken() {token => userId => implicit request =>
+    Ok(views.html.kpi())
+  }
 
   //analytics
   def analytics = HasToken() {token => userId => implicit request =>

@@ -16,6 +16,7 @@ dashboard.controller('DashboardController', [
   "DateModel",
   "KpiModel",
   "AnchorSmoothScroll",
+  "$q",
   function (
     $scope,
     $location,
@@ -31,7 +32,8 @@ dashboard.controller('DashboardController', [
     GetMainKPIsService,
     DateModel,
     KpiModel,
-    AnchorSmoothScroll
+    AnchorSmoothScroll,
+    $q
   ) {
 
     $rootScope.$on('ChangeDashboardSection', function(event, newSection) {
@@ -55,20 +57,24 @@ dashboard.controller('DashboardController', [
     $scope.avgTimeFirstPurchase = new KpiModel("Avg Time 1st Purchase", "analytics.avgTime1stPurchase");
     $scope.avgTimeBetweenPurchases = new KpiModel("Avg Time Bet. Purchases", "analytics.avgTimebetweenPurchase");
 
-        $scope.updateKPIs = function(){
-          GetMainKPIsService.getOverviewKpis(
-            ApplicationStateService.companyName,
-            ApplicationStateService.applicationName,
-            DateModel.formatDate($scope.beginDate),
-            DateModel.formatDate($scope.endDate)
-            )
-            .then(function(results) {
-              /** Total Revenue **/
-              $scope.totalRevenue.updateKpiValue(results[0].data.value, results[0].data.delta);
-              /** ARPU **/
-              $scope.arpu.updateKpiValue(results[1].data.value, results[1].data.delta);
-            });
+    $scope.updateKPIs = function(){
+      var companyName = ApplicationStateService.companyName;
+      var app = ApplicationStateService.applicationName
+      var begin = DateModel.formatDate(DateModel.beginDate);
+      var end = DateModel.formatDate(DateModel.endDate);
+        $q.all([
+          GetMainKPIsService.getTotalKpiData(companyName, app, begin, end, "revenue"),
+          GetMainKPIsService.getTotalKpiData(companyName, app, begin, end, "ltv"),
+          GetMainKPIsService.getTotalKpiData(companyName, app, begin, end, "arpu")
+      ]).then(function(res) {
+        var extractValue = function(index, _type) {
+          return (_type == 'value') ?  res[index].data.value : res[index].data.delta;
         };
+        $scope.totalRevenue.updateKpiValue(extractValue(0, 'value'), extractValue(0, 'delta'))
+        $scope.ltv.updateKpiValue(extractValue(1, 'value'), extractValue(1, 'delta'))
+        $scope.arpu.updateKpiValue(extractValue(2, 'value'), extractValue(2, 'delta'))
+      });
+    };
 
         var bootstrapSuccessCallback = function (data) {
             var push = function (origin, destination) {
