@@ -459,5 +459,41 @@ class AnalyticsServiceImpl @Inject()(
       new JsArray(jsonSeq)
     }
   }
+
+  def getTotalAverageTimeBetweenPurchases(
+    companyName: String,
+    applicationName: String,
+    start: Date,
+    end: Date
+  ): Future[JsValue] = {
+    val promise = Promise[JsValue]
+    val fields = ("lowerDate", "upperDate")
+    val payingUsers = databaseService.getDocumentsWithinTimeRange(
+      Metrics.payingUsersCollection(companyName, applicationName),
+      fields,
+      start,
+      end
+    )
+
+    if(payingUsers.value.isEmpty) {
+      promise.success(Json.obj("value" -> 0))
+    } else {
+      for(
+        payingUsersDay <- payingUsers.value;
+        userInfo <- ((payingUsersDay \ "payingUsers").as[List[JsValue]])
+      ) {
+        val purchases = (userInfo \ "purchases").as[List[String]]
+        purchases.view.zipWithIndex foreach {data: Tuple2[String,Int] =>
+          val index = data._2
+          if((index +1) < purchases.size) {
+            val currentPurchaseId = data._1
+            val nextPurchaseId = purchases(index+1)
+          }
+        }
+      }
+    }
+
+    promise.future
+  }
 }
 
