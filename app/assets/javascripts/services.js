@@ -60,6 +60,7 @@ angular.module('Wazza.services', []).
 
         service.setName = function(value) {
                 pagename = value;
+                $rootScope.page = value;
                 $rootScope.$broadcast("PAGE_UPDATED");
         };
 

@@ -62,9 +62,6 @@ application.controller('AppController', [
     }
 
     //current page related
-    $scope.page = "Overview";
-    TopbarService.setName("Overview");
-
     $scope.$on("PAGE_UPDATED", function(){
       $scope.page = TopbarService.getName();
     });

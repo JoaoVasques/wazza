@@ -10,6 +10,7 @@ dashboard.controller('OverviewController',[
   'DateModel',
   'ApplicationStateService',
   '$q',
+  'TopbarService',
   function(
     $scope,
     $location,
@@ -19,8 +20,11 @@ dashboard.controller('OverviewController',[
     GetMainKPIsService,
     DateModel,
     ApplicationStateService,
-    $q
+    $q,
+    TopbarService
   ) {
+
+    TopbarService.setName("Overview");
 
     $scope.applications = [];
     var noImageUrl = "http://www.localcrimenews.com/wp-content/uploads/2013/07/default-user-icon-profile.png";
