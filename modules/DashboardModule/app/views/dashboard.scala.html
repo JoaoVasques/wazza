@@ -11,6 +11,8 @@ items: List[models.application.Item]
 
 <div ng-controller="DashboardController">
 
+  <!-- TODO: take the panels out! :) -->
+
   <!-- General KPIs -->
   <div class="panel panel-kpi-container">
     <div class="panel-heading" id="general"><i class="fa fa-money"></i> General </div>
@@ -22,15 +24,6 @@ items: List[models.application.Item]
       </div>
     </div>
   </div>
-
-<div class="row">
-  <h1><i class="fa fa-user"></i> User</h1>
-</div>
-<div class="row">
-  <kpi info="ltv"></kpi>
-  <kpi info="payingUsers"></kpi>
-  <kpi info="todo"></kpi>
-</div>
 
   <!-- User KPIs -->
   <div class="panel panel-kpi-container">
