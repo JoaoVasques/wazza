@@ -16,3 +16,14 @@
 .panel-kpi-container > .panel-body {
     background: #f9f9f9;
 }
+
+.dashboard-title {
+  margin:20px;
+  font-size: 2em;
+  color:#555;
+}
+
+.dashboard-kpi {
+  margin:10px;
+  color:#555;
+}
