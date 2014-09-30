@@ -25,10 +25,13 @@ import service.persistence.definitions.DatabaseService
 import org.joda.time.Days
 import org.joda.time.LocalDate
 import org.joda.time.DurationFieldType
+import org.joda.time.DateTime
 
 class AnalyticsServiceImpl @Inject()(
   databaseService: DatabaseService
 ) extends AnalyticsService {
+
+  lazy val ProfitMargin = 0.7 // Because Google and Apple take a 30% on every purchase
 
   private def getUnixDate(dateStr: String): Long = {
     val ops = new StringOps(dateStr)
@@ -38,6 +41,10 @@ class AnalyticsServiceImpl @Inject()(
   private def getDateFromString(dateStr: String): Date = {
     val ops = new StringOps(dateStr)
     new SimpleDateFormat("yyyy-MM-dd").parse(ops.take(ops.indexOf('T')))
+  }
+
+  private def getNumberDaysBetweenDates(d1: Date, d2: Date): Int = {
+    Days.daysBetween(new LocalDate(d1), new LocalDate(d2)).getDays()
   }
 
   private def fillEmptyResult(start: Date, end: Date): JsArray = {
@@ -267,7 +274,7 @@ class AnalyticsServiceImpl @Inject()(
       val collection = Metrics.totalRevenueCollection(companyName, applicationName)
       val fields = ("lowerDate", "upperDate")
       val revenue = databaseService.getDocumentsWithinTimeRange(collection, fields, start, end)
-
+                                  
       val results = if(revenue.value.size == 0) {
         fillEmptyResult(start, end)
       } else {
@@ -282,6 +289,147 @@ class AnalyticsServiceImpl @Inject()(
     }
 
     promise.future
+  }
+
+  def getTotalChurnRate(
+    companyName: String,
+    applicationName: String,
+    start: Date,
+    end: Date
+  ): Future[JsValue] = {
+
+    val fields = ("lowerDate", "upperDate")
+
+    def calculateNumberPayingCustomers(s: Date, e: Date): Float = {
+      val collection = Metrics.payingUsersCollection(companyName, applicationName)
+      val payingUsers = databaseService.getDocumentsWithinTimeRange(collection, fields, s, e)
+      if(payingUsers.value.isEmpty) {
+        0
+      } else {
+        var users = List[String]()
+        for(c <- payingUsers.value) {
+          val payingUserIds = (c \ "payingUsers").as[List[String]]
+          users = (payingUserIds ++ users).distinct
+        }
+        users.size
+      }
+    }
+
+    var numberPayingUsersLower = 0.0
+    var numberPayingUsersUpper = 0.0
+
+    val promise = Promise[JsValue]
+    if(getNumberDaysBetweenDates(start, end) == 0) {
+      val s = new DateTime(start).withTimeAtStartOfDay
+      val yesterday = s.minusDays(1).withTimeAtStartOfDay
+      val e = s.plusDays(1)
+      numberPayingUsersLower = calculateNumberPayingCustomers(yesterday.toDate, s.toDate)
+      numberPayingUsersUpper = calculateNumberPayingCustomers(s.toDate, e.toDate)
+    } else {
+      val lower_1 = new DateTime(start).withTimeAtStartOfDay
+      val lower = lower_1.plusDays(1).withTimeAtStartOfDay
+      val upper_1 = new DateTime(end).withTimeAtStartOfDay
+      val upper = upper_1.plusDays(1).withTimeAtStartOfDay
+      numberPayingUsersLower = calculateNumberPayingCustomers(lower_1.toDate, lower.toDate)
+      numberPayingUsersUpper = calculateNumberPayingCustomers(upper_1.toDate, upper.toDate)
+    }
+
+    val result = if(numberPayingUsersLower > 0) {
+      (numberPayingUsersUpper - numberPayingUsersLower) / numberPayingUsersLower
+    } else 0
+    promise.success(Json.obj("value"-> result))
+    promise.future
+  }
+
+  def getTotalAverageNumberSessionsPerUser(
+    companyName: String,
+    applicationName: String,
+    start: Date,
+    end: Date
+  ): Future[JsValue] = {
+    val promise = Promise[JsValue]
+    val fields = ("lowerDate", "upperDate")
+    val sessionsPerUser = databaseService.getDocumentsWithinTimeRange(
+      Metrics.numberSessionsPerUserCollection(companyName, applicationName),
+      fields,
+      start,
+      end
+    )
+
+    if(sessionsPerUser.value.isEmpty){
+      promise.success(Json.obj("value" -> 0))
+    } else {
+      var sessionUserMap: Map[String, Int] = Map() 
+      for(
+        el <- sessionsPerUser.value;
+        spuDay <- ((el \ "nrSessionsPerUser").as[List[JsValue]])
+      ) {
+        val userId = (spuDay \ "user").as[String]
+        val nrSessions = (spuDay \ "nrSessions").as[Int]
+        val value = sessionUserMap getOrElse(userId, 0)
+        value match {
+          case 0 => sessionUserMap += (userId ->  nrSessions)
+          case _ => sessionUserMap += (userId -> (value + nrSessions))
+        }
+      }
+      promise.success(Json.obj(
+        "value" -> (sessionUserMap.values.foldLeft(0.0)(_ + _) / sessionUserMap.values.size)
+      )) 
+    }
+    promise.future
+  }
+
+  def getTotalLifeTimeValue(
+    companyName: String,
+    applicationName: String,
+    start: Date,
+    end: Date
+  ): Future[JsValue] = {
+    val promise = Promise[JsValue]
+    val futureLTV = for {
+      churn <- getTotalChurnRate(companyName, applicationName, start, end)
+      arpu <- getTotalARPU(companyName, applicationName, start, end)
+      avgSessionUser <- getTotalAverageNumberSessionsPerUser(companyName, applicationName, start, end)
+    } yield {
+      (1 - ((churn \ "value").as[Float])) *
+      ((arpu \ "value").as[Float]) *
+      ((avgSessionUser \ "value").as[Float]) *
+      ProfitMargin
+    }
+
+    futureLTV map {ltv =>
+      promise.success(Json.obj("value" -> ltv))
+    } recover {
+      case ex: Exception => promise.failure(ex)
+    }
+    promise.future
+  }
+
+  def getLifeTimeValue(
+    companyName: String,
+    applicationName: String,
+    start: Date,
+    end: Date
+  ): Future[JsArray] = {
+
+    val s = new LocalDate(start)
+    val e = new LocalDate(end)
+    val days = Days.daysBetween(s, e).getDays()+1
+
+    val futureResult = Future.sequence(List.range(0, days) map {dayIndex =>
+      val currentDay = s.withFieldAdded(DurationFieldType.days(), dayIndex)
+      val previousDay = currentDay.minusDays(1)
+      getTotalLifeTimeValue(companyName, applicationName, previousDay.toDate, currentDay.toDate)  map {res: JsValue =>
+        Json.obj(
+          "day" -> currentDay.toString("dd MMM"),
+          "val" -> (res \ "value").as[Float]
+        )
+      }
+    })
+
+    futureResult map {jsonSeq =>
+      new JsArray(jsonSeq)
+    }
   }
 }
 

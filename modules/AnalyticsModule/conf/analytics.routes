@@ -13,4 +13,9 @@ GET  /arpu/detail/:company/:application/:start/:end @controllers.analytics.Analy
 GET  /avgRevenueSession/total/:company/:application/:start/:end @controllers.analytics.AnalyticsController.getTotalAverageRevenuePerSession(company: String, application: String, start: String, end: String)
 
 GET  /avgRevenueSession/detail/:company/:application/:start/:end @controllers.analytics.AnalyticsController.getDetailedAverageRevenuePerSession(company: String, application: String, start: String, end: String)
- 
+
+GET  /ltv/total/:company/:application/:start/:end @controllers.analytics.AnalyticsController.getTotalLifeTimeValue(company: String, application: String, start: String, end: String)
+
+GET  /ltv/detail/:company/:application/:start/:end @controllers.analytics.AnalyticsController.getDetailedLifeTimeValue(company: String, application: String, start: String, end: String)
+
+  
