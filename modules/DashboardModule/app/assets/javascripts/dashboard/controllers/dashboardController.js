@@ -50,7 +50,7 @@ dashboard.controller('DashboardController', [
     /** User KPIs **/
     $scope.ltv = new KpiModel("Life Time Value", "analytics.ltv");
     $scope.payingUsers = new KpiModel("% Paying Users", "analytics.payingUsers");
-    $scope.todo = new KpiModel("Paying Users Growth", "analytics.churn");
+    $scope.churn = new KpiModel("Churn Rate", "analytics.churn");
 
     /** Session KPIs **/
     $scope.purchasesPerSession = new KpiModel("Purchases per Session", "analytics.purchases");
@@ -65,7 +65,8 @@ dashboard.controller('DashboardController', [
         $q.all([
           GetMainKPIsService.getTotalKpiData(companyName, app, begin, end, "revenue"),
           GetMainKPIsService.getTotalKpiData(companyName, app, begin, end, "ltv"),
-          GetMainKPIsService.getTotalKpiData(companyName, app, begin, end, "arpu")
+          GetMainKPIsService.getTotalKpiData(companyName, app, begin, end, "arpu"),
+          GetMainKPIsService.getTotalKpiData(companyName, app, begin, end, "churn")
       ]).then(function(res) {
         var extractValue = function(index, _type) {
           return (_type == 'value') ?  res[index].data.value : res[index].data.delta;
@@ -73,6 +74,7 @@ dashboard.controller('DashboardController', [
         $scope.totalRevenue.updateKpiValue(extractValue(0, 'value'), extractValue(0, 'delta'))
         $scope.ltv.updateKpiValue(extractValue(1, 'value'), extractValue(1, 'delta'))
         $scope.arpu.updateKpiValue(extractValue(2, 'value'), extractValue(2, 'delta'))
+        $scope.churn.updateKpiValue(extractValue(3, 'value'), extractValue(3, 'delta'))
       });
     };
 
