@@ -523,5 +523,14 @@ class AnalyticsServiceImpl @Inject()(
 
     promise.future
   }
+
+  def getAverageTimeBetweenPurchases(
+    companyName: String,
+    applicationName: String,
+    start: Date,
+    end: Date
+  ): Future[JsArray] = {
+    null
+  }
 }
 
