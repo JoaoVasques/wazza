@@ -26,9 +26,11 @@ import org.joda.time.Days
 import org.joda.time.LocalDate
 import org.joda.time.DurationFieldType
 import org.joda.time.DateTime
+import service.user.definitions.PurchaseService
 
 class AnalyticsServiceImpl @Inject()(
-  databaseService: DatabaseService
+  databaseService: DatabaseService,
+  purchaseService: PurchaseService
 ) extends AnalyticsService {
 
   lazy val ProfitMargin = 0.7 // Because Google and Apple take a 30% on every purchase
@@ -45,6 +47,10 @@ class AnalyticsServiceImpl @Inject()(
 
   private def getNumberDaysBetweenDates(d1: Date, d2: Date): Int = {
     Days.daysBetween(new LocalDate(d1), new LocalDate(d2)).getDays()
+  }
+
+  private def getNumberSecondsBetweenDates(d1: Date, d2: Date): Float = {
+    (new LocalDate(d2).toDateTimeAtCurrentTime.getMillis - new LocalDate(d1).toDateTimeAtCurrentTime().getMillis) / 1000
   }
 
   private def fillEmptyResult(start: Date, end: Date): JsArray = {
@@ -468,29 +474,51 @@ class AnalyticsServiceImpl @Inject()(
   ): Future[JsValue] = {
     val promise = Promise[JsValue]
     val fields = ("lowerDate", "upperDate")
-    val payingUsers = databaseService.getDocumentsWithinTimeRange(
-      Metrics.payingUsersCollection(companyName, applicationName),
-      fields,
-      start,
-      end
+    val payingUsers = databaseService.getCollectionElements(//.getDocumentsWithinTimeRange(
+      Metrics.payingUsersCollection(companyName, applicationName)
+      //fields,
+      //start,
+      //end
     )
 
-    if(payingUsers.value.isEmpty) {
+    if(payingUsers.isEmpty) {
       promise.success(Json.obj("value" -> 0))
     } else {
+      var totalTimeBetweenPurchases = 0.0
+      var numberPurchases = 0
+      var purchaseTimesPerUser: Map[String, List[Date]] = Map()
       for(
-        payingUsersDay <- payingUsers.value;
+        payingUsersDay <- payingUsers;
         userInfo <- ((payingUsersDay \ "payingUsers").as[List[JsValue]])
       ) {
-        val purchases = (userInfo \ "purchases").as[List[String]]
-        purchases.view.zipWithIndex foreach {data: Tuple2[String,Int] =>
-          val index = data._2
-          if((index +1) < purchases.size) {
-            val currentPurchaseId = data._1
-            val nextPurchaseId = purchases(index+1)
+        val userId = (userInfo \ "userId").as[String]
+        val purchasesTime  = (userInfo \ "purchases").as[List[String]] map {id =>
+          getDateFromString(purchaseService.get(companyName, applicationName, id).get.time)
+        }
+
+        val purchases = purchaseTimesPerUser getOrElse(userId, Nil)
+        purchases match {
+          case Nil => purchaseTimesPerUser += (userId -> purchasesTime)
+          case _ => purchaseTimesPerUser += (userId -> (purchases ++ purchasesTime))
+        }
+      }
+
+      for((u,t) <- purchaseTimesPerUser; times <- t.view.zipWithIndex) {
+        val index = times._2
+        val nrPurchases = t.size
+        if(nrPurchases == 1) {
+          numberPurchases += 1
+        } else {
+          if((index+1) < nrPurchases) {
+            val currentPurchaseDate = times._1
+            val nextPurchaseDate = t(index+1)
+            totalTimeBetweenPurchases += getNumberSecondsBetweenDates(currentPurchaseDate, nextPurchaseDate)
           }
         }
       }
+      promise.success(
+        Json.obj("value" -> (if(numberPurchases == 0) 0 else totalTimeBetweenPurchases / numberPurchases))
+      )
     }
 
     promise.future

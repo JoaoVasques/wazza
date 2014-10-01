@@ -49,5 +49,12 @@ trait AnalyticsService {
   def getTotalLifeTimeValue(companyName: String, applicationName: String, start: Date, end: Date): Future[JsValue]
 
   def getLifeTimeValue(companyName: String, applicationName: String, start: Date, end: Date): Future[JsArray]
+
+  def getTotalAverageTimeBetweenPurchases(
+    companyName: String,
+    applicationName: String,
+    start: Date,
+    end: Date
+  ): Future[JsValue]
 }
 

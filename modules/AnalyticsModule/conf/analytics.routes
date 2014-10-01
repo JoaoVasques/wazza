@@ -21,3 +21,5 @@ GET  /ltv/detail/:company/:application/:start/:end @controllers.analytics.Analyt
 GET  /churn/total/:company/:application/:start/:end @controllers.analytics.AnalyticsController.getTotalChurnRate(company: String, application: String, start: String, end: String)
 
 GET  /churn/detail/:company/:application/:start/:end @controllers.analytics.AnalyticsController.getDetailedChurnRate(company: String, application: String, start: String, end: String)
+
+GET  /avgTimeBetweenPurchases/total/:company/:application/:start/:end @controllers.analytics.AnalyticsController.getTotalAverageTimeBetweenPurchases(company: String, application: String, start: String, end: String)
