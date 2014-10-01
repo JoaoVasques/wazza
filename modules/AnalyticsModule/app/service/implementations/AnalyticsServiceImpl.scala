@@ -474,21 +474,21 @@ class AnalyticsServiceImpl @Inject()(
   ): Future[JsValue] = {
     val promise = Promise[JsValue]
     val fields = ("lowerDate", "upperDate")
-    val payingUsers = databaseService.getCollectionElements(//.getDocumentsWithinTimeRange(
-      Metrics.payingUsersCollection(companyName, applicationName)
-      //fields,
-      //start,
-      //end
+    val payingUsers = databaseService.getDocumentsWithinTimeRange(
+      Metrics.payingUsersCollection(companyName, applicationName),
+      fields,
+      start,
+      end
     )
 
-    if(payingUsers.isEmpty) {
+    if(payingUsers.value.isEmpty) {
       promise.success(Json.obj("value" -> 0))
     } else {
       var totalTimeBetweenPurchases = 0.0
       var numberPurchases = 0
       var purchaseTimesPerUser: Map[String, List[Date]] = Map()
       for(
-        payingUsersDay <- payingUsers;
+        payingUsersDay <- payingUsers.value;
         userInfo <- ((payingUsersDay \ "payingUsers").as[List[JsValue]])
       ) {
         val userId = (userInfo \ "userId").as[String]
