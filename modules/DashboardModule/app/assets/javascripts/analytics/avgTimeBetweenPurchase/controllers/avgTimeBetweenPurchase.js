@@ -20,7 +20,7 @@ dashboard
   ) {
 
     var title = "Average Time Between Purchases";
-    var KpiId = "avgTimeBetweenPurchase";
+    var KpiId = "avgTimeBetweenPurchases";
 
     ApplicationStateService.setPath(title);
     $scope.context = new DetailedKpiModel(DateModel.startDate, DateModel.endDate, title);

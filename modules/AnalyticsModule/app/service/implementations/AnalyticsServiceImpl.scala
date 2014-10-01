@@ -26,9 +26,11 @@ import org.joda.time.Days
 import org.joda.time.LocalDate
 import org.joda.time.DurationFieldType
 import org.joda.time.DateTime
+import service.user.definitions.PurchaseService
 
 class AnalyticsServiceImpl @Inject()(
-  databaseService: DatabaseService
+  databaseService: DatabaseService,
+  purchaseService: PurchaseService
 ) extends AnalyticsService {
 
   lazy val ProfitMargin = 0.7 // Because Google and Apple take a 30% on every purchase
@@ -47,6 +49,10 @@ class AnalyticsServiceImpl @Inject()(
     Days.daysBetween(new LocalDate(d1), new LocalDate(d2)).getDays()
   }
 
+  private def getNumberSecondsBetweenDates(d1: Date, d2: Date): Float = {
+    (new LocalDate(d2).toDateTimeAtCurrentTime.getMillis - new LocalDate(d1).toDateTimeAtCurrentTime().getMillis) / 1000
+  }
+
   private def fillEmptyResult(start: Date, end: Date): JsArray = {
     val dates = new ListBuffer[String]()
     val s = new LocalDate(start)
@@ -59,6 +65,33 @@ class AnalyticsServiceImpl @Inject()(
         "val" -> 0
       )
     }})
+  }
+
+  private def calculateDetailedKPIAux(
+    companyName: String,
+    applicationName: String,
+    start: Date,
+    end: Date,
+    f:(String, String, Date, Date) => Future[JsValue]
+  ): Future[JsArray] = {
+    val s = new LocalDate(start)
+    val e = new LocalDate(end)
+    val days = Days.daysBetween(s, e).getDays()+1
+
+    val futureResult = Future.sequence(List.range(0, days) map {dayIndex =>
+      val currentDay = s.withFieldAdded(DurationFieldType.days(), dayIndex)
+      val previousDay = currentDay.minusDays(1)
+      f(companyName, applicationName, previousDay.toDate, currentDay.toDate) map {res: JsValue =>
+        Json.obj(
+          "day" -> currentDay.toString("dd MMM"),
+          "val" -> (res \ "value").as[Float]
+        )
+      }
+    })
+
+    futureResult map {jsonSeq =>
+      new JsArray(jsonSeq)
+    }
   }
 
   def getTopTenItems(
@@ -308,7 +341,9 @@ class AnalyticsServiceImpl @Inject()(
       } else {
         var users = List[String]()
         for(c <- payingUsers.value) {
-          val payingUserIds = (c \ "payingUsers").as[List[String]]
+          val payingUserIds = (c \ "payingUsers").as[List[JsValue]] map {el =>
+            (el \ "userId").as[String]
+          }
           users = (payingUserIds ++ users).distinct
         }
         users.size
@@ -348,25 +383,7 @@ class AnalyticsServiceImpl @Inject()(
     start: Date,
     end: Date
   ): Future[JsArray] = {
-
-    val s = new LocalDate(start)
-    val e = new LocalDate(end)
-    val days = Days.daysBetween(s, e).getDays()+1
-
-    val futureResult = Future.sequence(List.range(0, days) map {dayIndex =>
-      val currentDay = s.withFieldAdded(DurationFieldType.days(), dayIndex)
-      val previousDay = currentDay.minusDays(1)
-      getTotalChurnRate(companyName, applicationName, previousDay.toDate, currentDay.toDate)  map {res: JsValue =>
-        Json.obj(
-          "day" -> currentDay.toString("dd MMM"),
-          "val" -> (res \ "value").as[Float]
-        )
-      }
-    })
-
-    futureResult map {jsonSeq =>
-      new JsArray(jsonSeq)
-    }
+    calculateDetailedKPIAux(companyName, applicationName, start, end, getTotalChurnRate)
   }
 
   def getTotalAverageNumberSessionsPerUser(
@@ -439,25 +456,74 @@ class AnalyticsServiceImpl @Inject()(
     start: Date,
     end: Date
   ): Future[JsArray] = {
+    calculateDetailedKPIAux(companyName, applicationName, start, end, getTotalLifeTimeValue)
+  }
 
-    val s = new LocalDate(start)
-    val e = new LocalDate(end)
-    val days = Days.daysBetween(s, e).getDays()+1
+  def getTotalAverageTimeBetweenPurchases(
+    companyName: String,
+    applicationName: String,
+    start: Date,
+    end: Date
+  ): Future[JsValue] = {
+    val promise = Promise[JsValue]
+    val fields = ("lowerDate", "upperDate")
+    val payingUsers = databaseService.getDocumentsWithinTimeRange(
+      Metrics.payingUsersCollection(companyName, applicationName),
+      fields,
+      start,
+      end
+    )
 
-    val futureResult = Future.sequence(List.range(0, days) map {dayIndex =>
-      val currentDay = s.withFieldAdded(DurationFieldType.days(), dayIndex)
-      val previousDay = currentDay.minusDays(1)
-      getTotalLifeTimeValue(companyName, applicationName, previousDay.toDate, currentDay.toDate)  map {res: JsValue =>
-        Json.obj(
-          "day" -> currentDay.toString("dd MMM"),
-          "val" -> (res \ "value").as[Float]
-        )
+    if(payingUsers.value.isEmpty) {
+      promise.success(Json.obj("value" -> 0))
+    } else {
+      var totalTimeBetweenPurchases = 0.0
+      var numberPurchases = 0
+      var purchaseTimesPerUser: Map[String, List[Date]] = Map()
+      for(
+        payingUsersDay <- payingUsers.value;
+        userInfo <- ((payingUsersDay \ "payingUsers").as[List[JsValue]])
+      ) {
+        val userId = (userInfo \ "userId").as[String]
+        val purchasesTime  = (userInfo \ "purchases").as[List[String]] map {id =>
+          getDateFromString(purchaseService.get(companyName, applicationName, id).get.time)
+        }
+
+        val purchases = purchaseTimesPerUser getOrElse(userId, Nil)
+        purchases match {
+          case Nil => purchaseTimesPerUser += (userId -> purchasesTime)
+          case _ => purchaseTimesPerUser += (userId -> (purchases ++ purchasesTime))
+        }
       }
-    })
 
-    futureResult map {jsonSeq =>
-      new JsArray(jsonSeq)
+      for((u,t) <- purchaseTimesPerUser; times <- t.view.zipWithIndex) {
+        val index = times._2
+        val nrPurchases = t.size
+        if(nrPurchases == 1) {
+          numberPurchases += 1
+        } else {
+          if((index+1) < nrPurchases) {
+            val currentPurchaseDate = times._1
+            val nextPurchaseDate = t(index+1)
+            totalTimeBetweenPurchases += getNumberSecondsBetweenDates(currentPurchaseDate, nextPurchaseDate)
+          }
+        }
+      }
+      promise.success(
+        Json.obj("value" -> (if(numberPurchases == 0) 0 else totalTimeBetweenPurchases / numberPurchases))
+      )
     }
+
+    promise.future
+  }
+
+  def getAverageTimeBetweenPurchases(
+    companyName: String,
+    applicationName: String,
+    start: Date,
+    end: Date
+  ): Future[JsArray] = {
+    calculateDetailedKPIAux(companyName, applicationName, start, end, getTotalAverageTimeBetweenPurchases)
   }
 }
 

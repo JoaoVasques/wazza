@@ -266,4 +266,35 @@ class AnalyticsController @Inject()(
       analyticsService.getChurnRate,
       Detailed)
   }
+
+  def getTotalAverageTimeBetweenPurchases(
+    companyName: String,
+    applicationName: String,
+    startDateStr: String,
+    endDateStr: String
+  ) = Action.async {implicit request =>
+    executeRequest(
+      companyName,
+      applicationName,
+      startDateStr,
+      endDateStr,
+      analyticsService.getTotalAverageTimeBetweenPurchases,
+      Total)
+  }
+
+  def getAverageTimeBetweenPurchases(
+    companyName: String,
+    applicationName: String,
+    startDateStr: String,
+    endDateStr: String
+  ) = Action.async {implicit request =>
+    executeRequest(
+      companyName,
+      applicationName,
+      startDateStr,
+      endDateStr,
+      analyticsService.getAverageTimeBetweenPurchases,
+      Detailed)
+  }
 }
+
