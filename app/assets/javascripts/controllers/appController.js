@@ -7,6 +7,7 @@ application.controller('AppController', [
   'LoginLogoutService',
   'ItemSearchService',
   'ApplicationStateService',
+  '$stateParams',
   function (
     $scope,
     cookiesManagerService,
@@ -15,7 +16,8 @@ application.controller('AppController', [
     $rootScope,
     LoginLogoutService,
     ItemSearchService,
-    ApplicationStateService
+    ApplicationStateService,
+    $stateParams
   ) {
 
     //auth related
@@ -55,8 +57,16 @@ application.controller('AppController', [
     });
 
     $scope.chooseApplication = function(app){
+      oldName = ApplicationStateService.applicationName;
       ApplicationStateService.updateApplicationName(app);
-      $state.go("analytics.dashboard");
+      if($state.current.name === "analytics.dashboard" && oldName !== app){
+        $state.transitionTo($state.current, $stateParams, {
+            reload: true,
+            inherit: false,
+            notify: true
+        });
+      } else
+        $state.go("analytics.dashboard");
     }
 
     //current page related
