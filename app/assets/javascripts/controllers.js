@@ -84,13 +84,13 @@ var application = angular.module('Wazza.controllers', [
 .controller('NotAvailableYetController', [
   '$scope',
   '$rootScope',
-  'TopbarService',
+  'ApplicationStateService',
   function(
     $scope,
     $rootScope,
-    TopbarService
+    ApplicationStateService
     ) {
-    TopbarService.setName("Not available yet :(");
+    ApplicationStateService.setPath("Not available yet :(");
 
   }])
 

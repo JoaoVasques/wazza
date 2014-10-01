@@ -8,7 +8,8 @@
                 <section class="content-header" ng-controller="NavBarController" ng-model="page">
                       <div class="row">
                         <div class="col-md-5">
-                          <h4 style="font-size:22px">{{page}}</h4>
+                          <h4 style="font-size:22px" ng-show="page == 'Overview'">{{page}}</h4>
+                          <h4 style="font-size:22px" ng-hide="page == 'Overview'">{{applicationName}} / {{page}}</h4>
                         </div>
                           <div class="col-md-1">
                             <h4 style="float:right">From</h4>

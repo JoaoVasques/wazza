@@ -11,7 +11,6 @@ dashboard.controller('DashboardController', [
   'DeleteItemService',
   'ApplicationStateService',
   'ItemSearchService',
-  'TopbarService',
   'GetMainKPIsService',
   "DateModel",
   "KpiModel",
@@ -28,7 +27,6 @@ dashboard.controller('DashboardController', [
     DeleteItemService,
     ApplicationStateService,
     ItemSearchService,
-    TopbarService,
     GetMainKPIsService,
     DateModel,
     KpiModel,
@@ -104,7 +102,7 @@ dashboard.controller('DashboardController', [
             );
 
             ApplicationStateService.updateCompanyName(data.data.companyName);
-            TopbarService.setName("Dashboard");
+            ApplicationStateService.setPath("Dashboard");
 
             $scope.updateKPIs();
         };

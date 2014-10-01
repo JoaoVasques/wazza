@@ -10,7 +10,6 @@ dashboard
   'DeleteItemService',
   'ApplicationStateService',
   'ItemSearchService',
-  'TopbarService',
   function (
         $scope,
         $location,
@@ -19,10 +18,9 @@ dashboard
         BootstrapDashboardService,
         DeleteItemService,
         ApplicationStateService,
-        ItemSearchService,
-        TopbarService
+        ItemSearchService
     ) {
 
-        TopbarService.setName("Campaigns");
+        ApplicationStateService.setPath("Campaigns");
 
 }])

@@ -6,7 +6,6 @@ dashboard
   '$location',
   '$rootScope',
   'ApplicationStateService',
-  'TopbarService',
   'DateModel',
   'DetailedKpiModel',
   'PurchaseDateChanged',
@@ -15,7 +14,6 @@ dashboard
     $location,
     $rootScope,
     ApplicationStateService,
-    TopbarService,
     DateModel,
     DetailedKpiModel,
     PurchaseDateChanged
@@ -24,7 +22,7 @@ dashboard
     var title = "Purchase";
     var KpiId = "purchase";
 
-    TopbarService.setName(title);
+    ApplicationStateService.setPath(title);
     $scope.context = new DetailedKpiModel(DateModel.startDate, DateModel.endDate, title);
 
     $scope.updateChart(title, $scope.context);

@@ -114,7 +114,7 @@ var dashboardServices = angular.module('DashboardModule.services', [])
          endDate;
       };
 
-      /**service.getOverviewKpis = function(companyName, applicationName, startDate, endDate) {
+      service.getOverviewKpis = function(companyName, applicationName, startDate, endDate) {
 
         var revUrl = buildUrl(companyName, applicationName, 'revenue', 'total', startDate, endDate);
         var totalRevenue = $http({
@@ -129,7 +129,7 @@ var dashboardServices = angular.module('DashboardModule.services', [])
         });
 
         return $q.all([totalRevenue, totalARPU]);
-      };**/
+      };
 
       service.getTotalKpiData = function(companyName, applicationName, start, end, kpiName) {
         var request = $http({

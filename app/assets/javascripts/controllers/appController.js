@@ -7,7 +7,7 @@ application.controller('AppController', [
   'LoginLogoutService',
   'ItemSearchService',
   'ApplicationStateService',
-  'TopbarService',
+  '$stateParams',
   function (
     $scope,
     cookiesManagerService,
@@ -17,7 +17,7 @@ application.controller('AppController', [
     LoginLogoutService,
     ItemSearchService,
     ApplicationStateService,
-    TopbarService
+    $stateParams
   ) {
 
     //auth related
@@ -29,8 +29,17 @@ application.controller('AppController', [
     });
 
     $scope.$on("LOGOUT_SUCCESS", function(event, url){
-      document.body.className = "skin-blue login-screen";
+      //cleanup!
+      $scope.applicationName = "";
+      $scope.applicationsList = [];
+      $scope.userInfo = {
+        name: "",
+        email: ""
+      };
+
       $scope.authOK = false;
+
+      document.body.className = "skin-blue login-screen";
       $state.go("webframe.login");
       //$state.go(url.value);      //TODO: fix this. url.value returns the relative url instead of the state
     });
@@ -48,16 +57,21 @@ application.controller('AppController', [
     });
 
     $scope.chooseApplication = function(app){
+      oldName = ApplicationStateService.applicationName;
       ApplicationStateService.updateApplicationName(app);
-      $state.go("analytics.dashboard");
+      if($state.current.name === "analytics.dashboard" && oldName !== app){
+        $state.transitionTo($state.current, $stateParams, {
+            reload: true,
+            inherit: false,
+            notify: true
+        });
+      } else
+        $state.go("analytics.dashboard");
     }
 
     //current page related
-    $scope.page = "Overview";
-    TopbarService.setName("Overview");
-
     $scope.$on("PAGE_UPDATED", function(){
-      $scope.page = TopbarService.getName();
+      $scope.page = ApplicationStateService.getPath();
     });
 
     //user related

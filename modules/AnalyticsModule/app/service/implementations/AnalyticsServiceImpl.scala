@@ -274,7 +274,7 @@ class AnalyticsServiceImpl @Inject()(
       val collection = Metrics.totalRevenueCollection(companyName, applicationName)
       val fields = ("lowerDate", "upperDate")
       val revenue = databaseService.getDocumentsWithinTimeRange(collection, fields, start, end)
-                                  
+
       val results = if(revenue.value.size == 0) {
         fillEmptyResult(start, end)
       } else {

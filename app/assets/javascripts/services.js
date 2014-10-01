@@ -50,23 +50,6 @@ angular.module('Wazza.services', []).
     return service;
   }]).
 
-  factory('TopbarService', ['$rootScope', function ($rootScope) {
-        var service = {};
-        service.pagename = '';
-
-        service.getName = function () {
-                return pagename;
-        };
-
-        service.setName = function(value) {
-                pagename = value;
-                $rootScope.$broadcast("PAGE_UPDATED");
-        };
-
-        return service;
-    }]).
-
-
   factory('ApplicationStateService', ['$rootScope',
       function ($rootScope) {
           var service = {};
@@ -77,10 +60,22 @@ angular.module('Wazza.services', []).
               name: "",
               email: ""
           };
+          service.pagename = '';
+
+          service.getPath = function () {
+                  return pagename;
+          };
+
+          service.setPath = function(value) {
+                  pagename = value;
+                  $rootScope.page = value;
+                  $rootScope.$broadcast("PAGE_UPDATED");
+          };
 
           service.updateApplicationName = function (newName) {
               service.applicationName = newName;
-              $rootScope.$broadcast("APPLICATION_NAME_UPDATED");
+              $rootScope.applicationName = newName;
+              $rootScope.$broadcast("APPLICATION_NAME_UPDATED"); 
           };
 
           service.updateCompanyName = function(newName) {

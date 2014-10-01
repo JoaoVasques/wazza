@@ -7,16 +7,16 @@ angular.module('ApplicationModule.controllers', ['ApplicationModule.services', '
     'createNewApplicationService',
     '$route',
     '$state',
-    'TopbarService',
+    'ApplicationStateService',
     function(
       $scope,
       createNewApplicationService,
       $route,
       $state,
-      TopbarService
+      ApplicationStateService
     ) {
 
-    TopbarService.setName("New Application");
+    ApplicationStateService.setPath("New Application");
 
     $scope.noImageThumbnailUrl = "http://allaboutuarts.ca/wp-content/uploads/2012/07/placeholder_2.jpg";
     $scope.storeOptions = ['iOS', 'Android'];

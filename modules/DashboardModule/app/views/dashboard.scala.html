@@ -8,48 +8,39 @@ items: List[models.application.Item]
 
 @if(exist){
 
-
 <div ng-controller="DashboardController">
 
   <!-- General KPIs -->
-  <div class="panel panel-kpi-container">
-    <div class="panel-heading" id="general"><i class="fa fa-money"></i> General </div>
-    <div class="panel-body">
-      <div class="row kpi">
-        <kpi info="totalRevenue"></kpi>
-        <kpi info="arpu"></kpi>
-        <kpi info="avgRevSession"></kpi>
-      </div>
-    </div>
+  <h1 class="dashboard-title" id="general"><i class="fa fa-money"></i> General</h1>
+  <div class="row">
+    <kpi info="totalRevenue"></kpi>
+    <kpi info="arpu"></kpi>
+    <kpi info="avgRevSession"></kpi>
   </div>
 
-    <!-- User KPIs -->
-  <div class="panel panel-kpi-container">
-    <div class="panel-heading" id="users"><i class="fa fa-user"></i> User</div>
-    <div class="panel-body">
-      <div class="row kpi">
-        <kpi info="ltv"></kpi>
-        <kpi info="payingUsers"></kpi>
-        <kpi info="churn"></kpi>
-      </div>
-    </div>
+  <!-- User KPIs -->
+  <h1 class="dashboard-title" id="users"><i class="fa fa-user"></i> User</h1>
+  <div class="row">
+    <kpi info="ltv"></kpi>
+    <kpi info="payingUsers"></kpi>
+    <kpi info="churn"></kpi>
   </div>
 
-    <!-- Session KPIs -->
-  <div class="panel panel-kpi-container">
-    <div class="panel-heading" id="sessions"><i class="fa fa-clock-o"></i> Session</div>
-    <div class="panel-body">
-      <div class="row kpi">
-        <kpi info="purchasesPerSession"></kpi>
-        <kpi info="avgTimeFirstPurchase"></kpi>
-        <kpi info="avgTimeBetweenPurchases"></kpi>
-      </div>
-    </div>
+  <!-- Session KPIs -->
+  <h1 class="dashboard-title" id="sessions"><i class="fa fa-clock-o"></i> Session</h1>
+  <div class="row">
+    <kpi info="purchasesPerSession"></kpi>
+    <kpi info="avgTimeFirstPurchase"></kpi>
+    <kpi info="avgTimeBetweenPurchases"></kpi>
   </div>
+
+</div>
 
 } else {
+
   <h2>It seems you have not registered any application yet.</h2>
   <p class="lead font-semibold">
     <a class="btn btn-default btn-lg" ui-sref='home.newapp'><span class="fa fa-edit fa-fw"></span>New Application</a>
   </p>
+
 }

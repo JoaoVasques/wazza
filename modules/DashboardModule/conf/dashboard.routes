@@ -7,7 +7,9 @@ GET     /                             @controllers.dashboard.DashboardController
 GET     /bootstrap                    @controllers.dashboard.DashboardController.bootstrapDashboard
 GET     /overview                     @controllers.dashboard.DashboardController.overview
 GET     /overview/bootstrap           @controllers.dashboard.DashboardController.bootstrapOverview
-  
+
+GET		/kpi						  @controllers.dashboard.DashboardController.kpi
+
 # inventory
 GET     /inventory                    @controllers.dashboard.DashboardController.inventory
 GET     /inventory/crud               @controllers.dashboard.DashboardController.inventoryCRUD

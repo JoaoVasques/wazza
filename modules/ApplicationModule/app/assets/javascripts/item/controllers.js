@@ -22,7 +22,7 @@ angular.module('ItemModule.controllers', ['ItemModule.services', 'angularFileUpl
       ApplicationStateService,
       GetLanguagesService
     ) {
-      //TODO: add TopbarService
+      //TODO: add ApplicationStateService
       $scope.itemSearch = false;
       $scope.currencyOptions = ["Real","Virtual"];
       $scope.showCurrencyInputs = {
