@@ -341,7 +341,9 @@ class AnalyticsServiceImpl @Inject()(
       } else {
         var users = List[String]()
         for(c <- payingUsers.value) {
-          val payingUserIds = (c \ "payingUsers").as[List[String]]
+          val payingUserIds = (c \ "payingUsers").as[List[JsValue]] map {el =>
+            (el \ "userId").as[String]
+          }
           users = (payingUserIds ++ users).distinct
         }
         users.size
