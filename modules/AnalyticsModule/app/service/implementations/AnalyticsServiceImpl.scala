@@ -572,5 +572,14 @@ class AnalyticsServiceImpl @Inject()(
 
     promise.future
   }
+
+  def getNumberPayingCustomers(
+    companyName: String,
+    applicationName: String,
+    start: Date,
+    end: Date
+  ): Future[JsArray] = {
+    calculateDetailedKPIAux(companyName, applicationName, start, end, getTotalNumberPayingCustomers)
+  }
 }
 
