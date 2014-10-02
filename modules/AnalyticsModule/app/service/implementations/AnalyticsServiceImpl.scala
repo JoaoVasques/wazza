@@ -35,10 +35,10 @@ class AnalyticsServiceImpl @Inject()(
 
   lazy val ProfitMargin = 0.7 // Because Google and Apple take a 30% on every purchase
 
-  private def getUnixDate(dateStr: String): Long = {
+/**  private def getUnixDate(dateStr: String): Long = {
     val ops = new StringOps(dateStr)
     (new SimpleDateFormat("yyyy-MM-dd").parse(ops.take(ops.indexOf('T'))).getTime()) / 1000
-  }
+  }**/
 
   private def getDateFromString(dateStr: String): Date = {
     val ops = new StringOps(dateStr)
@@ -110,43 +110,7 @@ class AnalyticsServiceImpl @Inject()(
     start: Date,
     end: Date
   ): Future[JsArray] = {
-    val promise = Promise[JsArray]
-
-    Future {
-      val revenueCollection = Metrics.totalRevenueCollection(companyName, applicationName)
-      val activeUsersCollection = Metrics.activeUsersCollection(companyName, applicationName)
-      val fields = ("lowerDate", "upperDate")
-
-      val revenue = databaseService.getDocumentsWithinTimeRange(
-        revenueCollection,
-        fields,
-        start,
-        end
-      ).value
-
-      val active = databaseService.getDocumentsWithinTimeRange(
-        activeUsersCollection,
-        fields,
-        start,
-        end
-      ).value
-
-      val result = if(active.isEmpty) {
-        fillEmptyResult(start, end)
-      } else {
-        new JsArray((revenue zip active) map {
-          case (r, a) => {
-            Json.obj(
-              "day" -> getUnixDate((r \ "lowerDate" \ "$date").as[String]),
-              "value" -> (r \ "totalRevenue").as[Double] / (a \ "activeUsers").as[Int]
-            )
-          }
-        })
-      }
-
-      promise.success(result)
-    }
-    promise.future
+    calculateDetailedKPIAux(companyName, applicationName, start, end, getTotalARPU)
   }
 
   def getTotalARPU(
@@ -302,26 +266,7 @@ class AnalyticsServiceImpl @Inject()(
     start: Date,
     end: Date
   ): Future[JsArray] = {
-    val promise = Promise[JsArray]
-    Future {
-      val collection = Metrics.totalRevenueCollection(companyName, applicationName)
-      val fields = ("lowerDate", "upperDate")
-      val revenue = databaseService.getDocumentsWithinTimeRange(collection, fields, start, end)
-
-      val results = if(revenue.value.size == 0) {
-        fillEmptyResult(start, end)
-      } else {
-        new JsArray(revenue.value map {(el: JsValue) => {
-        Json.obj(
-          "day" -> getUnixDate((el \ "lowerDate" \ "$date").as[String]),
-          "val" -> (el \ "totalRevenue").as[Int]
-        )
-        }})
-      }
-      promise.success(results)
-    }
-
-    promise.future
+    calculateDetailedKPIAux(companyName, applicationName, start, end, getTotalRevenue)
   }
 
   def getTotalChurnRate(
