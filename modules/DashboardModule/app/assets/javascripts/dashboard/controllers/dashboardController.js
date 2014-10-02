@@ -47,7 +47,7 @@ dashboard.controller('DashboardController', [
     
     /** User KPIs **/
     $scope.ltv = new KpiModel("Life Time Value", "analytics.ltv");
-    $scope.payingUsers = new KpiModel("% Paying Users", "analytics.payingUsers");
+    $scope.payingUsers = new KpiModel("Paying Users", "analytics.payingUsers");
     $scope.churn = new KpiModel("Churn Rate", "analytics.churn");
 
     /** Session KPIs **/
