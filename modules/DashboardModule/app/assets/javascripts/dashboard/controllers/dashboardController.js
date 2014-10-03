@@ -39,19 +39,19 @@ dashboard.controller('DashboardController', [
       $location.hash(eId);
       AnchorSmoothScroll.scrollTo(eId);
     });
-    
+
     /** General KPIs **/
     $scope.totalRevenue = new KpiModel("Total Revenue", "analytics.revenue");
     $scope.arpu = new KpiModel("Avg Revenue Per User", "analytics.arpu");
     $scope.avgRevSession = new KpiModel("Avg Revenue per Session", "analytics.avgRevenueSession");
-    
+
     /** User KPIs **/
     $scope.ltv = new KpiModel("Life Time Value", "analytics.ltv");
     $scope.payingUsers = new KpiModel("Paying Users", "analytics.payingUsers");
     $scope.churn = new KpiModel("Churn Rate", "analytics.churn");
 
     /** Session KPIs **/
-    $scope.purchasesPerSession = new KpiModel("Purchases per Session", "analytics.purchases");
+    $scope.purchasesPerSession = new KpiModel("Purchases per Session", "analytics.purchasesPerSession");
     $scope.avgTimeFirstPurchase = new KpiModel("Avg Time 1st Purchase", "analytics.avgTime1stPurchase");
     $scope.avgTimeBetweenPurchases = new KpiModel("Avg Time Bet. Purchases", "analytics.avgTimebetweenPurchase");
 

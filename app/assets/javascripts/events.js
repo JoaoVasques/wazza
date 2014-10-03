@@ -10,4 +10,4 @@ broadcastEvents.value('AT1PDateChanged','analytics.avgTimeFirstPurchase');
 broadcastEvents.value('ChurnDateChanged','analytics.churn');
 broadcastEvents.value('LtvDateChanged','analytics.ltv');
 broadcastEvents.value('PayingUsersDateChanged','analytics.payingUsers');
-broadcastEvents.value('PurchaseDateChanged','analytics.purchases');
+broadcastEvents.value('PurchaseDateChanged','analytics.purchasesPerSession');

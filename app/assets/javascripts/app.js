@@ -89,10 +89,10 @@ config(function($stateProvider, $urlRouterProvider, $locationProvider){
             controller: 'ChurnController'
         })
 
-        .state('analytics.purchases', {
+        .state('analytics.purchasesPerSession', {
             url: "^/analytics",
             templateUrl: '/dashboard/analytics',
-            controller: 'PurchaseController'
+            controller: 'PurchasePerSessionController'
         })
 
         .state('analytics.avgTime1stPurchase', {

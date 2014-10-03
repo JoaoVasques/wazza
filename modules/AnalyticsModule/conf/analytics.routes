@@ -34,4 +34,6 @@ GET  /avgPurchasesPerSession/total/:company/:application/:start/:end @controller
 
 GET  /avgPurchasesPerSession/detail/:company/:application/:start/:end @controllers.analytics.AnalyticsController.getAveragePurchasePerSession(company: String, application: String, start: String, end: String)
 
- 
+GET  /purchasesPerSession/total/:company/:application/:start/:end @controllers.analytics.AnalyticsController.getTotalAveragePurchasePerSession(company: String, application: String, start: String, end: String)
+
+GET  /purchasesPerSession/detail/:company/:application/:start/:end @controllers.analytics.AnalyticsController.getAveragePurchasePerSession(company: String, application: String, start: String, end: String)
