@@ -572,7 +572,6 @@ class AnalyticsServiceImpl @Inject()(
 
     promise.future
   }
-
   def getNumberPayingCustomers(
     companyName: String,
     applicationName: String,
@@ -580,6 +579,61 @@ class AnalyticsServiceImpl @Inject()(
     end: Date
   ): Future[JsArray] = {
     calculateDetailedKPIAux(companyName, applicationName, start, end, getTotalNumberPayingCustomers)
+  }
+
+  def getTotalAveragePurchasePerSession(
+    companyName: String,
+    applicationName: String,
+    start: Date,
+    end: Date
+  ): Future[JsValue] = {
+    val promise = Promise[JsValue]
+
+    val sessions = databaseService.getDocumentsWithinTimeRange(
+      Metrics.numberSessionsCollection(companyName, applicationName),
+      ("lowerDate", "upperDate"),
+      start,
+      end
+    )
+
+    val nrSessions = if(sessions.value.isEmpty) {
+      0
+    } else {
+      var res = 0
+      for(s <- sessions.value) {
+        res += sessions.value.foldLeft(0)((r,c) => r + (c \ "totalSessions").as[Int])
+      }
+      res
+    }
+
+    val payingUsers = databaseService.getDocumentsWithinTimeRange(
+      Metrics.payingUsersCollection(companyName, applicationName),
+      ("lowerDate", "upperDate"),
+      start,
+      end
+    )
+
+    var nrPurchases = 0.0
+    if(!payingUsers.value.isEmpty) {
+      for(
+        dailyInfo <- payingUsers.value;
+        users <- ((dailyInfo \ "payingUsers").as[List[JsValue]])
+      ) {
+        nrPurchases += ((users \ "purchases").as[List[String]]).size
+      }
+    }
+
+    promise.success(Json.obj("value" -> (if(nrSessions > 0) (nrPurchases / nrSessions) else 0)))
+    promise.future
+  }
+
+  def getAveragePurchasePerSession(
+    companyName: String,
+    applicationName: String,
+    start: Date,
+    end: Date
+  ): Future[JsArray] = {
+    calculateDetailedKPIAux(companyName, applicationName, start, end, getTotalAveragePurchasePerSession)
   }
 }
 

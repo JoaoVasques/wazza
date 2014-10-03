@@ -326,5 +326,35 @@ class AnalyticsController @Inject()(
       analyticsService.getNumberPayingCustomers,
       Detailed)
   }
+
+  def getTotalAveragePurchasePerSession(
+    companyName: String,
+    applicationName: String,
+    startDateStr: String,
+    endDateStr: String
+  ) = Action.async {implicit request =>
+    executeRequest(
+      companyName,
+      applicationName,
+      startDateStr,
+      endDateStr,
+      analyticsService.getTotalAveragePurchasePerSession,
+      Total)
+  }
+
+  def getAveragePurchasePerSession(
+    companyName: String,
+    applicationName: String,
+    startDateStr: String,
+    endDateStr: String
+  ) = Action.async {implicit request =>
+    executeRequest(
+      companyName,
+      applicationName,
+      startDateStr,
+      endDateStr,
+      analyticsService.getAveragePurchasePerSession,
+      Detailed)
+  }
 }
 
