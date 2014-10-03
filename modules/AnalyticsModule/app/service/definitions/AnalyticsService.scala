@@ -77,5 +77,19 @@ trait AnalyticsService {
     start: Date,
     end: Date
   ): Future[JsArray]
+
+  def getTotalAveragePurchasePerSession(
+    companyName: String,
+    applicationName: String,
+    start: Date,
+    end: Date
+  ): Future[JsValue]
+
+  def getAveragePurchasePerSession(
+    companyName: String,
+    applicationName: String,
+    start: Date,
+    end: Date
+  ): Future[JsArray]
 }
 

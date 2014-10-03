@@ -29,3 +29,7 @@ GET  /avgTimeBetweenPurchases/detail/:company/:application/:start/:end @controll
 GET  /payingUsers/total/:company/:application/:start/:end @controllers.analytics.AnalyticsController.getTotalNumberPayingCustomers(company: String, application: String, start: String, end: String)
 
 GET  /payingUsers/detail/:company/:application/:start/:end @controllers.analytics.AnalyticsController.getNumberPayingCustomers(company: String, application: String, start: String, end: String)
+
+GET  /purchasesPerSession/total/:company/:application/:start/:end @controllers.analytics.AnalyticsController.getTotalAveragePurchasePerSession(company: String, application: String, start: String, end: String)
+
+GET  /purchasesPerSession/detail/:company/:application/:start/:end @controllers.analytics.AnalyticsController.getAveragePurchasePerSession(company: String, application: String, start: String, end: String)

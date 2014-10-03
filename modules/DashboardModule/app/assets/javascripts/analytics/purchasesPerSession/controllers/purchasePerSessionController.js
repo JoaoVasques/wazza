@@ -1,7 +1,7 @@
 'use strict';
 
 dashboard
-.controller('PurchaseController', [
+.controller('PurchasePerSessionController', [
   '$scope',
   '$location',
   '$rootScope',
@@ -20,8 +20,8 @@ dashboard
   ) {
 
     var title = "Purchase";
-    var KpiId = "purchase";
-
+    var KpiId = "purchasesPerSession";
+      
     ApplicationStateService.setPath(title);
     $scope.context = new DetailedKpiModel(DateModel.startDate, DateModel.endDate, title);
 
