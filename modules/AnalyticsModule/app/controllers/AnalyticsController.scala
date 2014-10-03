@@ -296,5 +296,35 @@ class AnalyticsController @Inject()(
       analyticsService.getAverageTimeBetweenPurchases,
       Detailed)
   }
+
+  def getTotalNumberPayingCustomers(
+    companyName: String,
+    applicationName: String,
+    startDateStr: String,
+    endDateStr: String
+  ) = Action.async {implicit request =>
+    executeRequest(
+      companyName,
+      applicationName,
+      startDateStr,
+      endDateStr,
+      analyticsService.getTotalNumberPayingCustomers,
+      Total)
+  }
+
+  def getNumberPayingCustomers(
+    companyName: String,
+    applicationName: String,
+    startDateStr: String,
+    endDateStr: String
+  ) = Action.async {implicit request =>
+    executeRequest(
+      companyName,
+      applicationName,
+      startDateStr,
+      endDateStr,
+      analyticsService.getNumberPayingCustomers,
+      Detailed)
+  }
 }
 

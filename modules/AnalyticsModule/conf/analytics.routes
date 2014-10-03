@@ -25,3 +25,7 @@ GET  /churn/detail/:company/:application/:start/:end @controllers.analytics.Anal
 GET  /avgTimeBetweenPurchases/total/:company/:application/:start/:end @controllers.analytics.AnalyticsController.getTotalAverageTimeBetweenPurchases(company: String, application: String, start: String, end: String)
 
 GET  /avgTimeBetweenPurchases/detail/:company/:application/:start/:end @controllers.analytics.AnalyticsController.getAverageTimeBetweenPurchases(company: String, application: String, start: String, end: String)
+
+GET  /payingUsers/total/:company/:application/:start/:end @controllers.analytics.AnalyticsController.getTotalNumberPayingCustomers(company: String, application: String, start: String, end: String)
+
+GET  /payingUsers/detail/:company/:application/:start/:end @controllers.analytics.AnalyticsController.getNumberPayingCustomers(company: String, application: String, start: String, end: String)

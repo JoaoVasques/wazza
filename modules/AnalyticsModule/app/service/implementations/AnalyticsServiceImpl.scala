@@ -94,6 +94,29 @@ class AnalyticsServiceImpl @Inject()(
     }
   }
 
+  private def calculateNumberPayingCustomers(
+    companyName: String,
+    applicationName: String,
+    fields: Tuple2[String, String],
+    s: Date,
+    e: Date
+  ): Float = {
+    val collection = Metrics.payingUsersCollection(companyName, applicationName)
+    val payingUsers = databaseService.getDocumentsWithinTimeRange(collection, fields, s, e)
+    if(payingUsers.value.isEmpty) {
+      0
+    } else {
+      var users = List[String]()
+      for(c <- payingUsers.value) {
+        val payingUserIds = (c \ "payingUsers").as[List[JsValue]] map {el =>
+          (el \ "userId").as[String]
+        }
+        users = (payingUserIds ++ users).distinct
+      }
+      users.size
+    }
+  }
+
   def getTopTenItems(
     companyName: String,
     applicationName: String,
@@ -332,24 +355,6 @@ class AnalyticsServiceImpl @Inject()(
   ): Future[JsValue] = {
 
     val fields = ("lowerDate", "upperDate")
-
-    def calculateNumberPayingCustomers(s: Date, e: Date): Float = {
-      val collection = Metrics.payingUsersCollection(companyName, applicationName)
-      val payingUsers = databaseService.getDocumentsWithinTimeRange(collection, fields, s, e)
-      if(payingUsers.value.isEmpty) {
-        0
-      } else {
-        var users = List[String]()
-        for(c <- payingUsers.value) {
-          val payingUserIds = (c \ "payingUsers").as[List[JsValue]] map {el =>
-            (el \ "userId").as[String]
-          }
-          users = (payingUserIds ++ users).distinct
-        }
-        users.size
-      }
-    }
-
     var numberPayingUsersLower = 0.0
     var numberPayingUsersUpper = 0.0
 
@@ -358,15 +363,39 @@ class AnalyticsServiceImpl @Inject()(
       val s = new DateTime(start).withTimeAtStartOfDay
       val yesterday = s.minusDays(1).withTimeAtStartOfDay
       val e = s.plusDays(1)
-      numberPayingUsersLower = calculateNumberPayingCustomers(yesterday.toDate, s.toDate)
-      numberPayingUsersUpper = calculateNumberPayingCustomers(s.toDate, e.toDate)
+      numberPayingUsersLower = calculateNumberPayingCustomers(
+        companyName,
+        applicationName,
+        fields,
+        yesterday.toDate,
+        s.toDate
+      )
+      numberPayingUsersUpper = calculateNumberPayingCustomers(
+        companyName,
+        applicationName,
+        fields,
+        s.toDate,
+        e.toDate
+      )
     } else {
       val lower_1 = new DateTime(start).withTimeAtStartOfDay
       val lower = lower_1.plusDays(1).withTimeAtStartOfDay
       val upper_1 = new DateTime(end).withTimeAtStartOfDay
       val upper = upper_1.plusDays(1).withTimeAtStartOfDay
-      numberPayingUsersLower = calculateNumberPayingCustomers(lower_1.toDate, lower.toDate)
-      numberPayingUsersUpper = calculateNumberPayingCustomers(upper_1.toDate, upper.toDate)
+      numberPayingUsersLower = calculateNumberPayingCustomers(
+        companyName,
+        applicationName,
+        fields,
+        lower_1.toDate,
+        lower.toDate
+      )
+      numberPayingUsersUpper = calculateNumberPayingCustomers(
+        companyName,
+        applicationName,
+        fields,
+        upper_1.toDate,
+        upper.toDate
+      )
     }
 
     val result = if(numberPayingUsersLower > 0) {
@@ -524,6 +553,33 @@ class AnalyticsServiceImpl @Inject()(
     end: Date
   ): Future[JsArray] = {
     calculateDetailedKPIAux(companyName, applicationName, start, end, getTotalAverageTimeBetweenPurchases)
+  }
+
+  def getTotalNumberPayingCustomers(
+    companyName: String,
+    applicationName: String,
+    start: Date,
+    end: Date
+  ): Future[JsValue] = {
+    val promise = Promise[JsValue]
+    promise.success(Json.obj("value" -> calculateNumberPayingCustomers(
+      applicationName,
+      companyName,
+      ("lowerDate", "upperDate"),
+      start,
+      end
+    )))
+
+    promise.future
+  }
+
+  def getNumberPayingCustomers(
+    companyName: String,
+    applicationName: String,
+    start: Date,
+    end: Date
+  ): Future[JsArray] = {
+    calculateDetailedKPIAux(companyName, applicationName, start, end, getTotalNumberPayingCustomers)
   }
 }
 

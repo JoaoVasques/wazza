@@ -63,5 +63,19 @@ trait AnalyticsService {
     start: Date,
     end: Date
   ): Future[JsArray]
+
+  def getTotalNumberPayingCustomers(
+    companyName: String,
+    applicationName: String,
+    start: Date,
+    end: Date
+  ): Future[JsValue]
+
+  def getNumberPayingCustomers(
+    companyName: String,
+    applicationName: String,
+    start: Date,
+    end: Date
+  ): Future[JsArray]
 }
 
