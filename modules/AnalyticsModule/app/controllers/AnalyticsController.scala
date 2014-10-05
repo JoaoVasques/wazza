@@ -267,6 +267,36 @@ class AnalyticsController @Inject()(
       Detailed)
   }
 
+  def getTotalAverageTimeFirstPurchase(
+    companyName: String,
+    applicationName: String,
+    startDateStr: String,
+    endDateStr: String
+  ) = Action.async {implicit request =>
+    executeRequest(
+      companyName,
+      applicationName,
+      startDateStr,
+      endDateStr,
+      analyticsService.getTotalAverageTimeFirstPurchase,
+      Total)
+  }
+
+  def getAverageTimeFirstPurchase(
+    companyName: String,
+    applicationName: String,
+    startDateStr: String,
+    endDateStr: String
+  ) = Action.async {implicit request =>
+    executeRequest(
+      companyName,
+      applicationName,
+      startDateStr,
+      endDateStr,
+      analyticsService.getAverageTimeFirstPurchase,
+      Detailed)
+  }
+
   def getTotalAverageTimeBetweenPurchases(
     companyName: String,
     applicationName: String,

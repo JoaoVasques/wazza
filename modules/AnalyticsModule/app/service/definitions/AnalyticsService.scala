@@ -50,6 +50,20 @@ trait AnalyticsService {
 
   def getLifeTimeValue(companyName: String, applicationName: String, start: Date, end: Date): Future[JsArray]
 
+  def getTotalAverageTimeFirstPurchase(
+    companyName: String,
+    applicationName: String,
+    start: Date,
+    end: Date
+  ): Future[JsValue]
+
+  def getAverageTimeFirstPurchase(
+    companyName: String,
+    applicationName: String,
+    start: Date,
+    end: Date
+  ): Future[JsArray]
+
   def getTotalAverageTimeBetweenPurchases(
     companyName: String,
     applicationName: String,
