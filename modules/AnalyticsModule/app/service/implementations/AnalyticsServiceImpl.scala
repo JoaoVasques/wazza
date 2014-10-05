@@ -448,43 +448,49 @@ def getTotalAverageTimeFirstPurchase(
       end
     )
 
+    val sessionsPerUser = databaseService.getDocumentsWithinTimeRange(
+      Metrics.mobileSessionsCollection(companyName, applicationName),
+      fields,
+      start,
+      end
+    )
+
+    var totalTimeFirstPurchase = 0.0
+    var purchaseTimesPerUser: Map[String, Date] = Map()
+
     if(payingUsers.value.isEmpty) {
       promise.success(Json.obj("value" -> 0))
     } else {
-      var totalTimeBetweenPurchases = 0.0
-      var numberPurchases = 0
-      var purchaseTimesPerUser: Map[String, List[Date]] = Map()
       for(
         payingUsersDay <- payingUsers.value;
         userInfo <- ((payingUsersDay \ "payingUsers").as[List[JsValue]])
       ) {
         val userId = (userInfo \ "userId").as[String]
-        val purchasesTime  = (userInfo \ "purchases").as[List[String]] map {id =>
-          getDateFromString(purchaseService.get(companyName, applicationName, id).get.time)
-        }
-
-        val purchases = purchaseTimesPerUser getOrElse(userId, Nil)
-        purchases match {
-          case Nil => purchaseTimesPerUser += (userId -> purchasesTime)
-          case _ => purchaseTimesPerUser += (userId -> (purchases ++ purchasesTime))
-        }
-      }
-
-      for((u,t) <- purchaseTimesPerUser; times <- t.view.zipWithIndex) {
-        val index = times._2
-        val nrPurchases = t.size
-        if(nrPurchases == 1) {
-          numberPurchases += 1
-        } else {
-          if((index+1) < nrPurchases) {
-            val currentPurchaseDate = times._1
-            val nextPurchaseDate = t(index+1)
-            totalTimeBetweenPurchases += getNumberSecondsBetweenDates(currentPurchaseDate, nextPurchaseDate)
+        if(!purchaseTimesPerUser.contains(userId)){
+          val purchaseTime  = (userInfo \ "purchases").as[List[String]] map {id =>
+            getDateFromString(purchaseService.get(companyName, applicationName, id).get.time)
           }
+          purchaseTimesPerUser += (userId -> purchaseTime.head)
         }
       }
+    }
+
+    if(sessionsPerUser.value.isEmpty){
+      promise.success(Json.obj("value" -> 0))
+    } else {
+      for(
+        el <- sessionsPerUser.value;
+        userId <- ((el \ "user").as[String])
+      ) {
+        if(purchaseTimesPerUser.contains(userId)){
+          val firstSessionDate = getDateFromString((el \ "startTime").as[String])
+          val firstPurchaseDate = getDateFromString(purchaseTimesPerUser.get(userId).as[String])
+          totalTimeFirstPurchase += getNumberSecondsBetweenDates(firstSessionDate, firstPurchaseDate)
+        }
+      }
+
       promise.success(
-        Json.obj("value" -> (if(numberPurchases == 0) 0 else totalTimeBetweenPurchases / numberPurchases))
+        Json.obj("value" -> (if(numberPurchases == 0) 0 else totalTimeFirstPurchase / purchaseTimesPerUser.size))
       )
     }
 
@@ -499,7 +505,6 @@ def getTotalAverageTimeFirstPurchase(
   ): Future[JsArray] = {
     calculateDetailedKPIAux(companyName, applicationName, start, end, getTotalAverageTimeFirstPurchase)
   }
-
 
   def getTotalAverageTimeBetweenPurchases(
     companyName: String,
