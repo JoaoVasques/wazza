@@ -5,7 +5,7 @@ import org.bson.types.ObjectId
 import play.api.libs.json.JsArray
 import play.api.libs.json.JsObject
 import play.api.libs.json.JsValue
-import scala.util.Try
+import scala.concurrent._
 
 trait DatabaseService {
 
@@ -13,13 +13,21 @@ trait DatabaseService {
   lazy val UserCollection = "users"
   lazy val PurchasesCollection = "purchases"
 
-  def dropCollection(collectionName: String): Unit
+  def exists(collectionName: String, key: String, value: String): Future[Boolean]
 
-  def exists(collectionName: String, key: String, value: String): Boolean
+  def get(
+    collectionName: String,
+    key: String,
+    value: String,
+    projection: String = null
+  ): Future[Option[JsValue]]
 
-  def get(collectionName: String, key: String, value: String, projection: String = null): Option[JsValue]
-
-  def getListElements(collectionName: String, key: String, value: String, projection: String = null): List[JsValue]
+  def getListElements(
+    collectionName: String,
+    key: String,
+    value: String,
+    projection: String = null
+  ): Future[List[JsValue]]
 
   def getElementsWithoutArrayContent(
     collectionName: String,
@@ -27,15 +35,15 @@ trait DatabaseService {
     elementKey: String,
     array: List[String],
     limit: Int
-  ): List[JsValue]
+  ): Future[List[JsValue]]
                                                                                                  
-  def getCollectionElements(collectionName: String): List[JsValue]
+  def getCollectionElements(collectionName: String): Future[List[JsValue]]
 
-  def insert(collectionName: String, model: JsValue, extra: Map[String, ObjectId] = null): Try[Unit]
+  def insert(collectionName: String, model: JsValue, extra: Map[String, ObjectId] = null): Future[Unit]
 
-  def delete(collectionName: String, el: JsValue): Try[Unit]
+  def delete(collectionName: String, el: JsValue): Future[Unit]
 
-  def update(collectionName: String, key: String, keyValue: String, valueKey: String, newValue: Any): Try[Unit]
+  def update(collectionName: String, key: String, keyValue: String, valueKey: String, newValue: Any): Future[Unit]
 
   /**
     Time-ranged queries
@@ -45,14 +53,14 @@ trait DatabaseService {
     dateFields: Tuple2[String, String],
     start: Date,
     end: Date
-  ): JsArray
+  ): Future[JsArray]
 
   def getDocumentsByTimeRange(
     collectionName: String,
     dateField: String,
     start: Date,
     end: Date
-  ): JsArray
+  ): Future[JsArray]
 
   /**
     Array operations
@@ -65,7 +73,7 @@ trait DatabaseService {
     arrayKey: String,
     elementKey: String,
     elementValue: T
-  ): Boolean
+  ): Future[Boolean]
 
   def getElementFromArray[T <: Any](
     collectionName: String,
@@ -74,7 +82,7 @@ trait DatabaseService {
     arrayKey: String,
     elementKey: String,
     elementValue: T
-  ): Option[JsValue]
+  ): Future[Option[JsValue]]
 
   def getElementsOfArray(
     collectionName: String,
@@ -82,24 +90,24 @@ trait DatabaseService {
     docIdValue: String,
     arrayKey: String,
     limit: Option[Int]
-  ): List[JsValue]
+  ): Future[List[JsValue]]
 
   def addElementToArray[T <: Any](
     collectionName: String,
     docIdKey: String,
-    docIdValue: Any,
+    docIdValue: String,
     arrayKey: String,
     model: T
-  ): Try[Unit]
+  ): Future[Unit]
 
   def deleteElementFromArray[T <: Any](
     collectionName: String,
     docIdKey: String,
-    docIdValue: Any,
+    docIdValue: String,
     arrayKey: String,
     elementKey: String,
     elementValue:T
-  ): Try[Unit]
+  ): Future[Unit]
 
   def updateElementOnArray[T <: Any](
     collectionName: String,
@@ -109,7 +117,7 @@ trait DatabaseService {
     elementId: String,
     elementIdValue: String,
     m: T
-  ): Try[Unit]
+  ): Future[Unit]
 }
 
 

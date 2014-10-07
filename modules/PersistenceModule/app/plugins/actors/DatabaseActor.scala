@@ -40,7 +40,7 @@ protected[plugin] trait DatabaseActor {
 
   def delete(collectionName: String, el: JsValue): Future[Unit]
 
-  def update(collectionName: String, key: String, keyValue: String, valueKey: String, newValue: Any): Unit
+  def update(collectionName: String, key: String, keyValue: String, valueKey: String, newValue: Any): Future[Unit]
 
   /**
     Time-ranged queries
@@ -95,7 +95,7 @@ protected[plugin] trait DatabaseActor {
     docIdValue: String,
     arrayKey: String,
     model: T
-  ): Unit
+  ): Future[Unit]
 
   def deleteElementFromArray[T <: Any](
     collectionName: String,
@@ -104,7 +104,7 @@ protected[plugin] trait DatabaseActor {
     arrayKey: String,
     elementKey: String,
     elementValue:T
-  ): Unit
+  ): Future[Unit]
 
   def updateElementOnArray[T <: Any](
     collectionName: String,
@@ -114,6 +114,6 @@ protected[plugin] trait DatabaseActor {
     elementId: String,
     elementIdValue: String,
     m: T
-  ): Unit
+  ): Future[Unit]
 }
 

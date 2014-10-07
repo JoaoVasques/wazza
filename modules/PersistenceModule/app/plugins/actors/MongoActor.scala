@@ -117,9 +117,13 @@ protected[plugin] class MongoActor extends DatabaseActor {
   }
 
   def insert(collectionName: String, model: JsValue, extra: Map[String, ObjectId] = null): Future[Unit] = {
+    val promise = Promise[Unit]
     if(extra == null) {
       collection(collectionName).insert(model) map { lastError =>
         Logger.info(s"Mongo Actor: INSERT successfuly done")
+        promise.success()
+      } recover {
+        case ex: Exception => promise.failure(ex)
       }
     } else {
       val builder = MongoDBObject.newBuilder
@@ -128,14 +132,26 @@ protected[plugin] class MongoActor extends DatabaseActor {
       builder += "purchase_id" -> extra("purchase_id")
       collection(collectionName).insert(Json.parse(builder.result().toString)) map {lastError =>
         Logger.info(s"Mongo Actor: INSERT successfuly done")
+        promise.success()
+      } recover {
+        case ex: Exception => promise.failure(ex)
       }
     }
+    promise.future
   }
 
   def delete(collectionName: String, el: JsValue): Future[Unit] = {
+    val promise = Promise[Unit]
     collection(collectionName).remove(el) map {lastError =>
       Logger.info(s"Mongo Actor: DELETE successfuly done")
+      promise.success()
+    } recover {
+      case ex: Exception => {
+        Logger.error("")
+        promise.failure(ex)
+      }
     }
+    promise.future
   }
 
   def update(
@@ -144,10 +160,20 @@ protected[plugin] class MongoActor extends DatabaseActor {
     keyValue: String,
     valueKey: String,
     newValue: Any
-  ): Unit = {
+  ): Future[Unit] = {
+    val promise = Promise[Unit]
     val query = Json.obj(key -> keyValue)
     val update = Json.parse(($set(valueKey -> newValue)).toString)
-    collection(collectionName).update(query, update)
+    collection(collectionName).update(query, update) map { lastError =>
+      Logger.info("Mongo Actor: UPDATE successfuly done")
+      promise.success()
+    } recover {
+      case ex: Exception => {
+        Logger.error("")
+        promise.failure(ex)
+      }
+    }
+    promise.future
   }
 
   /**
@@ -254,7 +280,8 @@ protected[plugin] class MongoActor extends DatabaseActor {
     docIdValue: String,
     arrayKey: String,
     model: T
-  ): Unit = {
+  ): Future[Unit] = {
+    val promise = Promise[Unit]
     val query = Json.obj(docIdKey -> docIdValue)
     val m = model match {
       case j: JsObject => convertStringToDateInJson(j)
@@ -263,7 +290,14 @@ protected[plugin] class MongoActor extends DatabaseActor {
     val update = Json.parse($push(arrayKey -> m).toString)
     collection(collectionName).update(query, update) map {lastError =>
       Logger.info("Mongo Actor: elemented added to array successfuly")
+      promise.success()
+    } recover {
+      case ex: Exception => {
+        Logger.error("")
+        promise.failure(ex)
+      }
     }
+    promise.future
   }
 
   def deleteElementFromArray[T <: Any](
@@ -273,10 +307,19 @@ protected[plugin] class MongoActor extends DatabaseActor {
     arrayKey: String,
     elementKey: String,
     elementValue:T
-  ): Unit = {
+  ): Future[Unit] = {
+    val promise = Promise[Unit]
     val query = Json.obj(docIdKey -> docIdValue)
     val update = Json.parse($pull(arrayKey -> MongoDBObject(elementKey -> elementValue)).toString)
-    collection(collectionName).update(query, update)
+    collection(collectionName).update(query, update) map { lastError =>
+      promise.success()
+    } recover {
+      case ex: Exception => {
+        Logger.error("")
+        promise.failure(ex)
+      }
+    }
+    promise.future
   }
 
   def updateElementOnArray[T <: Any](
@@ -287,8 +330,9 @@ protected[plugin] class MongoActor extends DatabaseActor {
     elementId: String,
     elementIdValue: String,
     m: T
-  ): Unit = {
+  ): Future[Unit] = {
 
+    val promise = Promise[Unit]
     val model = m match {
       case j: JsObject => convertStringToDateInJson(j)
       case _ => m
@@ -297,8 +341,14 @@ protected[plugin] class MongoActor extends DatabaseActor {
     val query = Json.obj(docIdKey -> docIdValue, s"$arrayKey.$elementId" -> elementIdValue)
     val update = Json.parse($set((arrayKey+".$." + elementId) -> model).toString)
     collection(collectionName).update(query, update) map { lastError =>
-      println
+      promise.success()
+    } recover {
+      case ex: Exception => {
+        Logger.error("")
+        promise.failure(ex)
+      }
     }
+    promise.future
   }
 
   /**
@@ -326,27 +376,6 @@ protected[plugin] class MongoActor extends DatabaseActor {
       j = convertAux(key)
     }
     j
-  }
-
-  private implicit def convertJsonToDBObject(json: JsValue): DBObject = {
-
-    def convertDates(dateKey: String, dbObject: DBObject): DBObject = {
-      if(dbObject.containsField(dateKey)) {
-        val timeBackup = dbObject.get(dateKey).toString
-        dbObject.removeField(dateKey)
-        val format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z")
-        dbObject.put(dateKey, format.parse(timeBackup))
-      }
-      dbObject
-    }
-
-    val dateKeys = List("time", "startTime")
-    val dbObject = JSON.parse(json.toString).asInstanceOf[DBObject]
-    val res = dateKeys.filter(dbObject.containsField(_)).map {(key: String) =>
-      convertDates(key, dbObject)
-    }
-
-    if(res.isEmpty) dbObject else res.head
   }
 }
 
