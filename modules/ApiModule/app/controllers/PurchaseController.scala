@@ -32,9 +32,10 @@ class PurchaseController @Inject()(
     )) {
 
       val purchaseInfo = purchaseService.create(content)
-      purchaseService.save(companyName, applicationName, purchaseInfo) match {
-        case Success(_) => Ok
-        case Failure(_) => BadRequest
+      purchaseService.save(companyName, applicationName, purchaseInfo) map {res =>
+        Ok
+      } recover {
+        case _ => BadRequest
       }
     } else {
       BadRequest("Item does not exist")
