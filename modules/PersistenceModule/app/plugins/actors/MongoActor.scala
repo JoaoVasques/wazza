@@ -19,21 +19,30 @@ import com.mongodb.util.JSON
 import scala.language.implicitConversions
 import com.mongodb.casbah.Imports._
 import scala.util.{Failure, Success}
+import play.api.libs.json.JsObject
+import play.api.libs.json.JsValue
+import play.api.libs.json.Json
+import play.api.Logger
 
 // Reactive Mongo imports
 import reactivemongo.api._
 
 protected[plugin] class MongoActor extends DatabaseActor {
 
-  val db = Play.application.plugin[ReactiveMongoPlugin]
-    .getOrElse(throw new RuntimeException("MyPlugin not loaded")).helper.db
+  private val db = Play.application.plugin[ReactiveMongoPlugin]
+    .getOrElse(throw new RuntimeException("ReactiveMongoPlugin not loaded")).helper.db
 
   private def collection(name: String): JSONCollection = {
     db.collection[JSONCollection](name)
   }
 
   def exists(collectionName: String, key: String, value: String): Future[Boolean] = {
-    null
+    this.get(collectionName, key, value) map { result =>
+      result match {
+        case Some(_) => true
+        case _ => false
+      }
+    }
   }
 
   def get(
@@ -43,27 +52,17 @@ protected[plugin] class MongoActor extends DatabaseActor {
     projection: String = null
   ): Future[Option[JsValue]] = {
 
-    /**
+    val query = Json.obj(key -> value)
+    val proj = if(projection != null) {
+      Json.obj(projection -> 1)
+    } else {
+      Json.obj()
+    }
 
-      val query = MongoDBObject(key -> value)
-      val proj = if(projection != null) {
-      MongoDBObject(projection -> 1)
-      } else {
-      MongoDBObject()
-      }
-
-      val collection = this.getCollection(collectionName)
-      collection.findOne(query, proj) match {
-      case Some(obj) => {
-      Some(Json.parse(obj.toString))
-      }
-      case _ => None
-      }
-    **/
-
-
-
-    null
+    val cursor = collection(collectionName).find(query,proj).cursor[JsObject]
+    cursor.collect[List]() map { results =>
+      if(results.isEmpty) None else Some(results.head)
+    }
   }
 
   def getListElements(
@@ -72,7 +71,15 @@ protected[plugin] class MongoActor extends DatabaseActor {
     value: String,
     projection: String = null
   ): Future[List[JsValue]] = {
-    null
+
+    val query = Json.obj(key -> value)
+    val proj = if(projection != null) {
+      Json.obj(projection -> 1)
+    } else {
+      Json.obj()
+    }
+
+    collection(collectionName).find(query,proj).cursor[JsObject].collect[List]()
   }
 
   def getElementsWithoutArrayContent(
@@ -82,19 +89,65 @@ protected[plugin] class MongoActor extends DatabaseActor {
     array: List[String],
     limit: Int
   ): Future[List[JsValue]] = {
+    /**
+
+      val query = (arrayKey $nin array)
+      val projection = MongoDBObject(arrayKey -> 1)
+      val collection = this.getCollection(collectionName)
+      var elements = List[JsValue]()
+      for(el <- collection.find(query, projection)) {
+      (Json.parse(el.toString) \ arrayKey).as[JsArray].value.foreach(item => {
+      elements ::= Json.parse(item.toString)
+      })
+      }
+      
+      val result = elements.filter(el => {
+      !array.contains((el \ elementKey).as[String])
+      })
+
+      if(limit > 0) {
+      result.take(limit)
+      } else {
+      result
+      }
+
+      * */
     null
   }
   
   def getCollectionElements(collectionName: String): Future[List[JsValue]] = {
-    null
+    collection(collectionName).find(Json.obj()).cursor[JsObject].collect[List]()
   }
 
   def insert(collectionName: String, model: JsValue, extra: Map[String, ObjectId] = null): Future[Unit] = {
+    //val promise = Promise[JsArray]
+
+    /**
+      val collection = this.getCollection(collectionName)
+      if(extra == null) {
+      collection.insert(model)
+      } else {
+      // for the specific case of recommendation collection
+      val builder = MongoDBObject.newBuilder
+      builder += "created_at" -> (model \ "created_at").as[String]
+      builder += "user_id" -> extra("user_id")
+      builder += "purchase_id" -> extra("purchase_id")
+      collection.insert(builder.result())
+      }
+    **/
+    if(extra == null) {
+      collection(collectionName).insert(model)
+    } else {
+
+    }
+
     null
   }
 
   def delete(collectionName: String, el: JsValue): Future[Unit] = {
-    null
+    collection(collectionName).remove(el) map {lastError =>
+      Logger.info(s"DELETE Last error: $lastError")
+    }
   }
 
   def update(
@@ -105,6 +158,9 @@ protected[plugin] class MongoActor extends DatabaseActor {
     newValue: Any
   ): Unit = {
 
+    val query = Json.obj(key -> keyValue)
+    val update = Json.parse(($set(valueKey -> newValue)).toString)
+    collection(collectionName).update(query, update)
   }
 
   /**
@@ -116,7 +172,12 @@ protected[plugin] class MongoActor extends DatabaseActor {
     start: Date,
     end: Date
   ): Future[JsArray] = {
-    null
+
+    val query = Json.parse(((dateFields._1 $lte start $gt end) ++ (dateFields._2 $lte start $gt end)).toString)
+    val sortCriteria = Json.obj(dateFields._1 -> 1)
+    collection(collectionName).find(query).sort(sortCriteria).cursor[JsObject].collect[List]() map {list =>
+      new JsArray(list)
+    }
   }
 
   def getDocumentsByTimeRange(
@@ -125,7 +186,12 @@ protected[plugin] class MongoActor extends DatabaseActor {
     start: Date,
     end: Date
   ): Future[JsArray] = {
-    null
+
+    val query = Json.parse(((dateField $lte start $gt end)).toString)
+    val sortCriteria = Json.obj(dateField -> 1)
+    collection(collectionName).find(query).sort(sortCriteria).cursor[JsObject].collect[List]() map { list =>
+      new JsArray(list)
+    }
   }
 
   /**
@@ -140,7 +206,12 @@ protected[plugin] class MongoActor extends DatabaseActor {
     elementKey: String,
     elementValue: T
   ): Future[Boolean] = {
-    null
+    this.getElementFromArray[T](collectionName, docIdKey, docIdValue, arrayKey, elementKey, elementValue) map { res =>
+      res match {
+        case Some(_) => true
+        case None => false
+      }
+    }
   }
 
   def getElementFromArray[T <: Any](
@@ -151,7 +222,22 @@ protected[plugin] class MongoActor extends DatabaseActor {
     elementKey: String,
     elementValue: T
   ): Future[Option[JsValue]] = {
-    null
+
+    def findElementAux(array: JsArray): Option[JsValue] = {
+      array.value.find{ el=> {
+        (el \ elementKey).as[String].filter(_ != '"').equals(elementValue)
+      }}
+    }
+
+    val query = Json.obj(docIdKey -> docIdValue)
+    val projection = Json.obj(arrayKey -> 1)
+    collection(collectionName).find(query,projection).cursor[JsObject].collect[List]() map {list =>
+      if(list.isEmpty)
+        None
+      else {
+        findElementAux((list.head \ arrayKey).as[JsArray])
+      }
+    }
   }
 
   def getElementsOfArray(
@@ -161,28 +247,58 @@ protected[plugin] class MongoActor extends DatabaseActor {
     arrayKey: String,
     limit: Option[Int]
   ): Future[List[JsValue]] = {
-    null
+
+    val query = Json.obj(docIdKey -> docIdValue)
+    val projection = Json.obj(arrayKey -> 1)
+    limit match {
+      case Some(maxNumberElements) => {
+        null
+        //TODO collection(collectionName).find(query, projection).limit(maxNumberElements).cursor[JsObject].collect[List]()
+      }
+      case None => {
+        collection(collectionName).find(query, projection).cursor[JsObject].collect[List]()
+      }
+    }
   }
 
   def addElementToArray[T <: Any](
     collectionName: String,
     docIdKey: String,
-    docIdValue: Any,
+    docIdValue: String,
     arrayKey: String,
     model: T
   ): Unit = {
+    /**
+      val query = MongoDBObject(docIdKey -> docIdValue)
 
+      val model = m match {
+      case j: JsObject => {
+      convertJsonToDBObject(j)
+      }
+      case _ => m
+      }
+
+      val update = $push(arrayKey -> model)
+      val collection = this.getCollection(collectionName)
+      collection.update(query, update)
+
+      * */
+    val query = Json.obj(docIdKey -> docIdValue)
+    val update = Json.parse($push(arrayKey -> model).toString)
+    //TODO
   }
 
   def deleteElementFromArray[T <: Any](
     collectionName: String,
     docIdKey: String,
-    docIdValue: Any,
+    docIdValue: String,
     arrayKey: String,
     elementKey: String,
     elementValue:T
   ): Unit = {
-
+    val query = Json.obj(docIdKey -> docIdValue)
+    val update = Json.parse($pull(arrayKey -> MongoDBObject(elementKey -> elementValue)).toString)
+    collection(collectionName).update(query, update)
   }
 
   def updateElementOnArray[T <: Any](
@@ -194,7 +310,8 @@ protected[plugin] class MongoActor extends DatabaseActor {
     elementIdValue: String,
     m: T
   ): Unit = {
-
+    val query = Json.obj(docIdKey -> docIdValue, s"$arrayKey.$elementId" -> elementIdValue)
+    //TODO
   }
 
   /**

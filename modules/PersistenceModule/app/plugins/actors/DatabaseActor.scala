@@ -92,7 +92,7 @@ protected[plugin] trait DatabaseActor {
   def addElementToArray[T <: Any](
     collectionName: String,
     docIdKey: String,
-    docIdValue: Any,
+    docIdValue: String,
     arrayKey: String,
     model: T
   ): Unit
@@ -100,7 +100,7 @@ protected[plugin] trait DatabaseActor {
   def deleteElementFromArray[T <: Any](
     collectionName: String,
     docIdKey: String,
-    docIdValue: Any,
+    docIdValue: String,
     arrayKey: String,
     elementKey: String,
     elementValue:T
