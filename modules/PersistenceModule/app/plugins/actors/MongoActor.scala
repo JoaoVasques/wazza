@@ -23,6 +23,7 @@ import play.api.libs.json.JsObject
 import play.api.libs.json.JsValue
 import play.api.libs.json.Json
 import play.api.Logger
+import play.api.libs.json._
 
 // Reactive Mongo imports
 import reactivemongo.api._
@@ -116,33 +117,24 @@ protected[plugin] class MongoActor extends DatabaseActor {
   }
 
   def insert(collectionName: String, model: JsValue, extra: Map[String, ObjectId] = null): Future[Unit] = {
-    //val promise = Promise[JsArray]
-
-    /**
-      val collection = this.getCollection(collectionName)
-      if(extra == null) {
-      collection.insert(model)
-      } else {
-      // for the specific case of recommendation collection
+    if(extra == null) {
+      collection(collectionName).insert(model) map { lastError =>
+        Logger.info(s"Mongo Actor: INSERT successfuly done")
+      }
+    } else {
       val builder = MongoDBObject.newBuilder
       builder += "created_at" -> (model \ "created_at").as[String]
       builder += "user_id" -> extra("user_id")
       builder += "purchase_id" -> extra("purchase_id")
-      collection.insert(builder.result())
+      collection(collectionName).insert(Json.parse(builder.result().toString)) map {lastError =>
+        Logger.info(s"Mongo Actor: INSERT successfuly done")
       }
-    **/
-    if(extra == null) {
-      collection(collectionName).insert(model)
-    } else {
-
     }
-
-    null
   }
 
   def delete(collectionName: String, el: JsValue): Future[Unit] = {
     collection(collectionName).remove(el) map {lastError =>
-      Logger.info(s"DELETE Last error: $lastError")
+      Logger.info(s"Mongo Actor: DELETE successfuly done")
     }
   }
 
@@ -153,7 +145,6 @@ protected[plugin] class MongoActor extends DatabaseActor {
     valueKey: String,
     newValue: Any
   ): Unit = {
-
     val query = Json.obj(key -> keyValue)
     val update = Json.parse(($set(valueKey -> newValue)).toString)
     collection(collectionName).update(query, update)
@@ -264,24 +255,15 @@ protected[plugin] class MongoActor extends DatabaseActor {
     arrayKey: String,
     model: T
   ): Unit = {
-    /**
-      val query = MongoDBObject(docIdKey -> docIdValue)
-
-      val model = m match {
-      case j: JsObject => {
-      convertJsonToDBObject(j)
-      }
-      case _ => m
-      }
-
-      val update = $push(arrayKey -> model)
-      val collection = this.getCollection(collectionName)
-      collection.update(query, update)
-
-      * */
     val query = Json.obj(docIdKey -> docIdValue)
-    val update = Json.parse($push(arrayKey -> model).toString)
-    //TODO
+    val m = model match {
+      case j: JsObject => convertStringToDateInJson(j)
+      case _ => model
+    }
+    val update = Json.parse($push(arrayKey -> m).toString)
+    collection(collectionName).update(query, update) map {lastError =>
+      Logger.info("Mongo Actor: elemented added to array successfuly")
+    }
   }
 
   def deleteElementFromArray[T <: Any](
@@ -306,20 +288,44 @@ protected[plugin] class MongoActor extends DatabaseActor {
     elementIdValue: String,
     m: T
   ): Unit = {
+
+    val model = m match {
+      case j: JsObject => convertStringToDateInJson(j)
+      case _ => m
+    }
+
     val query = Json.obj(docIdKey -> docIdValue, s"$arrayKey.$elementId" -> elementIdValue)
-    //TODO
+    val update = Json.parse($set((arrayKey+".$." + elementId) -> model).toString)
+    collection(collectionName).update(query, update) map { lastError =>
+      println
+    }
   }
 
   /**
     PRIVATE METHODS
   **/
 
-  private implicit def errorCheck(res: WriteResult): Try[Unit] = {
-    if(res.getError == null) {
-      new Success
-    } else {
-      Failure(new Exception(res.getError))
+  private def convertStringToDateInJson(json: JsObject): JsObject = {
+    def convertAux(field: String): JsObject = {
+      if(json.keys.contains(field)) {
+        val format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z")
+        val date = format.parse((json \ field).as[String])
+        val transformer = (__ \ field).json.update(
+          __.read[JsObject].map{o => Json.obj(field -> date)}
+        )
+        json.transform(transformer) fold(
+          valid = {v => v},
+          invalid = {errors => null}
+        )
+      } else json
     }
+
+    val dateKeys = List("time", "startTime")
+    var j = json
+    dateKeys.filter(json.keys.contains(_)) foreach {(key: String) =>
+      j = convertAux(key)
+    }
+    j
   }
 
   private implicit def convertJsonToDBObject(json: JsValue): DBObject = {

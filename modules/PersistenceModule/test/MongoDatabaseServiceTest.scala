@@ -1,5 +1,5 @@
 package test.persistence
-
+/**
 import org.specs2.mutable._
 import play.api.libs.json.JsObject
 import play.api.libs.json.Json
@@ -95,3 +95,4 @@ class MongoDatabaseServiceTest  extends Specification {
     }
   }
 }
+  * */
