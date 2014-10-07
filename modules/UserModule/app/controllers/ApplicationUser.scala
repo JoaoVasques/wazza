@@ -10,5 +10,5 @@ class ApplicationUser @Inject()(userService: UserService) extends Controller {
   def index = Action {
 	 Ok(views.html.userMain())
   }
-
 }
+

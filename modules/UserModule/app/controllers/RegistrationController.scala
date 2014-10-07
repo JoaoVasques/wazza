@@ -13,6 +13,9 @@ import ExecutionContext.Implicits.global
 import play.api.libs.json._
 import service.security.definitions.{TokenManagerService}
 import controllers.security._
+import scala.concurrent._
+import ExecutionContext.Implicits.global
+import scala.concurrent.duration._
 
 class RegistrationController @Inject()(
   userService: UserService,
@@ -27,7 +30,7 @@ class RegistrationController @Inject()(
       "company" -> nonEmptyText,
       "applications" -> ignored(List[String]())
     )(User.apply)(User.unapply) verifying("User with this email already exists", fields => fields match {
-      case userData => userService.validateUser(userData.email)
+      case userData => Await.result(userService.validateUser(userData.email), 5 seconds)
     })
   )
 
@@ -40,14 +43,15 @@ class RegistrationController @Inject()(
       formErrors => Future {
         BadRequest(Json.obj("errors" -> formErrors.errors.head.message))
       },
-      user => Future {
+      user => {
         val token = tokenService.startNewSession(user.email)
-        userService.insertUser(user)
-        Ok(Json.obj(
-          "authToken" -> token,
-          "userId" -> user.email,
-          "url" -> "analytics.overview"// TODO routes.Application.test().url
-        )).withToken(token)
+        userService.insertUser(user) map {u =>
+          Ok(Json.obj(
+            "authToken" -> token,
+            "userId" -> user.email,
+            "url" -> "analytics.overview"// TODO routes.Application.test().url
+          )).withToken(token)
+        }
       }
     )
   }

@@ -13,9 +13,9 @@ trait MobileUserService {
     companyName: String,
     applicationName: String,
     userId: String
-  ): Try[MobileUser]
+  ): Future[Unit]
 
-  def get(companyName: String, applicationName: String, userId: String): Option[MobileUser]
+  def get(companyName: String, applicationName: String, userId: String): Future[Option[MobileUser]]
 
-  def exists(companyName: String, applicationName: String, userId: String): Boolean
+  def exists(companyName: String, applicationName: String, userId: String): Future[Boolean]
 }

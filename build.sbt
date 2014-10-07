@@ -36,8 +36,9 @@ templatesImport += "models.user._"
 templatesImport += "controllers.user._"
 
 lazy val mySettings = Seq(
-    javaOptions in run += "-Dconfig.file=conf/dev/application_dev.conf",
-    scalacOptions ++= Seq("-feature", "-language:reflectiveCalls")
+  javaOptions in run += "-Dconfig.file=conf/dev/application_dev.conf",
+  scalacOptions ++= Seq("-feature", "-language:reflectiveCalls"),
+  scalacOptions ++= Seq("-feature", "-language:postfixOps")
 )
 
 // Projects
