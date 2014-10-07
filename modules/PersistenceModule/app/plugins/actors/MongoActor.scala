@@ -62,6 +62,11 @@ protected[plugin] class MongoActor extends DatabaseActor {
     val cursor = collection(collectionName).find(query,proj).cursor[JsObject]
     cursor.collect[List]() map { results =>
       if(results.isEmpty) None else Some(results.head)
+    } recover {
+      case ex: Exception => {
+        Logger.error(s"MongoActor: GET Error - " + ex.getMessage)
+        throw ex
+      }
     }
   }
 
@@ -89,30 +94,21 @@ protected[plugin] class MongoActor extends DatabaseActor {
     array: List[String],
     limit: Int
   ): Future[List[JsValue]] = {
-    /**
 
-      val query = (arrayKey $nin array)
-      val projection = MongoDBObject(arrayKey -> 1)
-      val collection = this.getCollection(collectionName)
+    val query = Json.parse((arrayKey $nin array).toString)
+    val projection = Json.obj(arrayKey -> 1)
+    collection(collectionName).find(query, projection).cursor[JsObject].collect[List]() map {list =>
       var elements = List[JsValue]()
-      for(el <- collection.find(query, projection)) {
-      (Json.parse(el.toString) \ arrayKey).as[JsArray].value.foreach(item => {
-      elements ::= Json.parse(item.toString)
-      })
+      list foreach {(el: JsObject) =>
+        (el \ arrayKey).as[JsArray].value.foreach(i => {elements ::= i})
       }
-      
+
       val result = elements.filter(el => {
-      !array.contains((el \ elementKey).as[String])
+        !array.contains((el \ elementKey).as[String])
       })
 
-      if(limit > 0) {
-      result.take(limit)
-      } else {
-      result
-      }
-
-      * */
-    null
+      if(limit > 0) result.take(limit) else result
+    }
   }
   
   def getCollectionElements(collectionName: String): Future[List[JsValue]] = {
@@ -252,8 +248,8 @@ protected[plugin] class MongoActor extends DatabaseActor {
     val projection = Json.obj(arrayKey -> 1)
     limit match {
       case Some(maxNumberElements) => {
-        null
-        //TODO collection(collectionName).find(query, projection).limit(maxNumberElements).cursor[JsObject].collect[List]()
+        //TODO
+        collection(collectionName).find(query, projection).cursor[JsObject].collect[List]()
       }
       case None => {
         collection(collectionName).find(query, projection).cursor[JsObject].collect[List]()
