@@ -58,7 +58,7 @@ class AnalyticsServiceImpl @Inject()(
     val s = new LocalDate(start)
     val e = new LocalDate(end)
     val days = Days.daysBetween(s, e).getDays()+1
-    
+
     new JsArray(List.range(0, days) map {i =>{
       Json.obj(
         "day" -> s.withFieldAdded(DurationFieldType.days(), i).toString("dd MMM"),
@@ -378,7 +378,7 @@ class AnalyticsServiceImpl @Inject()(
     if(sessionsPerUser.value.isEmpty){
       promise.success(Json.obj("value" -> 0))
     } else {
-      var sessionUserMap: Map[String, Int] = Map() 
+      var sessionUserMap: Map[String, Int] = Map()
       for(
         el <- sessionsPerUser.value;
         spuDay <- ((el \ "nrSessionsPerUser").as[List[JsValue]])
@@ -393,7 +393,7 @@ class AnalyticsServiceImpl @Inject()(
       }
       promise.success(Json.obj(
         "value" -> (sessionUserMap.values.foldLeft(0.0)(_ + _) / sessionUserMap.values.size)
-      )) 
+      ))
     }
     promise.future
   }
@@ -489,8 +489,10 @@ def getTotalAverageTimeFirstPurchase(
         }
       }
 
+      val numberPurchases = purchaseTimesPerUser.size
+
       promise.success(
-        Json.obj("value" -> (if(numberPurchases == 0) 0 else totalTimeFirstPurchase / purchaseTimesPerUser.size))
+        Json.obj("value" -> (if(numberPurchases == 0) 0 else totalTimeFirstPurchase / numberPurchases))
       )
     }
 
@@ -654,4 +656,3 @@ def getTotalAverageTimeFirstPurchase(
     calculateDetailedKPIAux(companyName, applicationName, start, end, getTotalAveragePurchasePerSession)
   }
 }
-
