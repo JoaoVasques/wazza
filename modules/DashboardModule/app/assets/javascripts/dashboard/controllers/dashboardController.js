@@ -66,7 +66,8 @@ dashboard.controller('DashboardController', [
           GetMainKPIsService.getTotalKpiData(companyName, app, begin, end, "arpu"),
           GetMainKPIsService.getTotalKpiData(companyName, app, begin, end, "churn"),
           GetMainKPIsService.getTotalKpiData(companyName, app, begin, end, "avgTimeBetweenPurchases"),
-          GetMainKPIsService.getTotalKpiData(companyName, app, begin, end, "payingUsers")
+          GetMainKPIsService.getTotalKpiData(companyName, app, begin, end, "payingUsers"),
+          GetMainKPIsService.getTotalKpiData(companyName, app, begin, end, "avgTime1stPurchase")
         ]).then(function(res) {
         var extractValue = function(index, _type) {
           return (_type == 'value') ?  res[index].data.value : res[index].data.delta;
@@ -77,6 +78,7 @@ dashboard.controller('DashboardController', [
         $scope.churn.updateKpiValue(extractValue(3, 'value'), extractValue(3, 'delta'))
         $scope.avgTimeBetweenPurchases.updateKpiValue(extractValue(4, 'value'), extractValue(4, 'delta'))
         $scope.payingUsers.updateKpiValue(extractValue(5, 'value'), extractValue(5, 'delta'))
+        $scope.avgTimeFirstPurchase.updateKpiValue(extractValue(6, 'value'), extractValue(6, 'delta'))
       });
     };
 
