@@ -25,7 +25,7 @@ dashboard.controller('OverviewController',[
     ApplicationStateService.setPath("Overview");
 
     $scope.applications = [];
-    var noImageUrl = "http://www.localcrimenews.com/wp-content/uploads/2013/07/default-user-icon-profile.png";
+    var noImageUrl = "assets/images/default-user-icon-profile.png";
 
     OverviewInitService
       .getApplications()
