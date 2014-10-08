@@ -478,12 +478,12 @@ def getTotalAverageTimeFirstPurchase(
       promise.success(Json.obj("value" -> 0))
     } else {
       for(
-        el <- sessionsPerUser.value;
-        userId <- ((el \ "user").as[String])
+        el <- sessionsPerUser.value
       ) {
+        val userId = (el \ "userId").as[String]
         if(purchaseTimesPerUser.contains(userId)){
           val firstSessionDate = getDateFromString((el \ "startTime").as[String])
-          val firstPurchaseDate = getDateFromString(purchaseTimesPerUser.get(userId).as[String])
+          val firstPurchaseDate = getDateFromString((purchaseTimesPerUser.get(userId)).toString)
           totalTimeFirstPurchase += getNumberSecondsBetweenDates(firstSessionDate, firstPurchaseDate)
         }
       }
