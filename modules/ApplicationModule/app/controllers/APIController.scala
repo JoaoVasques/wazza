@@ -36,17 +36,22 @@ class APIController @Inject()(
   ) extends Controller with Security {
 
   def getVirtualCurrencies(applicationName: String, companyName: String) = Action.async { implicit request =>
-    Future {
-      Json.toJson(applicationService.getVirtualCurrencies(companyName, applicationName).map((vc: VirtualCurrency) => {
+    applicationService.getVirtualCurrencies(companyName, applicationName) map { res =>
+      Ok(new JsArray(res map {vc =>
         VirtualCurrency.buildJson(vc)
-      }))      
-    }.map(res => Ok(res))
+      }))
+    }
   }
 
-  def getItems(applicationName: String, companyName: String, offset: Int) = HasToken() {token => userId => implicit request =>
-    val items = applicationService.getItems(companyName, applicationName, offset)
-    Ok(new JsArray(items map {item =>
-      Item.convertToJson(item)
-    }))
+  def getItems(
+    applicationName: String,
+    companyName: String,
+    offset: Int
+  ) = Action.async { implicit request =>
+    applicationService.getItems(companyName, applicationName, offset) map {items =>
+      Ok(new JsArray(items map {item =>
+        Item.convertToJson(item)
+      }))
+    }
   }
 }

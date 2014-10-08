@@ -16,11 +16,12 @@ import controllers.security._
 import scala.concurrent._
 import ExecutionContext.Implicits.global
 import scala.concurrent.duration._
+import controllers.security.{UserAuthenticationAction}
 
 class RegistrationController @Inject()(
   userService: UserService,
   tokenService: TokenManagerService
-) extends Controller with Security {
+) extends Controller with CookieManager {
 
   val registrationForm : Form[User] = Form(
     mapping(

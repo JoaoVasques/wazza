@@ -8,7 +8,7 @@ trait ApplicationService {
 
   protected lazy val ItemBatch = 10
 
-  def insertApplication(companyName: String, application: WazzaApplication): Future[Unit]
+  def insertApplication(companyName: String, application: WazzaApplication): Future[WazzaApplication]
 
   def deleteApplication(companyName: String, name: WazzaApplication): Future[Unit]
 
@@ -16,15 +16,15 @@ trait ApplicationService {
 
   def find(companyName: String, key: String): Future[Option[WazzaApplication]]
 
-  def getApplicationyTypes: Future[List[String]]
+  def getApplicationyTypes: List[String]
 
-  def getApplicationCountries(companyName: String, appName: String): Future[List[String]]
+  def getApplicationCountries(companyName: String, appName: String): List[String]
 
   def getApplicationCredentials(companyName: String, appName: String): Future[Option[Credentials]]
 
   /** Item operations **/
 
-  def addItem(companyName: String, item: Item, applicationName: String): Future[Item]
+  def addItem(companyName: String, item: Item, applicationName: String): Future[Unit]
 
   def getItem(companyName: String, itemId: String, applicationName: String): Future[Option[Item]]
 

@@ -101,29 +101,26 @@ class CRUDController @Inject()(
     (WazzaApplication.apply)(WazzaApplication.unapply)
   )
 
-  def newApplication = HasToken() { token => userId => implicit request =>
+  def newApplication = UserAuthenticationAction {implicit request =>
     Ok(views.html.newApplication(applicationService.getApplicationyTypes))
   }
 
-  private def generateBadRequestResponse(errors: Form[WazzaApplication]): Result = {
+  private def generateBadRequestResponse(errors: Form[WazzaApplication]): SimpleResult = {
     BadRequest(Json.obj("errors" -> errors.errorsAsJson))
   }
 
-  def newApplicationSubmit(companyName: String) = HasToken(parse.json) { token => userId => implicit request =>
+  def newApplicationSubmit(companyName: String) = UserAuthenticationAction.async(parse.json) {implicit request =>
     applicationForm.bindFromRequest.fold(
       errors => {
-        generateBadRequestResponse(errors)
+        Future {generateBadRequestResponse(errors) }
       },
       application => {
-        val result = applicationService.insertApplication(companyName,application)
-        result match {
-          case Success(app) => {
-            userService.addApplication(userId, app.name)
+        applicationService.insertApplication(companyName,application) flatMap {app =>
+          userService.addApplication(request.userId, app.name) map {r =>
             Redirect("/dashboard")
           }
-          case Failure(f) => {
-            BadRequest(f.getMessage)
-          }
+        }recoverWith {
+          case _ => Future.successful(BadRequest("Error while creating application"))
         }
       }
     )

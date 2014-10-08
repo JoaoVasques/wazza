@@ -47,20 +47,30 @@ class ApplicationServiceImpl @Inject()(
   }
 
   def getApplicationCredentials(companyName: String, appName: String): Future[Option[Credentials]] = {
-    databaseService.get(WazzaApplication.Key, appName, WazzaApplication.CredentialsId)
+    databaseService.get(WazzaApplication.Key, appName, WazzaApplication.CredentialsId) map {opt =>
+      opt match {
+        case Some(credentials) => {
+          credentials.validate[Credentials].fold(
+            valid = (c => Some(c)),
+            invalid = (_ => None)
+          )
+        }
+        case None => None
+      }
+    }
   }
 
-  def insertApplication(companyName: String, application: WazzaApplication): Future[Unit] = {
+  def insertApplication(companyName: String, application: WazzaApplication): Future[WazzaApplication] = {
     val collection = WazzaApplication.getCollection(companyName, application.name)
 
     exists(companyName, application.name) flatMap {exist =>
       if(!exist) {
         databaseService.insert(collection, application) flatMap {app =>
-          addApplication(companyName, application.name)
+          addApplication(companyName, application.name) map {r =>
+            application
+          }
         }
-      } else {
-        Future {new Exception("Application already exists")}
-      }
+      } else Future {null}
     }
   }
 
@@ -87,7 +97,9 @@ class ApplicationServiceImpl @Inject()(
 
   def find(companyName: String, name: String): Future[Option[WazzaApplication]] = {
     val collection = WazzaApplication.getCollection(companyName, name)
-    databaseService.get(collection, WazzaApplication.Key, name)
+    databaseService.get(collection, WazzaApplication.Key, name) map {opt =>
+      WazzaApplicationImplicits.buildOptionFromOptionJson(opt)
+    }
   }
 
   def addItem(companyName: String, item: Item, applicationName: String): Future[Unit] = {
@@ -111,10 +123,7 @@ class ApplicationServiceImpl @Inject()(
       Item.ElementId,
       itemId
     ) map {optItem =>
-      optItem match {
-        case Some(i) => Some(i)
-        case None => None
-      }
+      Item.buildFromJsonOption(optItem)
     }
   }
 
@@ -164,28 +173,26 @@ class ApplicationServiceImpl @Inject()(
 
   def deleteItem(companyName: String, itemId: String, applicationName: String, imageName: String): Future[Unit] = {
     val promise = Promise[Unit]
-    val item = this.getItem(companyName, itemId, applicationName) match {
-      case Some(item) => {
-        val collection = WazzaApplication.getCollection(companyName, applicationName)
-        databaseService.deleteElementFromArray[String](
-          collection,
-          WazzaApplication.Key,
-          applicationName,
-          WazzaApplication.ItemsId,
-          Item.ElementId,
-          itemId
-        ) match {
-          case Success(_) => {
+    getItem(companyName, itemId, applicationName) map { optItem =>
+      optItem match {
+        case Some(item) => {
+          databaseService.deleteElementFromArray[String](
+            WazzaApplication.getCollection(companyName, applicationName),
+            WazzaApplication.Key,
+            applicationName,
+            WazzaApplication.ItemsId,
+            Item.ElementId,
+            itemId
+          ) flatMap {r =>
             photoService.delete(imageName) map {res =>
               promise.success()
             } recover {
               case err: Exception => promise.failure(err)
             }
           }
-          case Failure(f) => promise.failure(f)
         }
+        case _ => promise.failure(new Exception("Item does not exist"))
       }
-      case _ => promise.failure(new Exception("Item does not exist"))
     }
     promise.future
   }
@@ -254,16 +261,25 @@ class ApplicationServiceImpl @Inject()(
     Private collection with information about all companies and apps
   **/
   def addCompany(companyName: String): Future[Unit] = {
-    companyExists(companyName) flatMap {exists =>
+    val promise = Promise[Unit]
+    companyExists(companyName) map {exists =>
       if(!exists) {
         val data = new CompanyData(companyName, List[String]())
-        databaseService.insert(CompanyData.Collection, Json.toJson(data))
+        databaseService.insert(CompanyData.Collection, Json.toJson(data)) map {r =>
+          promise.success()
+        } recover {
+          case e: Exception => promise.failure(e)
+        }
+      } else {
+        promise.failure(new Exception("Company already exists"))
       }
     }
+    promise.future
   }
 
   def addApplication(companyName: String, applicationName: String): Future[Unit] = {
-    applicationExists(companyName, applicationName) flatMap {exists =>
+    val promise = Promise[Unit]
+    applicationExists(companyName, applicationName) map {exists =>
       if(!exists) {
         databaseService.addElementToArray[String](
           CompanyData.Collection,
@@ -271,9 +287,17 @@ class ApplicationServiceImpl @Inject()(
           companyName,
           CompanyData.Apps,
           applicationName
-        )
+        ) map {r =>
+          promise.success()
+        } recover {
+          case e: Exception => promise.failure(e)
+        }
+      } else {
+        promise.failure(new Exception("Application already exists"))
       }
     }
+
+    promise.future
   }
 
   def getCompanies(): Future[List[CompanyData]] = {
@@ -298,13 +322,15 @@ class ApplicationServiceImpl @Inject()(
       companyName,
       CompanyData.Apps,
       None
-    ).toList.find((app: JsValue) => {
-      //TODO
-      println("app : " + app)
-      true
-    }) match {
-      case Some(_) => true
-      case None => false
+    ) map { list =>
+      list.find((app: JsValue) => {
+        //TODO
+        println("app : " + app)
+        true
+      }) match {
+        case Some(_) => true
+        case None => false
+      }
     }
   }
 }

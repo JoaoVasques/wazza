@@ -14,9 +14,12 @@ import scala.annotation.tailrec
 import com.google.inject._
 import service.security.modules.{SecurityModule}
 import service.security.definitions.{TokenManagerService}
+import scala.concurrent._
+import ExecutionContext.Implicits.global
 
 trait Security { self: Controller =>
 
+  /**
   type AuthenticityToken = String
 
   lazy private val tokenService = Guice.createInjector(new SecurityModule).getInstance(classOf[TokenManagerService])
@@ -29,16 +32,14 @@ trait Security { self: Controller =>
   val AuthTokenCookieKey = "XSRF-TOKEN"
   val AuthTokenUrlKey = "auth"
 
-  /** Checks that a token is either in the header or in the query string */
-  //TODO: add support to async
-  def HasToken[A](p: BodyParser[A] = parse.anyContent)(f: String => String => Request[A] => Result): Action[A] =
-    Action(p) { implicit request =>
+  def HasToken[A](p: BodyParser[A] = parse.anyContent)(f: String => String => Request[A] => Future[Result]): Action[A] =
+    Action.async(p) { implicit request =>
       val maybeToken = request.headers.get(AuthTokenHeader).orElse(request.getQueryString(AuthTokenUrlKey))
       maybeToken flatMap { token =>
         tokenService.get(token.filter(_ != '"')) map { userid =>
           f(token)(userid)(request)
         }
-      } getOrElse Forbidden(Json.obj("err" -> "No Token"))
+      } getOrElse Future {Forbidden(Json.obj("err" -> "No Token"))}
     }
 
   implicit class ResultWithToken(result: SimpleResult) {
@@ -50,5 +51,5 @@ trait Security { self: Controller =>
       removeToken(token)
       result.discardingCookies(DiscardingCookie(name = AuthTokenCookieKey))
     }
-  }
+  }**/
 }

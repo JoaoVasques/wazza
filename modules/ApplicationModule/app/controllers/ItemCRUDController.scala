@@ -18,6 +18,7 @@ import play.api.libs.Files._
 import java.io.File
 import play.api.mvc.MultipartFormData._
 import scala.language.implicitConversions
+import controllers.security.{UserAuthenticationAction}
 
 /** Uncomment the following lines as needed **/
 /**
@@ -42,24 +43,22 @@ class ItemCRUDController @Inject()(
   }
 
   //TODO: add security
-  def newItem = Action { implicit request =>
+  def newItem = UserAuthenticationAction { implicit request =>
     Ok(views.html.newItem(List("Real", "Virtual")))
   }
 
-  def newItemSubmit(companyName: String, applicationName: String) = Action.async(parse.multipartFormData) { implicit request =>
-    val result = itemService.createItemFromMultipartData(companyName, request.body, applicationName)
+  def newItemSubmit(
+    companyName: String,
+    applicationName: String
+  ) = UserAuthenticationAction.async(parse.multipartFormData) { implicit request =>
+    val futureResult = itemService.createItemFromMultipartData(companyName, request.body, applicationName)
 
-    result map {data =>
-      data match {
-        case Success(s) => {
-          val file = itemService.generateMetadataFile(s)
-          Ok.sendFile(
-            content = file,
-            fileName = _ => s"$s.name.csv"
-          )
-        }
-        case Failure(f) => generateErrors(f.getMessage)
-      }
+    futureResult map {data =>
+      val i: Item = null //TODO GET ITEM
+      Ok.sendFile(
+        content = itemService.generateMetadataFile(i),
+        fileName = _ => s"$i.name.csv"
+      )
     } recover {
       case err: S3Failed => {
         generateErrors("Problem uploading image to server")
@@ -71,10 +70,8 @@ class ItemCRUDController @Inject()(
     }
   }
 
-  def uploadImage() = Action.async(parse.multipartFormData) { implicit request =>
-    val imageUploadResult = photosService.upload(request.body.files.head)
-
-    imageUploadResult map { photoResult =>
+  def uploadImage() = UserAuthenticationAction.async(parse.multipartFormData) { implicit request =>
+    photosService.upload(request.body.files.head) map { photoResult =>
       Ok(photoResult.toJson)
     } recover {
       case error => {
@@ -87,11 +84,11 @@ class ItemCRUDController @Inject()(
     companyName: String,
     applicationName: String,
     itemId: String
-  ) = Action.async(parse.json) { implicit request =>
+  ) = UserAuthenticationAction.async(parse.json) { implicit request =>
     val imageName = (request.body \ "image").as[String]
     val result = applicationService.deleteItem(companyName, itemId, applicationName, imageName)
     result map {res =>
-      Ok(itemId)
+      Ok
     } recover {
       case err: Exception => generateErrors("Problem deleting item")
     }

@@ -23,7 +23,7 @@ trait ItemService {
 		language: String,
 		imageName: String,
 		imageUrl: String
-	): Future[Try[Item]]
+	): Future[Unit]
 
 	def createAppleItem(
     companyName: String,
@@ -37,13 +37,13 @@ trait ItemService {
 	  languageProperties: AppleLanguageProperties,
 	  pricingProperties: ApplePricingProperties,
 	  durationProperties: AppleDurationProperties
-	): Try[Item]
+	): Future[Unit]
 
 	def createItemFromMultipartData(
     companyName: String,
     data: MultipartFormData[_],
     applicationName: String
-  ): Future[Try[Item]]
+  ): Future[Unit]
 
 	def getCurrencyTypes(): Map[String, Int]
 
