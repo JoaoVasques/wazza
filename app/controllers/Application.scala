@@ -30,5 +30,8 @@ class Application extends Controller with Security{
     Ok(views.html.notavailableyet())
   }
 
+  def httpError = Action {
+    Ok(views.html.errorPage())
+  }
 
 }

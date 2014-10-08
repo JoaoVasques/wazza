@@ -13,11 +13,11 @@ angular.module('Wazza', [
     'Wazza.broadcastEvents'
 ]).
 
-config(function($stateProvider, $urlRouterProvider, $locationProvider){
+config(function($stateProvider, $urlRouterProvider, $locationProvider, $httpProvider){
 
       $locationProvider.html5Mode(true);
 
-      $urlRouterProvider.when("/home","/home/overview/"); //Default to the dashboard
+      $urlRouterProvider.when("/home","/home/overview/"); //Default to the overview
       $urlRouterProvider.otherwise('/login');
 
       $stateProvider
@@ -166,6 +166,8 @@ config(function($stateProvider, $urlRouterProvider, $locationProvider){
             templateUrl : '/notavailableyet',
             controller: 'NotAvailableYetController'
         })
+
+    $httpProvider.responseInterceptors.push('SecurityHttpInterceptor');
 
     });
 

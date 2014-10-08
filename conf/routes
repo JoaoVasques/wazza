@@ -12,6 +12,8 @@ GET     /login                @controllers.LoginLogoutController.login
 POST    /login                @controllers.LoginLogoutController.authenticate
 POST    /logout               @controllers.LoginLogoutController.logout
 
+GET		/error				  @controllers.Application.httpError
+
 # Modules
 ->  /dashboard                dashboard.Routes
 ->  /user                     user.Routes
