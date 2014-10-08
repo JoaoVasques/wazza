@@ -150,7 +150,7 @@ config(function($stateProvider, $urlRouterProvider, $locationProvider){
         .state('home.newapp', {
             url: "^/newApp",
             templateUrl : '/app/new',
-            controller : ''
+            controller : 'NewApplicationFormController'
         })
 
       //settings
