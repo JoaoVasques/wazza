@@ -37,6 +37,7 @@ angular.module('ApplicationModule.controllers', ['ApplicationModule.services', '
             $scope.formErrors = {};
             $scope.applicationName=$scope.applicationForm.name;
             $state.go('analytics.overview');
+            swal("New Application Created!", "Go to Overview to see them all.", "success")
           },
           function(errors){
             angular.extend($scope.formErrors, errors.data.errors);

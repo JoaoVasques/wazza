@@ -26,7 +26,8 @@
   <script defer src="@routes.WebJarAssets.at(WebJarAssets.locate("bootstrap.min.js"))"></script>
   <script defer src="@routes.WebJarAssets.at(WebJarAssets.locate("1.0.1-beta.4/Chart.min.js"))"></script>
   <script defer src="@routes.Assets.at("javascripts/chartjs-directive.js")"></script>
-  
+  <script defer src="@routes.Assets.at("sweet-alert.min.js")"></script>
+
   <!-- external controllers -->
   @views.html.applicationJavascripts.render()
   @views.html.userJavascripts.render()
@@ -68,6 +69,7 @@
   <link rel="stylesheet" type="text/css" media="screen" href="@routes.Assets.at("stylesheets/chart.css")">
   <link rel="stylesheet" type="text/css" media="screen" href="@routes.Assets.at("stylesheets/companyOverview.css")">
   <link rel="stylesheet" type="text/css" media="screen" href="@routes.Assets.at("stylesheets/hover-min.css")">
+  <link rel="stylesheet" type="text/css" media="screen" href="@routes.Assets.at("stylesheets/sweet-alert.css")">
 }
 
 <html ng-app="Wazza">
