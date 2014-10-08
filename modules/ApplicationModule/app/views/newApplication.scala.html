@@ -56,38 +56,50 @@
 <div class="row-fluid" ng-controller="NewApplicationFormController" ng-submit="createApplication(applicationForm)">
     <form enctype="multipart/form-data" ng-submit="createItem()">
       <div class="col-md-4 form-group">
-          <label for="name">Name</label>
-          <input class="form-control" id="name" type="text" data-ng-model="applicationForm.name" required/>
 
+        <div class="row">
+          <label for="name">Name</label>
+          <input class="form-control" id="name" type="text" data-ng-model="applicationForm.name" required>
+        </div>
+
+        <div class="row">
           <label for="description">Description</label>
           <textarea id="description" class="form-control" data-ng-model="applicationForm.description" rows="4"></textarea>
+        </div>
 
+        <div class="row">
           <label for="url">Url</label>
-          <input class="form-control" id="url" type="text" data-ng-model="applicationForm.url"/>
+          <input class="form-control" id="url" type="text" data-ng-model="applicationForm.url">  
+        </div>
+
       </div>
       <div class="col-md-4 form-group">
-          <div class="col-md-12">
+          <div class="row">
             <label for="name">Select stores</label>
           </div>
-          <div class="col-md-6">
-            <input type="checkbox" ng-model="iOSSelected">
-            <i ng-class="iOSStoreCss"></i>
-          </div>
-          <div class="col-md-6">
-            <input type="checkbox" ng-model="AndroidSelected">
-            <i ng-class="androidStoreCss"></i>
+          <div class="row">
+            <div class="col-md-6">
+              <input type="checkbox" ng-model="iOSSelected" id="iOS">
+              <label for="iOS"><i ng-class="iOSStoreCss"></i></label>
+            </div>
+            <div class="col-md-6">
+              <input type="checkbox" ng-model="AndroidSelected" id="android">
+              <label for="android"><i ng-class="androidStoreCss"></i></label>
+            </div>
           </div>
 
           <!--
           <label for="name">Package name</label>
           <input class="form-control" id="packageName" type="text" data-ng-model="applicationForm.packageName"/>
           -->
-          
+        <div class="row">
           <img id="item-logo-thumbnail" ng-src="{{applicationForm.imageUrl}}" class="img-thumbnail" style="height: 150px">
-          <div class="row-fluid">
+        </div>
+        <div class="row">
           <span class="btn btn-default btn-file">
               <i class="fa fa-upload"></i>
-              App image <input type="file" file-model="myFile" ng-file-select="onFileSelect($files)" ng-model="imgThumb"/>
+              <input type="file" file-model="myFile" ng-file-select="onFileSelect($files)" ng-model="imgThumb">
+              App image
           </span>
         </div>
       </div>
