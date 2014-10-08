@@ -467,10 +467,9 @@ def getTotalAverageTimeFirstPurchase(
       ) {
         val userId = (userInfo \ "userId").as[String]
         if(!purchaseTimesPerUser.contains(userId)){
-          val purchaseTime  = (userInfo \ "purchases").as[List[String]] map {id =>
-            getDateFromString(purchaseService.get(companyName, applicationName, id).get.time)
-          }
-          purchaseTimesPerUser += (userId -> purchaseTime.head)
+          val firstPurchase = (userInfo \ "purchases").as[List[String]].head
+          val purchaseTime  = getDateFromString(purchaseService.get(companyName, applicationName, firstPurchase).get.time)
+          purchaseTimesPerUser += (userId -> purchaseTime)
         }
       }
     }
