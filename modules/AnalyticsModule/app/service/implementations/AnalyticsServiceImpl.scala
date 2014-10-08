@@ -472,29 +472,28 @@ def getTotalAverageTimeFirstPurchase(
           purchaseTimesPerUser += (userId -> purchaseTime)
         }
       }
-    }
 
-    if(sessionsPerUser.value.isEmpty){
-      promise.success(Json.obj("value" -> 0))
-    } else {
-      for(
-        el <- sessionsPerUser.value
-      ) {
-        val userId = (el \ "userId").as[String]
-        if(purchaseTimesPerUser.contains(userId)){
-          val firstSessionDate = getDateFromString((el \ "startTime").as[String])
-          val firstPurchaseDate = getDateFromString((purchaseTimesPerUser.get(userId)).toString)
-          totalTimeFirstPurchase += getNumberSecondsBetweenDates(firstSessionDate, firstPurchaseDate)
+      if(sessionsPerUser.value.isEmpty){
+        promise.success(Json.obj("value" -> 0))
+      } else {
+        for(
+          el <- sessionsPerUser.value
+        ) {
+          val userId = (el \ "userId").as[String]
+          if(purchaseTimesPerUser.contains(userId)){
+            val firstSessionDate = getDateFromString((el \ "startTime").as[String])
+            val firstPurchaseDate = getDateFromString((purchaseTimesPerUser.get(userId)).toString)
+            totalTimeFirstPurchase += getNumberSecondsBetweenDates(firstSessionDate, firstPurchaseDate)
+          }
         }
+
+        val numberPurchases = purchaseTimesPerUser.size
+
+        promise.success(
+          Json.obj("value" -> (if(numberPurchases == 0) 0 else totalTimeFirstPurchase / numberPurchases))
+        )
       }
-
-      val numberPurchases = purchaseTimesPerUser.size
-
-      promise.success(
-        Json.obj("value" -> (if(numberPurchases == 0) 0 else totalTimeFirstPurchase / numberPurchases))
-      )
     }
-
     promise.future
   }
 
