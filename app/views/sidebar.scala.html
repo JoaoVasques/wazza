@@ -69,18 +69,22 @@
 
            <!-- Management -->
             <li class="treeview">
-              <a href="#"><span><h5><b>Management</b></h5></span></a>
+                <a data-toggle="collapse" data-target="#collapseManagement" href="">
+                    <span><h5><b>Management</b></h5></span>
+                </a>
             </li>
-            <li class="treeview">
-                <a href="" ng-click="experimental('home.inventory')"><i class="fa fa-edit"></i> Inventory</span></a>
-            </li>
+            <ul id="collapseManagement" class="sidebar-menu collapse">
+                <li><a href="" ng-click="experimental('home.inventory')"><i class="fa fa-edit"></i> Inventory</span></a></li>
+            </ul>
            <!-- Settings -->
-           <li class="treeview">
-              <a href="#"><span><h5><b>Configuration</b></h5></span></a>
-            </li>
             <li class="treeview">
-                <a ui-sref="home.notavailableyet"><i class="fa fa-gears"></i> <span>Settings</span></a>
+                <a data-toggle="collapse" data-target="#collapseConfiguration" href="">
+                    <span><h5><b>Configuration</b></h5></span>
+                </a>
             </li>
+            <ul id="collapseConfiguration" class="sidebar-menu collapse">
+                <li><a ui-sref="home.notavailableyet"><i class="fa fa-gears"></i> <span>Settings</span></a></li>
+            </ul>
         </ul>
     </section>
 </aside>
