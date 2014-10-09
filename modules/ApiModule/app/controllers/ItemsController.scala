@@ -36,7 +36,6 @@ class ItemsController @Inject()(
 
   def getItemsWithDetails(companyName: String, applicationName: String) = Action.async  {implicit request =>
     val futureResult = applicationService.getItems(companyName, applicationName, getOffsetValue(request))
-
     futureResult map {items =>
       Ok(new JsArray(items map {i =>
         Item.convertToJson(i)

@@ -2,7 +2,7 @@ package controllers.dashboard
 
 import play.api._
 import play.api.mvc._
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent._
 import ExecutionContext.Implicits.global
 import controllers.security._
 import service.security.definitions.{TokenManagerService}
@@ -10,7 +10,7 @@ import service.application.definitions._
 import service.user.definitions._
 import com.google.inject._
 import play.api.libs.json._
-import models.application.{Item, VirtualCurrency, Credentials}
+import models.application._
 import java.util.Date
 
 class DashboardController @Inject()(
@@ -18,51 +18,65 @@ class DashboardController @Inject()(
   userService: UserService
 ) extends Controller with Security{
 
-  def index() = HasToken() {token => userId => implicit request =>
-    val applications = userService.getApplications(userId)
-    if(applications.isEmpty){
-      Ok(views.html.dashboard(false, "", null, Nil, Nil))
-    } else {
-      request.body.asJson match {
-        case Some(json) => {
-          Ok("skip " + json)
-        }
-        case None => {
-          val companyName = userService.find(userId).get.company
-          val application = applicationService.find(companyName, applications.head).get
-          Ok(views.html.dashboard(
-            true,
-            application.name,
-            application.credentials,
-            application.virtualCurrencies,
-            application.items
-          ))
+  def index() = UserAuthenticationAction.async {implicit request =>
+    userService.getApplications(request.userId) flatMap {applications =>
+      if(applications.isEmpty){
+        Future.successful(Ok(views.html.dashboard(false, "", null, Nil, Nil)))
+      } else {
+        request.body.asJson match {
+          case Some(json) => {
+            Future.successful(Ok("skip " + json))
+          }
+          case None => {
+            for {
+              user <- userService.find(request.userId)
+              application <- applicationService.find(user.get.company, applications.head)
+            } yield {
+              (application map {(app: WazzaApplication) =>
+                Ok(views.html.dashboard(
+                  true,
+                  app.name,
+                  app.credentials,
+                  app.virtualCurrencies,
+                  app.items
+                ))
+              }).get
+            }
+          }
         }
       }
     }
   }
 
-  def bootstrapOverview() = HasToken() {token => userId => implicit request =>
-    val applications = userService.getApplications(userId)
-    if(applications.isEmpty) {
-      BadRequest
-    } else {
-      val user = userService.find(userId).get
-      val companyName = user.company
-      Ok(new JsArray(applications map {appId: String =>
-        val application = applicationService.find(companyName, appId).get
-        Json.obj(
-          "name" -> application.name,
-          "url" -> application.imageName,
-          "platforms" -> application.appType
-        )
-      }))
+  def bootstrapOverview() = UserAuthenticationAction.async {implicit request =>
+    userService.getApplications(request.userId) flatMap {applications =>
+      if(applications.isEmpty) {
+        Future.successful(BadRequest)
+      } else {
+        userService.find(request.userId) flatMap {user =>
+          val companyName = user.get.company
+          val apps = Future.sequence(applications map {appId: String =>
+            applicationService.find(companyName, appId) map {optApp =>
+              (optApp map {application =>
+                Json.obj(
+                  "name" -> application.name,
+                  "url" -> application.imageName,
+                  "platforms" -> application.appType
+                )
+              }).get
+            }
+          })
+          apps map {appsList =>
+            Ok(new JsArray(appsList))
+          }
+        }
+      }
     }
   }
 
   // add optional argument: application name
-  def bootstrapDashboard() = HasToken() {token => userId => implicit request =>
-    val applications = userService.getApplications(userId)
+  def bootstrapDashboard() = UserAuthenticationAction {implicit request =>
+    val applications = userService.getApplications(request.userId)
     if(applications.isEmpty){
       //TODO: do not send bad request but a note saying that we dont have applications. then redirect to new application page
       BadRequest
@@ -97,8 +111,8 @@ class DashboardController @Inject()(
   } 
 
 
-  def overview() = HasToken() {token => userId => implicit request =>
-    val applications = userService.getApplications(userId)
+  def overview() = UserAuthenticationAction {implicit request =>
+    val applications = userService.getApplications(request.userId)
     if(applications.isEmpty){
       Ok(views.html.overview(false, "", null, Nil, Nil))
     } else {
@@ -121,48 +135,48 @@ class DashboardController @Inject()(
     }
   }
 
-  def kpi = HasToken() {token => userId => implicit request =>
+  def kpi = UserAuthenticationAction {implicit request =>
     Ok(views.html.kpi())
   }
 
   //analytics
-  def analytics = HasToken() {token => userId => implicit request =>
+  def analytics = UserAuthenticationAction {implicit request =>
     Ok(views.html.analytics.generic())
   }
 
   //store
-  def storeAndroid = HasToken() {token => userId => implicit request =>
+  def storeAndroid = UserAuthenticationAction {implicit request =>
     Ok(views.html.store.storeAndroid())
   }
 
-  def storeApple = HasToken() {token => userId => implicit request =>
+  def storeApple = UserAuthenticationAction {implicit request =>
     Ok(views.html.store.storeApple())
   }
 
-  def storeAmazon = HasToken() {token => userId => implicit request =>
+  def storeAmazon = UserAuthenticationAction {implicit request =>
     Ok(views.html.store.storeAmazon())
   }
 
   //inventory
-  def inventory = HasToken() {token => userId => implicit request =>
+  def inventory = UserAuthenticationAction {implicit request =>
     Ok(views.html.inventory.inventory())
   }
 
-  def inventoryCRUD = HasToken() {token => userId => implicit request =>
+  def inventoryCRUD = UserAuthenticationAction {implicit request =>
     Ok(views.html.inventory.inventoryCRUD())
   }
 
-  def inventoryVirtualCurrencies = HasToken() {token => userId => implicit request =>
+  def inventoryVirtualCurrencies = UserAuthenticationAction {implicit request =>
     Ok(views.html.inventory.inventoryVirtualCurrencies())
   }
 
   //others
-  def campaigns = HasToken() {token => userId => implicit request =>
+  def campaigns = UserAuthenticationAction {implicit request =>
     Ok(views.html.campaigns())
   }
 
-  def settingsSection = HasToken() {token => userId => implicit request =>
+  def settingsSection = UserAuthenticationAction {implicit request =>
     Ok(views.html.settings())
   }
-
 }
+
