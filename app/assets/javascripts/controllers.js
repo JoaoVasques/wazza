@@ -73,11 +73,25 @@ var application = angular.module('Wazza.controllers', [
 .controller('SidebarController', [
   '$scope',
   '$rootScope',
-  function($scope, $rootScope) {
+  '$state',
+  function($scope, $rootScope, $state) {
     
     $scope.selectDashboardSection = function(sectionId) {
       $rootScope.$broadcast('ChangeDashboardSection', {section: sectionId});
     };
+
+    $scope.experimental = function(){
+      swal({
+        title: "Are you sure?",
+        text: "This feature is experimental by now",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#DD6B55",
+        confirmButtonText: "Yes, I have no fear!" },
+        function(){
+          $state.go("home.inventory");
+        });
+    }
 
   }])
 
