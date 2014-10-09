@@ -2,7 +2,6 @@
 
 dashboard.controller('OverviewController',[
   '$scope',
-  '$location',
   '$state',
   'OverviewInitService',
   'AppOverviewModel',
@@ -12,7 +11,6 @@ dashboard.controller('OverviewController',[
   '$q',
   function(
     $scope,
-    $location,
     $state,
     OverviewInitService,
     AppOverviewModel,

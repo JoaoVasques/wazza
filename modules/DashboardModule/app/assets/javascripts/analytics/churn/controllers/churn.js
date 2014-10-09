@@ -3,7 +3,6 @@
 dashboard
 .controller('ChurnController', [
   '$scope',
-  '$location',
   '$rootScope',
   'ApplicationStateService',
   'DateModel',
@@ -11,7 +10,6 @@ dashboard
   'ChurnDateChanged',
   function (
     $scope,
-    $location,
     $rootScope,
     ApplicationStateService,
     DateModel,

@@ -3,7 +3,6 @@
 dashboard
 .controller('PayingUsersController', [
   '$scope',
-  '$location',
   '$rootScope',
   'ApplicationStateService',
   'DateModel',
@@ -11,7 +10,6 @@ dashboard
   'PayingUsersDateChanged',
   function (
     $scope,
-    $location,
     $rootScope,
     ApplicationStateService,
     DateModel,

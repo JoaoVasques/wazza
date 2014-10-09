@@ -3,7 +3,6 @@
 dashboard
 .controller('InventoryController', [
   '$scope',
-  '$location',
   '$rootScope',
   'FetchItemsService',
   'BootstrapDashboardService',
@@ -13,7 +12,6 @@ dashboard
   '$state',
   function (
         $scope,
-        $location,
         $rootScope,
         FetchItemsService,
         BootstrapDashboardService,

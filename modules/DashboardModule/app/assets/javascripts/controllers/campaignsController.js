@@ -3,7 +3,6 @@
 dashboard
 .controller('CampaignsController', [
   '$scope',
-  '$location',
   '$rootScope',
   'FetchItemsService',
   'BootstrapDashboardService',
@@ -12,7 +11,6 @@ dashboard
   'ItemSearchService',
   function (
         $scope,
-        $location,
         $rootScope,
         FetchItemsService,
         BootstrapDashboardService,

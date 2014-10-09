@@ -3,7 +3,6 @@
 dashboard
 .controller('RevenueController', [
   '$scope',
-  '$location',
   '$rootScope',
   'ApplicationStateService',
   'DateModel',
@@ -11,7 +10,6 @@ dashboard
   'RevenueDateChanged',
   function (
     $scope,
-    $location,
     $rootScope,
     ApplicationStateService,
     DateModel,
