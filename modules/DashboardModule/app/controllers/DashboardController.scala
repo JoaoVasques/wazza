@@ -75,61 +75,71 @@ class DashboardController @Inject()(
   }
 
   // add optional argument: application name
-  def bootstrapDashboard() = UserAuthenticationAction {implicit request =>
-    val applications = userService.getApplications(request.userId)
-    if(applications.isEmpty){
-      //TODO: do not send bad request but a note saying that we dont have applications. then redirect to new application page
-      BadRequest
-    } else {
-      val user = userService.find(userId).get
-      val companyName = user.company
-      val application = applicationService.find(companyName, applications.head).get
-      Ok(
-        Json.obj(
-          "companyName" -> companyName,
-          "name" -> application.name,
-          "userInfo" -> Json.obj(
-            "name" -> user.name,
-            "email" -> user.email
-          ),
-          "credentials" -> Json.obj(
-            "apiKey" -> application.credentials.apiKey,
-            "sdkKey" -> application.credentials.sdkKey
-          ),
-          "virtualCurrencies" -> new JsArray(application.virtualCurrencies map {vc =>
-            VirtualCurrency.buildJson(vc)
-          }),
-          "items" -> new JsArray(applicationService.getItems(companyName, application.name) map {item =>
-            Item.convertToJson(item)
-          }),
-          "applications" -> new JsArray(applications map {el =>
-            Json.obj("name" -> el)
-          })
-        )
-      )
+  def bootstrapDashboard() = UserAuthenticationAction.async {implicit request =>
+    userService.getApplications(request.userId) flatMap {applications =>
+      if(applications.isEmpty){
+        //TODO: do not send bad request but a note saying that we dont have applications. then redirect to new application page
+        Future.successful(BadRequest)
+      } else {
+        userService.find(request.userId) flatMap {userOpt =>
+          val user = userOpt.get
+          val companyName = user.company
+          val info = applicationService.find(companyName, applications.head) map {optApp =>
+            (optApp map {application =>
+              Json.obj(
+                "companyName" -> companyName,
+                "name" -> application.name,
+                "userInfo" -> Json.obj(
+                  "name" -> user.name,
+                  "email" -> user.email
+                ),
+                "credentials" -> Json.obj(
+                  "apiKey" -> application.credentials.apiKey,
+                  "sdkKey" -> application.credentials.sdkKey
+                ),
+                "virtualCurrencies" -> new JsArray(application.virtualCurrencies map {vc =>
+                  VirtualCurrency.buildJson(vc)
+                }),
+                /**    "items" -> new JsArray(applicationService.getItems(companyName, application.name) map {item =>
+                  Item.convertToJson(item)
+                  }),**/
+                "applications" -> new JsArray(applications map {el =>
+                  Json.obj("name" -> el)
+                })
+              )
+            }).get
+          }
+          info map {Ok(_)}
+        }
+      }
     }
   } 
 
 
-  def overview() = UserAuthenticationAction {implicit request =>
-    val applications = userService.getApplications(request.userId)
-    if(applications.isEmpty){
-      Ok(views.html.overview(false, "", null, Nil, Nil))
-    } else {
-      request.body.asJson match {
-        case Some(json) => {
-          Ok("skip " + json)
-        }
-        case None => {
-          val companyName = userService.find(userId).get.company
-          val application = applicationService.find(companyName, applications.head).get
-          Ok(views.html.overview(
-            true,
-            application.name,
-            application.credentials,
-            application.virtualCurrencies,
-            application.items
-          ))
+  def overview() = UserAuthenticationAction.async {implicit request =>
+    userService.getApplications(request.userId) flatMap {applications =>
+      if(applications.isEmpty){
+        Future.successful(Ok(views.html.overview(false, "", null, Nil, Nil)))
+      } else {
+        request.body.asJson match {
+          case Some(json) => {
+            Future.successful(Ok("skip " + json))
+          }
+          case None => {
+            userService.find(request.userId) flatMap {optUser =>
+              val companyName = optUser.get.company
+              applicationService.find(companyName, applications.head) map {optApp =>
+                val application = optApp.get
+                Ok(views.html.overview(
+                  true,
+                  application.name,
+                  application.credentials,
+                  application.virtualCurrencies,
+                  application.items
+                ))
+              }
+            }
+          }
         }
       }
     }

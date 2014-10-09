@@ -30,7 +30,7 @@ private[security] case class UserAction[A](action: Action[A]) extends Action[A] 
   private lazy val DefaultCacheExpiration = 7.days.seconds
   lazy val CacheExpiration = app.configuration.getInt("cache.expiration").getOrElse(DefaultCacheExpiration)
 
-  private val AuthTokenHeader = "X-XSRF-TOKEN"
+  private val AuthTokenHeader = UserAuthenticationAction.AuthTokenHeader//"X-XSRF-TOKEN"
   private val AuthTokenCookieKey = "XSRF-TOKEN"
   private val AuthTokenUrlKey = "auth"
 
@@ -49,6 +49,7 @@ private[security] case class UserAction[A](action: Action[A]) extends Action[A] 
 
 object UserAuthenticationAction extends ActionBuilder[UserRequest] {
 
+  val AuthTokenHeader = "X-XSRF-TOKEN"
   def invokeBlock[A](request: Request[A], block: (UserRequest[A] => Future[SimpleResult])) = {
     request match {
       case req: UserRequest[A] => block(req)
