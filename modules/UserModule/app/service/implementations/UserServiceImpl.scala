@@ -9,6 +9,7 @@ import service.user.definitions.{UserService}
 import com.google.inject._
 import service.persistence.definitions.{DatabaseService}
 import scala.concurrent._
+import scala.concurrent.duration._
 import ExecutionContext.Implicits.global
 
 class UserServiceImpl @Inject()(
@@ -70,10 +71,11 @@ class UserServiceImpl @Inject()(
     }
   }
 
-  def authenticate(email: String, password: String): Future[Option[User]] = {
-   this.find(email) map {opt =>
+  def authenticate(email: String, password: String): Option[User] = {
+   val futureAuth = this.find(email) map {opt =>
      opt.filter {user => BCrypt.checkpw(password, user.password)}
    }
+    Await.result(futureAuth, 5 seconds)
   }
 }
 

@@ -22,6 +22,6 @@ trait UserService {
 
   def getApplications(email: String): Future[List[String]]
 
-  def authenticate(email: String, password: String): Future[Option[User]]
+  def authenticate(email: String, password: String): Option[User]
 
 }
