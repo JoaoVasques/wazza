@@ -42,24 +42,6 @@ class DashboardController @Inject()(
     }
   }
 
-  def bootstrapOverview() = HasToken() {token => userId => implicit request =>
-    val applications = userService.getApplications(userId)
-    if(applications.isEmpty) {
-      BadRequest
-    } else {
-      val user = userService.find(userId).get
-      val companyName = user.company
-      Ok(new JsArray(applications map {appId: String =>
-        val application = applicationService.find(companyName, appId).get
-        Json.obj(
-          "name" -> application.name,
-          "url" -> application.imageName,
-          "platforms" -> application.appType
-        )
-      }))
-    }
-  }
-
   // add optional argument: application name
   def bootstrapDashboard() = HasToken() {token => userId => implicit request =>
     val applications = userService.getApplications(userId)
@@ -95,31 +77,6 @@ class DashboardController @Inject()(
       )
     }
   } 
-
-
-  def overview() = HasToken() {token => userId => implicit request =>
-    val applications = userService.getApplications(userId)
-    if(applications.isEmpty){
-      Ok(views.html.overview(false, "", null, Nil, Nil))
-    } else {
-      request.body.asJson match {
-        case Some(json) => {
-          Ok("skip " + json)
-        }
-        case None => {
-          val companyName = userService.find(userId).get.company
-          val application = applicationService.find(companyName, applications.head).get
-          Ok(views.html.overview(
-            true,
-            application.name,
-            application.credentials,
-            application.virtualCurrencies,
-            application.items
-          ))
-        }
-      }
-    }
-  }
 
   def kpi = HasToken() {token => userId => implicit request =>
     Ok(views.html.kpi())

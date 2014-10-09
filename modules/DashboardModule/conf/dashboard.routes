@@ -5,8 +5,8 @@
 # root
 GET     /                             @controllers.dashboard.DashboardController.index
 GET     /bootstrap                    @controllers.dashboard.DashboardController.bootstrapDashboard
-GET     /overview                     @controllers.dashboard.DashboardController.overview
-GET     /overview/bootstrap           @controllers.dashboard.DashboardController.bootstrapOverview
+GET     /overview                     @controllers.dashboard.OverviewController.overview
+GET     /overview/bootstrap           @controllers.dashboard.OverviewController.bootstrapOverview
 
 GET		/kpi						  @controllers.dashboard.DashboardController.kpi
 
