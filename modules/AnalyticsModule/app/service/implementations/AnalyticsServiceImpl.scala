@@ -333,8 +333,9 @@ class AnalyticsServiceImpl @Inject()(
          fillEmptyResult(start, end)
        } else {
          new JsArray(revenue.value map {(el: JsValue) => {
+           val day = new LocalDate(getDateFromString((el \ "lowerDate" \ "$date").as[String])).toString("dd MM")
            Json.obj(
-             "day" -> getUnixDate((el \ "lowerDate" \ "$date").as[String]),
+             "day" -> day,
              "val" -> (el \ "totalRevenue").as[Int]
            )
          }})
@@ -662,44 +663,45 @@ def getTotalAverageTimeFirstPurchase(
     start: Date,
     end: Date
   ): Future[JsValue] = {
-    val promise = Promise[JsValue]
-
-    val sessions = databaseService.getDocumentsWithinTimeRange(
+    val futureSessions = databaseService.getDocumentsWithinTimeRange(
       Metrics.numberSessionsCollection(companyName, applicationName),
       ("lowerDate", "upperDate"),
       start,
       end
     )
 
-    val nrSessions = if(sessions.value.isEmpty) {
-      0
-    } else {
-      var res = 0
-      for(s <- sessions.value) {
-        res += sessions.value.foldLeft(0)((r,c) => r + (c \ "totalSessions").as[Int])
-      }
-      res
-    }
-
-    val payingUsers = databaseService.getDocumentsWithinTimeRange(
+    val futurePayingUsers = databaseService.getDocumentsWithinTimeRange(
       Metrics.payingUsersCollection(companyName, applicationName),
       ("lowerDate", "upperDate"),
       start,
       end
     )
 
-    var nrPurchases = 0.0
-    if(!payingUsers.value.isEmpty) {
-      for(
-        dailyInfo <- payingUsers.value;
-        users <- ((dailyInfo \ "payingUsers").as[List[JsValue]])
-      ) {
-        nrPurchases += ((users \ "purchases").as[List[String]]).size
+    for {
+      sessions <- futureSessions
+      payingUsers <- futurePayingUsers
+    } yield {
+      val nrSessions = if(sessions.value.isEmpty) {
+        0
+      } else {
+        var res = 0
+        for(s <- sessions.value) {
+          res += sessions.value.foldLeft(0)((r,c) => r + (c \ "totalSessions").as[Int])
+        }
+        res
       }
-    }
 
-    promise.success(Json.obj("value" -> (if(nrSessions > 0) (nrPurchases / nrSessions) else 0)))
-    promise.future
+      var nrPurchases = 0.0
+      if(!payingUsers.value.isEmpty) {
+        for(
+          dailyInfo <- payingUsers.value;
+          users <- ((dailyInfo \ "payingUsers").as[List[JsValue]])
+        ) {
+          nrPurchases += ((users \ "purchases").as[List[String]]).size
+        }
+      }
+      Json.obj("value" -> (if(nrSessions > 0) (nrPurchases / nrSessions) else 0))
+    }
   }
 
   def getAveragePurchasePerSession(
