@@ -74,12 +74,26 @@ var application = angular.module('Wazza.controllers', [
   '$scope',
   '$rootScope',
   '$state',
-  function($scope, $rootScope, $state) {
+  'ApplicationStateService',
+  function(
+    $scope,
+    $rootScope,
+    $state,
+    ApplicationStateService
+    ) {
     
     $scope.selectDashboardSection = function(sectionId) {
       $state.go("analytics.dashboard");
       $rootScope.$broadcast('ChangeDashboardSection', {section: sectionId});
     };
+
+    $scope.followLink = function(state){
+      if(ApplicationStateService.applicationName === ""){
+        swal("Which Application?", "You should definitively choose one first!")
+      }
+      else
+        $state.go(state);
+    }
 
     $scope.experimental = function(state){
       swal({
