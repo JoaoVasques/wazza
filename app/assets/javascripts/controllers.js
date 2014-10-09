@@ -77,6 +77,7 @@ var application = angular.module('Wazza.controllers', [
   function($scope, $rootScope, $state) {
     
     $scope.selectDashboardSection = function(sectionId) {
+      $state.go("analytics.dashboard");
       $rootScope.$broadcast('ChangeDashboardSection', {section: sectionId});
     };
 
