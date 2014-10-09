@@ -13,7 +13,7 @@ import scala.concurrent._
 class MongoDatabaseService extends DatabaseService {
 
   def exists(collectionName: String, key: String, value: String): Future[Boolean] = {
-    null
+    actor.exists(collectionName, key, value)
   }
 
   def get(
@@ -22,7 +22,7 @@ class MongoDatabaseService extends DatabaseService {
     value: String,
     projection: String = null
   ): Future[Option[JsValue]] = {
-    null
+    actor.get(collectionName, key, value, projection)
   }
 
   def getListElements(
@@ -31,7 +31,7 @@ class MongoDatabaseService extends DatabaseService {
     value: String,
     projection: String = null
   ): Future[List[JsValue]] = {
-    null
+    actor.getListElements(collectionName, key, value, projection)
   }
 
   def getElementsWithoutArrayContent(
@@ -41,11 +41,11 @@ class MongoDatabaseService extends DatabaseService {
     array: List[String],
     limit: Int
   ): Future[List[JsValue]] = {
-    null
+    actor.getElementsWithoutArrayContent(collectionName, arrayKey, elementKey, array, limit)
   }
 
   def getCollectionElements(collectionName: String): Future[List[JsValue]] = {
-    null
+    actor.getCollectionElements(collectionName)
   }
 
   def insert(
@@ -53,11 +53,11 @@ class MongoDatabaseService extends DatabaseService {
     model: JsValue,
     extra: Map[String, ObjectId] = null
   ): Future[Unit] = {
-    null
+    actor.insert(collectionName, model, extra)
   }
 
   def delete(collectionName: String, model: JsValue): Future[Unit] = {
-    null
+    actor.delete(collectionName, model)
   }
 
   def update(
@@ -67,7 +67,7 @@ class MongoDatabaseService extends DatabaseService {
     valueKey: String,
     newValue: Any
   ): Future[Unit] = {
-    null
+    actor.update(collectionName, key, keyValue, valueKey, newValue)
   }
 
   /**
@@ -79,7 +79,7 @@ class MongoDatabaseService extends DatabaseService {
     start: Date,
     end: Date
   ): Future[JsArray] = {
-    null
+    actor.getDocumentsWithinTimeRange(collectionName, dateFields, start, end)
   }
 
   def getDocumentsByTimeRange(
@@ -88,7 +88,7 @@ class MongoDatabaseService extends DatabaseService {
     start: Date,
     end: Date
   ): Future[JsArray] = {
-    null
+    actor.getDocumentsByTimeRange(collectionName, dateField, start, end)
   }
 
   /**
@@ -103,7 +103,7 @@ class MongoDatabaseService extends DatabaseService {
     elementKey: String,
     elementValue: T
   ): Future[Boolean] = {
-    null
+    actor.existsInArray[T](collectionName, docIdKey, docIdValue, arrayKey, elementKey, elementValue)
   }
  
   def getElementFromArray[T <: Any](
@@ -114,7 +114,7 @@ class MongoDatabaseService extends DatabaseService {
     elementKey: String,
     elementValue: T
   ): Future[Option[JsValue]] = {
-    null
+    actor.getElementFromArray[T](collectionName, docIdKey, docIdValue, arrayKey, elementKey, elementValue)
   }
 
   def getElementsOfArray(
@@ -124,7 +124,7 @@ class MongoDatabaseService extends DatabaseService {
     arrayKey: String,
     limit: Option[Int]
   ): Future[List[JsValue]] = {
-    null
+    actor.getElementsOfArray(collectionName, docIdKey, docIdValue, arrayKey, limit)
   }
 
   def addElementToArray[T <: Any](
@@ -134,7 +134,7 @@ class MongoDatabaseService extends DatabaseService {
     arrayKey: String,
     m: T
   ): Future[Unit] = {
-    null
+    actor.addElementToArray[T](collectionName, docIdKey, docIdValue, arrayKey, m)
   }
 
   def deleteElementFromArray[T <: Any](
@@ -145,7 +145,7 @@ class MongoDatabaseService extends DatabaseService {
     elementKey: String,
     elementValue: T
   ): Future[Unit] = {
-    null
+    actor.deleteElementFromArray[T](collectionName, docIdKey, docIdValue, arrayKey, elementKey, elementValue)
   }
 
   def updateElementOnArray[T <: Any](
@@ -157,7 +157,7 @@ class MongoDatabaseService extends DatabaseService {
     elementIdValue: String,
     m: T
   ): Future[Unit] = {
-    null
+    actor.updateElementOnArray[T](collectionName, docIdKey, docIdValue, arrayKey, elementId, elementIdValue, m)
   }
 }
 

@@ -6,8 +6,9 @@ import play.api.libs.json.JsArray
 import play.api.libs.json.JsObject
 import play.api.libs.json.JsValue
 import scala.concurrent._
+import persistence.plugins.{DatabaseConnector}
 
-trait DatabaseService {
+trait DatabaseService extends DatabaseConnector {
 
   lazy val ApplicationCollection = "applications"
   lazy val UserCollection = "users"
