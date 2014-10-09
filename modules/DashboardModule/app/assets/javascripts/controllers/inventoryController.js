@@ -10,6 +10,7 @@ dashboard
   'DeleteItemService',
   'ApplicationStateService',
   'ItemSearchService',
+  '$state',
   function (
         $scope,
         $location,
@@ -18,13 +19,14 @@ dashboard
         BootstrapDashboardService,
         DeleteItemService,
         ApplicationStateService,
-        ItemSearchService
+        ItemSearchService,
+        $state
     ) {
 
         ApplicationStateService.setPath("Management");
 
         $scope.addItem = function () {
-            $location.path("/item/create");
+            $state.go("home.newitem");
         };
 
         $scope.itemDeleteSucessCallback = function (data) {
