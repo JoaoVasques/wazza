@@ -80,7 +80,7 @@ var application = angular.module('Wazza.controllers', [
       $rootScope.$broadcast('ChangeDashboardSection', {section: sectionId});
     };
 
-    $scope.experimental = function(){
+    $scope.experimental = function(state){
       swal({
         title: "Are you sure?",
         text: "This feature is experimental by now",
@@ -89,7 +89,7 @@ var application = angular.module('Wazza.controllers', [
         confirmButtonColor: "#DD6B55",
         confirmButtonText: "Yes, I have no fear!" },
         function(){
-          $state.go("home.inventory");
+          $state.go("state");
         });
     }
 
