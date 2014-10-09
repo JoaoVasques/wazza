@@ -18,9 +18,10 @@ GET     /inventory/virtualCurrencies  @controllers.dashboard.DashboardController
 # analytics
 GET     /analytics	                  @controllers.dashboard.DashboardController.analytics
 
-GET     /store/android                @controllers.dashboard.DashboardController.storeAndroid
-GET     /store/apple                  @controllers.dashboard.DashboardController.storeApple
-GET     /store/amazon                 @controllers.dashboard.DashboardController.storeAmazon
+# not used atm
+#GET     /store/android                @controllers.dashboard.DashboardController.storeAndroid
+#GET     /store/apple                  @controllers.dashboard.DashboardController.storeApple
+#GET     /store/amazon                 @controllers.dashboard.DashboardController.storeAmazon
 
 # other
 GET     /settings                     @controllers.dashboard.DashboardController.settingsSection

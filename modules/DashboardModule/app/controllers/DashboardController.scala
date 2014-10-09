@@ -87,6 +87,7 @@ class DashboardController @Inject()(
     Ok(views.html.analytics.generic())
   }
 
+/** not used atm
   //store
   def storeAndroid = HasToken() {token => userId => implicit request =>
     Ok(views.html.store.storeAndroid())
@@ -99,6 +100,7 @@ class DashboardController @Inject()(
   def storeAmazon = HasToken() {token => userId => implicit request =>
     Ok(views.html.store.storeAmazon())
   }
+**/
 
   //inventory
   def inventory = HasToken() {token => userId => implicit request =>
