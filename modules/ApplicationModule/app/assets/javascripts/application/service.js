@@ -29,9 +29,7 @@ angular.module('ApplicationModule.services', ['DashboardModule'])
     };
 
     service.send = function(data){
-      console.log("creating new app");
       var companyName = ApplicationStateService.companyName;
-      console.log("companyName: " + companyName);
       var request = $http.post("/app/new/" + companyName, data);
       var deferred = $q.defer();
       deferred.resolve(request);
