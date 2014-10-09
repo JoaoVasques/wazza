@@ -90,7 +90,7 @@ var application = angular.module('Wazza.controllers', [
         confirmButtonColor: "#DD6B55",
         confirmButtonText: "Yes, I have no fear!" },
         function(){
-          $state.go("state");
+          $state.go(state);
         });
     }
 
