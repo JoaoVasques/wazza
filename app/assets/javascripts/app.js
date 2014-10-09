@@ -187,10 +187,4 @@ config(function($stateProvider, $urlRouterProvider, $locationProvider, $httpProv
         controller: 'DashboardController'
       })
 
-      //campaigns
-      .when('/campaigns', {
-        templateUrl: '/dashboard/campaigns',
-        controller: 'CampaignsController'
-      })
-
 */

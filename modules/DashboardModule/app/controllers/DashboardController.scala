@@ -157,10 +157,6 @@ class DashboardController @Inject()(
   }
 
   //others
-  def campaigns = HasToken() {token => userId => implicit request =>
-    Ok(views.html.campaigns())
-  }
-
   def settingsSection = HasToken() {token => userId => implicit request =>
     Ok(views.html.settings())
   }

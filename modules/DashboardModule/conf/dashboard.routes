@@ -23,7 +23,6 @@ GET     /store/apple                  @controllers.dashboard.DashboardController
 GET     /store/amazon                 @controllers.dashboard.DashboardController.storeAmazon
 
 # other
-GET     /campaigns                    @controllers.dashboard.DashboardController.campaigns
 GET     /settings                     @controllers.dashboard.DashboardController.settingsSection
 
 # Map static resources from the /public folder to the /assets URL path
