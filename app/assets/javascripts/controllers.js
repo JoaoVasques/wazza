@@ -9,7 +9,6 @@ var application = angular.module('Wazza.controllers', [
   'ui.bootstrap'
   ])
 
-//TODO: delete these whenever the refactor is complete
 .controller('NavBarController',[
   '$scope',
   'LoginLogoutService',
@@ -83,7 +82,7 @@ var application = angular.module('Wazza.controllers', [
     ) {
     
     $scope.selectDashboardSection = function(sectionId) {
-      $state.go("analytics.dashboard");
+      $scope.followLink("analytics.dashboard");
       $rootScope.$broadcast('ChangeDashboardSection', {section: sectionId});
     };
 
