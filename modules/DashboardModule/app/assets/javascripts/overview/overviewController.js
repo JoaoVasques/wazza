@@ -23,6 +23,7 @@ dashboard.controller('OverviewController',[
   ) {
 
     ApplicationStateService.setPath("Overview");
+    ApplicationStateService.updateApplicationName("");
 
     $scope.applications = [];
     var noImageUrl = "assets/images/default-user-icon-profile.png";
