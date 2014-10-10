@@ -18,7 +18,7 @@ angular.module('ApplicationModule.controllers', ['ApplicationModule.services', '
 
     ApplicationStateService.setPath("New Application");
 
-    $scope.noImageThumbnailUrl = "http://allaboutuarts.ca/wp-content/uploads/2012/07/placeholder_2.jpg";
+    $scope.noImageThumbnailUrl = "assets/images/placeholder_2.jpg";
     $scope.storeOptions = ['iOS', 'Android'];
     $scope.applicationForm = {
       "name": "",
@@ -35,8 +35,9 @@ angular.module('ApplicationModule.controllers', ['ApplicationModule.services', '
         .then(
           function(result){
             $scope.formErrors = {};
-            $scope.applicationName=$scope.applicationForm.name;
+            $scope.applicationName = $scope.applicationForm.name;
             $state.go('analytics.overview');
+            swal("New Application Created!", "Go to Overview to see them all.", "success")
           },
           function(errors){
             angular.extend($scope.formErrors, errors.data.errors);

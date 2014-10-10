@@ -48,32 +48,6 @@ class DashboardController @Inject()(
     }
   }
 
-  def bootstrapOverview() = UserAuthenticationAction.async {implicit request =>
-    userService.getApplications(request.userId) flatMap {applications =>
-      if(applications.isEmpty) {
-        Future.successful(BadRequest)
-      } else {
-        userService.find(request.userId) flatMap {user =>
-          val companyName = user.get.company
-          val apps = Future.sequence(applications map {appId: String =>
-            applicationService.find(companyName, appId) map {optApp =>
-              (optApp map {application =>
-                Json.obj(
-                  "name" -> application.name,
-                  "url" -> application.imageName,
-                  "platforms" -> application.appType
-                )
-              }).get
-            }
-          })
-          apps map {appsList =>
-            Ok(new JsArray(appsList))
-          }
-        }
-      }
-    }
-  }
-
   // add optional argument: application name
   def bootstrapDashboard() = UserAuthenticationAction.async {implicit request =>
     userService.getApplications(request.userId) flatMap {applications =>
@@ -115,36 +89,6 @@ class DashboardController @Inject()(
     }
   } 
 
-
-  def overview() = UserAuthenticationAction.async {implicit request =>
-    userService.getApplications(request.userId) flatMap {applications =>
-      if(applications.isEmpty){
-        Future.successful(Ok(views.html.overview(false, "", null, Nil, Nil)))
-      } else {
-        request.body.asJson match {
-          case Some(json) => {
-            Future.successful(Ok("skip " + json))
-          }
-          case None => {
-            userService.find(request.userId) flatMap {optUser =>
-              val companyName = optUser.get.company
-              applicationService.find(companyName, applications.head) map {optApp =>
-                val application = optApp.get
-                Ok(views.html.overview(
-                  true,
-                  application.name,
-                  application.credentials,
-                  application.virtualCurrencies,
-                  application.items
-                ))
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-
   def kpi = UserAuthenticationAction {implicit request =>
     Ok(views.html.kpi())
   }
@@ -154,6 +98,7 @@ class DashboardController @Inject()(
     Ok(views.html.analytics.generic())
   }
 
+/** not used atm
   //store
   def storeAndroid = UserAuthenticationAction {implicit request =>
     Ok(views.html.store.storeAndroid())
@@ -166,6 +111,7 @@ class DashboardController @Inject()(
   def storeAmazon = UserAuthenticationAction {implicit request =>
     Ok(views.html.store.storeAmazon())
   }
+**/
 
   //inventory
   def inventory = UserAuthenticationAction {implicit request =>
@@ -181,9 +127,6 @@ class DashboardController @Inject()(
   }
 
   //others
-  def campaigns = UserAuthenticationAction {implicit request =>
-    Ok(views.html.campaigns())
-  }
 
   def settingsSection = UserAuthenticationAction {implicit request =>
     Ok(views.html.settings())

@@ -33,7 +33,7 @@ angular.module('UserModule', ['UserModule.services', 'UserModule.directives', 'S
       "css": "has-error"
     };
     $scope.passwordErrors = {
-      "content": "Password do not match",
+      "content": "Password does not match",
       "show": false,
       "css": "has-error"
     };

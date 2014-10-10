@@ -31,7 +31,7 @@ angular.module('ItemModule.controllers', ['ItemModule.services', 'angularFileUpl
       };
 
     $scope.bootstrapModule = function(){
-      $scope.noImageThumbnailUrl = "http://allaboutuarts.ca/wp-content/uploads/2012/07/placeholder_2.jpg"
+      $scope.noImageThumbnailUrl = "assets/images/placeholder_2.jpg"
       $scope.itemForm = {
         "applicationName": ApplicationStateService.applicationName,
         "name": "",

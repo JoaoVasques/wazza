@@ -3,7 +3,6 @@
 dashboard
 .controller('AvgRevenueSessionController', [
   '$scope',
-  '$location',
   '$rootScope',
   'ApplicationStateService',
   'DateModel',
@@ -11,7 +10,6 @@ dashboard
   'AvgRevenueSessionDateChanged',
   function (
     $scope,
-    $location,
     $rootScope,
     ApplicationStateService,
     DateModel,

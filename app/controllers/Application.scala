@@ -29,5 +29,10 @@ class Application extends Controller {
   def notavailableyet = Action {
     Ok(views.html.notavailableyet())
   }
+
+  def httpError = Action {
+    Ok(views.html.errorPage())
+  }
+
 }
 

@@ -1,7 +1,7 @@
     <div class="container" ng-controller="LoginController">
       <div class="row">
         <div class="col-lg-4 col-lg-offset-4">
-          <div class="header">Log In</div>
+          <h3 class="header">Login</h3>
           <form accept-charset="UTF-8" role="form" method="post" ng-submit="signIn()">
             <fieldset class="body">
               <div class="body">
@@ -13,15 +13,15 @@
                   <label class="control-label" ng-show="errors.show" for="loginPassword">{{errors.content}}</label>
                   <input type="password" name="password" class="form-control" placeholder="Password" value="" required ng-model="loginForm.password" id="loginPassword"/>
                 </div>          
-                <div class="form-group">
+                <!--div class="form-group">
                   <input type="checkbox" name="remember_me"/> Remember me
-                </div>
+                </div-->
               </div>
 
             </fieldset>
 
             <div class="footer">
-              <button type="submit" class="btn btn-lg btn-success call-to-action" value="Login">Log me in</button>
+              <button type="submit" class="btn btn-lg btn-success call-to-action" value="Login">Login</button>
               <br>
               <!--p><a href="#">I forgot my password</a></p-->
             </div>

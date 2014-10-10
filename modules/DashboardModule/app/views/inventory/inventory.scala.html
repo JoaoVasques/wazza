@@ -35,7 +35,7 @@
 				<div class="panel-body">
 					<div class="row">
 						<div class="col-xs-6">
-							<img class="img-responsive" ng-src="http://www.clker.com/cliparts/A/P/L/b/V/G/blue-plus-sign-md.png">
+							<img class="img-responsive" ng-src="assets/images/blue-plus-sign-md.png">
 						</div>
 						<div class="col-xs-6">
 							<h4 class=""><strong>Add more items</strong></h4>
@@ -63,7 +63,7 @@
 		<ul class="nav nav-pills pull-right">
 			<li>
 				<div>
-					<a href="/inventory/crud" class="btn btn-default btn-lg"><i class="fa fa-th-list"></i></a>
+					<a ui-sref="home.inventory.crud" class="btn btn-default btn-lg"><i class="fa fa-th-list"></i></a>
 				</div>
 			</li>
 			<li class="dropdown" ng-controller="DashboardController">
@@ -75,7 +75,7 @@
 			</li>
 			<li class="dropdown" ng-controller="DashboardController">
 				<a href="#" class="dropdown-toggle" data-toggle="dropdown">Choose Store<b class="caret"></b></a>
-				<ul class="dropdown-menu">
+				<ul class="dropdown-menu"><!-- TODO: all these links are wrong. change to state machine and enable those states -->
 					<li><a href="/store/android">Android</a></li>
 					<li><a href="/store/apple">Apple</a></li>
 					<li><a href="/store/amazon">Amazon</a></li>

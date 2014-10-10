@@ -3,7 +3,6 @@
 dashboard
 .controller('PurchasePerSessionController', [
   '$scope',
-  '$location',
   '$rootScope',
   'ApplicationStateService',
   'DateModel',
@@ -11,7 +10,6 @@ dashboard
   'PurchaseDateChanged',
   function (
     $scope,
-    $location,
     $rootScope,
     ApplicationStateService,
     DateModel,

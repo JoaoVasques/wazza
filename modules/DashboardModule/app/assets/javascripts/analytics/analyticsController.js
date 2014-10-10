@@ -3,7 +3,6 @@
 dashboard
 .controller('AnalyticsController', [
   '$scope',
-  '$location',
   '$rootScope',
   'ApplicationStateService',
   'GetMainKPIsService',
@@ -12,7 +11,6 @@ dashboard
   'DetailedKpiModel',
   function (
     $scope,
-    $location,
     $rootScope,
     ApplicationStateService,
     GetMainKPIsService,

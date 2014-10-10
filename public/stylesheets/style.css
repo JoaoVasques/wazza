@@ -884,8 +884,8 @@ i {
 }
 
 .call-to-action {
-    background-color: #DC7F11;
-    border-color: #DC7F11;
+    background-color: #DC7F11 !important;
+    border-color: #DC7F11 !important;
     width: 100%;
     margin: auto;
     outline: 0;
