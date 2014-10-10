@@ -82,7 +82,7 @@ class RecommendationServiceImpl @Inject()(
     nrItems: Int
   ): Future[JsArray] = {
 
-    val id = databaseService.get(
+/**    val id = databaseService.get(
       MobileUser.getCollection(companyName, applicationName),
       MobileUser.KeyId,
       userId,
@@ -133,7 +133,8 @@ class RecommendationServiceImpl @Inject()(
     } recover {
       case e: Exception => promise.failure(e)
     }
-    promise.future
+    promise.future**/
+    null
   }
 
   def getSimilarItems(item: Item): Future[List[Item]] = {

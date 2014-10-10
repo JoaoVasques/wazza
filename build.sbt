@@ -23,7 +23,8 @@ lazy val dependencies = Seq(
   "org.webjars" % "angular-ui-bootstrap" % "0.11.0-3",
   "org.webjars" % "angular-ui-router" % "0.2.11",
   "org.webjars" % "momentjs" % "2.8.3",
-  "org.webjars" % "chartjs" % "1.0.1-beta.4"
+  "org.webjars" % "chartjs" % "1.0.1-beta.4",
+  "org.reactivemongo" %% "play2-reactivemongo" % "0.10.2"
 )
 
 libraryDependencies ++= dependencies
@@ -35,8 +36,9 @@ templatesImport += "models.user._"
 templatesImport += "controllers.user._"
 
 lazy val mySettings = Seq(
-    javaOptions in run += "-Dconfig.file=conf/dev/application_dev.conf",
-    scalacOptions ++= Seq("-feature", "-language:reflectiveCalls")
+  javaOptions in run += "-Dconfig.file=conf/dev/application_dev.conf",
+  scalacOptions ++= Seq("-feature", "-language:reflectiveCalls"),
+  scalacOptions ++= Seq("-feature", "-language:postfixOps")
 )
 
 // Projects

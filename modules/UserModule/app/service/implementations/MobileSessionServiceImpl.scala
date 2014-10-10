@@ -13,6 +13,8 @@ import com.google.inject._
 import service.persistence.definitions.DatabaseService
 import models.user.MobileSessionInfo
 import com.github.nscala_time.time.Imports._
+import scala.concurrent._
+import ExecutionContext.Implicits.global
 
 class MobileSessionServiceImpl @Inject()(
   databaseService: DatabaseService
@@ -27,44 +29,52 @@ class MobileSessionServiceImpl @Inject()(
     }
   }
 
-  def insert(companyName: String, applicationName: String, session: MobileSession): Try[Unit] = {
-    if(!exists(session.id)) {
-      val collection = MobileSession.getCollection(companyName, applicationName)
-      databaseService.insert(collection, Json.toJson(session)) match {
-        case Success(_) => {
+  def insert(companyName: String, applicationName: String, session: MobileSession): Future[Unit] = {
+    val promise = Promise[Unit]
+
+    val insertFuture = exists(session.id) flatMap { res =>
+      if(!res) {
+        val collection = MobileSession.getCollection(companyName, applicationName)
+        databaseService.insert(collection, Json.toJson(session)) flatMap {r =>
           addSessionToHashCollection(companyName, applicationName, session)
         }
-        case Failure(f) => new Failure(f)
+      } else {
+        Future {new Exception("mobile session alreayd exists") }
       }
-    } else {
-      new Failure(new Exception("mobile session already exists"))
     }
+
+    insertFuture map {res=>
+      promise.success()
+    } recover {
+      case ex: Exception => promise.failure(ex)
+    }
+    promise.future
   }
 
-  def get(hash: String): Option[MobileSession] = {
-    getSessionInfo(hash) match {
-      case Some(info) => {
-        val collection = MobileSession.getCollection(info.companyName, info.applicationName)
-        databaseService.get(
-          collection,
-          MobileSession.Id,
-          hash
-        ) match {
-          case Some(json) => {
-            val sessionMap = json.as[Map[String, JsValue]]
-            val updated = sessionMap + ("startTime" -> sessionMap.get("startTime").map {d =>
-              (d \ "$date").as[JsString]
-            }.get)
+  def get(hash: String): Future[Option[MobileSession]] = {
+    getSessionInfo(hash) flatMap {optSessionInfo =>
+      optSessionInfo match {
+        case Some(info) => {
+          val collection = MobileSession.getCollection(info.companyName, info.applicationName)
+          databaseService.get(collection, MobileSession.Id, hash) map {opt =>
+            opt match {
+              case Some(json) => {
+                val sessionMap = json.as[Map[String, JsValue]]
+                val updated = sessionMap + ("startTime" -> sessionMap.get("startTime").map {d =>
+                  (d \ "$date").as[JsString]
+                }.get)
 
-            MobileSession.buildJsonFromMap(updated).validate[MobileSession].fold(
-              valid = { s => Some(s) },
-              invalid = {_ => None}
-            )
+                MobileSession.buildJsonFromMap(updated).validate[MobileSession].fold(
+                  valid = { s => Some(s) },
+                  invalid = {_ => None}
+                )
+              }
+              case None => None
+            }
           }
-          case None => None
         }
+        case None => Future{ None }
       }
-      case None => None
     }
   }
 
@@ -72,7 +82,8 @@ class MobileSessionServiceImpl @Inject()(
     companyName: String,
     applicationName: String,
     session: MobileSession
-  ): Try[Unit] = {
+  ): Future[Unit] = {
+    val promise = Promise[Unit]
     val collection = MobileSessionInfo.collection
     val info = new MobileSessionInfo(
       session.id,
@@ -80,35 +91,48 @@ class MobileSessionServiceImpl @Inject()(
       applicationName,
       companyName
     )
-    databaseService.insert(collection, Json.toJson(info))
+    databaseService.insert(collection, Json.toJson(info)) map {res =>
+      promise.success()
+    } recover {
+      case ex: Exception => promise.failure(ex)
+    }
+    promise.future
   }
 
-  private def getSessionInfo(id: String): Option[MobileSessionInfo] = {
-    if(exists(id)) {
-      databaseService.get(
-        MobileSessionInfo.collection,
-        MobileSessionInfo.Id,
-        id
-      ) match {
-        case Some(json) => {
-          json.validate[MobileSessionInfo].fold(
-            valid = { s => Some(s) },
-            invalid = {_ => None}
-          )
+  private def getSessionInfo(id: String): Future[Option[MobileSessionInfo]] = {
+    exists(id) flatMap {res =>
+      if(res) {
+        databaseService.get( MobileSessionInfo.collection, MobileSessionInfo.Id, id) map {sessionOpt =>
+          sessionOpt match {
+            case Some(json) => {
+              json.validate[MobileSessionInfo].fold(
+                valid = { s => Some(s) },
+                invalid = {_ => None}
+              )
+            }
+            case None => None
+          }
         }
-        case None => None
+      } else Future{
+        None
       }
-    } else {
-      None
     }
   }
 
-  def exists(id: String): Boolean = {
+  def exists(id: String): Future[Boolean] = {
     val collection = MobileSessionInfo.collection
-    databaseService.exists(collection, MobileSessionInfo.Id,id)
+    databaseService.exists(collection, MobileSessionInfo.Id,id) map { result =>
+      result
+    }
   }
 
-  def addPurchase(companyName: String, applicationName: String, session: MobileSession, purchaseId: String) = {
+  def addPurchase(
+    companyName: String,
+    applicationName: String,
+    session: MobileSession,
+    purchaseId: String
+  ): Future[Unit] = {
+    val promise = Promise[Unit]
     val collection = MobileSession.getCollection(companyName, applicationName)
     databaseService.addElementToArray[String](
       collection,
@@ -116,26 +140,30 @@ class MobileSessionServiceImpl @Inject()(
       session.id,
       MobileSession.Purchases,
       purchaseId
-    )
+    ) map {res =>
+      promise.success()
+    } recover {
+      case ex: Exception => promise.failure(ex)
+    }
+    promise.future
   }
 
-  def calculateSessionLength(session: MobileSession, dateStr: String) = {
+  def calculateSessionLength(session: MobileSession, dateStr: String): Future[Unit] = {
     val format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z")
     val start = format.parse(session.startTime)
     val end = format.parse(dateStr)
     val duration =  TimeUnit.MILLISECONDS.toSeconds(end.getTime - start.getTime)
 
-    val info = getSessionInfo(session.id).get
-
-    val collection = MobileSession.getCollection(info.companyName, info.applicationName)
-
-    databaseService.update(
-      collection,
-      MobileSession.Id,
-      session.id,
-      "sessionLength",
-      duration
-    )
-
+    getSessionInfo(session.id) flatMap {sessionOpt =>
+      val collection = MobileSession.getCollection(sessionOpt.get.companyName, sessionOpt.get.applicationName)
+      databaseService.update(
+        collection,
+        MobileSession.Id,
+        session.id,
+        "sessionLength",
+        duration
+      )
+    }
   }
 }
+

@@ -39,9 +39,9 @@ class ItemServiceImpl @Inject()(
     language: String,
     imageName: String,
     imageUrl: String
-  ): Future[Try[Item]] = {
+  ): Future[Unit] = {
 
-    val promise = Promise[Try[Item]]
+    val promise = Promise[Unit]
 
     val metadata = new GoogleMetadata(
       InAppPurchaseMetadata.Android,
@@ -67,7 +67,12 @@ class ItemServiceImpl @Inject()(
       imageInfo = new ImageInfo(imageName, imageUrl)
     )
 
-    promise.success(applicationService.addItem(companyName, item, applicationName))
+    applicationService.addItem(companyName, item, applicationName) map {i =>
+      promise.success()
+    } recover {
+      case e: Exception => promise.failure(e)
+    }
+
     promise.future
   }
 
@@ -84,8 +89,9 @@ class ItemServiceImpl @Inject()(
     languageProperties: AppleLanguageProperties,
     pricingProperties: ApplePricingProperties,
     durationProperties: AppleDurationProperties
-  ): Try[Item] = {
+  ): Future[Unit] = {
 
+    val promise = Promise[Unit]
     val metadata = new AppleMetadata(
       InAppPurchaseMetadata.IOS,
       name,
@@ -106,15 +112,20 @@ class ItemServiceImpl @Inject()(
       new ImageInfo("","")
     )
 
-    applicationService.addItem(companyName, item, applicationName)
+    applicationService.addItem(companyName, item, applicationName) map {r =>
+      promise.success()
+    } recover {
+      case ex: Exception => promise.failure(ex)
+    }
+    promise.future
   }
 
   def createItemFromMultipartData(
     companyName: String,
     formData: MultipartFormData[_],
     applicationName: String
-  ): Future[Try[Item]] = {
-    def generateJsonError(key: String, message: String): JsValue = {
+  ): Future[Unit] = {
+    /**def generateJsonError(key: String, message: String): JsValue = {
       Json.obj(key -> Json.obj("message" -> message, "visible" -> true))
     }
 
@@ -174,7 +185,8 @@ class ItemServiceImpl @Inject()(
         (itemData("imageInfo") \ "name").as[String],
         (itemData("imageInfo") \ "url").as[String]
       )
-    }
+    }**/
+    Future {}
   }
 
   def getCurrencyTypes(): Map[String, Int] = {

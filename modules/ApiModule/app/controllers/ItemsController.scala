@@ -16,7 +16,7 @@ import service.application.definitions.ApplicationService
 
 class ItemsController @Inject()(
   applicationService: ApplicationService
-) extends Controller with ApiSecurity {
+) extends Controller {
 
   private lazy val OffsetHeader = "Offset"
 
@@ -27,38 +27,34 @@ class ItemsController @Inject()(
     }
   }
 
-  private def getItemsAux[A](
-    request: Request[A],
-    companyName: String,
-    applicationName: String,
-    projection: String = null
-  ): List[Any] = {
-    applicationService.getItems(companyName, applicationName, getOffsetValue(request))
+  def getItems(companyName: String, applicationName: String) = Action.async {implicit request =>
+    val futureResult = applicationService.getItems(companyName, applicationName, getOffsetValue(request))
+    futureResult map {items =>
+      Ok(new JsArray(items map {i => Json.obj("id" -> i.name)}))
+    }
   }
 
-  def getItems(companyName: String, applicationName: String) = ApiSecurityHandler() {implicit request =>
-    val result = applicationService.getItems(companyName, applicationName, getOffsetValue(request))
-    Ok(JsArray(result.map((item: Item) =>{
-      Json.obj("id" -> item.name)
-    })))
-  }
-
-  def getItemsWithDetails(companyName: String, applicationName: String) = ApiSecurityHandler() {implicit request =>
-    val result = applicationService.getItems(companyName, applicationName, getOffsetValue(request))
-    Ok(JsArray(result.map{(item: Item) =>
-      Item.convertToJson(item)
-    }))
+  def getItemsWithDetails(companyName: String, applicationName: String) = Action.async  {implicit request =>
+    val futureResult = applicationService.getItems(companyName, applicationName, getOffsetValue(request))
+    futureResult map {items =>
+      Ok(new JsArray(items map {i =>
+        Item.convertToJson(i)
+      }))
+    }
   }
  
   def getItemDetails(
     companyName: String,
     applicationName:String,
     id: String
-  ) = ApiSecurityHandler() {implicit request =>
-    val res = applicationService.getItem(companyName, id, applicationName)
-    Ok(Json.obj(
-      "item" ->  res.map{item => Item.convertToJson(item)}
-    ))
+  ) = Action.async {implicit request =>
+    val futureRes = applicationService.getItem(companyName, id, applicationName)
+
+    futureRes map {opt =>
+      Ok((opt map {i =>
+        Json.obj("item" -> Item.convertToJson(i))
+      }).get)
+    }
   }
 }
 

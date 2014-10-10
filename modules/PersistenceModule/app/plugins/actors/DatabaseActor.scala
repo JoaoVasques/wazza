@@ -1,18 +1,14 @@
-package service.persistence.definitions
+package persistence.plugin.actors
 
 import java.util.Date
 import org.bson.types.ObjectId
 import play.api.libs.json.JsArray
 import play.api.libs.json.JsObject
 import play.api.libs.json.JsValue
+import scala.util.Try
 import scala.concurrent._
-import persistence.plugins.{DatabaseConnector}
 
-trait DatabaseService extends DatabaseConnector {
-
-  lazy val ApplicationCollection = "applications"
-  lazy val UserCollection = "users"
-  lazy val PurchasesCollection = "purchases"
+protected[plugin] trait DatabaseActor {
 
   def exists(collectionName: String, key: String, value: String): Future[Boolean]
 
@@ -37,7 +33,7 @@ trait DatabaseService extends DatabaseConnector {
     array: List[String],
     limit: Int
   ): Future[List[JsValue]]
-                                                                                                 
+  
   def getCollectionElements(collectionName: String): Future[List[JsValue]]
 
   def insert(collectionName: String, model: JsValue, extra: Map[String, ObjectId] = null): Future[Unit]
@@ -48,7 +44,7 @@ trait DatabaseService extends DatabaseConnector {
 
   /**
     Time-ranged queries
-  **/
+    **/
   def getDocumentsWithinTimeRange(
     collectionName: String,
     dateFields: Tuple2[String, String],
@@ -65,7 +61,7 @@ trait DatabaseService extends DatabaseConnector {
 
   /**
     Array operations
-  **/
+    **/
 
   def existsInArray[T <: Any](
     collectionName: String,
@@ -120,5 +116,4 @@ trait DatabaseService extends DatabaseConnector {
     m: T
   ): Future[Unit]
 }
-
 

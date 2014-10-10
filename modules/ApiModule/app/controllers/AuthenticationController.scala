@@ -10,11 +10,11 @@ import service.security.definitions.{TokenManagerService}
 import service.application.definitions._
 import com.google.inject._
 
-class AuthenticationController extends Controller with ApiSecurity {
+class AuthenticationController extends Controller /** with ApiSecurity**/ {
 
-  def authenticate = ApiSecurityHandler(parse.json) {implicit request =>
+ /** def authenticate = ApiSecurityHandler(parse.json) {implicit request =>
 
     Ok("TODO")
-  }
+  }**/
 }
 

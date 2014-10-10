@@ -11,14 +11,14 @@ import service.user.definitions.MobileUserService
 import models.user.{MobileUser}
 import models.user.{MobileSession}
 import models.user.{DeviceInfo}
-import scala.concurrent._
-import ExecutionContext.Implicits.global
 import scala.language.implicitConversions
 import com.google.inject._
 import service.persistence.definitions.{DatabaseService}
 import play.api.libs.json.Json
 import models.user.PurchaseInfo
 import java.util.Date
+import scala.concurrent._
+import ExecutionContext.Implicits.global
 
 class MobileUserServiceImpl @Inject()(
   databaseService: DatabaseService
@@ -28,34 +28,34 @@ class MobileUserServiceImpl @Inject()(
     companyName: String,
     applicationName: String,
     userId: String
-  ): Try[MobileUser] = {
+  ): Future[Unit] = {
     val collection = MobileUser.getCollection(companyName, applicationName)
-    if(!exists(companyName, applicationName, userId)) {
-      val user = new MobileUser(userId)
-      databaseService.insert(collection, user) match {
-        case Success(_) => new Success(user)
-        case Failure(f) => new Failure(f)
+
+    exists(companyName, applicationName, userId) flatMap {userExists =>
+      if(!userExists) {
+        val user = new MobileUser(userId)
+        databaseService.insert(collection, user) map {res => res}
+      } else {
+        Future {new Exception("Duplicated mobile user")}
       }
-    } else {
-      new Failure(new Exception("Duplicated mobile user"))
     }
   }
 
-  def get(companyName: String, applicationName: String, userId: String): Option[MobileUser] = {
+  def get(companyName: String, applicationName: String, userId: String): Future[Option[MobileUser]] = {
     val collection = MobileUser.getCollection(companyName, applicationName)
-    databaseService.get(
-      collection,
-      MobileUser.KeyId,
-      userId
-    ) match {
-      case Some(j) => Some(j)
-      case None => None
+    databaseService.get(collection, MobileUser.KeyId, userId) map {opt =>
+      opt match {
+        case Some(j) => Some(j)
+        case None => None
+      }
     }
   }
 
-  def exists(companyName: String, applicationName: String, userId: String): Boolean = {
+  def exists(companyName: String, applicationName: String, userId: String): Future[Boolean] = {
     val collection = MobileUser.getCollection(companyName, applicationName)
-    databaseService.exists(collection, MobileUser.KeyId, userId)
+    databaseService.exists(collection, MobileUser.KeyId, userId) map {res =>
+      res
+    }
   }
 }
 

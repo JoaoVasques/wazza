@@ -1,45 +1,36 @@
 package controllers.api
 
 import com.google.inject._
-import models.application.Item
-import models.user.DeviceInfo
-import models.user.LocationInfo
-import models.user.PurchaseInfo
 import play.api._
 import play.api.libs.json.JsError
 import play.api.libs.json.JsSuccess
 import play.api.libs.json.{JsArray, Json}
 import play.api.mvc._
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.util.Failure
-import scala.util.Success
 import service.application.definitions.ApplicationService
 import service.security.definitions.TokenManagerService
 import service.user.definitions.{PurchaseService}
+import scala.concurrent._
+import ExecutionContext.Implicits.global
 
 class PurchaseController @Inject()(
   applicationService: ApplicationService,
   purchaseService: PurchaseService
 ) extends Controller {
 
-  
-  def handlePurchase(companyName: String, applicationName: String) = Action(parse.json) {implicit request =>
+  def handlePurchase(companyName: String, applicationName: String) = Action.async(parse.json) {implicit request =>
     val content = Json.parse((request.body \ "content").as[String].replace("\\", ""))
-    if(applicationService.itemExists(
-      companyName,
-      (content \ "itemId").as[String],
-      applicationName
-    )) {
-
-      val purchaseInfo = purchaseService.create(content)
-      purchaseService.save(companyName, applicationName, purchaseInfo) match {
-        case Success(_) => Ok
-        case Failure(_) => BadRequest
+    applicationService.itemExists(companyName, (content \ "itemId").as[String], applicationName) flatMap {exist =>
+      if(exist) {
+        val purchaseInfo = purchaseService.create(content)
+        purchaseService.save(companyName, applicationName, purchaseInfo) map {res =>
+          Ok
+        } recover {
+          case _ => BadRequest
+        }
+      } else {
+        Future { BadRequest("Item does not exist") }
       }
-    } else {
-      BadRequest("Item does not exist")
     }
   }
-
 }
 

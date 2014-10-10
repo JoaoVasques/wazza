@@ -14,7 +14,6 @@ import scala.concurrent._
 import ExecutionContext.Implicits.global
 import service.security.definitions.{TokenManagerService}
 import play.api.libs.json._
-import controllers.security.{Security}
 import service.user.definitions.{UserService}
 
 /** Uncomment the following lines as needed **/
@@ -33,20 +32,25 @@ import play.api.libs.json._
 class APIController @Inject()(
     applicationService: ApplicationService,
     userService: UserService
-  ) extends Controller with Security {
+) extends Controller {
 
   def getVirtualCurrencies(applicationName: String, companyName: String) = Action.async { implicit request =>
-    Future {
-      Json.toJson(applicationService.getVirtualCurrencies(companyName, applicationName).map((vc: VirtualCurrency) => {
+    applicationService.getVirtualCurrencies(companyName, applicationName) map { res =>
+      Ok(new JsArray(res map {vc =>
         VirtualCurrency.buildJson(vc)
-      }))      
-    }.map(res => Ok(res))
+      }))
+    }
   }
 
-  def getItems(applicationName: String, companyName: String, offset: Int) = HasToken() {token => userId => implicit request =>
-    val items = applicationService.getItems(companyName, applicationName, offset)
-    Ok(new JsArray(items map {item =>
-      Item.convertToJson(item)
-    }))
+  def getItems(
+    applicationName: String,
+    companyName: String,
+    offset: Int
+  ) = Action.async { implicit request =>
+    applicationService.getItems(companyName, applicationName, offset) map {items =>
+      Ok(new JsArray(items map {item =>
+        Item.convertToJson(item)
+      }))
+    }
   }
 }

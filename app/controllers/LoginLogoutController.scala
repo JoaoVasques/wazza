@@ -6,7 +6,7 @@ import play.api.data.Forms._
 import play.api.data._
 import com.google.inject._
 import service.user.definitions.{UserService}
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent._
 import ExecutionContext.Implicits.global
 import play.api.libs.json._
 import models.user._
@@ -14,11 +14,12 @@ import play.api.libs.iteratee._
 import scala.util.{Success, Failure}
 import controllers.security._
 import service.security.definitions.{TokenManagerService}
+import scala.concurrent.duration._
 
 class LoginLogoutController @Inject()(
   userService: UserService,
   tokenService: TokenManagerService
-) extends Controller with Security{
+) extends Controller with CookieManager {
 
   val loginForm = Form {
     mapping(
@@ -33,7 +34,7 @@ class LoginLogoutController @Inject()(
   }
 
   def logout = Action{implicit request =>
-    request.headers.get(AuthTokenHeader) map { token =>
+    request.headers.get(UserAuthenticationAction.AuthTokenHeader) map { token =>
       Ok(routes.Application.index().url).discardingToken(token)(tokenService.remove)
     } getOrElse BadRequest(Json.obj("err" -> "No Token"))
   }

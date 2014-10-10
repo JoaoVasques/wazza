@@ -22,7 +22,7 @@ import org.apache.commons.codec.binary.Hex
 
 trait ApiSecurity { self: Controller =>
 
-  val CompanyNameHeader = "CompanyName"
+/**  val CompanyNameHeader = "CompanyName"
   val ApplicationNameHeader = "AppName"
   val MessageDigestHeader = "Digest"
 
@@ -37,13 +37,6 @@ trait ApiSecurity { self: Controller =>
 
   implicit val app: play.api.Application = play.api.Play.current
 
-  /**
-    Used in all the API calls.
-    Steps:
-     1- Gets secret given app name
-     2- deciphers message, hashes it and compares with digest header
-     3- proceed if everything is ok (missing timestamp for freshness)
-  **/
 
   def checkMessageValidity[A](
     request: Request[A],
@@ -101,14 +94,11 @@ trait ApiSecurity { self: Controller =>
     }
   }
 
-  /**
-    Used on the 3-way handshake protocol for generating a session key
-    NOTE: To be implemented later
-  **/
   def ApiAuthenticationHandler[A]
     (p :BodyParser[A] = parse.anyContent)
     (f: String => Request[A] => Result): Action[A] = Action(p) {implicit request =>
     f("")(request)
   }
+  * */
 }
 
