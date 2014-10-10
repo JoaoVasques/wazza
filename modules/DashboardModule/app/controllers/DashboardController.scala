@@ -16,7 +16,7 @@ import java.util.Date
 class DashboardController @Inject()(
   applicationService: ApplicationService,
   userService: UserService
-) extends Controller with Security{
+) extends Controller {
 
   def index() = UserAuthenticationAction.async {implicit request =>
     userService.getApplications(request.userId) flatMap {applications =>

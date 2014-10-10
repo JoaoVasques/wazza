@@ -37,10 +37,10 @@ import play.api.libs.json._
 **/
 
 class CRUDController @Inject()(
-    applicationService: ApplicationService,
-    secretGeneratorService: SecretGeneratorService,
-    userService: UserService
-  ) extends Controller with Security {
+  applicationService: ApplicationService,
+  secretGeneratorService: SecretGeneratorService,
+  userService: UserService
+) extends Controller {
 
   private def checkPackageNameFormat(name: String): Boolean = {
     if(name == null){
