@@ -1,11 +1,15 @@
 <div class="row" ng-controller="OverviewController">
-    <div ng-show="!!applications">
-      <h2>It seems you have not registered any application yet.</h2>
-      <p class="lead font-semibold">
-        <a class="btn btn-default btn-lg" ui-sref='home.newapp'><span class="fa fa-edit fa-fw"></span>New Application</a>
-      </p>
+
+    <div ng-show="!(applications.length > 0)">
+        <div class="col-md-6 col-lg-6">
+          <h2>It seems you have not registered any application yet.</h2>
+          <p class="lead font-semibold">
+            <a class="btn btn-default btn-lg" ui-sref='home.newapp'><span class="fa fa-edit fa-fw"></span>New Application</a>
+          </p>
+        </div>
     </div>
-    <div ng-hide="!!applications">
+
+    <div ng-show="applications.length > 0">
         <div class="col-md-4 col-lg-4" ng-repeat="app in applications">
           <div class="well profile glow" ng-click="chooseApplication(app.name)">
             <div class="col-sm-12">

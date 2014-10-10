@@ -18,34 +18,8 @@ class DashboardController @Inject()(
   userService: UserService
 ) extends Controller {
 
-  def index() = UserAuthenticationAction.async {implicit request =>
-    userService.getApplications(request.userId) flatMap {applications =>
-      if(applications.isEmpty){
-        Future.successful(Ok(views.html.dashboard(false, "", null, Nil, Nil)))
-      } else {
-        request.body.asJson match {
-          case Some(json) => {
-            Future.successful(Ok("skip " + json))
-          }
-          case None => {
-            for {
-              user <- userService.find(request.userId)
-              application <- applicationService.find(user.get.company, applications.head)
-            } yield {
-              (application map {(app: WazzaApplication) =>
-                Ok(views.html.dashboard(
-                  true,
-                  app.name,
-                  app.credentials,
-                  app.virtualCurrencies,
-                  app.items
-                ))
-              }).get
-            }
-          }
-        }
-      }
-    }
+  def index() = UserAuthenticationAction {implicit request =>
+    Ok(views.html.dashboard())
   }
 
   // add optional argument: application name
