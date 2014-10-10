@@ -495,62 +495,68 @@ def getTotalAverageTimeFirstPurchase(
     start: Date,
     end: Date
   ): Future[JsValue] = {
-    val promise = Promise[JsValue]
     val fields = ("lowerDate", "upperDate")
-    val payingUsers = databaseService.getDocumentsWithinTimeRange(
+    val futurePayingUsers = databaseService.getDocumentsWithinTimeRange(
       Metrics.payingUsersCollection(companyName, applicationName),
       fields,
       start,
       end
     )
 
-    val sessionsPerUser = databaseService.getDocumentsWithinTimeRange(
+    val futureSessionsPerUser = databaseService.getDocumentsWithinTimeRange(
       Metrics.mobileSessionsCollection(companyName, applicationName),
       fields,
       start,
       end
     )
 
-    var totalTimeFirstPurchase = 0.0
-    var purchaseTimesPerUser: Map[String, Date] = Map()
-
-    if(payingUsers.value.isEmpty) {
-      promise.success(Json.obj("value" -> 0))
-    } else {
-      for(
-        payingUsersDay <- payingUsers.value;
-        userInfo <- ((payingUsersDay \ "payingUsers").as[List[JsValue]])
-      ) {
-        val userId = (userInfo \ "userId").as[String]
-        if(!purchaseTimesPerUser.contains(userId)){
-          val firstPurchase = (userInfo \ "purchases").as[List[String]].head
-          val purchaseTime  = getDateFromString(purchaseService.get(companyName, applicationName, firstPurchase).get.time)
-          purchaseTimesPerUser += (userId -> purchaseTime)
-        }
-      }
-
-      if(sessionsPerUser.value.isEmpty){
-        promise.success(Json.obj("value" -> 0))
+    val result = for {
+      payingUsers <- futurePayingUsers
+      sessionsPerUser <- futureSessionsPerUser
+    } yield {
+      if(payingUsers.value.isEmpty) {
+        Future.successful(Json.obj("value" -> 0))
       } else {
-        for(
-          el <- sessionsPerUser.value
-        ) {
-          val userId = (el \ "userId").as[String]
-          if(purchaseTimesPerUser.contains(userId)){
-            val firstSessionDate = getDateFromString((el \ "startTime").as[String])
-            val firstPurchaseDate = getDateFromString((purchaseTimesPerUser.get(userId)).toString)
-            totalTimeFirstPurchase += getNumberSecondsBetweenDates(firstSessionDate, firstPurchaseDate)
+        val futurePurchaseTimes = Future.sequence(
+          for(
+            payingUsersDay <- payingUsers.value;
+            userInfo <- ((payingUsersDay \ "payingUsers").as[List[JsValue]])
+          ) yield {
+            val userId = (userInfo \ "userId").as[String]
+            val firstPurchase = (userInfo \ "purchases").as[List[String]].head
+            val purchaseTime  = purchaseService.get(companyName, applicationName, firstPurchase) map {p =>
+              getDateFromString((p map(_.time)).get)
+            }
+            val map: Map[String, Future[Date]] = Map(userId -> purchaseTime)
+            Future.sequence(map.map(entry => entry._2.map(i => (entry._1, i)))).map(_.toMap)
+          }
+        )
+
+        futurePurchaseTimes map {seq =>
+          val timeFirstPurchasePerUser = seq.foldLeft(Map.empty[String, Date]){(map,element) =>
+            if(!map.contains(element.keys.head)) {
+              map += (element.keys.head -> element.values.head)
+            } else map
+          }
+          if(sessionsPerUser.value.isEmpty){
+           Json.obj("value" -> 0)
+          } else {
+            var totalTimeFirstPurchase = 0.0
+            for(el <- sessionsPerUser.value) {
+              val userId = (el \ "userId").as[String]
+              if(timeFirstPurchasePerUser.contains(userId)){
+                val firstSessionDate = getDateFromString((el \ "startTime").as[String])
+                val firstPurchaseDate = getDateFromString((timeFirstPurchasePerUser.get(userId)).toString)
+                totalTimeFirstPurchase += getNumberSecondsBetweenDates(firstSessionDate, firstPurchaseDate)
+              }
+            }
+            val numberPurchases = timeFirstPurchasePerUser.size
+            Json.obj("value" -> (if(numberPurchases == 0) 0 else totalTimeFirstPurchase / numberPurchases))        
           }
         }
-
-        val numberPurchases = purchaseTimesPerUser.size
-
-        promise.success(
-          Json.obj("value" -> (if(numberPurchases == 0) 0 else totalTimeFirstPurchase / numberPurchases))
-        )
       }
     }
-    promise.future
+  result flatMap {r => r}
   }
 
   def getAverageTimeFirstPurchase(
