@@ -43,7 +43,7 @@ class SessionController @Inject()(
       if(!exist) {
         mobileUserService.createMobileUser(companyName, applicationName, userId)
       } else {
-        Future {new Exception()}
+        Future.successful(new Exception())
       }
     }
   }
@@ -87,21 +87,21 @@ class SessionController @Inject()(
 
   def saveSession(companyName: String, applicationName: String) = Action.async(parse.json) {implicit request =>
     val content = (Json.parse((request.body \ "content").as[String].replace("\\", "")) \ "session").as[JsArray]
-
-    Future {Ok}
-    /**
-      TODO
-    content.value.map{(session: JsValue) => {
+    Future.sequence(content.value.map{(session: JsValue) => {
       val userId = (session  \ "userId").as[String]
-      mobileUserService.exists(companyName, applicationName, userId) flatMap {exist =>
+      mobileUserService.exists(companyName, applicationName, userId) map {exist =>
         if(!exist) {
           mobileUserService.createMobileUser(companyName, applicationName, userId) map {r =>
             createNewSessionInfo(session)
+          } recover {
+            case ex: Exception => Future.failed(ex)
           }
-        }
+        } else Future.failed(new Exception("duplicated session"))
       }
-    }} map { r =>
-      Ok
-    }**/
+    }}) map {
+      _ => Ok
+    } recover {
+      case _ => InternalServerError("Save session error: session not saved")
+    }
   }
 }
