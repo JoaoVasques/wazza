@@ -8,7 +8,7 @@ import controllers.security._
 import service.security.definitions.{TokenManagerService}
 import com.google.inject._
 
-class Application extends Controller with Security{
+class Application extends Controller {
 
   def index = Action {
 	Ok(views.html.index())
