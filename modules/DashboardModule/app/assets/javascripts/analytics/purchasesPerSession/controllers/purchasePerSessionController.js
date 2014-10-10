@@ -21,7 +21,7 @@ dashboard
 
     var title = "Purchase";
     var KpiId = "purchasesPerSession";
-      
+
     ApplicationStateService.setPath(title);
     $scope.context = new DetailedKpiModel(DateModel.startDate, DateModel.endDate, title);
 

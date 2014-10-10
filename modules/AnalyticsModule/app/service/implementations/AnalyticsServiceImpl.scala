@@ -58,7 +58,7 @@ class AnalyticsServiceImpl @Inject()(
     val s = new LocalDate(start)
     val e = new LocalDate(end)
     val days = Days.daysBetween(s, e).getDays()+1
-    
+
     new JsArray(List.range(0, days) map {i =>{
       Json.obj(
         "day" -> s.withFieldAdded(DurationFieldType.days(), i).toString("dd MMM"),
@@ -378,7 +378,7 @@ class AnalyticsServiceImpl @Inject()(
     if(sessionsPerUser.value.isEmpty){
       promise.success(Json.obj("value" -> 0))
     } else {
-      var sessionUserMap: Map[String, Int] = Map() 
+      var sessionUserMap: Map[String, Int] = Map()
       for(
         el <- sessionsPerUser.value;
         spuDay <- ((el \ "nrSessionsPerUser").as[List[JsValue]])
@@ -393,7 +393,7 @@ class AnalyticsServiceImpl @Inject()(
       }
       promise.success(Json.obj(
         "value" -> (sessionUserMap.values.foldLeft(0.0)(_ + _) / sessionUserMap.values.size)
-      )) 
+      ))
     }
     promise.future
   }
@@ -431,6 +431,79 @@ class AnalyticsServiceImpl @Inject()(
     end: Date
   ): Future[JsArray] = {
     calculateDetailedKPIAux(companyName, applicationName, start, end, getTotalLifeTimeValue)
+  }
+
+def getTotalAverageTimeFirstPurchase(
+    companyName: String,
+    applicationName: String,
+    start: Date,
+    end: Date
+  ): Future[JsValue] = {
+    val promise = Promise[JsValue]
+    val fields = ("lowerDate", "upperDate")
+    val payingUsers = databaseService.getDocumentsWithinTimeRange(
+      Metrics.payingUsersCollection(companyName, applicationName),
+      fields,
+      start,
+      end
+    )
+
+    val sessionsPerUser = databaseService.getDocumentsWithinTimeRange(
+      Metrics.mobileSessionsCollection(companyName, applicationName),
+      fields,
+      start,
+      end
+    )
+
+    var totalTimeFirstPurchase = 0.0
+    var purchaseTimesPerUser: Map[String, Date] = Map()
+
+    if(payingUsers.value.isEmpty) {
+      promise.success(Json.obj("value" -> 0))
+    } else {
+      for(
+        payingUsersDay <- payingUsers.value;
+        userInfo <- ((payingUsersDay \ "payingUsers").as[List[JsValue]])
+      ) {
+        val userId = (userInfo \ "userId").as[String]
+        if(!purchaseTimesPerUser.contains(userId)){
+          val firstPurchase = (userInfo \ "purchases").as[List[String]].head
+          val purchaseTime  = getDateFromString(purchaseService.get(companyName, applicationName, firstPurchase).get.time)
+          purchaseTimesPerUser += (userId -> purchaseTime)
+        }
+      }
+
+      if(sessionsPerUser.value.isEmpty){
+        promise.success(Json.obj("value" -> 0))
+      } else {
+        for(
+          el <- sessionsPerUser.value
+        ) {
+          val userId = (el \ "userId").as[String]
+          if(purchaseTimesPerUser.contains(userId)){
+            val firstSessionDate = getDateFromString((el \ "startTime").as[String])
+            val firstPurchaseDate = getDateFromString((purchaseTimesPerUser.get(userId)).toString)
+            totalTimeFirstPurchase += getNumberSecondsBetweenDates(firstSessionDate, firstPurchaseDate)
+          }
+        }
+
+        val numberPurchases = purchaseTimesPerUser.size
+
+        promise.success(
+          Json.obj("value" -> (if(numberPurchases == 0) 0 else totalTimeFirstPurchase / numberPurchases))
+        )
+      }
+    }
+    promise.future
+  }
+
+  def getAverageTimeFirstPurchase(
+    companyName: String,
+    applicationName: String,
+    start: Date,
+    end: Date
+  ): Future[JsArray] = {
+    calculateDetailedKPIAux(companyName, applicationName, start, end, getTotalAverageTimeFirstPurchase)
   }
 
   def getTotalAverageTimeBetweenPurchases(
@@ -581,4 +654,3 @@ class AnalyticsServiceImpl @Inject()(
     calculateDetailedKPIAux(companyName, applicationName, start, end, getTotalAveragePurchasePerSession)
   }
 }
-
