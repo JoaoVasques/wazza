@@ -2,7 +2,6 @@
 
 dashboard.controller('OverviewController',[
   '$scope',
-  '$location',
   '$state',
   'OverviewInitService',
   'AppOverviewModel',
@@ -12,7 +11,6 @@ dashboard.controller('OverviewController',[
   '$q',
   function(
     $scope,
-    $location,
     $state,
     OverviewInitService,
     AppOverviewModel,
@@ -23,9 +21,10 @@ dashboard.controller('OverviewController',[
   ) {
 
     ApplicationStateService.setPath("Overview");
+    ApplicationStateService.updateApplicationName("");
 
     $scope.applications = [];
-    var noImageUrl = "http://www.localcrimenews.com/wp-content/uploads/2013/07/default-user-icon-profile.png";
+    var noImageUrl = "assets/images/default-user-icon-profile.png";
 
     OverviewInitService
       .getApplications()

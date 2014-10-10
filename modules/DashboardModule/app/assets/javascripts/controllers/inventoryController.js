@@ -3,28 +3,28 @@
 dashboard
 .controller('InventoryController', [
   '$scope',
-  '$location',
   '$rootScope',
   'FetchItemsService',
   'BootstrapDashboardService',
   'DeleteItemService',
   'ApplicationStateService',
   'ItemSearchService',
+  '$state',
   function (
         $scope,
-        $location,
         $rootScope,
         FetchItemsService,
         BootstrapDashboardService,
         DeleteItemService,
         ApplicationStateService,
-        ItemSearchService
+        ItemSearchService,
+        $state
     ) {
 
         ApplicationStateService.setPath("Management");
 
         $scope.addItem = function () {
-            $location.path("/item/create");
+            $state.go("home.newitem");
         };
 
         $scope.itemDeleteSucessCallback = function (data) {

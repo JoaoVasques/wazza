@@ -16,7 +16,7 @@
                     </a>
                 </li>
                 <li class="treeview">
-                    <a ui-sref='home.newapp' class="btn btn-default btn-lg" style="color:#666; margin: 0 20px 10px 20px;">Add new App</a>
+                    <a ui-sref='home.newapp' class="btn btn-default btn-lg" style="color:#666; margin: 0 20px 10px 20px;"><span class="fa fa-edit fa-fw"></span>Add new App</a>
                 </li>
             </ul>
 
@@ -27,7 +27,7 @@
 
             <!-- Dashboard -->
             <li class="treeview">
-                <a data-toggle="collapse" data-target="#collapseDashboard" ui-sref="analytics.dashboard">
+                <a data-toggle="collapse" data-target="#collapseDashboard" href="" ng-click="followLink('analytics.dashboard')">
                     <span><h5><b>Dashboard</b></h5></span>
                 </a>
             </li>
@@ -52,35 +52,39 @@
 
             <ul id="collapseAnalytics" class="sidebar-menu collapse">
                 <li><a href="#"><b>Revenue</b></a></li> <!-- semantically incorrect-->
-                <li><a ui-sref="analytics.revenue"><i class="fa fa-shopping-cart"></i> Total Revenue</a></li>
-                <li><a ui-sref="analytics.arpu"><i class="fa fa-shopping-cart"></i> Avg Revenue Per User</a></li>
-                <li><a ui-sref="analytics.avgRevenueSession"><i class="fa fa-shopping-cart"></i> Avg Revenue Per Session</a></li>
+                <li><a href="" ng-click="followLink('analytics.revenue')"><i class="fa fa-shopping-cart"></i> Total Revenue</a></li>
+                <li><a href="" ng-click="followLink('analytics.arpu')"><i class="fa fa-shopping-cart"></i> Avg Revenue Per User</a></li>
+                <li><a href="" ng-click="followLink('analytics.avgRevenueSession')"><i class="fa fa-shopping-cart"></i> Avg Revenue Per Session</a></li>
 
                 <li><a href="#"><b>Users</b></a></li>
-                <li><a ui-sref="analytics.payingUsers"><i class="fa fa-user"></i> Paying Users</a></li>
-                <li><a ui-sref="analytics.ltv"><i class="fa fa-user"></i> Lifetime Value</a></li>
-                <li><a ui-sref="analytics.churn"><i class="fa fa-user"></i> Paying/Churn</a></li>
+                <li><a href="" ng-click="followLink('analytics.payingUsers')"><i class="fa fa-user"></i> Paying Users</a></li>
+                <li><a href="" ng-click="followLink('analytics.ltv')"><i class="fa fa-user"></i> Lifetime Value</a></li>
+                <li><a href="" ng-click="followLink('analytics.churn')"><i class="fa fa-user"></i> Paying/Churn</a></li>
 
                 <li><a href="#"><b>Sessions</b></a></li>
-                <li><a ui-sref="analytics.purchasesPerSession"><i class="fa fa-clock-o"></i> Purchases</a></li>
-                <li><a ui-sref="analytics.avgTime1stPurchase"><i class="fa fa-clock-o"></i> Avg Time 1st purchase</a></li>
-                <li><a ui-sref="analytics.avgTimebetweenPurchase"><i class="fa fa-clock-o"></i> Avg Time between purchase</a></li>
+                <li><a href="" ng-click="followLink('analytics.purchasesPerSession')"><i class="fa fa-clock-o"></i> Purchases</a></li>
+                <li><a href="" ng-click="followLink('analytics.avgTime1stPurchase')"><i class="fa fa-clock-o"></i> Avg Time 1st purchase</a></li>
+                <li><a href="" ng-click="followLink('analytics.avgTimebetweenPurchase')"><i class="fa fa-clock-o"></i> Avg Time between purchase</a></li>
             </ul>
 
            <!-- Management -->
             <li class="treeview">
-              <a href="#"><span><h5><b>Management</b></h5></span></a>
+                <a data-toggle="collapse" data-target="#collapseManagement" href="">
+                    <span><h5><b>Management</b></h5></span>
+                </a>
             </li>
-            <li class="treeview">
-                <a ui-sref="home.inventory"><i class="fa fa-edit"></i> Inventory</span></a>
-            </li>
+            <ul id="collapseManagement" class="sidebar-menu collapse">
+                <li><a href="" ng-click="experimental('home.inventory')"><i class="fa fa-edit"></i> Inventory</span></a></li>
+            </ul>
            <!-- Settings -->
-           <li class="treeview">
-              <a href="#"><span><h5><b>Configuration</b></h5></span></a>
-            </li>
             <li class="treeview">
-                <a ui-sref="home.notavailableyet"><i class="fa fa-gears"></i> <span>Settings</span></a>
+                <a data-toggle="collapse" data-target="#collapseConfiguration" href="">
+                    <span><h5><b>Configuration</b></h5></span>
+                </a>
             </li>
+            <ul id="collapseConfiguration" class="sidebar-menu collapse">
+                <li><a ui-sref="home.notavailableyet"><i class="fa fa-gears"></i> <span>Settings</span></a></li>
+            </ul>
         </ul>
     </section>
 </aside>

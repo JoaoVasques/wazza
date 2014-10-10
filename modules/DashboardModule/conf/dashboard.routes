@@ -5,8 +5,8 @@
 # root
 GET     /                             @controllers.dashboard.DashboardController.index
 GET     /bootstrap                    @controllers.dashboard.DashboardController.bootstrapDashboard
-GET     /overview                     @controllers.dashboard.DashboardController.overview
-GET     /overview/bootstrap           @controllers.dashboard.DashboardController.bootstrapOverview
+GET     /overview                     @controllers.dashboard.OverviewController.overview
+GET     /overview/bootstrap           @controllers.dashboard.OverviewController.bootstrapOverview
 
 GET		/kpi						  @controllers.dashboard.DashboardController.kpi
 
@@ -18,12 +18,12 @@ GET     /inventory/virtualCurrencies  @controllers.dashboard.DashboardController
 # analytics
 GET     /analytics	                  @controllers.dashboard.DashboardController.analytics
 
-GET     /store/android                @controllers.dashboard.DashboardController.storeAndroid
-GET     /store/apple                  @controllers.dashboard.DashboardController.storeApple
-GET     /store/amazon                 @controllers.dashboard.DashboardController.storeAmazon
+# not used atm
+#GET     /store/android                @controllers.dashboard.DashboardController.storeAndroid
+#GET     /store/apple                  @controllers.dashboard.DashboardController.storeApple
+#GET     /store/amazon                 @controllers.dashboard.DashboardController.storeAmazon
 
 # other
-GET     /campaigns                    @controllers.dashboard.DashboardController.campaigns
 GET     /settings                     @controllers.dashboard.DashboardController.settingsSection
 
 # Map static resources from the /public folder to the /assets URL path

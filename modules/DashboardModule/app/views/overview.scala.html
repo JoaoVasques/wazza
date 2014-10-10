@@ -1,17 +1,17 @@
-@(
-exist: Boolean,
-applicationName: String,
-credentials: models.application.Credentials,
-virtualCurrencies: List[models.application.VirtualCurrency],
-items: List[models.application.Item]
-)
-
-@if(exist){
-
-
 <div class="row" ng-controller="OverviewController">
-    <div class="col-md-4 col-lg-4" ng-repeat="app in applications">
-      <div class="well profile glow" ng-click="chooseApplication(app.name)">
+
+    <div ng-show="!(applications.length > 0)">
+        <div class="col-md-6 col-lg-6">
+          <h2>It seems you have not registered any application yet.</h2>
+          <p class="lead font-semibold">
+            <a class="btn btn-default btn-lg" ui-sref='home.newapp'><span class="fa fa-edit fa-fw"></span>New Application</a>
+          </p>
+        </div>
+    </div>
+
+    <div ng-show="applications.length > 0">
+        <div class="col-md-4 col-lg-4" ng-repeat="app in applications">
+          <div class="well profile glow" ng-click="chooseApplication(app.name)">
             <div class="col-sm-12">
                 <div class="col-xs-12 col-sm-4 text-center">
                     <figure>
@@ -20,37 +20,30 @@ items: List[models.application.Item]
                 </div>
                 <div class="col-xs-12 col-sm-8">
                     <h1>{{app.name}}</h1>
-                </div>             
+                </div>
             </div>
             <div class="col-xs-12" style="padding-top: 1em;">
                 <p><strong>Platforms: </strong>
-                  <span class="tags" ng-repeat="platform in app.platforms" style="margin-right: 10px">
-                    {{platform}}
-                  </span>
+                    <span class="tags" ng-repeat="platform in app.platforms" style="margin-right: 10px">
+                        {{platform}}
+                    </span>
                 </p>
             </div>
             <div class="col-xs-12 divider text-center">
                 <div class="col-xs-12 col-sm-4 emphasis">
-                    <h2><strong> {{app.totalRevenue}} </strong></h2>                    
+                    <h2><strong> {{app.totalRevenue}} </strong></h2>
                     <p><small>Total Revenue</small></p>
                 </div>
                 <div class="col-xs-12 col-sm-4 emphasis">
-                    <h2><strong>{{app.ltv}}</strong></h2>                    
+                    <h2><strong>{{app.ltv}}</strong></h2>
                     <p><small>LTV</small></p>
                 </div>
                 <div class="col-xs-12 col-sm-4 emphasis">
-                    <h2><strong>{{app.arpu}}</strong></h2>                    
+                    <h2><strong>{{app.arpu}}</strong></h2>
                     <p><small>ARPU</small></p>
                 </div>
             </div>
-    	 </div>         
-    	</div>                 
-	</div>
+          </div>
+        </div>
+    </div>
 </div>
-
-} else {
-  <h2>It seems you have not registered any application yet.</h2>
-  <p class="lead font-semibold">
-    <a class="btn btn-default btn-lg" ui-sref='home.newapp'><span class="fa fa-edit fa-fw"></span>New Application</a>
-  </p>
-}

@@ -18,60 +18,8 @@ class DashboardController @Inject()(
   userService: UserService
 ) extends Controller {
 
-  def index() = UserAuthenticationAction.async {implicit request =>
-    userService.getApplications(request.userId) flatMap {applications =>
-      if(applications.isEmpty){
-        Future.successful(Ok(views.html.dashboard(false, "", null, Nil, Nil)))
-      } else {
-        request.body.asJson match {
-          case Some(json) => {
-            Future.successful(Ok("skip " + json))
-          }
-          case None => {
-            for {
-              user <- userService.find(request.userId)
-              application <- applicationService.find(user.get.company, applications.head)
-            } yield {
-              (application map {(app: WazzaApplication) =>
-                Ok(views.html.dashboard(
-                  true,
-                  app.name,
-                  app.credentials,
-                  app.virtualCurrencies,
-                  app.items
-                ))
-              }).get
-            }
-          }
-        }
-      }
-    }
-  }
-
-  def bootstrapOverview() = UserAuthenticationAction.async {implicit request =>
-    userService.getApplications(request.userId) flatMap {applications =>
-      if(applications.isEmpty) {
-        Future.successful(BadRequest)
-      } else {
-        userService.find(request.userId) flatMap {user =>
-          val companyName = user.get.company
-          val apps = Future.sequence(applications map {appId: String =>
-            applicationService.find(companyName, appId) map {optApp =>
-              (optApp map {application =>
-                Json.obj(
-                  "name" -> application.name,
-                  "url" -> application.imageName,
-                  "platforms" -> application.appType
-                )
-              }).get
-            }
-          })
-          apps map {appsList =>
-            Ok(new JsArray(appsList))
-          }
-        }
-      }
-    }
+  def index() = UserAuthenticationAction {implicit request =>
+    Ok(views.html.dashboard())
   }
 
   // add optional argument: application name
@@ -115,36 +63,6 @@ class DashboardController @Inject()(
     }
   } 
 
-
-  def overview() = UserAuthenticationAction.async {implicit request =>
-    userService.getApplications(request.userId) flatMap {applications =>
-      if(applications.isEmpty){
-        Future.successful(Ok(views.html.overview(false, "", null, Nil, Nil)))
-      } else {
-        request.body.asJson match {
-          case Some(json) => {
-            Future.successful(Ok("skip " + json))
-          }
-          case None => {
-            userService.find(request.userId) flatMap {optUser =>
-              val companyName = optUser.get.company
-              applicationService.find(companyName, applications.head) map {optApp =>
-                val application = optApp.get
-                Ok(views.html.overview(
-                  true,
-                  application.name,
-                  application.credentials,
-                  application.virtualCurrencies,
-                  application.items
-                ))
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-
   def kpi = UserAuthenticationAction {implicit request =>
     Ok(views.html.kpi())
   }
@@ -154,6 +72,7 @@ class DashboardController @Inject()(
     Ok(views.html.analytics.generic())
   }
 
+/** not used atm
   //store
   def storeAndroid = UserAuthenticationAction {implicit request =>
     Ok(views.html.store.storeAndroid())
@@ -166,6 +85,7 @@ class DashboardController @Inject()(
   def storeAmazon = UserAuthenticationAction {implicit request =>
     Ok(views.html.store.storeAmazon())
   }
+**/
 
   //inventory
   def inventory = UserAuthenticationAction {implicit request =>
@@ -181,9 +101,6 @@ class DashboardController @Inject()(
   }
 
   //others
-  def campaigns = UserAuthenticationAction {implicit request =>
-    Ok(views.html.campaigns())
-  }
 
   def settingsSection = UserAuthenticationAction {implicit request =>
     Ok(views.html.settings())
