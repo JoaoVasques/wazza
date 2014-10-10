@@ -21,7 +21,7 @@ class OverviewController @Inject()(
   def bootstrapOverview() = UserAuthenticationAction.async {implicit request =>
     userService.getApplications(request.userId) flatMap {applications =>
       if(applications.isEmpty) {
-        Future.successful(BadRequest)
+        Future.successful(Ok(new JsArray(List())))
       } else {
         userService.find(request.userId) flatMap {user =>
           val companyName = user.get.company
@@ -44,33 +44,8 @@ class OverviewController @Inject()(
     }
   }
 
-  def overview() = UserAuthenticationAction.async {implicit request =>
-    userService.getApplications(request.userId) flatMap {applications =>
-      if(applications.isEmpty){
-        Future.successful(Ok(views.html.overview(false, "", null, Nil, Nil)))
-      } else {
-        request.body.asJson match {
-          case Some(json) => {
-            Future.successful(Ok("skip " + json))
-          }
-          case None => {
-            userService.find(request.userId) flatMap {optUser =>
-              val companyName = optUser.get.company
-              applicationService.find(companyName, applications.head) map {optApp =>
-                val application = optApp.get
-                Ok(views.html.overview(
-                  true,
-                  application.name,
-                  application.credentials,
-                  application.virtualCurrencies,
-                  application.items
-                ))
-              }
-            }
-          }
-        }
-      }
-    }
+  def overview() = UserAuthenticationAction {implicit request =>
+    Ok(views.html.overview())
   }
 
 }
