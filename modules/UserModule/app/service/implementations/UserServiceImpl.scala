@@ -1,6 +1,6 @@
 package service.user.implementations
 
-import models.user.{User}
+import models.user.{User, CompanyData}
 import org.mindrot.jbcrypt.BCrypt
 import play.api.libs.json.Json
 import scala.util.Failure
@@ -22,8 +22,10 @@ class UserServiceImpl @Inject()(
   def insertUser(user: User): Future[Unit] = {
     val collection = User.getCollection
     user.password = BCrypt.hashpw(user.password, BCrypt.gensalt())
-    databaseService.insert(collection, Json.toJson(user))
-    //internalService.addCompany(user.company)
+    databaseService.insert(collection, Json.toJson(user)) flatMap {res =>
+      val companyData = new CompanyData(user.company, List[String]())
+      databaseService.insert(CompanyData.Collection, Json.toJson(companyData))
+    }
   }
 
   def find(email: String): Future[Option[User]] = {

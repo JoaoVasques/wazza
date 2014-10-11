@@ -1,4 +1,4 @@
-package models.application
+package models.user
 
 import play.api.Play.current
 import play.api.libs.json._
