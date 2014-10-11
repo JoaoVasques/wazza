@@ -29,7 +29,6 @@ dashboard.controller('OverviewController',[
     OverviewInitService
       .getCompany()
       .then(function(results){
-        alert(results.data);
         var company = results.data.name;
         ApplicationStateService.updateCompanyName(company);
       });
