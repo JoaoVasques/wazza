@@ -1,3 +1,5 @@
+'use strict';
+
 application.controller('LoginController',[
   '$scope',
   '$state',
