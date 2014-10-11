@@ -5,6 +5,7 @@ import scala.collection.mutable.HashMap
 import scala.collection.mutable.SynchronizedMap
 import service.application.definitions._
 import models.application._
+import models.user.{CompanyData}
 import play.api.libs.json.Json
 import play.api.libs.json.JsValue
 import InAppPurchaseContext._
@@ -280,7 +281,7 @@ class ApplicationServiceImpl @Inject()(
   def addApplication(companyName: String, applicationName: String): Future[Unit] = {
     val promise = Promise[Unit]
     applicationExists(companyName, applicationName) map {exists =>
-      if(!exists) {
+      if(exists) {
         databaseService.addElementToArray[String](
           CompanyData.Collection,
           CompanyData.Key,
@@ -290,10 +291,14 @@ class ApplicationServiceImpl @Inject()(
         ) map {r =>
           promise.success()
         } recover {
-          case e: Exception => promise.failure(e)
+          case e: Exception => {
+            println(e.getMessage)
+            promise.failure(e)
+          }
         }
       } else {
-        promise.failure(new Exception("Application already exists"))
+        println("company does not exists")
+        promise.failure(new Exception("Application does not exists"))
       }
     }
 

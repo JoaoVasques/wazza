@@ -3,6 +3,7 @@ package service.application.definitions
 import models.application._
 import scala.util.Try
 import scala.concurrent._
+import models.user.{CompanyData}
 
 trait ApplicationService {
 
