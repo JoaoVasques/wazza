@@ -44,6 +44,13 @@ class OverviewController @Inject()(
     }
   }
 
+  def company() = UserAuthenticationAction.async {implicit request =>
+    userService.find(request.userId) flatMap {user =>
+      val companyName = user.get.company
+      Future.successful(Ok(Json.obj("name" -> companyName)))
+    }
+  }
+
   def overview() = UserAuthenticationAction {implicit request =>
     Ok(views.html.overview())
   }
