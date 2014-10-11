@@ -42,7 +42,7 @@ private[security] case class UserAction[A](action: Action[A]) extends Action[A] 
       tokenService.get(token.filter(_ != '"'))
     } match {
       case Some(userId) => action(new UserRequest(userId, request))
-      case _ => Future.successful(BadRequest("user not logged in"))
+      case _ => Future.successful(Forbidden("user not logged in"))
     }
   }
 }

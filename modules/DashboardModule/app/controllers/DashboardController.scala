@@ -27,7 +27,7 @@ class DashboardController @Inject()(
     userService.getApplications(request.userId) flatMap {applications =>
       if(applications.isEmpty){
         //TODO: do not send bad request but a note saying that we dont have applications. then redirect to new application page
-        Future.successful(BadRequest)
+        Future.successful(Forbidden)
       } else {
         userService.find(request.userId) flatMap {userOpt =>
           val user = userOpt.get
