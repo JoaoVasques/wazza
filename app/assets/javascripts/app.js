@@ -26,7 +26,7 @@ config(function($stateProvider, $urlRouterProvider, $locationProvider, $httpProv
         })
 
         .state('webframe.login', {
-            url: "/login",
+            url: "/",
             templateUrl: '/login',
             controller: 'LoginController'
         })
@@ -41,128 +41,128 @@ config(function($stateProvider, $urlRouterProvider, $locationProvider, $httpProv
         })
 
         .state('analytics.overview', {
-            url: "^/overview",
+            url: "^/",
             templateUrl: '/dashboard/overview',
             controller: 'OverviewController'
         })
 
         .state('analytics.dashboard', {
-            url: "^/dashboard",
+            url: "^/",
             templateUrl: '/dashboard',
             controller: 'DashboardController'
         })
 
       //analytics
         .state('analytics.revenue', {
-            url: "^/analytics",
+            url: "^/",
             templateUrl: '/dashboard/analytics',
             controller: 'RevenueController'
         })
 
         .state('analytics.arpu', {
-            url: "^/analytics",
+            url: "^/",
             templateUrl: '/dashboard/analytics',
             controller: 'ArpuController'
         })
 
         .state('analytics.avgRevenueSession', {
-            url: "^/analytics",
+            url: "^/",
             templateUrl: '/dashboard/analytics',
             controller: 'AvgRevenueSessionController'
         })
 
         .state('analytics.payingUsers', {
-            url: "^/analytics",
+            url: "^/",
             templateUrl: '/dashboard/analytics',
             controller: 'PayingUsersController'
         })
 
         .state('analytics.ltv', {
-            url: "^/analytics",
+            url: "^/",
             templateUrl: '/dashboard/analytics',
             controller: 'LifeTimeValueController'
         })
 
         .state('analytics.churn', {
-            url: "^/analytics",
+            url: "^/",
             templateUrl: '/dashboard/analytics',
             controller: 'ChurnController'
         })
 
         .state('analytics.purchasesPerSession', {
-            url: "^/analytics",
+            url: "^/",
             templateUrl: '/dashboard/analytics',
             controller: 'PurchasePerSessionController'
         })
 
         .state('analytics.avgTime1stPurchase', {
-            url: "^/analytics",
+            url: "^/",
             templateUrl: '/dashboard/analytics',
             controller: 'AverageTimeFirstPurchaseController'
         })
 
         .state('analytics.avgTimebetweenPurchase', {
-            url: "^/analytics",
+            url: "^/",
             templateUrl: '/dashboard/analytics',
             controller: 'AverageTimeBetweenPurchaseController'
         })
 
       //inventory
         .state('home.inventory', {
-            url: "^/inventory",
+            url: "^/",
             templateUrl: '/dashboard/inventory',
             controller: 'InventoryController'
         })
 
         .state('home.inventory.crud', {
-            url: "^/inventory",
+            url: "^/",
             templateUrl: '/dashboard/inventory/crud',
             controller: 'InventoryController'
         })
 
         .state('home.inventory.virtualCurrencies', {
-            url: "^/inventory",
+            url: "^/",
             templateUrl: '/dashboard/inventory/virtualCurrencies',
             controller: 'InventoryController'
         })
 
       //users
         .state('home.user', {
-            url: "^/user",
+            url: "^/",
             templateUrl : '/user',
             controller : ''
         })
 
         .state('webframe.newuser', {
-            url: "^/register",
+            url: "^/",
             templateUrl: '/user/register',
             controller: 'UserRegistrationController'
         })
 
       //items
         .state('home.newitem', {
-            url: "^/newItem",
+            url: "^/",
             templateUrl: '/app/item/new/',
             controller: 'NewItemController'
         })
 
       //applications
         .state('home.newapp', {
-            url: "^/newApp",
+            url: "^/",
             templateUrl : '/app/new',
             controller : 'NewApplicationFormController'
         })
 
       //settings
         .state('home.settings', {
-            url: "^/settings",
+            url: "^/",
             templateUrl: '/dashboard/settings',
             controller: 'DashboardController'
         })
 
       //not available yet
         .state('home.notavailableyet', {
-            url: "^/notavailableyet",
+            url: "^/",
             templateUrl : '/notavailableyet',
             controller: 'NotAvailableYetController'
         })

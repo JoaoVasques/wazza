@@ -27,6 +27,13 @@ dashboard.controller('OverviewController',[
     var noImageUrl = "assets/images/default-user-icon-profile.png";
 
     OverviewInitService
+      .getCompany()
+      .then(function(results){
+        var company = results.data.name;
+        ApplicationStateService.updateCompanyName(company);
+      });
+
+    OverviewInitService
       .getApplications()
       .then(function(results) {
         var names = [];
