@@ -1,5 +1,3 @@
-'use strict'
-
 dashboard.controller('OverviewController',[
   '$scope',
   '$state',

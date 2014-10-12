@@ -1,85 +1,17 @@
-@(title: String = "Wazza - Analytics for In-App Purchases")
-
 <!DOCTYPE html>
 <!--[if IE 8]>          <html class="ie ie8"> <![endif]-->
 <!--[if IE 9]>          <html class="ie ie9"> <![endif]-->
 <!--[if gt IE 9]><!-->  <html> <!--<![endif]-->
 
-@javascripts = {
-  <script src="@routes.WebJarAssets.at(WebJarAssets.locate("1.11.1/jquery.min.js"))"></script>
-  <script src="@routes.WebJarAssets.at(WebJarAssets.locate("1.2.25/angular.js"))"></script>
-  <script src="@routes.WebJarAssets.at(WebJarAssets.locate("1.2.25/angular-route.js"))"></script>
-  <script src="@routes.WebJarAssets.at(WebJarAssets.locate("1.2.25/angular-cookies.min.js"))"></script>
-  <script src="@routes.WebJarAssets.at(WebJarAssets.locate("angular-ui-router.js"))"></script>
-  <script defer src="@routes.WebJarAssets.at(WebJarAssets.locate("underscore-min.js"))"></script>
-  <script defer src="@routes.WebJarAssets.at(WebJarAssets.locate("ui-bootstrap.js"))"></script>
-  <script defer src="@routes.WebJarAssets.at(WebJarAssets.locate("ui-bootstrap-tpls.min.js"))"></script>
-  <script defer src="@routes.WebJarAssets.at(WebJarAssets.locate("moment.min.js"))"></script>
-  <script defer src="@routes.Assets.at("javascripts/angular-file-upload.min.js")"></script>
-  <script defer src="@routes.Assets.at("javascripts/angular-file-upload-html5-shim.min.js")"></script>
-  <script defer src="@routes.Assets.at("javascripts/app.js")"></script>
-  <script defer src="@routes.Assets.at("javascripts/services.js")"></script>
-  <script defer src="@routes.Assets.at("javascripts/controllers.js")"></script>
-  <script defer src="@routes.Assets.at("javascripts/events.js")"></script>
-  <script defer src="@routes.Assets.at("javascripts/controllers/appController.js")"></script>
-  <script defer src="@routes.Assets.at("javascripts/controllers/loginController.js")"></script>
-  <script defer src="@routes.WebJarAssets.at(WebJarAssets.locate("bootstrap.min.js"))"></script>
-  <script defer src="@routes.WebJarAssets.at(WebJarAssets.locate("1.0.1-beta.4/Chart.min.js"))"></script>
-  <script defer src="@routes.Assets.at("javascripts/chartjs-directive.js")"></script>
-  <script defer src="@routes.Assets.at("sweet-alert.min.js")"></script>
-
-  <!-- external controllers -->
-  @views.html.applicationJavascripts.render()
-  @views.html.userJavascripts.render()
-  @views.html.securityJavascripts.render()
-  @views.html.dashboardJavascripts.render()
-
-  <!-- AdminLTE App -->
-  <script defer src="@routes.Assets.at("app.js")"></script>
-  <!-- everything else -->
-  <script defer src="@routes.Assets.at("custom.js")"></script>
-
-  <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-  <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-  <!--[if lt IE 9]>
-    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-  <![endif]-->
-}
-
-@stylesheets = {
-  <!-- TODO: Optimize CSS again.. -->
-  <link rel="stylesheet" href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,300italic,400italic,600,600italic,700,700italic,800,800italic' type='text/css'>
-  <link rel="stylesheet" href='http://fonts.googleapis.com/css?family=Raleway:400,100,200,300,500,600,700,800,900' type='text/css'>
-  <link rel="stylesheet" type="text/css" media="screen" href='http://fonts.googleapis.com/css?family=Titillium+Web:400,600,300,200&subset=latin,latin-ext'>
-  <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css">
-  <link rel="shortcut icon" href="@routes.Assets.at("images/wazza_icon_black-01.png")">
-
-  <!-- Bootstrap core CSS -->
-  <link rel="stylesheet" type="text/css" media="screen" href="@routes.WebJarAssets.at(WebJarAssets.locate("bootstrap.min.css"))">
-  <!-- Theme style -->
-  <link rel="stylesheet" type="text/css" media="screen" href="@routes.Assets.at("stylesheets/AdminLTE.css")" />
-  <!-- custom -->
-  <link rel="stylesheet" type="text/css" media="screen" href="@routes.Assets.at("stylesheets/appEditor.css")">
-  <link rel="stylesheet" type="text/css" media="screen" href="@routes.Assets.at("stylesheets/item.css")">
-  <link rel="stylesheet" type="text/css" media="screen" href="@routes.Assets.at("stylesheets/dashboard.css")">  
-  <link rel="stylesheet" type="text/css" media="screen" href="@routes.Assets.at("stylesheets/kpi.css")">
-  <link rel="stylesheet" type="text/css" media="screen" href="@routes.Assets.at("stylesheets/chart.css")">
-  <link rel="stylesheet" type="text/css" media="screen" href="@routes.Assets.at("stylesheets/companyOverview.css")">
-  <link rel="stylesheet" type="text/css" media="screen" href="@routes.Assets.at("stylesheets/hover-min.css")">
-  <link rel="stylesheet" type="text/css" media="screen" href="@routes.Assets.at("stylesheets/sweet-alert.css")">
-  <link rel="stylesheet" type="text/css" media="screen" href="@routes.Assets.at("stylesheets/custom.css")">
-}
-
 <html ng-app="Wazza">
   <head>
-    <title>@title</title>
+    <title>Wazza - Analytics for In-App Purchases</title>
     <meta name="description" content="Wazza - Analytics for In-App Purchases" />
     <meta name="author" content="Wazza" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    @stylesheets
-    @javascripts
+    @views.html.stylesheets.render()
+    @views.html.javascripts.render()
   </head>
   <body ng-controller="AppController" class="skin-blue">
 

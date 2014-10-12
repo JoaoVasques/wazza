@@ -85,4 +85,4 @@ application.controller('AppController', [
         $scope.userInfo.email = ApplicationStateService.userInfo.email;
     });
 
-}])
+}]);
