@@ -1,5 +1,3 @@
-'use strict';
-
 var dashboardServices = angular.module('DashboardModule.services', [])
 
 .factory('AnchorSmoothScroll', function() {

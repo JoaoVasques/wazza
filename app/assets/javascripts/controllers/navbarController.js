@@ -1,5 +1,3 @@
-'use strict';
-
 application.controller('NavBarController',[
   '$scope',
   'LoginLogoutService',

@@ -1,5 +1,3 @@
-'use strict';
-
 application.controller('NotAvailableYetController', [
   '$scope',
   '$rootScope',
