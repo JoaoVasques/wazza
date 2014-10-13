@@ -4,6 +4,7 @@ dashboard.controller('DashboardController', [
   '$rootScope',
   "$anchorScroll",
   "$state",
+  "$document",
   'FetchItemsService',
   'BootstrapDashboardService',
   'DeleteItemService',
@@ -12,7 +13,6 @@ dashboard.controller('DashboardController', [
   'GetMainKPIsService',
   "DateModel",
   "KpiModel",
-  "AnchorSmoothScroll",
   "$q",
   function (
     $scope,
@@ -20,6 +20,7 @@ dashboard.controller('DashboardController', [
     $rootScope,
     $anchorScroll,
     $state,
+    $document,
     FetchItemsService,
     BootstrapDashboardService,
     DeleteItemService,
@@ -28,15 +29,8 @@ dashboard.controller('DashboardController', [
     GetMainKPIsService,
     DateModel,
     KpiModel,
-    AnchorSmoothScroll,
     $q
   ) {
-
-    $rootScope.$on('ChangeDashboardSection', function(event, newSection) {
-      var eId = newSection.section;
-      $location.hash(eId);
-      AnchorSmoothScroll.scrollTo(eId);
-    });
 
     /** General KPIs **/
     $scope.totalRevenue = new KpiModel("Total Revenue", "analytics.revenue");
@@ -145,6 +139,7 @@ dashboard.controller('DashboardController', [
 
         $scope.switchDetailedView = function(state) {
           $state.go(state);
+          $document.scrollTop(-50, 500); //hack
         };
 
         $scope.bootstrapModule();

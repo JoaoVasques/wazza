@@ -129,4 +129,3 @@ angular.module('Wazza.services', []).
       return model;
     })
 ;
-

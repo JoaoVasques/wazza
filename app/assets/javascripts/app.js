@@ -10,7 +10,8 @@ angular.module('Wazza', [
     'UserModule',
     'SecurityModule',
     'DashboardModule',
-    'Wazza.broadcastEvents'
+    'Wazza.broadcastEvents',
+    'duScroll'
 ]).
 
 config(function($stateProvider, $urlRouterProvider, $locationProvider, $httpProvider){
