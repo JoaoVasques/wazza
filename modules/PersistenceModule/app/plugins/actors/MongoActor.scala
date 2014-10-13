@@ -120,8 +120,13 @@ protected[plugin] class MongoActor extends DatabaseActor {
     val promise = Promise[Unit]
     if(extra == null) {
       collection(collectionName).insert(model) map { lastError =>
-        Logger.info(s"Mongo Actor: INSERT successfuly done")
-        promise.success()
+        lastError.err match {
+          case Some(error) => {
+            Logger.error(error)
+            promise.failure(new Exception(error))
+          }
+          case _ => promise.success()
+        }
       } recover {
         case ex: Exception => promise.failure(ex)
       }

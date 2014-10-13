@@ -12,14 +12,36 @@ import service.application.definitions._
 import service.user.definitions._
 import com.google.inject._
 import scala.math.BigDecimal
+import models.user._
+import org.joda.time.Days
+import org.joda.time.LocalDate
+import org.joda.time.DurationFieldType
+import org.joda.time.DateTime
+import scala.collection.mutable.ListBuffer
 
 class BootstrapEnvironmentController @Inject()(
   applicationService: ApplicationService,
-  userService: UserService
+  userService: UserService,
+  purchaseController: PurchaseController
 ) extends Controller {
 
   private lazy val LowerPrice = 1.99
   private lazy val UpperPrice = 5.99
+
+  /**
+    val dates = new ListBuffer[String]()
+    val s = new LocalDate(start)
+    val e = new LocalDate(end)
+    val days = Days.daysBetween(s, e).getDays()+1
+
+    new JsArray(List.range(0, days) map {i =>{
+    Json.obj(
+    "day" -> s.withFieldAdded(DurationFieldType.days(), i).toString("dd MMM"),
+    "val" -> 0
+    )
+    }})
+
+    * */
 
   private object ApplicationData {
     val appUrl = "www.example.com"
@@ -31,53 +53,22 @@ class BootstrapEnvironmentController @Inject()(
     val virtualCurrencies = List[VirtualCurrency]()
   }
 
-  private class ItemData(name: String, price: Double) {
-    val description = "item description"
-    val store = 0
-    val translate = new GoogleTranslations("locale", "title", "description")
-    val metadata = new GoogleMetadata(
-      InAppPurchaseMetadata.Android,
-      name,
-      "title",
-      description,
-      "published",
-      "managed_by_publisher",
-      false,
-      List[GoogleTranslations](translate),
-      false,
-      "PT",
-      price,
-      List("PT")
-    )
-    val currency = new Currency(1, price, None)
-    val imageInfo = new ImageInfo("name", "http://www.example.com")
-  }
-
-  private def generateItems(numberItems: Int): List[Item] = {
+  private def generateItems(numberItems: Int): List[(String, Double)] = {
 
     def generateItemPrice(lowerPrice: Double, upperPrice: Double): Double = {
       lazy val DecimalPlaces = 2
       val price = (Math.random() * (upperPrice - lowerPrice)) + lowerPrice
       BigDecimal(price).setScale(DecimalPlaces, BigDecimal.RoundingMode.HALF_UP).toDouble
     }
-
     (1 to numberItems).map {i=>
-      val itemData = new ItemData(s"name-$i", generateItemPrice(LowerPrice, UpperPrice))
-      new Item(
-        s"name-$i",
-        itemData.description,
-        itemData.store,
-        itemData.metadata,
-        itemData.currency,
-        itemData.imageInfo
-      )
+      (s"name-$i", generateItemPrice(LowerPrice, UpperPrice))
     }.toList
   }
 
   def execute(companyName: String, applicationName: String) = Action.async {
-
+    val user = new User("userName", "me@mail.com", "1", companyName, List[String]())
     val application = new WazzaApplication(
-      companyName,
+      applicationName,
       ApplicationData.appUrl,
       ApplicationData.imageName,
       ApplicationData.packageName,
@@ -87,16 +78,29 @@ class BootstrapEnvironmentController @Inject()(
       ApplicationData.virtualCurrencies
     )
 
-    applicationService.insertApplication(companyName, application) flatMap {res =>
-      println(s"Application $application.name created")
-      Future.sequence(
-        generateItems(10) map {item =>
-          applicationService.addItem(companyName, item, applicationName)
-        }
-      )
-    }
+    for{
+      u <- userService.insertUser(user)
+      a <- applicationService.insertApplication(companyName, application)
+      x <- userService.addApplication(user.name, applicationName)
+    } yield {
 
-    println(generateItems(1))
+      val items = generateItems(10)
+      val start = new LocalDate()
+      val end = start.minusDays(7)
+      //val dates = new ListBuffer[String]()
+      val days = Days.daysBetween(start, end).getDays()+1
+
+      lazy val NumberMobileUsers = 700
+      lazy val NumberPurchases = 70
+
+      List.range(0, days) foreach {index =>
+        val currentDay = start.withFieldAdded(DurationFieldType.days(), index)
+
+      }
+
+      applicationService.find(companyName, applicationName) map { println(_)}
+
+    }
 
     Future.successful(Ok("todo"))
   }
