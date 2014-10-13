@@ -1,5 +1,56 @@
 package test.application
 
+import org.specs2.mutable._
+import play.api.libs.json.JsObject
+import play.api.libs.json.Json
+import play.api.test._
+import play.api.test.Helpers._
+import com.google.inject._
+import scala.util.Failure
+import models.application._
+import service.application.implementations.ApplicationServiceImpl
+import service.aws.implementations.PhotosServiceImpl
+import service.persistence.implementations.MongoDatabaseService
+
+class DemoBootstrapTest  extends Specification {
+  "The 'Hello world' string" should {
+    "contain 11 characters" in {
+      "Hello world" must have size(11)
+    }
+    "start with 'Hello'" in {
+      "Hello world" must startWith("Hello")
+    }
+    "end with 'world'" in {
+      "Hello world" must endWith("world")
+    }
+  }
+}
+
+private[application] object Setup {
+
+  private object ApplicationData {
+    val name = "Demo"
+    val appUrl = "www.example.com"
+    val imageName = "image-test"
+    val packageName = "com.example"
+    val appType = WazzaApplication.applicationTypes.last
+    val credentials = new Credentials("id", "key", "sdk")
+    val items = List[Item]()
+    val virtualCurrencies = List[VirtualCurrency]()
+  }
+
+  def execute() = {
+
+  }
+
+  private def createApplication = {
+
+  }
+
+
+}
+
+/**
 import models.application.{Credentials, Currency, GoogleMetadata, GoogleTranslations, ImageInfo, InAppPurchaseMetadata, Item, VirtualCurrency, WazzaApplication}
 import org.specs2.mutable._
 import play.api.test.FakeApplication
@@ -101,4 +152,4 @@ class ApplicationServiceTest extends Specification {
     }
   }
 }
-
+  * */

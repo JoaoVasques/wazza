@@ -1,6 +1,6 @@
 name := "Wazza"
 
-version := "pre-alpha"
+version := "alpha"
 
 lazy val dependencies = Seq(
   anorm,
@@ -36,7 +36,6 @@ templatesImport += "models.user._"
 templatesImport += "controllers.user._"
 
 lazy val mySettings = Seq(
-  javaOptions in run += "-Dconfig.file=conf/dev/application_dev.conf",
   scalacOptions ++= Seq("-feature", "-language:reflectiveCalls"),
   scalacOptions ++= Seq("-feature", "-language:postfixOps")
 )

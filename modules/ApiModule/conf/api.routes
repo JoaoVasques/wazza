@@ -15,3 +15,7 @@ GET     /rec/user/items/:companyName/:appName/:userId/:limit   @controllers.api.
       
 GET     /assets/*file                 controllers.api.Assets.at(path="/public", file)
 GET     /webjars/*file                controllers.WebJarAssets.at(file)
+
+
+#Internal - bootstrap
+POST    /bootstrap/:companyName/:appName @controllers.api.BootstrapEnvironmentController.execute(companyName: String, appName: String)
