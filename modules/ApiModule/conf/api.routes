@@ -19,3 +19,7 @@ GET     /webjars/*file                controllers.WebJarAssets.at(file)
 
 #Internal - bootstrap
 POST    /bootstrap/:companyName/:appName @controllers.api.BootstrapEnvironmentController.execute(companyName: String, appName: String)
+
+POST    /bootstrap/sessions/:companyName/:appName @controllers.api.GenerateSessionsController.execute(companyName: String, appName: String)
+
+POST    /bootstrap/purchases/:companyName/:appName @controllers.api.GeneratePurchasesController.execute(companyName: String, appName: String)  

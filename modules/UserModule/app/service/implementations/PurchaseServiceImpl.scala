@@ -91,6 +91,7 @@ class PurchaseServiceImpl @Inject()(
           a <- databaseService.insert(collection, Json.toJson(info))
           session <- mobileSessionService.get(info.sessionId)
         } yield {
+          if(session.isEmpty) println(info)
           mobileSessionService.addPurchase(companyName, applicationName, session.get, info.id)
         }
       } else {

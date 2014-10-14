@@ -18,30 +18,24 @@ import org.joda.time.LocalDate
 import org.joda.time.DurationFieldType
 import org.joda.time.DateTime
 import scala.collection.mutable.ListBuffer
+import scala.concurrent.duration._
+import scala.util.Random
+import java.text.DateFormat
+import java.text.SimpleDateFormat
+import java.util.Date
 
 class BootstrapEnvironmentController @Inject()(
   applicationService: ApplicationService,
   userService: UserService,
-  purchaseController: PurchaseController
+  purchaseService: PurchaseService,
+  mobileSessionService: MobileSessionService
 ) extends Controller {
 
   private lazy val LowerPrice = 1.99
   private lazy val UpperPrice = 5.99
-
-  /**
-    val dates = new ListBuffer[String]()
-    val s = new LocalDate(start)
-    val e = new LocalDate(end)
-    val days = Days.daysBetween(s, e).getDays()+1
-
-    new JsArray(List.range(0, days) map {i =>{
-    Json.obj(
-    "day" -> s.withFieldAdded(DurationFieldType.days(), i).toString("dd MMM"),
-    "val" -> 0
-    )
-    }})
-
-    * */
+  private lazy val NumberMobileUsers = 70
+  private lazy val NumberPurchases = 70
+  private lazy val NumberItems = 10
 
   private object ApplicationData {
     val appUrl = "www.example.com"
@@ -65,6 +59,64 @@ class BootstrapEnvironmentController @Inject()(
     }.toList
   }
 
+  private def generateSessions(companyName: String, applicationName: String): Future[Boolean] = {
+
+    def willMakePurchases = if(Math.random() > 0.5) true else false
+
+    val items = generateItems(NumberItems)
+    val end = new LocalDate()
+    val start = end.minusDays(7)
+    val days = Days.daysBetween(start, end).getDays()+1
+
+    println(s"START $start | END $end")
+    println(days)
+    val format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z")
+
+    val result = List.range(0, days) map {index =>
+      val currentDay = start.withFieldAdded(DurationFieldType.days(), index)
+      println(s"CURRENT DAY $currentDay")
+      Future.sequence((1 to NumberMobileUsers) map {userNumber =>
+        val session = MobileSession(
+          (currentDay.toString + userNumber), //hash
+          userNumber.toString,
+          2,
+          currentDay.toString,
+          new DeviceInfo("osType", "name", "version", "model"),
+          List[String]() //List of purchases id's
+        )
+        //println(session)
+        mobileSessionService.insert(companyName, applicationName, session)/** flatMap {r =>
+          val makePurchases = willMakePurchases
+          //println(makePurchases)
+          if(makePurchases) {
+            val itemsAux = items
+            val item = Random.shuffle(itemsAux).head
+            //println(item)
+            val date = format.format(currentDay.toDate)
+            //println(date)
+            val purchaseInfo = new PurchaseInfo(
+              s"purchase-$userNumber-$currentDay.toString",
+              (currentDay.toString + userNumber),
+              userNumber.toString,
+              applicationName,
+              item._1,
+              item._2,
+              date,
+              new DeviceInfo("osType", "name", "version", "model"),
+              None
+            )
+            //println(purchaseInfo)
+            purchaseService.save(companyName, applicationName, purchaseInfo)
+          } else
+            Future.successful()
+        }**/
+      })
+    }
+    Future.sequence(result) map {a => true}// map {a => println("Setup done!")}
+    
+    //Future {}
+  }
+
   def execute(companyName: String, applicationName: String) = Action.async {
     val user = new User("userName", "me@mail.com", "1", companyName, List[String]())
     val application = new WazzaApplication(
@@ -83,26 +135,8 @@ class BootstrapEnvironmentController @Inject()(
       a <- applicationService.insertApplication(companyName, application)
       x <- userService.addApplication(user.name, applicationName)
     } yield {
-
-      val items = generateItems(10)
-      val start = new LocalDate()
-      val end = start.minusDays(7)
-      //val dates = new ListBuffer[String]()
-      val days = Days.daysBetween(start, end).getDays()+1
-
-      lazy val NumberMobileUsers = 700
-      lazy val NumberPurchases = 70
-
-      List.range(0, days) foreach {index =>
-        val currentDay = start.withFieldAdded(DurationFieldType.days(), index)
-
-      }
-
-      applicationService.find(companyName, applicationName) map { println(_)}
-
+      Ok
     }
-
-    Future.successful(Ok("todo"))
   }
 }
 

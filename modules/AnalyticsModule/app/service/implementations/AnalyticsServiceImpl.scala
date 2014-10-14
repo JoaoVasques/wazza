@@ -32,7 +32,17 @@ class AnalyticsServiceImpl @Inject()(
   purchaseService: PurchaseService
 ) extends AnalyticsService {
 
+  private val PayingUsers = List(300, 400, 350, 200, 500, 300, 450, 600, 200, 260)
+  private val Purchases = List(10, 20, 30, 15, 20, 16, 17, 29, 10, 21)
+  private val Revenue = (PayingUsers zip Purchases) map {el =>
+    el._1 * el._2
+  }
+
+  //List(40, 50, 68, 23, 68, 78, 56, 89, 70, 120)
+  private val ActiveUsers = List(1000, 1200, 1350, 1500, 1700, 1800, 1500, 1234, 1451, 1600)
+  private val Sessions = List(5000, 5020, 4000, 4500, 4700, 5000, 5600, 5700, 3000, 2000)
   lazy val ProfitMargin = 0.7 // Because Google and Apple take a 30% on every purchase
+  lazy val DecimalPlaces = 2
 
 /**  private def getUnixDate(dateStr: String): Long = {
     val ops = new StringOps(dateStr)
@@ -135,6 +145,26 @@ class AnalyticsServiceImpl @Inject()(
     start: Date,
     end: Date
   ): Future[JsArray] = {
+
+    Future {
+      val dates = new ListBuffer[String]()
+      val s = new LocalDate(start)
+      val e = new LocalDate(end)
+      val days = Days.daysBetween(s, e).getDays()+1
+
+      val merged = Revenue zip ActiveUsers
+
+      new JsArray(List.range(0, days) map {i =>{
+        val el = merged(i)
+        val arpu = el._1 / el._2
+        Json.obj(
+          "day" -> s.withFieldAdded(DurationFieldType.days(), i).toString("dd MMM"),
+          "val" -> arpu 
+        )
+      }})
+    }
+
+    /**
     val revenueCollection = Metrics.totalRevenueCollection(companyName, applicationName)
     val activeUsersCollection = Metrics.activeUsersCollection(companyName, applicationName)
     val fields = ("lowerDate", "upperDate")
@@ -170,6 +200,8 @@ class AnalyticsServiceImpl @Inject()(
         })
       }
     }
+
+      * */
   }
 
   def getTotalARPU(
@@ -178,6 +210,13 @@ class AnalyticsServiceImpl @Inject()(
     start: Date,
     end: Date
   ): Future[JsValue] = {
+
+    Future {
+      val totalRevenue = Revenue.foldLeft(0)(_+_)
+      val totalActiveUsers = ActiveUsers.foldLeft(0)(_+_)
+      Json.obj("value" -> (totalRevenue / totalActiveUsers))
+    }
+    /**
     val fields = ("lowerDate", "upperDate")
     val futureRevenue = databaseService.getDocumentsWithinTimeRange(
       Metrics.totalRevenueCollection(companyName, applicationName),
@@ -204,8 +243,13 @@ class AnalyticsServiceImpl @Inject()(
         sum + (obj \ "activeUsers").as[Int]
       })
 
-      Json.obj("value" -> (if(totalActiveUsers > 0) totalRevenue / totalActiveUsers else 0))
+      val arpu = if(totalActiveUsers > 0) totalRevenue / totalActiveUsers else 0
+      val rounded = BigDecimal(arpu).setScale(DecimalPlaces, BigDecimal.RoundingMode.HALF_UP).toDouble
+      println(s"rounded ARPU $rounded")
+      Json.obj("value" -> rounded)
     }
+
+      * */
   }
 
   def getAverageRevenuePerSession(
@@ -213,7 +257,28 @@ class AnalyticsServiceImpl @Inject()(
     applicationName: String,
     start: Date,
     end: Date
-  ): Future[JsValue] = {
+  ): Future[JsArray] = {
+
+    Future {
+
+      val dates = new ListBuffer[String]()
+      val s = new LocalDate(start)
+      val e = new LocalDate(end)
+      val days = Days.daysBetween(s, e).getDays()+1
+
+      val merged = Revenue zip Sessions
+
+      new JsArray(List.range(0, days) map {i =>{
+        val el = merged(i)
+        val arpu = el._1 / el._2
+        Json.obj(
+          "day" -> s.withFieldAdded(DurationFieldType.days(), i).toString("dd MMM"),
+          "val" -> arpu
+        )
+      }})
+    }
+    
+    /**
     val fields = ("lowerDate", "upperDate")
     val futureSessions = databaseService.getDocumentsWithinTimeRange(
       Metrics.numberSessionsCollection(companyName, applicationName),
@@ -263,7 +328,7 @@ class AnalyticsServiceImpl @Inject()(
           )
         }})
       }
-    }
+    }**/
   }
 
   def getTotalAverageRevenuePerSession(
@@ -272,6 +337,14 @@ class AnalyticsServiceImpl @Inject()(
     start: Date,
     end: Date
   ): Future[JsValue] = {
+
+    Future {
+      val totalRevenue = Revenue.foldLeft(0)(_+_)
+      val totalSessions = Sessions.foldLeft(0)(_+_)
+      Json.obj("value" -> (totalRevenue / totalSessions))
+    }
+
+    /**
     val fields = ("lowerDate", "upperDate")
     val futureSessions = databaseService.getDocumentsByTimeRange(
       Metrics.mobileSessionsCollection(companyName, applicationName),
@@ -296,7 +369,7 @@ class AnalyticsServiceImpl @Inject()(
       })
 
       Json.obj("value" -> (if(nrSessions > 0) totalRevenue / nrSessions else 0))
-    }
+    }**/
   }
 
   def getTotalRevenue(
@@ -305,7 +378,11 @@ class AnalyticsServiceImpl @Inject()(
     start: Date,
     end: Date
   ): Future[JsValue] = {
-    val fields = ("lowerDate", "upperDate")
+    Future {
+      val revenue = Revenue.foldLeft(0)(_+_)
+      Json.obj("value" -> revenue)
+    }
+    /**val fields = ("lowerDate", "upperDate")
     val futureRevenue = databaseService.getDocumentsWithinTimeRange(
       Metrics.totalRevenueCollection(companyName, applicationName),
       fields,
@@ -314,10 +391,14 @@ class AnalyticsServiceImpl @Inject()(
     )
 
     futureRevenue map {revenue =>
-      Json.obj("value" -> revenue.value.foldLeft(0.0)((sum, obj) => {
+      val totalRevenue = revenue.value.foldLeft(0.0)((sum, obj) => {
         sum + (obj \ "totalRevenue").as[Double]
-      }))
+      })
+      val rounded = BigDecimal(totalRevenue).setScale(DecimalPlaces, BigDecimal.RoundingMode.HALF_UP).toDouble
+      println(s"rounded total revenue $rounded")
+      Json.obj("value" -> rounded)
     }
+      * */
   }
 
   def getRevenue(
@@ -326,6 +407,22 @@ class AnalyticsServiceImpl @Inject()(
     start: Date,
     end: Date
   ): Future[JsArray] = {
+
+    Future {
+      val dates = new ListBuffer[String]()
+      val s = new LocalDate(start)
+      val e = new LocalDate(end)
+      val days = Days.daysBetween(s, e).getDays()+1
+
+      new JsArray(List.range(0, days) map {i =>{
+        Json.obj(
+          "day" -> s.withFieldAdded(DurationFieldType.days(), i).toString("dd MMM"),
+          "val" -> Revenue(i)
+        )
+      }})
+    }
+
+    /**
     val collection = Metrics.totalRevenueCollection(companyName, applicationName)
     val fields = ("lowerDate", "upperDate")
      databaseService.getDocumentsWithinTimeRange(collection, fields, start, end) map {revenue =>
@@ -341,6 +438,7 @@ class AnalyticsServiceImpl @Inject()(
          }})
        }
      }
+    **/
   }
 
   def getTotalChurnRate(
@@ -350,6 +448,12 @@ class AnalyticsServiceImpl @Inject()(
     end: Date
   ): Future[JsValue] = {
 
+    Future {
+      val payingBegin = PayingUsers.head
+      val payingEnd = PayingUsers.last
+      Json.obj("value" -> ((payingEnd - payingBegin) / payingBegin))
+    }
+    /**
     val fields = ("lowerDate", "upperDate")
     val result = if(getNumberDaysBetweenDates(start, end) == 0) {
       val s = new DateTime(start).withTimeAtStartOfDay
@@ -405,7 +509,7 @@ class AnalyticsServiceImpl @Inject()(
       Json.obj("value" -> (if(numberPayingUsersLower > 0) {
         (numberPayingUsersUpper - numberPayingUsersLower) / numberPayingUsersLower
       } else 0))
-    }
+    }**/
   }
 
 
@@ -424,6 +528,12 @@ class AnalyticsServiceImpl @Inject()(
     start: Date,
     end: Date
   ): Future[JsValue] = {
+
+    Future {
+      Json.obj("value" -> 0)
+    }
+
+    /**
     val fields = ("lowerDate", "upperDate")
     val futureSessionsPerUser = databaseService.getDocumentsWithinTimeRange(
       Metrics.numberSessionsPerUserCollection(companyName, applicationName),
@@ -453,7 +563,7 @@ class AnalyticsServiceImpl @Inject()(
           "value" -> (sessionUserMap.values.foldLeft(0.0)(_ + _) / sessionUserMap.values.size)
         )
       }
-    }
+    }**/
   }
 
   def getTotalLifeTimeValue(
@@ -462,6 +572,10 @@ class AnalyticsServiceImpl @Inject()(
     start: Date,
     end: Date
   ): Future[JsValue] = {
+    Future {
+      Json.obj("value" -> 1)
+    }
+    /**
     val futureLTV = for {
       churn <- getTotalChurnRate(companyName, applicationName, start, end)
       arpu <- getTotalARPU(companyName, applicationName, start, end)
@@ -474,10 +588,11 @@ class AnalyticsServiceImpl @Inject()(
     }
 
     futureLTV map {ltv =>
-      Json.obj("value" -> ltv)
+      val rounded = BigDecimal(ltv).setScale(DecimalPlaces, BigDecimal.RoundingMode.HALF_UP).toDouble
+      Json.obj("value" -> rounded)
     } recover {
       case ex: Exception => throw ex
-    }
+    }**/
   }
 
   def getLifeTimeValue(
@@ -495,6 +610,12 @@ def getTotalAverageTimeFirstPurchase(
     start: Date,
     end: Date
   ): Future[JsValue] = {
+
+  Future {
+    Json.obj("value" -> 1)
+  }
+
+  /**
     val fields = ("lowerDate", "upperDate")
     val futurePayingUsers = databaseService.getDocumentsWithinTimeRange(
       Metrics.payingUsersCollection(companyName, applicationName),
@@ -557,6 +678,7 @@ def getTotalAverageTimeFirstPurchase(
       }
     }
   result flatMap {r => r}
+    * */
   }
 
   def getAverageTimeFirstPurchase(
@@ -574,6 +696,11 @@ def getTotalAverageTimeFirstPurchase(
     start: Date,
     end: Date
   ): Future[JsValue] = {
+
+    Future {
+      Json.obj("value" -> 1)
+    }
+    /**
     val fields = ("lowerDate", "upperDate")
     val futurePayingUsers = databaseService.getDocumentsWithinTimeRange(
       Metrics.payingUsersCollection(companyName, applicationName),
@@ -628,7 +755,7 @@ def getTotalAverageTimeFirstPurchase(
           Json.obj("value" -> (if(numberPurchases == 0) 0 else totalTimeBetweenPurchases / numberPurchases))
         }
       }
-    }
+    }**/
   }
 
   def getAverageTimeBetweenPurchases(
@@ -646,6 +773,11 @@ def getTotalAverageTimeFirstPurchase(
     start: Date,
     end: Date
   ): Future[JsValue] = {
+    Future {
+      val total = PayingUsers.foldLeft(0)(_+_) - 1000
+      Json.obj("value" -> total)
+    }
+    /**
     calculateNumberPayingCustomers(
       applicationName,
       companyName,
@@ -653,6 +785,7 @@ def getTotalAverageTimeFirstPurchase(
       start,
       end
     ) map {payingCustomers => Json.obj("value" -> payingCustomers)}
+      * */
   }
   def getNumberPayingCustomers(
     companyName: String,
@@ -669,6 +802,13 @@ def getTotalAverageTimeFirstPurchase(
     start: Date,
     end: Date
   ): Future[JsValue] = {
+
+    Future {
+      val result = (Purchases.foldLeft(0)(_+_)) / (Sessions.foldLeft(0)(_+_))
+      Json.obj("value" -> result)
+    }
+
+    /**
     val futureSessions = databaseService.getDocumentsWithinTimeRange(
       Metrics.numberSessionsCollection(companyName, applicationName),
       ("lowerDate", "upperDate"),
@@ -707,7 +847,7 @@ def getTotalAverageTimeFirstPurchase(
         }
       }
       Json.obj("value" -> (if(nrSessions > 0) (nrPurchases / nrSessions) else 0))
-    }
+    }**/
   }
 
   def getAveragePurchasePerSession(
