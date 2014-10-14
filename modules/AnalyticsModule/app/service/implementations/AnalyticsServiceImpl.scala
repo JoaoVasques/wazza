@@ -32,15 +32,15 @@ class AnalyticsServiceImpl @Inject()(
   purchaseService: PurchaseService
 ) extends AnalyticsService {
 
-  private val PayingUsers = List(300, 400, 350, 200, 500, 300, 450, 600, 200, 260)
-  private val Purchases = List(10, 20, 30, 15, 20, 16, 17, 29, 10, 21)
+  private val PayingUsers = List(30.0, 40.0, 35.0, 20.0, 50.0, 30.0, 45.0, 60.0, 20.0, 26.0)
+  private val Purchases = List(2,0, 5.0, 2.0, 1.0, 3.0, 2.0, 1.0, 1.0, 2.0, 3.0)
   private val Revenue = (PayingUsers zip Purchases) map {el =>
     el._1 * el._2
   }
 
   //List(40, 50, 68, 23, 68, 78, 56, 89, 70, 120)
-  private val ActiveUsers = List(1000, 1200, 1350, 1500, 1700, 1800, 1500, 1234, 1451, 1600)
-  private val Sessions = List(5000, 5020, 4000, 4500, 4700, 5000, 5600, 5700, 3000, 2000)
+  private val ActiveUsers = List(1000.0, 1200.0, 1350.0, 1500.0, 1700.0, 1800.0, 1500.0, 1234.0, 1451.0, 1600.0)
+  private val Sessions = List(5000.0, 5020.0, 4000.0, 4500.0, 4700.0, 5000.0, 5600.0, 5700.0, 3000.0, 2000.0)
   lazy val ProfitMargin = 0.7 // Because Google and Apple take a 30% on every purchase
   lazy val DecimalPlaces = 2
 
@@ -212,8 +212,8 @@ class AnalyticsServiceImpl @Inject()(
   ): Future[JsValue] = {
 
     Future {
-      val totalRevenue = Revenue.foldLeft(0)(_+_)
-      val totalActiveUsers = ActiveUsers.foldLeft(0)(_+_)
+      val totalRevenue = Revenue.foldLeft(0.0)(_+_)
+      val totalActiveUsers = ActiveUsers.foldLeft(0.0)(_+_)
       Json.obj("value" -> (totalRevenue / totalActiveUsers))
     }
     /**
@@ -339,8 +339,8 @@ class AnalyticsServiceImpl @Inject()(
   ): Future[JsValue] = {
 
     Future {
-      val totalRevenue = Revenue.foldLeft(0)(_+_)
-      val totalSessions = Sessions.foldLeft(0)(_+_)
+      val totalRevenue = Revenue.foldLeft(0.0)(_+_)
+      val totalSessions = Sessions.foldLeft(0.0)(_+_)
       Json.obj("value" -> (totalRevenue / totalSessions))
     }
 
@@ -379,7 +379,7 @@ class AnalyticsServiceImpl @Inject()(
     end: Date
   ): Future[JsValue] = {
     Future {
-      val revenue = Revenue.foldLeft(0)(_+_)
+      val revenue = Revenue.foldLeft(0.0)(_+_)
       Json.obj("value" -> revenue)
     }
     /**val fields = ("lowerDate", "upperDate")
@@ -774,7 +774,7 @@ def getTotalAverageTimeFirstPurchase(
     end: Date
   ): Future[JsValue] = {
     Future {
-      val total = PayingUsers.foldLeft(0)(_+_) - 1000
+      val total = PayingUsers.foldLeft(0.0)(_+_)
       Json.obj("value" -> total)
     }
     /**
@@ -804,7 +804,7 @@ def getTotalAverageTimeFirstPurchase(
   ): Future[JsValue] = {
 
     Future {
-      val result = (Purchases.foldLeft(0)(_+_)) / (Sessions.foldLeft(0)(_+_))
+      val result = (Purchases.foldLeft(0.0)(_+_)) / (Sessions.foldLeft(0.0)(_+_))
       Json.obj("value" -> result)
     }
 
@@ -842,7 +842,7 @@ def getTotalAverageTimeFirstPurchase(
         for(
           dailyInfo <- payingUsers.value;
           users <- ((dailyInfo \ "payingUsers").as[List[JsValue]])
-        ) {
+x        ) {
           nrPurchases += ((users \ "purchases").as[List[String]]).size
         }
       }
