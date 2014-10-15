@@ -75,7 +75,7 @@ angular.module('Wazza.services', []).
               name: "",
               email: ""
           };
-          service.pagename = '';
+          service.pagename = "";
 
           service.getPath = function () {
                   return pagename;
@@ -86,6 +86,10 @@ angular.module('Wazza.services', []).
                   $rootScope.page = value;
                   $rootScope.$broadcast("PAGE_UPDATED");
           };
+
+          service.getApplicationName = function () {
+            return applicationName;
+          }
 
           service.updateApplicationName = function (newName) {
               service.applicationName = newName;
