@@ -28,28 +28,6 @@ class SessionController @Inject()(
   applicationService: ApplicationService
 ) extends Controller {
 
-  private lazy val NewSession = 1
-  private lazy val UpdateSession = 2
-
-  private def getSessionRequestType(contentStr: String) = {
-    val json = Json.toJson(contentStr)
-    (json \ "type").as[Int] match {
-      case NewSession => UpdateSession
-      case UpdateSession => NewSession
-    }
-  }
-
-  private def createMobileUser(companyName: String, applicationName: String, userId: String): Future[Unit] = {
-    val futureExists = mobileUserService.exists(companyName, applicationName, userId)
-    futureExists flatMap {exist =>
-      if(!exist) {
-        mobileUserService.createMobileUser(companyName, applicationName, userId)
-      } else {
-        Future.successful(new Exception())
-      }
-    }
-  }
-
   private def createNewSessionInfo(content: JsValue): Future[SimpleResult] = {
     def generateHash(content: String) = {
       val md = MessageDigest.getInstance("SHA-256")
