@@ -23,6 +23,10 @@ application.controller('AppController', [
     //auth related
     $scope.authOK = false;
 
+    $scope.logout = function(){
+      LoginLogoutService.logout();
+    };
+
     $scope.$on("LOGIN_SUCCESS", function(event, data){
       document.body.className = "skin-blue";
       $scope.authOK = true;
@@ -43,6 +47,8 @@ application.controller('AppController', [
       $state.go("webframe.login");
       //$state.go(url.value);      //TODO: fix this. url.value returns the relative url instead of the state
     });
+
+
 
     //app related
     $scope.applicationName = "";

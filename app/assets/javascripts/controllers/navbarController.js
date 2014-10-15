@@ -1,20 +1,14 @@
 application.controller('NavBarController',[
   '$scope',
-  'LoginLogoutService',
   'DateModel',
   '$state',
   '$rootScope',
   function (
     $scope,
-    LoginLogoutService,
     DateModel,
     $state,
     $rootScope
     ) {
-
-    $scope.logout = function(){
-      LoginLogoutService.logout();
-    };
 
     $scope.today = function() {
       DateModel.initDateInterval();
