@@ -9,7 +9,7 @@ lazy val dependencies = Seq(
   "com.google.inject" % "guice" % "3.0",
   "com.tzavellas" % "sse-guice" % "0.7.1",
   "org.webjars" % "webjars-play_2.10" % "2.2.2-1",
-  "org.webjars" % "angularjs" % "1.2.25",
+  "org.webjars" % "angularjs" % "1.2.26",
   "org.webjars" % "bootstrap" % "3.2.0",
   "commons-validator" % "commons-validator" % "1.4.0",
   "com.github.nscala-time" %% "nscala-time" % "1.0.0",
@@ -20,8 +20,8 @@ lazy val dependencies = Seq(
   "org.mongodb" % "casbah_2.10" % "2.7.0",
   "com.typesafe.akka" %% "akka-actor" % "2.2.3",
   "com.typesafe.akka" %% "akka-slf4j" % "2.2.3",
-  "org.webjars" % "angular-ui-bootstrap" % "0.11.0-3",
-  "org.webjars" % "angular-ui-router" % "0.2.11",
+  "org.webjars" % "angular-ui-bootstrap" % "0.11.2"
+  "org.webjars" % "angular-ui-router" % "0.2.11-1",
   "org.webjars" % "momentjs" % "2.8.3",
   "org.webjars" % "chartjs" % "1.0.1-beta.4",
   "org.reactivemongo" %% "play2-reactivemongo" % "0.10.2"
