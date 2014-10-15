@@ -122,7 +122,7 @@ angular.module('Wazza.services', []).
       };
 
       model.initDateInterval = function() {
-        this.startDate= new Date(moment().subtract(7, 'days'));
+        this.startDate = new Date(moment().subtract(7, 'days'));
         this.endDate = new Date();
       };
 

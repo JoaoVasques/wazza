@@ -50,8 +50,9 @@ dashboard.controller('DashboardController', [
     $scope.updateKPIs = function(){
       var companyName = ApplicationStateService.companyName;
       var app = ApplicationStateService.getApplicationName();
-      var begin = DateModel.formatDate(DateModel.beginDate);
+      var begin = DateModel.formatDate(DateModel.startDate);
       var end = DateModel.formatDate(DateModel.endDate);
+
         $q.all([
           GetMainKPIsService.getTotalKpiData(companyName, app, begin, end, "revenue"),
           GetMainKPIsService.getTotalKpiData(companyName, app, begin, end, "ltv"),
