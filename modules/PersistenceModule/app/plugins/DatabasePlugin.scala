@@ -14,7 +14,7 @@ class DatabasePlugin(implicit app: Application) extends Plugin {
   def dbActor = _dbActor.getOrElse(throw new RuntimeException("DatabasePlugin error: no plugin available?"))
 
   override def onStart() = {
-    _dbActor = Some(TypedActor(Akka.system).typedActorOf(TypedProps[MongoActor]().withTimeout(300000)))
+    _dbActor = Some(TypedActor(Akka.system).typedActorOf(TypedProps[MongoActor]()))
     Logger.info("Starting Wazza database plugin")
   }
 

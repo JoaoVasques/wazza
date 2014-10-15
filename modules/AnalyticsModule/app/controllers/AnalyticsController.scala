@@ -69,7 +69,7 @@ class AnalyticsController @Inject()(
 
       Json.obj(
         "value" -> currentValue,
-        "delta" -> deltas(index)//delta
+        "delta" -> delta
       )
     }
 
