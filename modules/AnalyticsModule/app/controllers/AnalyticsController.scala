@@ -48,16 +48,13 @@ class AnalyticsController @Inject()(
     (start.minusDays(difference).toDate, end.minusDays(difference).toDate)
   }
 
-  private val deltas = List(1.2, 11.2, 5.6, 4.34, 0, 7.21, 4.5, -2.1, -3.1, 0)
-
   private def executeRequest[T <: JsValue](
     companyName: String,
     applicationName: String,
     startDateStr: String,
     endDateStr: String,
     f:(String, String, Date, Date) => Future[T],
-    requestType: Int,
-    index: Int
+    requestType: Int
   ) = {
     def calculateDelta(current: JsValue, previous: JsValue): JsValue = {
       val currentValue = (current \ "value").as[Double]
@@ -132,8 +129,7 @@ class AnalyticsController @Inject()(
       startDateStr,
       endDateStr,
       analyticsService.getTotalARPU,
-      Total,
-      1)
+      Total)
   }
 
   def getDetailedARPU(
@@ -148,8 +144,7 @@ class AnalyticsController @Inject()(
       startDateStr,
       endDateStr,
       analyticsService.getARPU,
-      Detailed,
-      1)
+      Detailed)
   }
 
   def getTotalAverageRevenuePerSession(
@@ -164,8 +159,7 @@ class AnalyticsController @Inject()(
       startDateStr,
       endDateStr,
       analyticsService.getTotalAverageRevenuePerSession,
-      Total,
-      2)
+      Total)
   }
 
   def getDetailedAverageRevenuePerSession(
@@ -180,8 +174,7 @@ class AnalyticsController @Inject()(
       startDateStr,
       endDateStr,
       analyticsService.getAverageRevenuePerSession,
-      Detailed,
-      2)
+      Detailed)
   }
 
   def getTotalRevenue(
@@ -196,8 +189,7 @@ class AnalyticsController @Inject()(
       startDateStr,
       endDateStr,
       analyticsService.getTotalRevenue,
-      Total,
-      3)
+      Total)
   }
 
   def getDetailedTotalRevenue(
@@ -212,8 +204,7 @@ class AnalyticsController @Inject()(
       startDateStr,
       endDateStr,
       analyticsService.getRevenue,
-      Detailed,
-      3)
+      Detailed)
   }
 
   def getTotalLifeTimeValue(
@@ -228,8 +219,7 @@ class AnalyticsController @Inject()(
       startDateStr,
       endDateStr,
       analyticsService.getTotalLifeTimeValue,
-      Total,
-      4)
+      Total)
   }
 
   def getDetailedLifeTimeValue(
@@ -244,8 +234,7 @@ class AnalyticsController @Inject()(
       startDateStr,
       endDateStr,
       analyticsService.getLifeTimeValue,
-      Detailed,
-      4)
+      Detailed)
   }
 
   def getTotalChurnRate(
@@ -260,8 +249,7 @@ class AnalyticsController @Inject()(
       startDateStr,
       endDateStr,
       analyticsService.getTotalChurnRate,
-      Total,
-      5)
+      Total)
   }
   
   def getDetailedChurnRate(
@@ -276,8 +264,7 @@ class AnalyticsController @Inject()(
       startDateStr,
       endDateStr,
       analyticsService.getChurnRate,
-      Detailed,
-      5)
+      Detailed)
   }
 
   def getTotalAverageTimeFirstPurchase(
@@ -292,8 +279,7 @@ class AnalyticsController @Inject()(
       startDateStr,
       endDateStr,
       analyticsService.getTotalAverageTimeFirstPurchase,
-      Total,
-      6)
+      Total)
   }
 
   def getAverageTimeFirstPurchase(
@@ -308,8 +294,7 @@ class AnalyticsController @Inject()(
       startDateStr,
       endDateStr,
       analyticsService.getAverageTimeFirstPurchase,
-      Detailed,
-      6)
+      Detailed)
   }
 
   def getTotalAverageTimeBetweenPurchases(
@@ -324,8 +309,7 @@ class AnalyticsController @Inject()(
       startDateStr,
       endDateStr,
       analyticsService.getTotalAverageTimeBetweenPurchases,
-      Total,
-      7)
+      Total)
   }
 
   def getAverageTimeBetweenPurchases(
@@ -340,8 +324,7 @@ class AnalyticsController @Inject()(
       startDateStr,
       endDateStr,
       analyticsService.getAverageTimeBetweenPurchases,
-      Detailed,
-      7)
+      Detailed)
   }
 
   def getTotalNumberPayingCustomers(
@@ -356,8 +339,7 @@ class AnalyticsController @Inject()(
       startDateStr,
       endDateStr,
       analyticsService.getTotalNumberPayingCustomers,
-      Total,
-      8)
+      Total)
   }
 
   def getNumberPayingCustomers(
@@ -372,8 +354,7 @@ class AnalyticsController @Inject()(
       startDateStr,
       endDateStr,
       analyticsService.getNumberPayingCustomers,
-      Detailed,
-      8)
+      Detailed)
   }
 
   def getTotalAveragePurchasePerSession(
@@ -388,8 +369,7 @@ class AnalyticsController @Inject()(
       startDateStr,
       endDateStr,
       analyticsService.getTotalAveragePurchasePerSession,
-      Total,
-      9)
+      Total)
   }
 
   def getAveragePurchasePerSession(
@@ -404,8 +384,7 @@ class AnalyticsController @Inject()(
       startDateStr,
       endDateStr,
       analyticsService.getAveragePurchasePerSession,
-      Detailed,
-      9)
+      Detailed)
   }
 }
 

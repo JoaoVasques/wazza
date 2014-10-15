@@ -62,18 +62,12 @@ class ApplicationServiceImpl @Inject()(
 
   def insertApplication(companyName: String, application: WazzaApplication): Future[WazzaApplication] = {
     val collection = WazzaApplication.getCollection(companyName, application.name)
-    println(s"collection $collection")
     exists(companyName, application.name) flatMap {exist =>
       if(!exist) {
         for{
           res <- databaseService.insert(collection, application)
           app <- addApplication(companyName, application.name)
         } yield application
-        /**databaseService.insert(collection, application) flatMap {app =>
-          addApplication(companyName, application.name) map {r =>
-            application
-          }
-        }**/
       } else Future {null}
     }
   }

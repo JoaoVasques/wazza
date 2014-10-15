@@ -34,7 +34,6 @@ class MobileUserServiceImpl @Inject()(
     exists(companyName, applicationName, userId) flatMap {userExists =>
       if(!userExists) {
         val user = new MobileUser(userId)
-        println(user)
         databaseService.insert(collection, user) map {res => res}
       } else {
         Future {new Exception("Duplicated mobile user")}
