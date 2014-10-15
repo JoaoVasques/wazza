@@ -32,7 +32,7 @@ class AnalyticsServiceImpl @Inject()(
   purchaseService: PurchaseService
 ) extends AnalyticsService {
 
-  private val PayingUsers = List(30.0, 40.0, 35.0, 20.0, 50.0, 30.0, 45.0, 60.0, 20.0, 26.0)
+  private val PayingUsers = List(26.0, 40.0, 35.0, 20.0, 50.0, 30.0, 45.0, 60.0, 20.0, 30.0)
   private val Purchases = List(2,0, 5.0, 2.0, 1.0, 3.0, 2.0, 1.0, 1.0, 2.0, 3.0)
   private val Revenue = (PayingUsers zip Purchases) map {el =>
     el._1 * el._2
@@ -42,7 +42,7 @@ class AnalyticsServiceImpl @Inject()(
   private val ActiveUsers = List(1000.0, 1200.0, 1350.0, 1500.0, 1700.0, 1800.0, 1500.0, 1234.0, 1451.0, 1600.0)
   private val Sessions = List(5000.0, 5020.0, 4000.0, 4500.0, 4700.0, 5000.0, 5600.0, 5700.0, 3000.0, 2000.0)
   lazy val ProfitMargin = 0.7 // Because Google and Apple take a 30% on every purchase
-  lazy val DecimalPlaces = 2
+  lazy val DecimalPlaces = 3
 
 /**  private def getUnixDate(dateStr: String): Long = {
     val ops = new StringOps(dateStr)
@@ -157,9 +157,10 @@ class AnalyticsServiceImpl @Inject()(
       new JsArray(List.range(0, days) map {i =>{
         val el = merged(i)
         val arpu = el._1 / el._2
+        val rounded = BigDecimal(arpu).setScale(DecimalPlaces, BigDecimal.RoundingMode.HALF_UP).toDouble
         Json.obj(
           "day" -> s.withFieldAdded(DurationFieldType.days(), i).toString("dd MMM"),
-          "val" -> arpu 
+          "val" -> rounded 
         )
       }})
     }
@@ -214,7 +215,9 @@ class AnalyticsServiceImpl @Inject()(
     Future {
       val totalRevenue = Revenue.foldLeft(0.0)(_+_)
       val totalActiveUsers = ActiveUsers.foldLeft(0.0)(_+_)
-      Json.obj("value" -> (totalRevenue / totalActiveUsers))
+      val arpu =(totalRevenue / totalActiveUsers)
+      val rounded = BigDecimal(arpu).setScale(DecimalPlaces, BigDecimal.RoundingMode.HALF_UP).toDouble
+      Json.obj("value" -> rounded)
     }
     /**
     val fields = ("lowerDate", "upperDate")
@@ -270,10 +273,11 @@ class AnalyticsServiceImpl @Inject()(
 
       new JsArray(List.range(0, days) map {i =>{
         val el = merged(i)
-        val arpu = el._1 / el._2
+        val avg = el._1 / el._2
+        val rounded = BigDecimal(avg).setScale(DecimalPlaces, BigDecimal.RoundingMode.HALF_UP).toDouble
         Json.obj(
           "day" -> s.withFieldAdded(DurationFieldType.days(), i).toString("dd MMM"),
-          "val" -> arpu
+          "val" -> rounded
         )
       }})
     }
@@ -341,7 +345,9 @@ class AnalyticsServiceImpl @Inject()(
     Future {
       val totalRevenue = Revenue.foldLeft(0.0)(_+_)
       val totalSessions = Sessions.foldLeft(0.0)(_+_)
-      Json.obj("value" -> (totalRevenue / totalSessions))
+      val res = (totalRevenue / totalSessions)
+      val rounded = BigDecimal(res).setScale(DecimalPlaces, BigDecimal.RoundingMode.HALF_UP).toDouble
+      Json.obj("value" -> rounded)
     }
 
     /**
@@ -451,7 +457,9 @@ class AnalyticsServiceImpl @Inject()(
     Future {
       val payingBegin = PayingUsers.head
       val payingEnd = PayingUsers.last
-      Json.obj("value" -> ((payingEnd - payingBegin) / payingBegin))
+      val churn = (payingEnd - payingBegin) / payingBegin
+      val rounded = BigDecimal(churn).setScale(DecimalPlaces, BigDecimal.RoundingMode.HALF_UP).toDouble
+      Json.obj("value" -> rounded)
     }
     /**
     val fields = ("lowerDate", "upperDate")
@@ -530,7 +538,7 @@ class AnalyticsServiceImpl @Inject()(
   ): Future[JsValue] = {
 
     Future {
-      Json.obj("value" -> 0)
+      Json.obj("value" -> 1)
     }
 
     /**
@@ -572,10 +580,6 @@ class AnalyticsServiceImpl @Inject()(
     start: Date,
     end: Date
   ): Future[JsValue] = {
-    Future {
-      Json.obj("value" -> 1)
-    }
-    /**
     val futureLTV = for {
       churn <- getTotalChurnRate(companyName, applicationName, start, end)
       arpu <- getTotalARPU(companyName, applicationName, start, end)
@@ -592,7 +596,7 @@ class AnalyticsServiceImpl @Inject()(
       Json.obj("value" -> rounded)
     } recover {
       case ex: Exception => throw ex
-    }**/
+    }
   }
 
   def getLifeTimeValue(
@@ -612,7 +616,7 @@ def getTotalAverageTimeFirstPurchase(
   ): Future[JsValue] = {
 
   Future {
-    Json.obj("value" -> 1)
+    Json.obj("value" -> 2.23)
   }
 
   /**
@@ -698,7 +702,7 @@ def getTotalAverageTimeFirstPurchase(
   ): Future[JsValue] = {
 
     Future {
-      Json.obj("value" -> 1)
+      Json.obj("value" -> 1.6)
     }
     /**
     val fields = ("lowerDate", "upperDate")
@@ -793,7 +797,20 @@ def getTotalAverageTimeFirstPurchase(
     start: Date,
     end: Date
   ): Future[JsArray] = {
-    calculateDetailedKPIAux(companyName, applicationName, start, end, getTotalNumberPayingCustomers)
+    Future {
+      val dates = new ListBuffer[String]()
+      val s = new LocalDate(start)
+      val e = new LocalDate(end)
+      val days = Days.daysBetween(s, e).getDays()+1
+
+      new JsArray(List.range(0, days) map {i =>{
+        Json.obj(
+          "day" -> s.withFieldAdded(DurationFieldType.days(), i).toString("dd MMM"),
+          "val" -> PayingUsers(i)
+        )
+      }})
+    }
+    //calculateDetailedKPIAux(companyName, applicationName, start, end, getTotalNumberPayingCustomers)
   }
 
   def getTotalAveragePurchasePerSession(
@@ -805,7 +822,8 @@ def getTotalAverageTimeFirstPurchase(
 
     Future {
       val result = (Purchases.foldLeft(0.0)(_+_)) / (Sessions.foldLeft(0.0)(_+_))
-      Json.obj("value" -> result)
+      val rounded = BigDecimal(result).setScale(DecimalPlaces, BigDecimal.RoundingMode.HALF_UP).toDouble
+      Json.obj("value" -> rounded)
     }
 
     /**
