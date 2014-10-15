@@ -16,6 +16,7 @@ import scala.util.Failure
 import scala.util.Success
 import service.user.definitions.MobileUserService
 import service.user.definitions.MobileSessionService
+import service.application.definitions.{ApplicationService}
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.Interval
 import scala.concurrent._
@@ -23,7 +24,8 @@ import ExecutionContext.Implicits.global
 
 class SessionController @Inject()(
   mobileUserService: MobileUserService,
-  sessionService: MobileSessionService
+  sessionService: MobileSessionService,
+  applicationService: ApplicationService
 ) extends Controller {
 
   private lazy val NewSession = 1
@@ -87,21 +89,29 @@ class SessionController @Inject()(
 
   def saveSession(companyName: String, applicationName: String) = Action.async(parse.json) {implicit request =>
     val content = (Json.parse((request.body \ "content").as[String].replace("\\", "")) \ "session").as[JsArray]
-    Future.sequence(content.value.map{(session: JsValue) => {
-      val userId = (session  \ "userId").as[String]
-      mobileUserService.exists(companyName, applicationName, userId) map {exist =>
-        if(!exist) {
-          mobileUserService.createMobileUser(companyName, applicationName, userId) map {r =>
-            createNewSessionInfo(session)
-          } recover {
-            case ex: Exception => Future.failed(ex)
+    applicationService.exists(companyName, applicationName) flatMap {exists =>
+      if(!exists){
+        Future.successful(NotFound("Application"))
+      } else {
+        val futureResult = Future.sequence(content.value.map{(session: JsValue) => {
+          val userId = (session  \ "userId").as[String]
+          mobileUserService.exists(companyName, applicationName, userId) map {exist =>
+            if(!exist) {
+              mobileUserService.createMobileUser(companyName, applicationName, userId) map {r =>
+                createNewSessionInfo(session)
+              } recover {
+                case ex: Exception => Future.failed(ex)
+              }
+            } else Future.failed(new Exception("duplicated session"))
           }
-        } else Future.failed(new Exception("duplicated session"))
+        }})
+
+        futureResult map {
+          _ => Ok
+        } recover {
+          case _ => InternalServerError("Save session error: session not saved")
+        }
       }
-    }}) map {
-      _ => Ok
-    } recover {
-      case _ => InternalServerError("Save session error: session not saved")
     }
   }
 }
