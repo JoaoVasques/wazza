@@ -116,6 +116,11 @@ angular.module('Wazza.services', []).
   }]).
 
     factory('DateModel', function() {
+      //hack to save previous date range
+      this.min = "";
+      this.max = "";
+      this.refresh = false;
+
       var model = function() {
         this.startDate = new Date();
         this.endDate = new Date();
