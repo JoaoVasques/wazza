@@ -48,14 +48,12 @@ application.controller('AppController', [
       //$state.go(url.value);      //TODO: fix this. url.value returns the relative url instead of the state
     });
 
-
-
     //app related
     $scope.applicationName = "";
     $scope.applicationsList = [];
 
     $scope.$on("APPLICATION_NAME_UPDATED", function(){
-      $scope.applicationName = ApplicationStateService.applicationName;
+      $scope.applicationName = ApplicationStateService.getApplicationName();
     });
 
     $scope.$on("APPLICATIONS_LIST_UPDATED", function() {

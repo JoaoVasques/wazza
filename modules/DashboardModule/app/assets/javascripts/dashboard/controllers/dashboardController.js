@@ -49,7 +49,7 @@ dashboard.controller('DashboardController', [
 
     $scope.updateKPIs = function(){
       var companyName = ApplicationStateService.companyName;
-      var app = ApplicationStateService.applicationName
+      var app = ApplicationStateService.getApplicationName();
       var begin = DateModel.formatDate(DateModel.beginDate);
       var end = DateModel.formatDate(DateModel.endDate);
         $q.all([
@@ -94,7 +94,7 @@ dashboard.controller('DashboardController', [
                 }),
                 $scope.applications
             );
-            ApplicationStateService.updateApplicationName(_.first(data.data.applications).name);
+            //ApplicationStateService.updateApplicationName(_.first(data.data.applications).name);
             ApplicationStateService.updateUserInfo(data.data.userInfo);
 
             ApplicationStateService.updateApplicationsList(
@@ -122,9 +122,6 @@ dashboard.controller('DashboardController', [
 
             $scope.$on("ITEM_SEARCH_EVENT", function () {
                 $scope.itemSearch = ItemSearchService.searchData
-            });
-            $scope.$on("APPLICATION_NAME_UPDATED", function () {
-                $scope.applicationName = ApplicationStateService.applicationName;
             });
 
             $scope.$on("APPLICATIONS_LIST_UPDATED", function() {
