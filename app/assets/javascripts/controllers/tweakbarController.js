@@ -1,4 +1,4 @@
-application.controller('NavBarController',[
+application.controller('TweakBarController',[
   '$scope',
   'DateModel',
   '$state',
