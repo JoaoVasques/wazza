@@ -20,7 +20,7 @@ lazy val dependencies = Seq(
   "org.mongodb" % "casbah_2.10" % "2.7.0",
   "com.typesafe.akka" %% "akka-actor" % "2.2.3",
   "com.typesafe.akka" %% "akka-slf4j" % "2.2.3",
-  "org.webjars" % "angular-ui-bootstrap" % "0.11.2"
+  "org.webjars" % "angular-ui-bootstrap" % "0.11.2",
   "org.webjars" % "angular-ui-router" % "0.2.11-1",
   "org.webjars" % "momentjs" % "2.8.3",
   "org.webjars" % "chartjs" % "1.0.1-beta.4",

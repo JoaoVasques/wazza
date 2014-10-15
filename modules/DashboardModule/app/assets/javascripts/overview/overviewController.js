@@ -63,9 +63,9 @@ dashboard.controller('OverviewController',[
             var extractValue = function(index) {
               return res[index].data.value;
             };
-            app.totalRevenue = extractValue(0);
-            app.ltv = extractValue(1);
-            app.arpu = extractValue(2);
+            app.totalRevenue = numeral(extractValue(0)).format('0');
+            app.ltv = numeral(extractValue(1)).format('0')
+            app.arpu = numeral(extractValue(2)).format('0')
           });
         });
       });
