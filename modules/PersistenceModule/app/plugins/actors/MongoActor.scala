@@ -24,9 +24,15 @@ import play.api.libs.json.JsValue
 import play.api.libs.json.Json
 import play.api.Logger
 import play.api.libs.json._
+import com.mongodb.casbah.Imports.DBObject
+import com.mongodb.casbah.Imports._
+import com.mongodb.util.JSON
+import org.joda.time.DateTime
+import scala.collection.immutable.StringOps
 
 // Reactive Mongo imports
 import reactivemongo.api._
+import reactivemongo.bson._
 
 protected[plugin] class MongoActor extends DatabaseActor {
 
@@ -119,9 +125,15 @@ protected[plugin] class MongoActor extends DatabaseActor {
   def insert(collectionName: String, model: JsValue, extra: Map[String, ObjectId] = null): Future[Unit] = {
     val promise = Promise[Unit]
     if(extra == null) {
-      collection(collectionName).insert(model) map { lastError =>
-        Logger.info(s"Mongo Actor: INSERT successfuly done")
-        promise.success()
+      val obj = convertStringToDateInJson(model.as[JsObject])
+      collection(collectionName).insert(obj) map { lastError =>
+        lastError.err match {
+          case Some(error) => {
+            Logger.error(error)
+            promise.failure(new Exception(error))
+          }
+          case _ => promise.success()
+        }
       } recover {
         case ex: Exception => promise.failure(ex)
       }
@@ -184,13 +196,39 @@ protected[plugin] class MongoActor extends DatabaseActor {
     dateFields: Tuple2[String, String],
     start: Date,
     end: Date
-  ): Future[JsArray] = {
-
-    val query = Json.parse(((dateFields._1 $lte start $gt end) ++ (dateFields._2 $lte start $gt end)).toString)
+  ): Future[JsArray] = {    
+    val query = Json.parse(((dateFields._1 $gte start $lte end) ++ (dateFields._2 $gte start $lte end)).toString)
     val sortCriteria = Json.obj(dateFields._1 -> 1)
-    collection(collectionName).find(query).sort(sortCriteria).cursor[JsObject].collect[List]() map {list =>
-      new JsArray(list)
+    val df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z")
+
+    def matchesCriteria(s: Date, e: Date): Boolean = {
+      val lowerResult = s.compareTo(end) <= 0
+      val upperResult = e.compareTo(start) * end.compareTo(e) > 0
+      lowerResult && upperResult
     }
+
+    val futureList = collection(collectionName).find(Json.obj()).sort(sortCriteria).cursor[JsObject].collect[List]()
+    futureList map {list =>
+      new JsArray(list.filter((el: JsValue) => {
+        val lowerDateLong = (el \"lowerDate" \ "$date").as[Long]
+        val upperDateLong = (el \ "upperDate" \ "$date").as[Long]
+        val l = new Date(lowerDateLong)
+        val u = new Date(upperDateLong)
+        val matches = matchesCriteria(l, u)
+        /**
+        if(matches) {
+          println(s"DATABASE DATES - $l | $u")
+          println(s"QUERY DATES - $start | $end")
+          println(s"BETWEEN ${matchesCriteria(l, u)}")
+          println
+        }**/
+        matches
+      }))
+    }
+
+    /**collection(collectionName).find(query).sort(sortCriteria).cursor[JsObject].collect[List]() map {list =>
+      new JsArray(list)
+    }**/
   }
 
   def getDocumentsByTimeRange(
@@ -351,29 +389,20 @@ protected[plugin] class MongoActor extends DatabaseActor {
     promise.future
   }
 
-  /**
-    PRIVATE METHODS
-  **/
-
   private def convertStringToDateInJson(json: JsObject): JsObject = {
-    def convertAux(field: String): JsObject = {
-      if(json.keys.contains(field)) {
-        val format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z")
-        val date = format.parse((json \ field).as[String])
-        val transformer = (__ \ field).json.update(
-          __.read[JsObject].map{o => Json.obj(field -> date)}
-        )
-        json.transform(transformer) fold(
-          valid = {v => v},
-          invalid = {errors => null}
-        )
-      } else json
-    }
-
     val dateKeys = List("time", "startTime")
     var j = json
     dateKeys.filter(json.keys.contains(_)) foreach {(key: String) =>
-      j = convertAux(key)
+      var dbObject = JSON.parse(json.toString)
+      dbObject match {
+        case dbO: DBObject => {
+          val timeBackup = dbO.get(key).toString
+          dbO.removeField(key)
+          val format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z")
+          dbO.put(key, format.parse(timeBackup))
+          j = Json.parse(dbO.toString).as[JsObject]
+        }
+      }
     }
     j
   }

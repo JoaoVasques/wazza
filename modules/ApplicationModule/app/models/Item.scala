@@ -57,7 +57,7 @@ object Item  {
   lazy val ElementId = "name"
   lazy val AttributeName = "items"
 
-  implicit def convertToJson(item: Item): JsValue = {
+  implicit def convertToJson(item: Item): JsObject = {
     Json.obj(
       "name" -> item.name,
       "description" -> item.description,

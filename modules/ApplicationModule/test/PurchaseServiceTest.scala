@@ -1,5 +1,5 @@
 package test.application
-
+/**
 import models.user.DeviceInfo
 import models.user.DeviceInfo
 import models.user.LocationInfo
@@ -63,3 +63,4 @@ class PurchaseServiceTest extends Specification {
   }
 }
 
+  * */
