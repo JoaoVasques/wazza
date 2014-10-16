@@ -73,11 +73,19 @@ dashboard.controller('OverviewController',[
             app.arpu = numeral(extractValue(2)).format('0')
           });
         });
+
+        ApplicationStateService.updateApplicationsOverview($scope.applications);
       }
 
     bootstrap = function(){
+      if(ApplicationStateService.getCompanyName() === "")
         fetchCompanyName();
+
+      if(ApplicationStateService.getApplicationsList().length === 0)
         fetchApplications();
+      else
+        $scope.applications = ApplicationStateService.getApplicationsOverview();
+
       fetchKPIs();
     }
 

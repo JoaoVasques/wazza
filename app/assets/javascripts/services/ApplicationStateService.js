@@ -9,6 +9,7 @@ service.factory('ApplicationStateService', ['$rootScope',
 			email: ""
 		};
 		service.path = "";
+		service.applicationOverview = "";
 
 		service.getPath = function () {
 			return service.path;
@@ -46,6 +47,14 @@ service.factory('ApplicationStateService', ['$rootScope',
 		service.updateApplicationsList = function (newList) {
 			service.applicationsList = newList.slice(0);
 			$rootScope.$broadcast("APPLICATIONS_LIST_UPDATED");
+		};
+
+		service.getApplicationsOverview = function () {
+			return service.applicationOverview;
+		}
+
+		service.updateApplicationsOverview = function (apps) {
+			service.applicationOverview = apps;
 		};
 
 		service.getUserInfo = function (newInfo) {
