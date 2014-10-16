@@ -24,17 +24,14 @@ dashboard.controller('OverviewController',[
     $scope.applications = [];
     var noImageUrl = "assets/images/default-user-icon-profile.png";
 
-    fetchCompanyName = function(){
-        OverviewInitService
-          .getCompany()
-          .then(function(results){
-            var company = results.data.name;
-            ApplicationStateService.updateCompanyName(company);
-          });
-    }
+    OverviewInitService
+      .getCompany()
+      .then(function(results){
+        var company = results.data.name;
+        ApplicationStateService.updateCompanyName(company);
+      });
 
-    fetchApplications = function(){
-      OverviewInitService
+    OverviewInitService
       .getApplications()
       .then(function(results) {
         var names = [];
@@ -48,9 +45,7 @@ dashboard.controller('OverviewController',[
         });
         ApplicationStateService.updateApplicationsList(names);
       })
-    }
-    
-    fetchKPIs = function(){
+      .then(function(){
         var companyName = ApplicationStateService.getCompanyName();
         var revenue = "revenue";
         var ltv = "ltv";
@@ -73,17 +68,7 @@ dashboard.controller('OverviewController',[
             app.arpu = numeral(extractValue(2)).format('0')
           });
         });
-      }
-
-    bootstrap = function(){
-      if(ApplicationStateService.getCompanyName() === "")
-        fetchCompanyName();
-      if(ApplicationStateService.getApplicationsList().length === 0)
-        fetchApplications();
-      fetchKPIs();
-    }
-
-    bootstrap();
+      });
   }
 ]);
 
