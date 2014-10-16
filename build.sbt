@@ -1,6 +1,6 @@
 name := "Wazza"
 
-version := "pre-alpha"
+version := "alpha"
 
 lazy val dependencies = Seq(
   anorm,
@@ -24,7 +24,8 @@ lazy val dependencies = Seq(
   "org.webjars" % "angular-ui-router" % "0.2.11-1",
   "org.webjars" % "momentjs" % "2.8.3",
   "org.webjars" % "chartjs" % "1.0.1-beta.4",
-  "org.reactivemongo" %% "play2-reactivemongo" % "0.10.2"
+  "org.reactivemongo" %% "play2-reactivemongo" % "0.10.2",
+  "org.mongodb" % "casbah-commons_2.10" % "2.7.3"
 )
 
 libraryDependencies ++= dependencies
@@ -36,7 +37,6 @@ templatesImport += "models.user._"
 templatesImport += "controllers.user._"
 
 lazy val mySettings = Seq(
-  javaOptions in run += "-Dconfig.file=conf/dev/application_dev.conf",
   scalacOptions ++= Seq("-feature", "-language:reflectiveCalls"),
   scalacOptions ++= Seq("-feature", "-language:postfixOps")
 )

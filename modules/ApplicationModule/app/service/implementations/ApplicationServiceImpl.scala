@@ -6,8 +6,7 @@ import scala.collection.mutable.SynchronizedMap
 import service.application.definitions._
 import models.application._
 import models.user.{CompanyData}
-import play.api.libs.json.Json
-import play.api.libs.json.JsValue
+import play.api.libs.json.{Json, JsArray, JsValue}
 import InAppPurchaseContext._
 import scala.util.{Try, Success, Failure}
 import scala.reflect.runtime.universe._
@@ -63,14 +62,12 @@ class ApplicationServiceImpl @Inject()(
 
   def insertApplication(companyName: String, application: WazzaApplication): Future[WazzaApplication] = {
     val collection = WazzaApplication.getCollection(companyName, application.name)
-
     exists(companyName, application.name) flatMap {exist =>
       if(!exist) {
-        databaseService.insert(collection, application) flatMap {app =>
-          addApplication(companyName, application.name) map {r =>
-            application
-          }
-        }
+        for{
+          res <- databaseService.insert(collection, application)
+          app <- addApplication(companyName, application.name)
+        } yield application
       } else Future {null}
     }
   }
@@ -110,7 +107,7 @@ class ApplicationServiceImpl @Inject()(
       WazzaApplication.Key,
       applicationName,
       WazzaApplication.ItemsId,
-      item
+      Item.convertToJson(item)
     )
   }
 
@@ -281,7 +278,7 @@ class ApplicationServiceImpl @Inject()(
   def addApplication(companyName: String, applicationName: String): Future[Unit] = {
     val promise = Promise[Unit]
     applicationExists(companyName, applicationName) map {exists =>
-      if(exists) {
+      if(!exists) {
         databaseService.addElementToArray[String](
           CompanyData.Collection,
           CompanyData.Key,
@@ -297,8 +294,8 @@ class ApplicationServiceImpl @Inject()(
           }
         }
       } else {
-        println("company does not exists")
-        promise.failure(new Exception("Application does not exists"))
+        println("company already exists")
+        promise.failure(new Exception("Application already exists"))
       }
     }
 
@@ -328,10 +325,8 @@ class ApplicationServiceImpl @Inject()(
       CompanyData.Apps,
       None
     ) map { list =>
-      list.find((app: JsValue) => {
-        //TODO
-        println("app : " + app)
-        true
+      (list.head \ "apps").as[List[String]].find((app: String) => {
+        applicationName == app
       }) match {
         case Some(_) => true
         case None => false
