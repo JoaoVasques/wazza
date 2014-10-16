@@ -129,7 +129,7 @@ class AnalyticsServiceImpl @Inject()(
     applicationName: String,
     start: Date,
     end: Date
-  ): Future[JsArray] = {    
+  ): Future[JsArray] = {
     val revenueCollection = Metrics.totalRevenueCollection(companyName, applicationName)
     val activeUsersCollection = Metrics.activeUsersCollection(companyName, applicationName)
     val fields = ("lowerDate", "upperDate")
@@ -492,7 +492,7 @@ def getTotalAverageTimeFirstPurchase(
     applicationName: String,
     start: Date,
     end: Date
-  ): Future[JsValue] = { 
+  ): Future[JsValue] = {
   val fields = ("lowerDate", "upperDate")
   val futurePayingUsers = databaseService.getDocumentsWithinTimeRange(
     Metrics.payingUsersCollection(companyName, applicationName),
