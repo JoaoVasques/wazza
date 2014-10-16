@@ -16,49 +16,32 @@ import java.util.Date
 class DashboardController @Inject()(
   applicationService: ApplicationService,
   userService: UserService
-) extends Controller {
+  ) extends Controller {
 
   def index() = UserAuthenticationAction {implicit request =>
     Ok(views.html.dashboard())
   }
 
-  // add optional argument: application name
   def bootstrapDashboard() = UserAuthenticationAction.async {implicit request =>
     userService.getApplications(request.userId) flatMap {applications =>
-      if(applications.isEmpty){
-        //TODO: do not send bad request but a note saying that we dont have applications. then redirect to new application page
-        Future.successful(Forbidden)
-      } else {
-        userService.find(request.userId) flatMap {userOpt =>
-          val user = userOpt.get
-          val companyName = user.company
-          val info = applicationService.find(companyName, applications.head) map {optApp =>
-            (optApp map {application =>
-              Json.obj(
-                "companyName" -> companyName,
-                "name" -> application.name,
-                "userInfo" -> Json.obj(
-                  "name" -> user.name,
-                  "email" -> user.email
+      userService.find(request.userId) flatMap {userOpt =>
+        val user = userOpt.get
+        val companyName = user.company
+        val info = applicationService.find(companyName, applications.head) map {optApp =>
+          (optApp map {application =>
+            Json.obj(
+              "userInfo" -> Json.obj(
+                "name" -> user.name,
+                "email" -> user.email
                 ),
-                "credentials" -> Json.obj(
-                  "apiKey" -> application.credentials.apiKey,
-                  "sdkKey" -> application.credentials.sdkKey
-                ),
-                "virtualCurrencies" -> new JsArray(application.virtualCurrencies map {vc =>
-                  VirtualCurrency.buildJson(vc)
-                }),
-                /**    "items" -> new JsArray(applicationService.getItems(companyName, application.name) map {item =>
-                  Item.convertToJson(item)
-                  }),**/
-                "applications" -> new JsArray(applications map {el =>
-                  Json.obj("name" -> el)
-                })
-              )
-            }).get
-          }
-          info map {Ok(_)}
+              "credentials" -> Json.obj(
+                "apiKey" -> application.credentials.apiKey,
+                "sdkKey" -> application.credentials.sdkKey
+                )
+            )
+          }).get
         }
+        info map {Ok(_)}
       }
     }
   } 
