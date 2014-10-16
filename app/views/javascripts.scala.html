@@ -1,7 +1,7 @@
-<script src="@routes.WebJarAssets.at(WebJarAssets.locate("1.11.1/jquery.min.js"))"></script>
-<script src="@routes.WebJarAssets.at(WebJarAssets.locate("1.2.26/angular.js"))"></script>
-<script src="@routes.WebJarAssets.at(WebJarAssets.locate("1.2.26/angular-route.js"))"></script>
-<script src="@routes.WebJarAssets.at(WebJarAssets.locate("1.2.26/angular-cookies.min.js"))"></script>
+<script src="@routes.WebJarAssets.at(WebJarAssets.locate("jquery.min.js"))"></script>
+<script src="@routes.WebJarAssets.at(WebJarAssets.locate("angular.js"))"></script>
+<script src="@routes.WebJarAssets.at(WebJarAssets.locate("angular-route.js"))"></script>
+<script src="@routes.WebJarAssets.at(WebJarAssets.locate("angular-cookies.min.js"))"></script>
 <script src="@routes.WebJarAssets.at(WebJarAssets.locate("angular-ui-router.js"))"></script>
 <script defer src="@routes.WebJarAssets.at(WebJarAssets.locate("underscore-min.js"))"></script>
 <script defer src="@routes.WebJarAssets.at(WebJarAssets.locate("ui-bootstrap.js"))"></script>
@@ -9,16 +9,27 @@
 <script defer src="@routes.WebJarAssets.at(WebJarAssets.locate("moment.min.js"))"></script>
 <script defer src="@routes.WebJarAssets.at(WebJarAssets.locate("bootstrap.min.js"))"></script>
 <script defer src="@routes.WebJarAssets.at(WebJarAssets.locate("1.0.1-beta.4/Chart.min.js"))"></script>
+<!-- app -->
 <script defer src="@routes.Assets.at("javascripts/app.js")"></script>
 <script defer src="@routes.Assets.at("javascripts/services.js")"></script>
 <script defer src="@routes.Assets.at("javascripts/controllers.js")"></script>
 <script defer src="@routes.Assets.at("javascripts/events.js")"></script>
+<!-- controllers -->
 <script defer src="@routes.Assets.at("javascripts/controllers/appController.js")"></script>
 <script defer src="@routes.Assets.at("javascripts/controllers/loginController.js")"></script>
 <script defer src="@routes.Assets.at("javascripts/controllers/tweakbarController.js")"></script>
 <script defer src="@routes.Assets.at("javascripts/controllers/notAvailableYetController.js")"></script>
 <script defer src="@routes.Assets.at("javascripts/controllers/sidebarController.js")"></script>
+<!-- services -->
+<script defer src="@routes.Assets.at("javascripts/services/submitLoginCredentialsService.js")"></script>
+<script defer src="@routes.Assets.at("javascripts/services/SecurityHttpInterceptor.js")"></script>
+<script defer src="@routes.Assets.at("javascripts/services/redirectToDashboardService.js")"></script>
+<script defer src="@routes.Assets.at("javascripts/services/DateModel.js")"></script>
+<script defer src="@routes.Assets.at("javascripts/services/ApplicationStateService.js")"></script>
+<script defer src="@routes.Assets.at("javascripts/services/LoginLogoutService.js")"></script>
+<!-- directives -->
 <script defer src="@routes.Assets.at("javascripts/directives/chartjs-directive.js")"></script>
+<!-- others -->
 <script defer src="@routes.Assets.at("angular-file-upload.min.js")"></script>
 <script defer src="@routes.Assets.at("angular-file-upload-html5-shim.min.js")"></script>
 <script defer src="@routes.Assets.at("sweet-alert.min.js")"></script>
