@@ -41,6 +41,7 @@ application.controller('AppController', [
         email: ""
       };
 
+      ApplicationStateService.cleanup();
       $scope.authOK = false;
 
       document.body.className = "skin-blue login-screen";

@@ -66,6 +66,18 @@ service.factory('ApplicationStateService', ['$rootScope',
 			$rootScope.$broadcast("USER_INFO_UPDATED");
 		};
 
+		service.cleanup = function () {
+			service.applicationName = "";
+			service.companyName = "";
+			service.applicationsList = [];
+			service.userInfo = {
+				name: "",
+				email: ""
+			};
+			service.path = "";
+			service.applicationOverview = "";
+		};
+
 		return service;
 	}
 ]);

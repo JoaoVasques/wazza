@@ -35,7 +35,8 @@ angular.module('ApplicationModule.controllers', ['ApplicationModule.services', '
         .then(
           function(result){
             $scope.formErrors = {};
-            $scope.applicationName = $scope.applicationForm.name;
+            //invalidate previous list of applications and force new fetch
+            ApplicationStateService.updateApplicationsList("");
             $state.go('analytics.overview');
             swal("New Application Created!", "Go to Overview to see them all.", "success")
           },
