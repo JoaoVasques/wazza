@@ -46,7 +46,7 @@ dashboard.controller('OverviewController',[
         ApplicationStateService.updateApplicationsList(names);
       })
       .then(function(){
-        var companyName = ApplicationStateService.companyName;
+        var companyName = ApplicationStateService.getCompanyName();
         var revenue = "revenue";
         var ltv = "ltv";
         var arpu = "arpu";

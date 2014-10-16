@@ -48,7 +48,7 @@ dashboard.controller('DashboardController', [
     $scope.avgTimeBetweenPurchases = new KpiModel("Avg Time Bet. Purchases", "analytics.avgTimebetweenPurchase");
 
     $scope.updateKPIs = function(){
-      var companyName = ApplicationStateService.companyName;
+      var companyName = ApplicationStateService.getCompanyName();
       var app = ApplicationStateService.getApplicationName();
       var begin = DateModel.formatDate(DateModel.startDate);
       var end = DateModel.formatDate(DateModel.endDate);
@@ -88,7 +88,7 @@ dashboard.controller('DashboardController', [
             };
 
             angular.extend($scope.credentials, data.data.credentials);
-            push(data.data.virtualCurrencies, $scope.virtualCurrencies);
+            /*push(data.data.virtualCurrencies, $scope.virtualCurrencies);
             push(data.data.items, $scope.items);
             push(
                 _.map(data.data.applications, function (element) {
@@ -96,8 +96,8 @@ dashboard.controller('DashboardController', [
                 }),
                 $scope.applications
             );
-            //ApplicationStateService.updateApplicationName(_.first(data.data.applications).name);
-            ApplicationStateService.updateUserInfo(data.data.userInfo);
+            ApplicationStateService.updateApplicationName(_.first(data.data.applications).name);
+
 
             ApplicationStateService.updateApplicationsList(
               _.map(data.data.applications, function(app) {
@@ -105,7 +105,9 @@ dashboard.controller('DashboardController', [
               })
             );
 
-            ApplicationStateService.updateCompanyName(data.data.companyName);
+            ApplicationStateService.updateCompanyName(data.data.companyName);*/
+
+            ApplicationStateService.updateUserInfo(data.data.userInfo);
             ApplicationStateService.setPath("Dashboard");
 
             $scope.updateKPIs();

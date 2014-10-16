@@ -44,8 +44,8 @@ dashboard
 
     var updateChartData = function(context, KpiId, label) {
       GetMainKPIsService.getDetailedKPIData(
-        ApplicationStateService.companyName,
-        ApplicationStateService.applicationName,
+        ApplicationStateService.getCompanyName(),
+        ApplicationStateService.getApplicationName(),
         DateModel.formatDate(context.beginDate),
         DateModel.formatDate(context.endDate),
         KpiId
@@ -57,8 +57,8 @@ dashboard
 
     var updateTotalValues = function(context, KpiId) {
       GetMainKPIsService.getTotalKpiData(
-        ApplicationStateService.companyName,
-        ApplicationStateService.applicationName,
+        ApplicationStateService.getCompanyName(),
+        ApplicationStateService.getApplicationName(),
         DateModel.formatDate(context.beginDate),
         DateModel.formatDate(context.endDate),
         KpiId

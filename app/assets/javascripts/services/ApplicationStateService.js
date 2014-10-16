@@ -8,14 +8,14 @@ service.factory('ApplicationStateService', ['$rootScope',
 			name: "",
 			email: ""
 		};
-		service.pagename = "";
+		service.path = "";
 
 		service.getPath = function () {
-			return service.pagename;
+			return service.path;
 		};
 
 		service.setPath = function(value) {
-			service.pagename = value;
+			service.path = value;
 			$rootScope.page = value;
 			$rootScope.$broadcast("PAGE_UPDATED");
 		};
@@ -30,14 +30,26 @@ service.factory('ApplicationStateService', ['$rootScope',
 			$rootScope.$broadcast("APPLICATION_NAME_UPDATED"); 
 		};
 
+		service.getCompanyName = function(newName) {
+			return service.companyName;
+		};
+
 		service.updateCompanyName = function(newName) {
 			service.companyName = newName;
 			$rootScope.$broadcast("COMPANY_NAME_UPDATED");
 		};
 
+		service.getApplicationsList = function (newList) {
+			return service.applicationsList;
+		};
+
 		service.updateApplicationsList = function (newList) {
 			service.applicationsList = newList.slice(0);
 			$rootScope.$broadcast("APPLICATIONS_LIST_UPDATED");
+		};
+
+		service.getUserInfo = function (newInfo) {
+			return service.userInfo;
 		};
 
 		service.updateUserInfo = function (newInfo) {
@@ -46,4 +58,5 @@ service.factory('ApplicationStateService', ['$rootScope',
 		};
 
 		return service;
-	}]);
+	}
+]);
