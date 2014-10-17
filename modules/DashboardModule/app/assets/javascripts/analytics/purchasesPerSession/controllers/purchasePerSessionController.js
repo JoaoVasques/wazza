@@ -17,7 +17,7 @@ dashboard
     PurchaseDateChanged
   ) {
 
-    var title = "Purchase";
+    var title = "Purchases";
     var KpiId = "purchasesPerSession";
 
     ApplicationStateService.setPath(title);

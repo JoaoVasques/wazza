@@ -4,34 +4,10 @@
 <!--[if gt IE 9]><!-->  <html> <!--<![endif]-->
 
 @javascripts = {
-  <script src="@routes.WebJarAssets.at(WebJarAssets.locate("1.11.1/jquery.min.js"))"></script>
-  <script src="@routes.WebJarAssets.at(WebJarAssets.locate("1.2.25/angular.js"))"></script>
-  <script src="@routes.WebJarAssets.at(WebJarAssets.locate("1.2.25/angular-route.js"))"></script>
-  <script src="@routes.WebJarAssets.at(WebJarAssets.locate("1.2.25/angular-cookies.min.js"))"></script>
-  <script src="@routes.WebJarAssets.at(WebJarAssets.locate("angular-ui-router.js"))"></script>
+  <script src="@routes.WebJarAssets.at(WebJarAssets.locate("jquery.min.js"))"></script>
   <script defer src="@routes.WebJarAssets.at(WebJarAssets.locate("underscore-min.js"))"></script>
-  <script defer src="@routes.WebJarAssets.at(WebJarAssets.locate("ui-bootstrap.js"))"></script>
-  <script defer src="@routes.WebJarAssets.at(WebJarAssets.locate("ui-bootstrap-tpls.min.js"))"></script>
-  <script defer src="@routes.WebJarAssets.at(WebJarAssets.locate("moment.min.js"))"></script>
-  <script defer src="@routes.Assets.at("javascripts/angular-file-upload.min.js")"></script>
-  <script defer src="@routes.Assets.at("javascripts/angular-file-upload-html5-shim.min.js")"></script>
-  <script defer src="@routes.Assets.at("javascripts/app.js")"></script>
-  <script defer src="@routes.Assets.at("javascripts/services.js")"></script>
-  <script defer src="@routes.Assets.at("javascripts/controllers.js")"></script>
-  <script defer src="@routes.Assets.at("javascripts/events.js")"></script>
-  <script defer src="@routes.Assets.at("javascripts/controllers/appController.js")"></script>
-  <script defer src="@routes.Assets.at("javascripts/controllers/loginController.js")"></script>
   <script defer src="@routes.WebJarAssets.at(WebJarAssets.locate("bootstrap.min.js"))"></script>
-  <script defer src="@routes.WebJarAssets.at(WebJarAssets.locate("1.0.1-beta.4/Chart.min.js"))"></script>
-  <script defer src="@routes.Assets.at("javascripts/chartjs-directive.js")"></script>
   <script defer src="@routes.Assets.at("sweet-alert.min.js")"></script>
-
-  <!-- external controllers -->
-  @views.html.applicationJavascripts.render()
-  @views.html.userJavascripts.render()
-  @views.html.securityJavascripts.render()
-  @views.html.dashboardJavascripts.render()
-
   <!-- AdminLTE App -->
   <script defer src="@routes.Assets.at("app.js")"></script>
   <!-- everything else -->
@@ -52,7 +28,7 @@
   <link rel="stylesheet" href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,300italic,400italic,600,600italic,700,700italic,800,800italic' type='text/css'>
   <link rel="stylesheet" href='http://fonts.googleapis.com/css?family=Raleway:400,100,200,300,500,600,700,800,900' type='text/css'>
   <link rel="stylesheet" type="text/css" media="screen" href='http://fonts.googleapis.com/css?family=Titillium+Web:400,600,300,200&subset=latin,latin-ext'>
-  
+
   <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css">
   <link rel="shortcut icon" href="@routes.Assets.at("images/wazza_icon_black-01.png")">
 
@@ -71,7 +47,7 @@
   <link rel="stylesheet" href="@routes.Assets.at("stylesheets/style.css")">
 }
 
-<html ng-app="Wazza">
+<html>
   <head>
     <title>Wazza</title>
     <meta name="description" content="Wazza - Analytics for In-App Purchases" />
@@ -82,7 +58,7 @@
     @stylesheets
     @javascripts
   </head>
-  <body ng-controller="AppController" class="skin-blue">
+  <body class="skin-blue">
 
     <div class="top">
         <!-- Header -->
@@ -146,6 +122,5 @@
 
     </footer>
 
-      
   </body>
 </html>

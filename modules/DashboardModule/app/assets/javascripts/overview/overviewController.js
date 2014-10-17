@@ -3,7 +3,7 @@ dashboard.controller('OverviewController',[
   '$state',
   'OverviewInitService',
   'AppOverviewModel',
-  'GetMainKPIsService',
+  'GetKPIService',
   'DateModel',
   'ApplicationStateService',
   '$q',
@@ -12,7 +12,7 @@ dashboard.controller('OverviewController',[
     $state,
     OverviewInitService,
     AppOverviewModel,
-    GetMainKPIsService,
+    GetKPIService,
     DateModel,
     ApplicationStateService,
     $q
@@ -24,14 +24,17 @@ dashboard.controller('OverviewController',[
     $scope.applications = [];
     var noImageUrl = "assets/images/default-user-icon-profile.png";
 
-    OverviewInitService
-      .getCompany()
-      .then(function(results){
-        var company = results.data.name;
-        ApplicationStateService.updateCompanyName(company);
-      });
+    fetchCompanyName = function(){
+        OverviewInitService
+          .getCompany()
+          .then(function(results){
+            var company = results.data.name;
+            ApplicationStateService.updateCompanyName(company);
+          });
+    }
 
-    OverviewInitService
+    fetchApplications = function(){
+      OverviewInitService
       .getApplications()
       .then(function(results) {
         var names = [];
@@ -45,8 +48,10 @@ dashboard.controller('OverviewController',[
         });
         ApplicationStateService.updateApplicationsList(names);
       })
-      .then(function(){
-        var companyName = ApplicationStateService.companyName;
+    }
+
+    fetchKPIs = function(){
+        var companyName = ApplicationStateService.getCompanyName();
         var revenue = "revenue";
         var ltv = "ltv";
         var arpu = "arpu";
@@ -55,20 +60,35 @@ dashboard.controller('OverviewController',[
         
         _.each($scope.applications, function(app) {
           $q.all([
-            GetMainKPIsService.getTotalKpiData(companyName, app.name, start, end, revenue),
-            GetMainKPIsService.getTotalKpiData(companyName, app.name, start, end, ltv),
-            GetMainKPIsService.getTotalKpiData(companyName, app.name, start, end, arpu)
+            GetKPIService.getTotalKpiData(companyName, app.name, start, end, revenue),
+            GetKPIService.getTotalKpiData(companyName, app.name, start, end, ltv),
+            GetKPIService.getTotalKpiData(companyName, app.name, start, end, arpu)
           ])
           .then(function(res) {
             var extractValue = function(index) {
               return res[index].data.value;
             };
-            app.totalRevenue = extractValue(0);
-            app.ltv = extractValue(1);
-            app.arpu = extractValue(2);
+            app.totalRevenue = numeral(extractValue(0)).format('0');
+            app.ltv = numeral(extractValue(1)).format('0')
+            app.arpu = numeral(extractValue(2)).format('0')
           });
         });
-      });
+
+        ApplicationStateService.updateApplicationsOverview($scope.applications);
+      }
+
+    bootstrap = function(){
+      if(ApplicationStateService.getCompanyName() === "")
+        fetchCompanyName();
+
+      if(ApplicationStateService.getApplicationsList().length === 0)
+        fetchApplications();
+      else
+        $scope.applications = ApplicationStateService.getApplicationsOverview();
+
+      fetchKPIs();
+    }
+
+    bootstrap();
   }
 ]);
-

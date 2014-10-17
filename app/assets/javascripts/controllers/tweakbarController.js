@@ -1,25 +1,33 @@
-application.controller('NavBarController',[
+application.controller('TweakBarController',[
   '$scope',
-  'LoginLogoutService',
   'DateModel',
   '$state',
   '$rootScope',
+  '$stateParams',
   function (
     $scope,
-    LoginLogoutService,
     DateModel,
     $state,
-    $rootScope
+    $rootScope,
+    $stateParams
     ) {
 
-    $scope.logout = function(){
-      LoginLogoutService.logout();
+    $scope.userInfo = {
+        name: "",
+        email: ""
     };
 
     $scope.today = function() {
-      DateModel.initDateInterval();
-      $scope.beginDate = DateModel.startDate;
-      $scope.endDate = DateModel.endDate;
+      if(DateModel.refresh){
+        $scope.beginDate = DateModel.min;
+        $scope.endDate = DateModel.max;
+        DateModel.refresh = false;
+      }
+      else{
+        DateModel.initDateInterval();
+        $scope.beginDate = DateModel.startDate;
+        $scope.endDate = DateModel.endDate;
+      }
     };
 
     $scope.toggleMin = function() {
@@ -54,6 +62,19 @@ application.controller('NavBarController',[
     $scope.updateKPIs = function() {
       DateModel.startDate = $scope.beginDate;
       DateModel.endDate = $scope.endDate;
-      $rootScope.$broadcast($state.current.name);
+
+      //update kpi in a given time range
+      if($state.current.name === "analytics.dashboard" || $state.current.name === "analytics.overview"){
+        DateModel.refresh = true;
+        DateModel.min = $scope.beginDate;
+        DateModel.max = $scope.endDate;
+
+        $state.transitionTo($state.current, $stateParams, {
+            reload: true,
+            inherit: false,
+            notify: true
+        });
+      } else
+        $rootScope.$broadcast($state.current.name);
     }
   }]);

@@ -1,22 +1,22 @@
-        <div class="wrapper row-offcanvas row-offcanvas-left">
-            <!-- Left side column. contains the logo and sidebar -->
-            @views.html.sidebar.render()
+<div class="wrapper row-offcanvas row-offcanvas-left">
+  <!-- Left side column. contains the logo and sidebar -->
+  @views.html.sidebar.render()
 
-            <!-- Right side column. Contains the navbar and content of the page -->
-            <aside class="right-side">
-                <!-- Content Header (Page header) -->
-                <section class="content-header" ng-controller="NavBarController" ng-model="page" style="height:61px">
-                      <div class="row">
-                        <div class="col-md-5">
-                          <h4 style="font-size:22px">{{page}}</h4>
-                        </div>
-                      </div>
-                </section>
-
-                <!-- Main content -->
-                <section class="content">
-                  <div ui-view></div>
-                </section>
-
-            </aside>
+  <!-- Right side column. Contains the navbar and content of the page -->
+  <aside class="right-side">
+    <!-- Content Header (Page header) -->
+    <section class="content-header" ng-controller="TweakBarController" ng-model="page" style="height:61px">
+      <div class="row">
+        <div class="col-md-5">
+          <h4 style="font-size:22px">{{page}}</h4>
         </div>
+      </div>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+      <div ui-view></div>
+    </section>
+
+  </aside>
+</div>

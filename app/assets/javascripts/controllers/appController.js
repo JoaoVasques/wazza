@@ -23,6 +23,10 @@ application.controller('AppController', [
     //auth related
     $scope.authOK = false;
 
+    $scope.logout = function(){
+      LoginLogoutService.logout();
+    };
+
     $scope.$on("LOGIN_SUCCESS", function(event, data){
       document.body.className = "skin-blue";
       $scope.authOK = true;
@@ -37,6 +41,7 @@ application.controller('AppController', [
         email: ""
       };
 
+      ApplicationStateService.cleanup();
       $scope.authOK = false;
 
       document.body.className = "skin-blue login-screen";
@@ -49,7 +54,7 @@ application.controller('AppController', [
     $scope.applicationsList = [];
 
     $scope.$on("APPLICATION_NAME_UPDATED", function(){
-      $scope.applicationName = ApplicationStateService.applicationName;
+      $scope.applicationName = ApplicationStateService.getApplicationName();
     });
 
     $scope.$on("APPLICATIONS_LIST_UPDATED", function() {
