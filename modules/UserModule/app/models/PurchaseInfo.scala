@@ -28,7 +28,6 @@ case class PurchaseInfo(
   id: String,
   sessionId: String,
   userId: String,
-  applicationName: String,
   itemId: String,
   price: Double,
   time: String,
@@ -49,11 +48,10 @@ object PurchaseInfo {
         "id" -> map("id"),
         "sessionId" -> map("sessionId"),
         "userId" -> map("userId"),
-        "name" -> map("name"),
         "itemId" -> map("itemId"),
         "price" -> map("price"),
-        "deviceInfo" -> map("deviceInfo"),
-        "time" -> map("time")
+        "time" -> map("time"),
+        "deviceInfo" -> map("deviceInfo")
       )
     )
   }
@@ -62,7 +60,6 @@ object PurchaseInfo {
     (__ \ "id").read[String] and
     (__ \ "sessionId").read[String] and
     (__ \ "userId").read[String] and
-    (__ \ "name").read[String] and
     (__ \ "itemId").read[String] and
     (__ \ "price").read[Double] and
     (__ \ "time").read[String] and
@@ -74,7 +71,6 @@ object PurchaseInfo {
     (__ \ "id").write[String] and
     (__ \ "sessionId").write[String] and
     (__ \ "userId").write[String] and
-    (__ \ "name").write[String] and
     (__ \ "itemId").write[String] and
     (__ \ "price").write[Double] and
     (__ \ "time").write[String] and

@@ -72,7 +72,6 @@ class GeneratePurchasesController @Inject()(
             s"purchase-$userNumber-${currentDay.toString}",
             (s"${currentDay.toString}-$userNumber"),
             userNumber.toString,
-            applicationName,
             item._1,
             item._2,
             date,
