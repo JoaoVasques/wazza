@@ -1,9 +1,7 @@
 package controllers.api
 
 import com.google.inject._
-import java.security.MessageDigest
 import models.user.MobileSession
-import org.apache.commons.codec.binary.Hex
 import org.joda.time.Seconds
 import play.api._
 import play.api.libs.json.JsError
@@ -29,24 +27,18 @@ class SessionController @Inject()(
 ) extends Controller {
 
   private def createNewSessionInfo(content: JsValue): Future[SimpleResult] = {
-    def generateHash(content: String) = {
-      val md = MessageDigest.getInstance("SHA-256")
-      md.update(content.getBytes("UTF-8"))
-      Hex.encodeHexString(md.digest())
-    }
-
     val formatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss Z")
     val start = formatter.parseDateTime((content \ "startTime").as[String])
     val end = formatter.parseDateTime((content \ "endTime").as[String])
 
     val promise = Promise[SimpleResult]
     sessionService.create(Json.obj(
-      "id" -> generateHash(content.toString),
+      "id" -> (content \ "hash").as[String],
       "userId" -> (content \ "userId").as[String],
       "sessionLength" -> (new Interval(start, end).toDurationMillis() / 1000),
       "startTime" -> (content \ "startTime").as[String],
       "deviceInfo" -> (content \ "deviceInfo"),
-      "purchases" -> List[String]()
+      "purchases" -> (content \ "purchases").as[List[String]]
     )) match {
       case Success(session) => {
         val companyName = (content \ "companyName").as[String]
@@ -80,7 +72,9 @@ class SessionController @Inject()(
               } recover {
                 case ex: Exception => Future.failed(ex)
               }
-            } else Future.failed(new Exception("duplicated session"))
+            } else {
+              createNewSessionInfo(session)
+            }
           }
         }})
 
