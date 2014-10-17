@@ -2,31 +2,32 @@
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
 
-# root
+# dashboard
 GET     /                             @controllers.dashboard.DashboardController.index
 GET     /bootstrap                    @controllers.dashboard.DashboardController.bootstrapDashboard
+GET     /kpi                          @controllers.dashboard.DashboardController.kpi
+
+# overview
 GET     /overview                     @controllers.dashboard.OverviewController.overview
 GET     /overview/bootstrap           @controllers.dashboard.OverviewController.bootstrapOverview
-GET		/overview/company			  @controllers.dashboard.OverviewController.company
-
-GET		/kpi						  @controllers.dashboard.DashboardController.kpi
-
-# inventory
-GET     /inventory                    @controllers.dashboard.DashboardController.inventory
-GET     /inventory/crud               @controllers.dashboard.DashboardController.inventoryCRUD
-GET     /inventory/virtualCurrencies  @controllers.dashboard.DashboardController.inventoryVirtualCurrencies
+GET     /overview/company             @controllers.dashboard.OverviewController.company
 
 # analytics
-GET     /analytics	                  @controllers.dashboard.DashboardController.analytics
+GET     /analytics                    @controllers.dashboard.AnalyticsController.analytics
+
+# inventory
+GET     /inventory                    @controllers.dashboard.AnalyticsController.inventory
+GET     /inventory/crud               @controllers.dashboard.AnalyticsController.inventoryCRUD
+GET     /inventory/virtualCurrencies  @controllers.dashboard.AnalyticsController.inventoryVirtualCurrencies
 
 # not used atm
-#GET     /store/android                @controllers.dashboard.DashboardController.storeAndroid
-#GET     /store/apple                  @controllers.dashboard.DashboardController.storeApple
-#GET     /store/amazon                 @controllers.dashboard.DashboardController.storeAmazon
+#GET     /store/android               @controllers.dashboard.AnalyticsController.storeAndroid
+#GET     /store/apple                 @controllers.dashboard.AnalyticsController.storeApple
+#GET     /store/amazon                @controllers.dashboard.AnalyticsController.storeAmazon
 
 # other
-GET     /settings                     @controllers.dashboard.DashboardController.settingsSection
+GET     /settings                     @controllers.dashboard.AnalyticsController.settingsSection
 
 # Map static resources from the /public folder to the /assets URL path
-GET     /assets/*file               	controllers.dashboard.Assets.at(path="/public", file)
-GET     /webjars/*file              	controllers.WebJarAssets.at(file)
+GET     /assets/*file                 controllers.dashboard.Assets.at(path="/public", file)
+GET     /webjars/*file                controllers.WebJarAssets.at(file)

@@ -18,10 +18,6 @@ class DashboardController @Inject()(
   userService: UserService
   ) extends Controller {
 
-  def index() = UserAuthenticationAction {implicit request =>
-    Ok(views.html.dashboard())
-  }
-
   def bootstrapDashboard() = UserAuthenticationAction.async {implicit request =>
     userService.getApplications(request.userId) flatMap {applications =>
       userService.find(request.userId) flatMap {userOpt =>
@@ -38,55 +34,20 @@ class DashboardController @Inject()(
                 "apiKey" -> application.credentials.apiKey,
                 "sdkKey" -> application.credentials.sdkKey
                 )
-            )
-          }).get
+              )
+            }).get
         }
         info map {Ok(_)}
       }
     }
   } 
 
+  def index() = UserAuthenticationAction {implicit request =>
+    Ok(views.html.dashboard())
+  }
+
   def kpi = UserAuthenticationAction {implicit request =>
     Ok(views.html.kpi())
   }
 
-  //analytics
-  def analytics = UserAuthenticationAction {implicit request =>
-    Ok(views.html.analytics.generic())
-  }
-
-/** not used atm
-  //store
-  def storeAndroid = UserAuthenticationAction {implicit request =>
-    Ok(views.html.store.storeAndroid())
-  }
-
-  def storeApple = UserAuthenticationAction {implicit request =>
-    Ok(views.html.store.storeApple())
-  }
-
-  def storeAmazon = UserAuthenticationAction {implicit request =>
-    Ok(views.html.store.storeAmazon())
-  }
-**/
-
-  //inventory
-  def inventory = UserAuthenticationAction {implicit request =>
-    Ok(views.html.inventory.inventory())
-  }
-
-  def inventoryCRUD = UserAuthenticationAction {implicit request =>
-    Ok(views.html.inventory.inventoryCRUD())
-  }
-
-  def inventoryVirtualCurrencies = UserAuthenticationAction {implicit request =>
-    Ok(views.html.inventory.inventoryVirtualCurrencies())
-  }
-
-  //others
-
-  def settingsSection = UserAuthenticationAction {implicit request =>
-    Ok(views.html.settings())
-  }
 }
-
