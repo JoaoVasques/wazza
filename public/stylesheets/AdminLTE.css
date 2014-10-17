@@ -405,7 +405,7 @@ body > .header .logo {
   font-weight: 500;
   height: 50px;
   display: block;
-  background-color: #2C3E50 !important;
+  background-color: #34495E !important;
 }
 body > .header .logo .icon {
   margin-right: 10px;
@@ -641,7 +641,7 @@ body > .header .logo .icon {
   background-color: #3c8dbc;
   color: #f9f9f9;
 }
-/*Drodown in navbars*/
+/*Dropdown in navbars*/
 .skin-blue .navbar .dropdown-menu > li > a {
   color: #444444;
 }
@@ -1053,7 +1053,7 @@ body > .header .logo .icon {
   padding-left: 0;
 }
 /*
-    Compenent: Progress bars
+    Component: Progress bars
 --------------------------------
 */
 /* size variation */
@@ -2417,7 +2417,7 @@ Component: timeline
 /* skin-blue navbar */
 .skin-blue .navbar {
   /*background-color: #3c8dbc;*/
-  background-color: #2C3E50;
+  background-color: #34495E;
 }
 .skin-blue .navbar .nav a {
   color: rgba(255, 255, 255, 0.8);
