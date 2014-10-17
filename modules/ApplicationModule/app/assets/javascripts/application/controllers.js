@@ -1,9 +1,8 @@
 // application module
 
 angular.module('ApplicationModule.controllers', ['ApplicationModule.services', 'DashboardModule']).
-  controller(
-    'NewApplicationFormController',
-    ['$scope',
+  controller('NewApplicationFormController', [
+    '$scope',
     'createNewApplicationService',
     '$route',
     '$state',
