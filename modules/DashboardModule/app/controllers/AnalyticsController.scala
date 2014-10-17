@@ -14,46 +14,18 @@ import models.application._
 import java.util.Date
 
 class AnalyticsController @Inject()(
-	applicationService: ApplicationService,
-	userService: UserService
-	) extends Controller {
+    applicationService: ApplicationService,
+    userService: UserService
+    ) extends Controller {
 
 	def analytics = UserAuthenticationAction {implicit request =>
 		Ok(views.html.analytics.generic())
 	}
 
-/** not used atm
-  //store
-  def storeAndroid = UserAuthenticationAction {implicit request =>
-    Ok(views.html.store.storeAndroid())
-  }
+    //others
 
-  def storeApple = UserAuthenticationAction {implicit request =>
-    Ok(views.html.store.storeApple())
-  }
-
-  def storeAmazon = UserAuthenticationAction {implicit request =>
-    Ok(views.html.store.storeAmazon())
-  }
-**/
-
-  //inventory
-  def inventory = UserAuthenticationAction {implicit request =>
-  	Ok(views.html.inventory.inventory())
-  }
-
-  def inventoryCRUD = UserAuthenticationAction {implicit request =>
-  	Ok(views.html.inventory.inventoryCRUD())
-  }
-
-  def inventoryVirtualCurrencies = UserAuthenticationAction {implicit request =>
-  	Ok(views.html.inventory.inventoryVirtualCurrencies())
-  }
-
-  //others
-
-  def settingsSection = UserAuthenticationAction {implicit request =>
-  	Ok(views.html.settings())
-  }
+    def settingsSection = UserAuthenticationAction {implicit request =>
+        Ok(views.html.settings())
+    }
 }
 
