@@ -10,7 +10,7 @@ dashboard.controller('DashboardController', [
     'DeleteItemService',
     'ApplicationStateService',
     'ItemSearchService',
-    'GetMainKPIsService',
+    'GetKPIService',
     "DateModel",
     "KpiModel",
     "$q",
@@ -26,7 +26,7 @@ dashboard.controller('DashboardController', [
         DeleteItemService,
         ApplicationStateService,
         ItemSearchService,
-        GetMainKPIsService,
+        GetKPIService,
         DateModel,
         KpiModel,
         $q
@@ -54,15 +54,15 @@ dashboard.controller('DashboardController', [
           var end = DateModel.formatDate(DateModel.endDate);
 
           $q.all([
-            GetMainKPIsService.getTotalKpiData(companyName, app, begin, end, "revenue"),
-            GetMainKPIsService.getTotalKpiData(companyName, app, begin, end, "ltv"),
-            GetMainKPIsService.getTotalKpiData(companyName, app, begin, end, "arpu"),
-            GetMainKPIsService.getTotalKpiData(companyName, app, begin, end, "churn"),
-            GetMainKPIsService.getTotalKpiData(companyName, app, begin, end, "avgTimeBetweenPurchases"),
-            GetMainKPIsService.getTotalKpiData(companyName, app, begin, end, "payingUsers"),
-            GetMainKPIsService.getTotalKpiData(companyName, app, begin, end, "avgTime1stPurchase"),
-            GetMainKPIsService.getTotalKpiData(companyName, app, begin, end, "avgRevenueSession"),
-            GetMainKPIsService.getTotalKpiData(companyName, app, begin, end, "purchasesPerSession")
+            GetKPIService.getTotalKpiData(companyName, app, begin, end, "revenue"),
+            GetKPIService.getTotalKpiData(companyName, app, begin, end, "ltv"),
+            GetKPIService.getTotalKpiData(companyName, app, begin, end, "arpu"),
+            GetKPIService.getTotalKpiData(companyName, app, begin, end, "churn"),
+            GetKPIService.getTotalKpiData(companyName, app, begin, end, "avgTimeBetweenPurchases"),
+            GetKPIService.getTotalKpiData(companyName, app, begin, end, "payingUsers"),
+            GetKPIService.getTotalKpiData(companyName, app, begin, end, "avgTime1stPurchase"),
+            GetKPIService.getTotalKpiData(companyName, app, begin, end, "avgRevenueSession"),
+            GetKPIService.getTotalKpiData(companyName, app, begin, end, "purchasesPerSession")
             ]).then(function(res) {
               var extractValue = function(index, _type) {
                 return (_type == 'value') ?  res[index].data.value : res[index].data.delta;

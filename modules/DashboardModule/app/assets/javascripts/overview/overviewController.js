@@ -3,7 +3,7 @@ dashboard.controller('OverviewController',[
   '$state',
   'OverviewInitService',
   'AppOverviewModel',
-  'GetMainKPIsService',
+  'GetKPIService',
   'DateModel',
   'ApplicationStateService',
   '$q',
@@ -12,7 +12,7 @@ dashboard.controller('OverviewController',[
     $state,
     OverviewInitService,
     AppOverviewModel,
-    GetMainKPIsService,
+    GetKPIService,
     DateModel,
     ApplicationStateService,
     $q
@@ -60,9 +60,9 @@ dashboard.controller('OverviewController',[
         
         _.each($scope.applications, function(app) {
           $q.all([
-            GetMainKPIsService.getTotalKpiData(companyName, app.name, start, end, revenue),
-            GetMainKPIsService.getTotalKpiData(companyName, app.name, start, end, ltv),
-            GetMainKPIsService.getTotalKpiData(companyName, app.name, start, end, arpu)
+            GetKPIService.getTotalKpiData(companyName, app.name, start, end, revenue),
+            GetKPIService.getTotalKpiData(companyName, app.name, start, end, ltv),
+            GetKPIService.getTotalKpiData(companyName, app.name, start, end, arpu)
           ])
           .then(function(res) {
             var extractValue = function(index) {

@@ -5,7 +5,7 @@ dashboard
   '$scope',
   '$rootScope',
   'ApplicationStateService',
-  'GetMainKPIsService',
+  'GetKPIService',
   'LineChartConfiguration',
   'DateModel',
   'DetailedKpiModel',
@@ -13,7 +13,7 @@ dashboard
     $scope,
     $rootScope,
     ApplicationStateService,
-    GetMainKPIsService,
+    GetKPIService,
     LineChartConfiguration,
     DateModel,
     DetailedKpiModel
@@ -43,7 +43,7 @@ dashboard
     };
 
     var updateChartData = function(context, KpiId, label) {
-      GetMainKPIsService.getDetailedKPIData(
+      GetKPIService.getDetailedKPIData(
         ApplicationStateService.getCompanyName(),
         ApplicationStateService.getApplicationName(),
         DateModel.formatDate(context.beginDate),
@@ -56,7 +56,7 @@ dashboard
     };
 
     var updateTotalValues = function(context, KpiId) {
-      GetMainKPIsService.getTotalKpiData(
+      GetKPIService.getTotalKpiData(
         ApplicationStateService.getCompanyName(),
         ApplicationStateService.getApplicationName(),
         DateModel.formatDate(context.beginDate),
