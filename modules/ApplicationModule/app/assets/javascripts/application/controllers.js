@@ -17,6 +17,7 @@ angular.module('ApplicationModule.controllers', ['ApplicationModule.services', '
     ) {
 
     ApplicationStateService.setPath("Create New Application");
+    ApplicationStateService.updateApplicationName("");
 
     $scope.noImageThumbnailUrl = "assets/images/placeholder_2.jpg";
     $scope.storeOptions = ['iOS', 'Android'];

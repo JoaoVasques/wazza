@@ -6,12 +6,12 @@
 
             <div class="row">
                 <h4><label for="name">Name</label></h4>
-                <input class="form-control" id="name" type="text" data-ng-model="applicationForm.name" required>
+                <input class="form-control" id="name" type="text" data-ng-model="applicationForm.name" autofocus required>
             </div>
 
             <div class="row">
                 <h4><label for="description">Description</label></h4>
-                <textarea id="description" class="form-control" data-ng-model="applicationForm.description" rows="4"></textarea>
+                <textarea class="form-control" id="description" data-ng-model="applicationForm.description" rows="4"></textarea>
             </div>
 
             <div class="row">
@@ -35,7 +35,7 @@
             </div-->
 
             <div class="row"><br>
-                <input type="submit" class="btn btn-success" value="Create Application">
+                <input type="submit" class="btn btn-success call-to-action" value="Create Application">
             </div>
 
         </div>
@@ -51,7 +51,7 @@
 
             <div class="row">
                 <br>
-                <span class="btn btn-default btn-file">
+                <span class="btn btn-default btn-file" style="margin-right:20px">
                     <i class="fa fa-upload"></i>
                     <input type="file" file-model="myFile" ng-file-select="onFileSelect($files)" ng-model="imgThumb">
                     Upload image
