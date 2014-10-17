@@ -4,7 +4,7 @@ inventoryServices.factory('BootstrapInventoryService', ['$http', '$q',
 
         service.execute = function () {
             var request = $http({
-                url: '/inventory/bootstrap',
+                url: '/dashboard/inventory/bootstrap',
                 method: 'GET'
             });
 
