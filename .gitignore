@@ -15,6 +15,7 @@ dist
 /.settings
 conf/prod
 conf/dev
+conf/application.conf
 .ensime*
 .vagrant/
   
