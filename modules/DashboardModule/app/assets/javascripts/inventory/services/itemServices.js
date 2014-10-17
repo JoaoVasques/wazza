@@ -1,5 +1,4 @@
-//item related. leftover.
-dashboardServices.factory('FetchItemsService', ['$http', '$q',
+inventoryServices.factory('FetchItemsService', ['$http', '$q',
     function ($http, $q) {
         var service = {};
 

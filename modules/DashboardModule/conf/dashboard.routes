@@ -21,9 +21,9 @@ GET     /inventory/crud               @controllers.dashboard.AnalyticsController
 GET     /inventory/virtualCurrencies  @controllers.dashboard.AnalyticsController.inventoryVirtualCurrencies
 
 # not used atm
-#GET     /store/android               @controllers.dashboard.AnalyticsController.storeAndroid
-#GET     /store/apple                 @controllers.dashboard.AnalyticsController.storeApple
-#GET     /store/amazon                @controllers.dashboard.AnalyticsController.storeAmazon
+#GET    /store/android                @controllers.dashboard.AnalyticsController.storeAndroid
+#GET    /store/apple                  @controllers.dashboard.AnalyticsController.storeApple
+#GET    /store/amazon                 @controllers.dashboard.AnalyticsController.storeAmazon
 
 # other
 GET     /settings                     @controllers.dashboard.AnalyticsController.settingsSection
