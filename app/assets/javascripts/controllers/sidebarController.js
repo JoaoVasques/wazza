@@ -36,7 +36,7 @@ application.controller('SidebarController', [
         confirmButtonColor: "#DD6B55",
         confirmButtonText: "Yes, I have no fear!" },
         function(){
-          $state.go(state);
+          $scope.followLink(state);
         });
     }
 
