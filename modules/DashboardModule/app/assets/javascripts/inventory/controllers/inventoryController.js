@@ -5,7 +5,7 @@ dashboard
   '$scope',
   '$rootScope',
   'FetchItemsService',
-  'BootstrapDashboardService',
+  'BootstrapInventoryService',
   'DeleteItemService',
   'ApplicationStateService',
   'ItemSearchService',
@@ -14,7 +14,7 @@ dashboard
     $scope,
     $rootScope,
     FetchItemsService,
-    BootstrapDashboardService,
+    BootstrapInventoryService,
     DeleteItemService,
     ApplicationStateService,
     ItemSearchService,
@@ -67,7 +67,7 @@ dashboard
         $scope.itemSearch = ItemSearchService.searchData
     });
 
-    BootstrapDashboardService.execute()
+    BootstrapInventoryService.execute()
     .then(
         $scope.successCallback,
         $scope.failureCallback);
