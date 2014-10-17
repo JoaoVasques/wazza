@@ -30,7 +30,7 @@
 	</div>
 
 	<div class="col-xs-12 col-md-4">
-		<a href="#" ng-click="addItem()">
+		<a href="" ng-click="addItem()">
 			<div class="panel panel-default panel-dimensions">
 				<div class="panel-body">
 					<div class="row">
@@ -66,14 +66,14 @@
 					<a ui-sref="home.inventory.crud" class="btn btn-default btn-lg"><i class="fa fa-th-list"></i></a>
 				</div>
 			</li>
-			<li class="dropdown" ng-controller="DashboardController">
+			<li class="dropdown" ng-controller="InventoryController">
 				<a href="#" class="dropdown-toggle" data-toggle="dropdown">Add<b class="caret"></b></a>
 				<ul class="dropdown-menu">
 					<li><a href="#" ng-click="addItem()">Item</a></li>
 					<li><a href="#" ng-click="addItem()">Virtual Currency</a></li>
 				</ul>
 			</li>
-			<li class="dropdown" ng-controller="DashboardController">
+			<li class="dropdown" ng-controller="InventoryController">
 				<a href="#" class="dropdown-toggle" data-toggle="dropdown">Choose Store<b class="caret"></b></a>
 				<ul class="dropdown-menu"><!-- TODO: all these links are wrong. change to state machine and enable those states -->
 					<li><a href="/store/android">Android</a></li>
