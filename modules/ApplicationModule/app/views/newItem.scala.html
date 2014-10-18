@@ -1,36 +1,61 @@
 @(currencyTypes: List[String])
 
-<div class="row-fluid">
-    <form enctype="multipart/form-data" ng-submit="createItem()">
-      <div class="col-md-4 form-group">
-          <label for="name">Name</label>
-          <input class="form-control" id="name" type="text" data-ng-model="itemForm.name" required/>
-          <!-- <span class="help-inline" ng-show="formErrors.name.visible" ng-bind="formErrors.name.message"/> -->
+<form enctype="multipart/form-data" ng-submit="createItem()">
+    <div class="row">
+        <div class="col-md-4 form-group" style="margin-left:20px">
 
-          <label for="name">Description</label>
-          <textarea class="form-control" data-ng-model="itemForm.description" rows="4" required></textarea>
+            <div class="row">
+                <h4><label for="name">Name</label></h4>
+                <input class="form-control" id="name" type="text" data-ng-model="itemForm.name" autofocus required>
+                <!-- <span class="help-inline" ng-show="formErrors.name.visible" ng-bind="formErrors.name.message"/> -->
+            </div>
 
-          <div class="col-md-4">
-            <label for="name">Price</label>
-            <input type="number" min="0" step="any" class="form-control" id="name" type="text" data-ng-model="itemForm.currency.value" required/>
-          </div>
-          <div class="col-md-8">
-            <label for="name">Currency</label>
-            <select class="form-control" ng-model="itemForm.currency.virtualCurrency" ng-options="c for c in itemForm.currency.realCurrencies"></select>
-          </div>
-      </div>
-      <div class="col-md-4 form-group">
-          <img id="item-logo-thumbnail" ng-src="{{itemForm.imageInfo.url}}" class="img-thumbnail" style="height: 200px">
-          <div class="row-fluid">
-            <span class="btn btn-default btn-file">
-                <i class="fa fa-upload"></i>
-                <input type="file" file-model="myFile" ng-file-select="onFileSelect($files)" ng-model="imgThumb" required/>
-                Upload image
-            </span>
-          </div>
-      </div>
-      <div class="col-md-12 form-group">
-          <input type="submit" class="btn btn-success" value="Create">
-      </div>
-    </form>
-</div>
+            <div class="row">
+                <h4><label for="description">Description</label></h4>
+                <textarea class="form-control" id="description" data-ng-model="itemForm.description" rows="4"></textarea>
+            </div>
+
+            <div class="row">
+                <div class="col-md-4">
+                    <h4><label for="name">Price</label></h4>
+                </div>
+                <div class="col-md-8">
+                    <h4><label for="name">Currency</label></h4>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-4">
+                  <input type="number" min="0" step="any" class="form-control" id="name" type="text" data-ng-model="itemForm.currency.value" required>
+                </div>
+                <div class="col-md-8">
+                  <select class="form-control" ng-model="itemForm.currency.virtualCurrency" ng-options="c for c in itemForm.currency.realCurrencies"></select>
+                </div>
+            </div>
+
+            <div class="row"><br>
+                <input type="submit" class="btn btn-success call-to-action" value="Create">
+            </div>
+
+        </div>
+        <div class="col-md-4 form-group" style="margin-left:20px">
+
+            <!--label for="name">Package name</label>
+            <input class="form-control" id="packageName" type="text" data-ng-model="applicationForm.packageName"/-->
+
+            <div class="row">
+                <h4><label>Item Image</label></h4>
+                <img id="item-logo-thumbnail" ng-src="{{itemForm.imageInfo.url}}" class="img-thumbnail" style="height: 247px">
+            </div>
+
+            <div class="row">
+                <br>
+                <span class="btn btn-default btn-file" style="margin-right:20px">
+                    <i class="fa fa-upload"></i>
+                    <input type="file" file-model="myFile" ng-file-select="onFileSelect($files)" ng-model="imgThumb" required>
+                    Upload image
+                </span> (not required)
+            </div>
+        </div>
+    </div>
+</form>
