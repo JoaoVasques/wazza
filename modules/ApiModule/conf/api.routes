@@ -22,4 +22,4 @@ GET     /webjars/*file                controllers.WebJarAssets.at(file)
 
 #POST    /bootstrap/sessions/:companyName/:appName @controllers.api.GenerateSessionsController.execute(companyName: String, appName: String)
 
-#POST    /bootstrap/purchases/:companyName/:appName @controllers.api.GeneratePurchasesController.execute(companyName: String, appName: String)  
+#POST    /bootstrap/purchases/:companyName/:appName @controllers.api.GeneratePurchasesController.execute(companyName: String, appName: String)

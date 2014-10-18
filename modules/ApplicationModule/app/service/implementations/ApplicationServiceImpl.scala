@@ -219,6 +219,7 @@ class ApplicationServiceImpl @Inject()(
     null
   }
 
+  //TODO
   def getVirtualCurrency(
     companyName: String,
     currencyName: String,

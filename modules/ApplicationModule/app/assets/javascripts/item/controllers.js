@@ -22,7 +22,7 @@ angular.module('ItemModule.controllers', ['ItemModule.services', 'angularFileUpl
       ApplicationStateService,
       GetLanguagesService
     ) {
-      //TODO: add ApplicationStateService
+
       $scope.itemSearch = false;
       $scope.currencyOptions = ["Real","Virtual"];
       $scope.showCurrencyInputs = {
@@ -33,7 +33,7 @@ angular.module('ItemModule.controllers', ['ItemModule.services', 'angularFileUpl
     $scope.bootstrapModule = function(){
       $scope.noImageThumbnailUrl = "assets/images/placeholder_2.jpg"
       $scope.itemForm = {
-        "applicationName": ApplicationStateService.applicationName,
+        "applicationName": ApplicationStateService.getApplicationName(),
         "name": "",
         "description": "",
         "store": 1,
@@ -61,7 +61,7 @@ angular.module('ItemModule.controllers', ['ItemModule.services', 'angularFileUpl
         }
       };
 
-      $scope.companyName = ApplicationStateService.companyName;
+      $scope.companyName = ApplicationStateService.getCompanyName();
       $scope.imgThumb = "";
       $scope.showCurrencyInputs.real = true;
       $scope.errors = false;
@@ -69,11 +69,11 @@ angular.module('ItemModule.controllers', ['ItemModule.services', 'angularFileUpl
       $scope.moneyCurrency = "$"; /*+ TODO: in the future get this via API **/
       $scope.currentCurrency = "$";
       $scope.virtualCurrencies = [];
-      getVirtualCurrenciesService.execute($scope.itemForm.applicationName)
+      /*getVirtualCurrenciesService.execute($scope.itemForm.applicationName)
         .then(
           $scope.handleVirtualCurrencyRequestSuccess,
           $scope.handleVirtualCurrencyRequestError
-        );
+        );*/
       $scope.itemForm.metadata.language = _.first(GetLanguagesService.languageOptions());
       $scope.$watch('itemForm.currency.typeOf', function(newValue, oldValue, scope){
         if (newValue == "Real") {
