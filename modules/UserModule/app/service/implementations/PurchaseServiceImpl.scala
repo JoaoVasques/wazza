@@ -26,52 +26,11 @@ class PurchaseServiceImpl @Inject()(
   mobileSessionService: MobileSessionService
 ) extends PurchaseService {
 
-/**  private def addPurchaseToRecommendationCollection(
-    companyName: String,
-    applicationName: String,
-    purchaseId: String,
-    userId: String
-  ): Future[Unit] = {
-
-    val date = new SimpleDateFormat("EE MMM dd yyyy HH:mm:ss 'GMT'Z (zzz)", Locale.ENGLISH).format(new Date())
-
-    val collection = PurchaseInfo.getRecommendationCollection(companyName, applicationName)
-    val info = Json.obj(
-      "created_at" -> date
-    )
-
-    val pId = databaseService.get(
-      PurchaseInfo.getCollection(companyName, applicationName),
-      PurchaseInfo.Id,
-      purchaseId,
-      "_id"
-    ).get
-    
-    val uID = databaseService.get(
-      MobileUser.getCollection(companyName, applicationName),
-      MobileUser.KeyId,
-      userId,
-      "_id").get
-
-    val mobileUserObjectId = new ObjectId((uID \ "_id" \ "$oid").as[String])
-    val purchaseObjectId = new ObjectId((pId \ "_id" \ "$oid").as[String])
-
-    val objs = Map(
-      "user_id" -> mobileUserObjectId,
-      "purchase_id" -> purchaseObjectId
-    )
-
-    new Success
-    databaseService.insert(collection,info, objs)
-  }
-  * */
-
   def create(json: JsValue): PurchaseInfo = {
     new PurchaseInfo(
       (json \ "id").as[String],
       (json \ "sessionId").as[String],
       (json \ "userId").as[String],
-      (json \ "name").as[String],
       (json \ "itemId").as[String],
       (json \ "price").as[Double],
       (json \ "time").as[String],
@@ -87,14 +46,9 @@ class PurchaseServiceImpl @Inject()(
     val collection = PurchaseInfo.getCollection(companyName, applicationName)
     exist(companyName, applicationName, info.id) flatMap {exists =>
       if(!exists) {
-        for{
-          a <- databaseService.insert(collection, Json.toJson(info))
-          session <- mobileSessionService.get(info.sessionId)
-        } yield {
-          mobileSessionService.addPurchase(companyName, applicationName, session.get, info.id)
-        }
+        databaseService.insert(collection, Json.toJson(info))
       } else {
-        Future {new Exception("Duplicated purchase")}
+        Future.failed(new Exception("Duplicated purchase"))
       }
     }
   }
