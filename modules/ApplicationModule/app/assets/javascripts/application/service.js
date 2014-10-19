@@ -29,8 +29,26 @@ angular.module('ApplicationModule.services', ['DashboardModule'])
     };
 
     service.send = function(data){
-      var companyName = ApplicationStateService.companyName;
+      var companyName = ApplicationStateService.getCompanyName();
       var request = $http.post("/app/new/" + companyName, data);
+      var deferred = $q.defer();
+      deferred.resolve(request);
+      return deferred.promise;
+    };
+
+    return service;
+  }])
+
+  .factory('uploadAppImageService', ['$upload', '$q', function ($upload, $q) {
+    var service = {};
+
+    service.execute = function(file){
+      var request = $upload.upload({
+        url: '/app/new/uploadimage',
+        method: 'POST',
+        file: file
+      });
+
       var deferred = $q.defer();
       deferred.resolve(request);
       return deferred.promise;

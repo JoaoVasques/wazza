@@ -39,6 +39,7 @@ dashboard.controller('OverviewController',[
       .then(function(results) {
         var names = [];
         _.each(results.data, function(appInfo) {
+          console.log(appInfo.url);
           $scope.applications.push(new AppOverviewModel(
             appInfo.name,
             (appInfo.url == '') ? noImageUrl : appInfo.url,
