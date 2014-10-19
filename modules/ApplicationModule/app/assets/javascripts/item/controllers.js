@@ -133,12 +133,12 @@ angular.module('ItemModule.controllers', ['ItemModule.services', 'angularFileUpl
     }
 
     $scope.handleSuccess = function(data){
-      console.log(data);
+      /*console.log(data);
       var hiddenElement = document.createElement('a');
       hiddenElement.href = 'data:attachment/csv,' + encodeURI(data.data);
       hiddenElement.target = '_blank';
       hiddenElement.download = 'myFile.csv';
-      hiddenElement.click();
+      hiddenElement.click();*/
       $scope.errors = false;
       $scope.formErrors = [];
       $scope.itemSearch = true;

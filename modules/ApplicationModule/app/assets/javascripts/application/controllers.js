@@ -1,17 +1,21 @@
 // application module
 
-angular.module('ApplicationModule.controllers', ['ApplicationModule.services', 'DashboardModule']).
+angular.module('ApplicationModule.controllers', ['ApplicationModule.services', 'angularFileUpload', 'DashboardModule']).
   controller('NewApplicationFormController', [
     '$scope',
+    '$upload',
     'createNewApplicationService',
     '$route',
     '$state',
+    'uploadAppImageService',
     'ApplicationStateService',
     function(
       $scope,
+      $upload,
       createNewApplicationService,
       $route,
       $state,
+      uploadAppImageService,
       ApplicationStateService
     ) {
 
@@ -96,5 +100,23 @@ angular.module('ApplicationModule.controllers', ['ApplicationModule.services', '
 
       true
     );
+
+    $scope.handlePhotoUploadSuccess = function(success) {
+      $scope.applicationForm.imageUrl = success.data.url;
+    };
+
+    $scope.handlePhotoUploadError = function(error) {
+      /** TODO **/
+      console.log(error);
+    }
+
+    $scope.onFileSelect = function(files) {
+      uploadAppImageService.execute(_.first(files))
+        .then(
+          $scope.handlePhotoUploadSuccess,
+          $scope.handlePhotoUploadError
+        );
+    }
+
   }])
 ;

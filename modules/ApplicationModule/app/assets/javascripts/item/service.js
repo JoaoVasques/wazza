@@ -34,7 +34,7 @@ angular.module('ItemModule.services', ['DashboardModule']).
 
     service.execute = function(file){
       var request = $upload.upload({
-        url: '/app/item/uploadimage ',
+        url: '/app/item/uploadimage',
         method: 'POST',
         file: file
       });

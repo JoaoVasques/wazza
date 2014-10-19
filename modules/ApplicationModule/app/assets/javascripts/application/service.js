@@ -38,4 +38,22 @@ angular.module('ApplicationModule.services', ['DashboardModule'])
 
     return service;
   }])
+
+  .factory('uploadAppImageService', ['$upload', '$q', function ($upload, $q) {
+    var service = {};
+
+    service.execute = function(file){
+      var request = $upload.upload({
+        url: '/app/new/uploadimage',
+        method: 'POST',
+        file: file
+      });
+
+      var deferred = $q.defer();
+      deferred.resolve(request);
+      return deferred.promise;
+    };
+
+    return service;
+  }])
 ;
