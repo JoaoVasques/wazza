@@ -34,7 +34,13 @@ angular.module('ApplicationModule.controllers', ['ApplicationModule.services', '
 
     $scope.formErrors = {};
 
+
     $scope.createApplication = function(formData){
+      if($scope.applicationForm.appType.length == 0){
+        swal("Oops...", "You must choose at least one Platform!", "error");
+        return;
+      }
+
       createNewApplicationService.send(formData)
         .then(
           function(result){
