@@ -28,7 +28,7 @@ angular.module('ApplicationModule.controllers', ['ApplicationModule.services', '
       "name": "",
       "url": "",
       "packageName": "",
-      "imageUrl": $scope.noImageThumbnailUrl,
+      "imageName": $scope.noImageThumbnailUrl,
       "appType": []
     };
 
@@ -102,7 +102,7 @@ angular.module('ApplicationModule.controllers', ['ApplicationModule.services', '
     );
 
     $scope.handlePhotoUploadSuccess = function(success) {
-      $scope.applicationForm.imageUrl = success.data.url;
+      $scope.applicationForm.imageName = success.data.url;
     };
 
     $scope.handlePhotoUploadError = function(error) {

@@ -96,7 +96,7 @@ class CRUDController @Inject()(
     mapping(
       "name" -> nonEmptyText,
       "url" -> ignored(""),//nonEmptyText.verifying(urlCheckConstraint),
-      "imageUrl" -> ignored(""),
+      "imageName" -> nonEmptyText,
       "packageName" -> ignored("com.test"),
       "appType" -> list(text),
       "credentials" -> mapping(
