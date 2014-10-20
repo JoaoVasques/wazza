@@ -197,7 +197,6 @@ protected[plugin] class MongoActor extends DatabaseActor {
     end: Date
   ): Future[JsArray] = {
     val q = (dateFields._1 $gte start.getTime $lte end.getTime) ++ (dateFields._2 $gte start.getTime $lte end.getTime)
-    println(q)
     val query = Json.parse(q.toString)
     val sortCriteria = Json.obj(dateFields._1 -> 1)
     collection(collectionName).find(query).sort(sortCriteria).cursor[JsObject].collect[List]() map {list =>
