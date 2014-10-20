@@ -42,20 +42,6 @@ object PurchaseInfo {
   lazy val UserId = "userId"
   def getCollection(companyName: String, applicationName: String) = s"${companyName}_purchases_${applicationName}"
 
-  implicit def buildJsonFromMap(map: Map[String, JsValue]): JsValue = {
-    Json.toJson(
-      Map(
-        "id" -> map("id"),
-        "sessionId" -> map("sessionId"),
-        "userId" -> map("userId"),
-        "itemId" -> map("itemId"),
-        "price" -> map("price"),
-        "time" -> map("time"),
-        "deviceInfo" -> map("deviceInfo")
-      )
-    )
-  }
-
   implicit val reader = (
     (__ \ "id").read[String] and
     (__ \ "sessionId").read[String] and

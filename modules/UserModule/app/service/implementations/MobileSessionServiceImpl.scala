@@ -60,12 +60,7 @@ class MobileSessionServiceImpl @Inject()(
           databaseService.get(collection, MobileSession.Id, hash) map {opt =>
             opt match {
               case Some(json) => {
-                val sessionMap = json.as[Map[String, JsValue]]
-                val updated = sessionMap + ("startTime" -> sessionMap.get("startTime").map {d =>
-                  (d \ "$date").as[JsString]
-                }.get)
-
-                MobileSession.buildJsonFromMap(updated).validate[MobileSession].fold(
+                json.validate[MobileSession].fold(
                   valid = { s => Some(s) },
                   invalid = {_ => None}
                 )

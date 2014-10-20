@@ -22,19 +22,6 @@ object MobileSession {
 
   def getCollection(companyName: String, applicationName: String) = s"${companyName}_mobileSessions_${applicationName}"
 
-  implicit def buildJsonFromMap(map: Map[String, JsValue]): JsValue = {
-    Json.toJson(
-      Map(
-        "id" -> map("id"),
-        "userId" -> map("userId"),
-        "deviceInfo" -> map("deviceInfo"),
-        "startTime" -> map("startTime"),
-        "sessionLength" -> map("sessionLength"),
-        "purchases" -> map("purchases")
-      )
-    )
-  }
-
   implicit val readJson = (
     (__ \ "id").read[String] and
     (__ \ "userId").read[String] and

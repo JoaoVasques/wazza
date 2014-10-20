@@ -144,7 +144,7 @@ class AnalyticsServiceImpl @Inject()(
       } else {
         new JsArray((revenue.value zip active.value) map {
           case (r, a) => {
-            val day = new LocalDate(DateUtils.getDateFromString((r \ "lowerDate" \ "$date").as[String]))
+            val day = new LocalDate((r \ "lowerDate").as[Date].getTime)
             Json.obj(
               "day" -> day.toString("dd MM"),
               "value" -> (r \ "totalRevenue").as[Double] / (a \ "activeUsers").as[Int]
@@ -229,10 +229,10 @@ class AnalyticsServiceImpl @Inject()(
           val _d = s.withFieldAdded(DurationFieldType.days(), d)
           val dailyValues = coll.filter({el: Tuple2[JsValue, JsValue] => {
             val day = _d.toDate
-            val revenueLowerDate = DateUtils.getDateFromString((el._1 \ "lowerDate" \ "$date").as[String])
-            val revenueUpperDate = DateUtils.getDateFromString((el._1 \ "upperDate" \ "$date").as[String])
-            val sessionLowerDate = DateUtils.getDateFromString((el._2 \ "lowerDate" \ "$date").as[String])
-            val sessionUpperDate = DateUtils.getDateFromString((el._2 \ "upperDate" \ "$date").as[String])
+            val revenueLowerDate = ((el._1 \ "lowerDate").as[Date])
+            val revenueUpperDate = ((el._1 \ "upperDate").as[Date])
+            val sessionLowerDate = ((el._2 \ "lowerDate").as[Date])
+            val sessionUpperDate = ((el._2 \ "upperDate").as[Date])
               (day.after(revenueLowerDate) && day.before(revenueUpperDate)) && (day.after(sessionLowerDate) && day.before(sessionUpperDate))
           }})
             var totalRevenue = 0.0
@@ -320,7 +320,7 @@ class AnalyticsServiceImpl @Inject()(
          fillEmptyResult(start, end)
        } else {
          new JsArray(revenue.value map {(el: JsValue) => {
-           val day = new LocalDate(DateUtils.getDateFromString((el \ "lowerDate" \ "$date").as[String])).toString("dd MM")
+           val day = new LocalDate(((el \ "lowerDate").as[Date].getTime)).toString("dd MM")
            Json.obj(
              "day" -> day,
              "val" -> (el \ "totalRevenue").as[Int]
