@@ -26,6 +26,7 @@ import org.joda.time.LocalDate
 import org.joda.time.DurationFieldType
 import org.joda.time.DateTime
 import service.user.definitions.PurchaseService
+import persistence.utils.{DateUtils}
 
 class AnalyticsServiceImpl @Inject()(
   databaseService: DatabaseService,
@@ -33,19 +34,6 @@ class AnalyticsServiceImpl @Inject()(
 ) extends AnalyticsService {
 
   private lazy val ProfitMargin = 0.7
-
-  private def getDateFromString(dateStr: String): Date = {
-    val ops = new StringOps(dateStr)
-    new SimpleDateFormat("yyyy-MM-dd").parse(ops.take(ops.indexOf('T')))
-  }
-
-  private def getNumberDaysBetweenDates(d1: Date, d2: Date): Int = {
-    Days.daysBetween(new LocalDate(d1), new LocalDate(d2)).getDays()
-  }
-
-  private def getNumberSecondsBetweenDates(d1: Date, d2: Date): Float = {
-    (new LocalDate(d2).toDateTimeAtCurrentTime.getMillis - new LocalDate(d1).toDateTimeAtCurrentTime().getMillis) / 1000
-  }
 
   private def fillEmptyResult(start: Date, end: Date): JsArray = {
     val dates = new ListBuffer[String]()
@@ -156,7 +144,7 @@ class AnalyticsServiceImpl @Inject()(
       } else {
         new JsArray((revenue.value zip active.value) map {
           case (r, a) => {
-            val day = new LocalDate(getDateFromString((r \ "lowerDate" \ "$date").as[String]))
+            val day = new LocalDate(DateUtils.getDateFromString((r \ "lowerDate" \ "$date").as[String]))
             Json.obj(
               "day" -> day.toString("dd MM"),
               "value" -> (r \ "totalRevenue").as[Double] / (a \ "activeUsers").as[Int]
@@ -241,10 +229,10 @@ class AnalyticsServiceImpl @Inject()(
           val _d = s.withFieldAdded(DurationFieldType.days(), d)
           val dailyValues = coll.filter({el: Tuple2[JsValue, JsValue] => {
             val day = _d.toDate
-            val revenueLowerDate = getDateFromString((el._1 \ "lowerDate" \ "$date").as[String])
-            val revenueUpperDate = getDateFromString((el._1 \ "upperDate" \ "$date").as[String])
-            val sessionLowerDate = getDateFromString((el._2 \ "lowerDate" \ "$date").as[String])
-            val sessionUpperDate = getDateFromString((el._2 \ "upperDate" \ "$date").as[String])
+            val revenueLowerDate = DateUtils.getDateFromString((el._1 \ "lowerDate" \ "$date").as[String])
+            val revenueUpperDate = DateUtils.getDateFromString((el._1 \ "upperDate" \ "$date").as[String])
+            val sessionLowerDate = DateUtils.getDateFromString((el._2 \ "lowerDate" \ "$date").as[String])
+            val sessionUpperDate = DateUtils.getDateFromString((el._2 \ "upperDate" \ "$date").as[String])
               (day.after(revenueLowerDate) && day.before(revenueUpperDate)) && (day.after(sessionLowerDate) && day.before(sessionUpperDate))
           }})
             var totalRevenue = 0.0
@@ -332,7 +320,7 @@ class AnalyticsServiceImpl @Inject()(
          fillEmptyResult(start, end)
        } else {
          new JsArray(revenue.value map {(el: JsValue) => {
-           val day = new LocalDate(getDateFromString((el \ "lowerDate" \ "$date").as[String])).toString("dd MM")
+           val day = new LocalDate(DateUtils.getDateFromString((el \ "lowerDate" \ "$date").as[String])).toString("dd MM")
            Json.obj(
              "day" -> day,
              "val" -> (el \ "totalRevenue").as[Int]
@@ -349,7 +337,7 @@ class AnalyticsServiceImpl @Inject()(
     end: Date
   ): Future[JsValue] = {
     val fields = ("lowerDate", "upperDate")
-    val result = if(getNumberDaysBetweenDates(start, end) == 0) {
+    val result = if(DateUtils.getNumberDaysBetweenDates(start, end) == 0) {
       val s = new DateTime(start).withTimeAtStartOfDay
       val yesterday = s.minusDays(1).withTimeAtStartOfDay
       val e = s.plusDays(1)
@@ -523,7 +511,7 @@ def getTotalAverageTimeFirstPurchase(
           val userId = (userInfo \ "userId").as[String]
           val firstPurchase = (userInfo \ "purchases").as[List[String]].head
           val purchaseTime  = purchaseService.get(companyName, applicationName, firstPurchase) map {p =>
-            getDateFromString((p map(_.time)).get)
+            (p map(_.time)).get
           }
           val map: Map[String, Future[Date]] = Map(userId -> purchaseTime)
           Future.sequence(map.map(entry => entry._2.map(i => (entry._1, i)))).map(_.toMap)
@@ -543,9 +531,9 @@ def getTotalAverageTimeFirstPurchase(
           for(el <- sessionsPerUser.value) {
             val userId = (el \ "userId").as[String]
             if(timeFirstPurchasePerUser.contains(userId)){
-              val firstSessionDate = getDateFromString((el \ "startTime").as[String])
-              val firstPurchaseDate = getDateFromString((timeFirstPurchasePerUser.get(userId)).toString)
-              totalTimeFirstPurchase += getNumberSecondsBetweenDates(firstSessionDate, firstPurchaseDate)
+              val firstSessionDate = DateUtils.getDateFromString((el \ "startTime").as[String])
+              val firstPurchaseDate = DateUtils.getDateFromString((timeFirstPurchasePerUser.get(userId)).toString)
+              totalTimeFirstPurchase += DateUtils.getNumberSecondsBetweenDates(firstSessionDate, firstPurchaseDate)
               }
           }
           val numberPurchases = timeFirstPurchasePerUser.size
@@ -591,7 +579,7 @@ def getTotalAverageTimeFirstPurchase(
           val userId = (userInfo \ "userId").as[String]
           val purchasesTime  = Future.sequence((userInfo \ "purchases").as[List[String]] map {id =>
             purchaseService.get(companyName, applicationName, id) map {p =>
-              getDateFromString((p map(_.time)).get)
+              (p map(_.time)).get
             }
           })
 
@@ -619,7 +607,7 @@ def getTotalAverageTimeFirstPurchase(
               if((index+1) < nrPurchases) {
                 val currentPurchaseDate = times._1
                 val nextPurchaseDate = t(index+1)
-                totalTimeBetweenPurchases += getNumberSecondsBetweenDates(currentPurchaseDate, nextPurchaseDate)
+                totalTimeBetweenPurchases += DateUtils.getNumberSecondsBetweenDates(currentPurchaseDate, nextPurchaseDate)
               }
             }
           }

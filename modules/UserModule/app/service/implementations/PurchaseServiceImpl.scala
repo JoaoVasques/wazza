@@ -33,7 +33,7 @@ class PurchaseServiceImpl @Inject()(
       (json \ "userId").as[String],
       (json \ "itemId").as[String],
       (json \ "price").as[Double],
-      (json \ "time").as[String],
+      (json \ "time").as[Date],
       (json \ "deviceInfo").as[DeviceInfo],
       (json \ "location").validate[LocationInfo] match {
         case success: JsSuccess[LocationInfo] => Some(success.value)

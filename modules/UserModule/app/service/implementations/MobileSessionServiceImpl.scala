@@ -15,6 +15,7 @@ import models.user.MobileSessionInfo
 import com.github.nscala_time.time.Imports._
 import scala.concurrent._
 import ExecutionContext.Implicits.global
+import persistence.utils._
 
 class MobileSessionServiceImpl @Inject()(
   databaseService: DatabaseService
@@ -126,32 +127,9 @@ class MobileSessionServiceImpl @Inject()(
     }
   }
 
-  def addPurchase(
-    companyName: String,
-    applicationName: String,
-    session: MobileSession,
-    purchaseId: String
-  ): Future[Unit] = {
-    val promise = Promise[Unit]
-    val collection = MobileSession.getCollection(companyName, applicationName)
-    databaseService.addElementToArray[String](
-      collection,
-      MobileSession.Id,
-      session.id,
-      MobileSession.Purchases,
-      purchaseId
-    ) map {res =>
-      promise.success()
-    } recover {
-      case ex: Exception => promise.failure(ex)
-    }
-    promise.future
-  }
-
   def calculateSessionLength(session: MobileSession, dateStr: String): Future[Unit] = {
-    val format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z")
-    val start = format.parse(session.startTime)
-    val end = format.parse(dateStr)
+    val start = session.startTime
+    val end = DateUtils.buildDateFromString(dateStr)
     val duration =  TimeUnit.MILLISECONDS.toSeconds(end.getTime - start.getTime)
 
     getSessionInfo(session.id) flatMap {sessionOpt =>
