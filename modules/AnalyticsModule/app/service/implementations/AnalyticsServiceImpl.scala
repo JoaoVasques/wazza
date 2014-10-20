@@ -531,7 +531,7 @@ def getTotalAverageTimeFirstPurchase(
           for(el <- sessionsPerUser.value) {
             val userId = (el \ "userId").as[String]
             if(timeFirstPurchasePerUser.contains(userId)){
-              val firstSessionDate = DateUtils.getDateFromString((el \ "startTime").as[String])
+              val firstSessionDate = (el \ "startTime").as[Date]
               val firstPurchaseDate = DateUtils.getDateFromString((timeFirstPurchasePerUser.get(userId)).toString)
               totalTimeFirstPurchase += DateUtils.getNumberSecondsBetweenDates(firstSessionDate, firstPurchaseDate)
               }

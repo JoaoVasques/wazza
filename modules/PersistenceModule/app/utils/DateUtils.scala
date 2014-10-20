@@ -5,13 +5,19 @@ import scala.collection.immutable.StringOps
 import java.text.SimpleDateFormat
 import java.util.Date
 import scala.collection.immutable.StringOps
+import org.joda.time.format.DateTimeFormat
 
 object DateUtils {
 
-  private val dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z")
+  private val Format = "yyyy-MM-dd HH:mm:ss Z"
+  private val dateFormat = new SimpleDateFormat(Format)
 
   def buildDateFromString(dateStr: String): Date = {
     dateFormat.parse(dateStr)
+  }
+
+  def buildJodaDateFromString(dateStr: String): DateTime = {
+    DateTimeFormat.forPattern(Format).parseDateTime(dateStr)
   }
 
   def getDateFromString(dateStr: String): Date = {
