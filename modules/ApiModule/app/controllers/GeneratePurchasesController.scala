@@ -67,15 +67,13 @@ class GeneratePurchasesController @Inject()(
         if(makePurchases) {
           val itemsAux = items
           val item = Random.shuffle(itemsAux).head
-          val date = format.format(currentDay.toDate)
           val purchaseInfo = new PurchaseInfo(
             s"purchase-$userNumber-${currentDay.toString}",
             (s"${currentDay.toString}-$userNumber"),
             userNumber.toString,
-            applicationName,
             item._1,
             item._2,
-            date,
+            currentDay.toDate,
             new DeviceInfo("osType", "name", "version", "model"),
             None
           )

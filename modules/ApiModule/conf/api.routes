@@ -8,10 +8,6 @@ POST    /purchase/:companyName/:applicationName  @controllers.api.PurchaseContro
 
 # Session routes
 POST    /session/new/:companyName/:applicationName   @controllers.api.SessionController.saveSession(companyName: String, applicationName: String)
-  
-#Recommendation routes
-GET     /rec/user/items/:companyName/:appName/:userId          @controllers.api.RecommendationController.recommendItemsToUser(companyName: String, appName: String, userId: String, limit: Int = -1)
-GET     /rec/user/items/:companyName/:appName/:userId/:limit   @controllers.api.RecommendationController.recommendItemsToUser(companyName: String, appName: String, userId: String, limit: Int)
       
 GET     /assets/*file                 controllers.api.Assets.at(path="/public", file)
 GET     /webjars/*file                controllers.WebJarAssets.at(file)

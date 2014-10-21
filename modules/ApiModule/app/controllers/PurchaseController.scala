@@ -19,16 +19,16 @@ class PurchaseController @Inject()(
 
   def handlePurchase(companyName: String, applicationName: String) = Action.async(parse.json) {implicit request =>
     val content = Json.parse((request.body \ "content").as[String].replace("\\", ""))
-    applicationService.itemExists(companyName, (content \ "itemId").as[String], applicationName) flatMap {exist =>
-      if(exist) {
-        val purchaseInfo = purchaseService.create(content)
-        purchaseService.save(companyName, applicationName, purchaseInfo) map {res =>
+    applicationService.exists(companyName, applicationName) flatMap {exists =>
+      if(!exists) {
+        Future.successful(NotFound("Application does not exist"))
+      } else {
+        val purchase = purchaseService.create(content)
+        purchaseService.save(companyName, applicationName, purchase) map {res =>
           Ok
         } recover {
-          case _ => BadRequest
+          case _ => InternalServerError
         }
-      } else {
-        Future { BadRequest("Item does not exist") }
       }
     }
   }
