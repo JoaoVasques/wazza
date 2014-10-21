@@ -13,7 +13,7 @@ angular.module('ItemModule.services', ['DashboardModule']).
     var service = {};
 
     service.send = function(formData, file){
-      var requestUrl = '/app/item/new/' + ApplicationStateService.companyName + '/' + formData.applicationName
+      var requestUrl = '/app/item/new/' + ApplicationStateService.getCompanyName() + '/' + formData.applicationName
       var request = $upload.upload({
           url: requestUrl,
           method: 'POST',
@@ -34,7 +34,7 @@ angular.module('ItemModule.services', ['DashboardModule']).
 
     service.execute = function(file){
       var request = $upload.upload({
-        url: '/app/item/uploadimage ',
+        url: '/app/item/uploadimage',
         method: 'POST',
         file: file
       });
@@ -60,7 +60,7 @@ angular.module('ItemModule.services', ['DashboardModule']).
 
     service.execute = function(applicationName){
       var baseUrl = '/app/api/virtualcurrencies/all/';
-      var requestUrl = baseUrl + applicationName + '/' + ApplicationStateService.companyName;
+      var requestUrl = baseUrl + applicationName + '/' + ApplicationStateService.getCompanyName();
       var request = $http({
         url: requestUrl,
         method: 'GET'

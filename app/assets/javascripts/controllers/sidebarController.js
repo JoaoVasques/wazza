@@ -19,7 +19,7 @@ application.controller('SidebarController', [
     };
 
     $scope.followLink = function(state){
-      if(ApplicationStateService.applicationName === "")
+      if(ApplicationStateService.getApplicationName() === "")
         swal("Which Application?", "You should definitively choose one first!")
       else if(state !== $state.current.name){
         $state.go(state);
