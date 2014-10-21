@@ -40,7 +40,6 @@ class GenerateSessionsController @Inject()(
 
     println(s"START $start | END $end")
     println(days)
-    val format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z")
     val result = List.range(0, days) map {index =>
       val currentDay = start.withFieldAdded(DurationFieldType.days(), index)
       println(s"CURRENT DAY $currentDay")
@@ -49,7 +48,7 @@ class GenerateSessionsController @Inject()(
           (s"${currentDay.toString}-$userNumber"), //hash
           userNumber.toString,
           2,
-          format.format(currentDay.toDate),
+          currentDay.toDate,
           new DeviceInfo("osType", "name", "version", "model"),
           List[String]() //List of purchases id's
         )

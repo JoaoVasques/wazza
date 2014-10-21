@@ -125,8 +125,7 @@ protected[plugin] class MongoActor extends DatabaseActor {
   def insert(collectionName: String, model: JsValue, extra: Map[String, ObjectId] = null): Future[Unit] = {
     val promise = Promise[Unit]
     if(extra == null) {
-      val obj = convertStringToDateInJson(model.as[JsObject])
-      collection(collectionName).insert(obj) map { lastError =>
+      collection(collectionName).insert(model) map { lastError =>
         lastError.err match {
           case Some(error) => {
             Logger.error(error)
@@ -196,39 +195,13 @@ protected[plugin] class MongoActor extends DatabaseActor {
     dateFields: Tuple2[String, String],
     start: Date,
     end: Date
-  ): Future[JsArray] = {    
-    val query = Json.parse(((dateFields._1 $gte start $lte end) ++ (dateFields._2 $gte start $lte end)).toString)
+  ): Future[JsArray] = {
+    val q = (dateFields._1 $gte start.getTime $lte end.getTime) ++ (dateFields._2 $gte start.getTime $lte end.getTime)
+    val query = Json.parse(q.toString)
     val sortCriteria = Json.obj(dateFields._1 -> 1)
-    val df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z")
-
-    def matchesCriteria(s: Date, e: Date): Boolean = {
-      val lowerResult = s.compareTo(end) <= 0
-      val upperResult = e.compareTo(start) * end.compareTo(e) > 0
-      lowerResult && upperResult
-    }
-
-    val futureList = collection(collectionName).find(Json.obj()).sort(sortCriteria).cursor[JsObject].collect[List]()
-    futureList map {list =>
-      new JsArray(list.filter((el: JsValue) => {
-        val lowerDateLong = (el \"lowerDate" \ "$date").as[Long]
-        val upperDateLong = (el \ "upperDate" \ "$date").as[Long]
-        val l = new Date(lowerDateLong)
-        val u = new Date(upperDateLong)
-        val matches = matchesCriteria(l, u)
-        /**
-        if(matches) {
-          println(s"DATABASE DATES - $l | $u")
-          println(s"QUERY DATES - $start | $end")
-          println(s"BETWEEN ${matchesCriteria(l, u)}")
-          println
-        }**/
-        matches
-      }))
-    }
-
-    /**collection(collectionName).find(query).sort(sortCriteria).cursor[JsObject].collect[List]() map {list =>
+    collection(collectionName).find(query).sort(sortCriteria).cursor[JsObject].collect[List]() map {list =>
       new JsArray(list)
-    }**/
+    }
   }
 
   def getDocumentsByTimeRange(
@@ -238,7 +211,7 @@ protected[plugin] class MongoActor extends DatabaseActor {
     end: Date
   ): Future[JsArray] = {
 
-    val query = Json.parse(((dateField $lte start $gt end)).toString)
+    val query = Json.parse(((dateField $lte start.getTime $gt end.getTime)).toString)
     val sortCriteria = Json.obj(dateField -> 1)
     collection(collectionName).find(query).sort(sortCriteria).cursor[JsObject].collect[List]() map { list =>
       new JsArray(list)
@@ -322,7 +295,7 @@ protected[plugin] class MongoActor extends DatabaseActor {
     val promise = Promise[Unit]
     val query = Json.obj(docIdKey -> docIdValue)
     val m = model match {
-      case j: JsObject => convertStringToDateInJson(j)
+      case j: JsObject => j
       case _ => model
     }
     val update = Json.parse($push(arrayKey -> m).toString)
@@ -372,7 +345,7 @@ protected[plugin] class MongoActor extends DatabaseActor {
 
     val promise = Promise[Unit]
     val model = m match {
-      case j: JsObject => convertStringToDateInJson(j)
+      case j: JsObject => j
       case _ => m
     }
 
@@ -387,24 +360,6 @@ protected[plugin] class MongoActor extends DatabaseActor {
       }
     }
     promise.future
-  }
-
-  private def convertStringToDateInJson(json: JsObject): JsObject = {
-    val dateKeys = List("time", "startTime")
-    var j = json
-    dateKeys.filter(json.keys.contains(_)) foreach {(key: String) =>
-      var dbObject = JSON.parse(json.toString)
-      dbObject match {
-        case dbO: DBObject => {
-          val timeBackup = dbO.get(key).toString
-          dbO.removeField(key)
-          val format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z")
-          dbO.put(key, format.parse(timeBackup))
-          j = Json.parse(dbO.toString).as[JsObject]
-        }
-      }
-    }
-    j
   }
 }
 

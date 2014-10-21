@@ -15,13 +15,6 @@ trait MobileSessionService {
 
   def exists(id: String): Future[Boolean]
 
-  def addPurchase(
-    companyName: String,
-    applicationName: String,
-    session: MobileSession,
-    purchaseId: String
-  ): Future[Unit]
-
   def calculateSessionLength(session: MobileSession, dateStr: String): Future[Unit]
 }
 
