@@ -19,6 +19,7 @@ import org.joda.time.format.DateTimeFormat
 import org.joda.time.Interval
 import scala.concurrent._
 import ExecutionContext.Implicits.global
+import persistence.utils._
 
 class SessionController @Inject()(
   mobileUserService: MobileUserService,
@@ -27,9 +28,8 @@ class SessionController @Inject()(
 ) extends Controller {
 
   private def createNewSessionInfo(content: JsValue): Future[SimpleResult] = {
-    val formatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss Z")
-    val start = formatter.parseDateTime((content \ "startTime").as[String])
-    val end = formatter.parseDateTime((content \ "endTime").as[String])
+    val start = DateUtils.buildJodaDateFromString((content \ "startTime").as[String])
+    val end = DateUtils.buildJodaDateFromString((content \ "endTime").as[String])
 
     val promise = Promise[SimpleResult]
     sessionService.create(Json.obj(

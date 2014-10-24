@@ -33,7 +33,7 @@ class PurchaseServiceImpl @Inject()(
       (json \ "userId").as[String],
       (json \ "itemId").as[String],
       (json \ "price").as[Double],
-      (json \ "time").as[String],
+      (json \ "time").as[Date],
       (json \ "deviceInfo").as[DeviceInfo],
       (json \ "location").validate[LocationInfo] match {
         case success: JsSuccess[LocationInfo] => Some(success.value)
@@ -58,12 +58,7 @@ class PurchaseServiceImpl @Inject()(
     databaseService.get(collection, PurchaseInfo.Id, id) map { opt =>
       opt match {
         case Some(purchase) => {
-          val purchaseMap = purchase.as[Map[String, JsValue]]
-          val updated = purchaseMap + ("time" -> purchaseMap.get("time").map {t =>
-            (t \ "$date").as[JsString]
-          }.get)
-
-          PurchaseInfo.buildJsonFromMap(updated).validate[PurchaseInfo].fold(
+          purchase.validate[PurchaseInfo].fold(
             valid = (p => Some(p)),
             invalid = (_ => None)
           )
@@ -77,12 +72,7 @@ class PurchaseServiceImpl @Inject()(
     val collecion = PurchaseInfo.getCollection(companyName, applicationName)
     databaseService.getListElements(collecion, PurchaseInfo.UserId, userId) map (purchase => {
       purchase map {pm =>
-        val purchaseMap = pm.as[Map[String, JsValue]]
-        val updated = purchaseMap + ("time" -> purchaseMap.get("time").map {t =>
-          (t \ "$date").as[JsString]
-        }.get)
-
-        PurchaseInfo.buildJsonFromMap(updated).validate[PurchaseInfo].fold(
+        pm.validate[PurchaseInfo].fold(
           valid = (p => p),
           invalid = (_ => null)
         )

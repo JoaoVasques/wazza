@@ -80,7 +80,7 @@ class BootstrapEnvironmentController @Inject()(
           (currentDay.toString + userNumber), //hash
           userNumber.toString,
           2,
-          currentDay.toString,
+          currentDay.toDate,
           new DeviceInfo("osType", "name", "version", "model"),
           List[String]() //List of purchases id's
         )
