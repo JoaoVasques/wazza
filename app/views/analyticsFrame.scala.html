@@ -7,9 +7,12 @@
     <!-- Content Header (Page header) -->
     <section class="content-header" ng-controller="TweakBarController" ng-model="page" style="height:61px">
       <div class="row">
-        <div class="col-md-5">
+        <div class="col-md-4">
           <h4 style="font-size:22px" ng-show="page == 'Overview'">{{page}}</h4>
           <h4 style="font-size:22px" ng-hide="page == 'Overview'">{{applicationName}} / {{page}}</h4>
+        </div>
+        <div class="col-md-1">
+          <a ui-sref="home.settings"><h4 style="float:center">SDK Keys</h4></a>
         </div>
         <div class="col-md-1">
           <h4 style="float:right">From</h4>
