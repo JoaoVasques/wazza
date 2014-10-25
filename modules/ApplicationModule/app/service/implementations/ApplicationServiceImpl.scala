@@ -21,7 +21,7 @@ import service.user.definitions.PurchaseService
 import models.user.PurchaseInfo
 
 class ApplicationServiceImpl @Inject()(
-    photoService: PhotosService,
+    photosService: PhotosService,
     databaseService: DatabaseService,
     purchaseService: PurchaseService
 ) extends ApplicationService with ApplicationErrors{
@@ -182,7 +182,7 @@ class ApplicationServiceImpl @Inject()(
             Item.ElementId,
             itemId
           ) flatMap {r =>
-            photoService.delete(imageName) map {res =>
+            photosService.delete(imageName) map {res =>
               promise.success()
             } recover {
               case err: Exception => promise.failure(err)
@@ -219,6 +219,7 @@ class ApplicationServiceImpl @Inject()(
     null
   }
 
+  //TODO
   def getVirtualCurrency(
     companyName: String,
     currencyName: String,

@@ -8,6 +8,7 @@ import models.application._
 import play.api.data.validation._
 import org.apache.commons.validator.routines.UrlValidator
 import service.application.definitions._
+import service.aws.definitions.{PhotosService}
 import com.google.inject._
 import scala.util.{Success, Failure}
 import service.security.definitions._
@@ -22,6 +23,9 @@ import controllers.security._
 import service.security.definitions.{TokenManagerService}
 import service.application.definitions._
 import service.user.definitions._
+import scala.language.implicitConversions
+import play.api.libs.Files._
+import java.io.File
 
 /** Uncomment the following lines as needed **/
 /**
@@ -39,8 +43,13 @@ import play.api.libs.json._
 class CRUDController @Inject()(
   applicationService: ApplicationService,
   secretGeneratorService: SecretGeneratorService,
-  userService: UserService
+  userService: UserService,
+  photosService: PhotosService
 ) extends Controller {
+
+  private def generateErrors(value: String) = {
+    BadRequest(Json.obj("errors" -> value))
+  }
 
   private def checkPackageNameFormat(name: String): Boolean = {
     if(name == null){
@@ -86,8 +95,8 @@ class CRUDController @Inject()(
   val applicationForm: Form[WazzaApplication] = Form(
     mapping(
       "name" -> nonEmptyText,
-      "url" -> nonEmptyText.verifying(urlCheckConstraint),
-      "imageName" -> ignored(""),
+      "url" -> ignored(""),//nonEmptyText.verifying(urlCheckConstraint),
+      "imageName" -> nonEmptyText,
       "packageName" -> ignored("com.test"),
       "appType" -> list(text),
       "credentials" -> mapping(
@@ -125,4 +134,21 @@ class CRUDController @Inject()(
       }
     )
   }
+
+  private implicit def extractFile(filePart: FilePart[_]): File = {
+    filePart.ref match {
+      case TemporaryFile(file) => file
+    }
+  }
+
+  def uploadImage() = UserAuthenticationAction.async(parse.multipartFormData) { implicit request =>
+    photosService.upload(request.body.files.head) map { photoResult =>
+      Ok(photoResult.toJson)
+    } recover {
+      case error => {
+        generateErrors(error.getCause.getMessage)
+      }
+    }
+  }
+
 }

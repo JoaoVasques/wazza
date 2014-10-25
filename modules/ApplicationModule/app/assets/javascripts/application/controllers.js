@@ -1,22 +1,26 @@
 // application module
 
-angular.module('ApplicationModule.controllers', ['ApplicationModule.services', 'DashboardModule']).
-  controller(
-    'NewApplicationFormController',
-    ['$scope',
+angular.module('ApplicationModule.controllers', ['ApplicationModule.services', 'angularFileUpload', 'DashboardModule']).
+  controller('NewApplicationFormController', [
+    '$scope',
+    '$upload',
     'createNewApplicationService',
     '$route',
     '$state',
+    'uploadAppImageService',
     'ApplicationStateService',
     function(
       $scope,
+      $upload,
       createNewApplicationService,
       $route,
       $state,
+      uploadAppImageService,
       ApplicationStateService
     ) {
 
-    ApplicationStateService.setPath("New Application");
+    ApplicationStateService.setPath("Create New Application");
+    ApplicationStateService.updateApplicationName("");
 
     $scope.noImageThumbnailUrl = "assets/images/placeholder_2.jpg";
     $scope.storeOptions = ['iOS', 'Android'];
@@ -24,13 +28,19 @@ angular.module('ApplicationModule.controllers', ['ApplicationModule.services', '
       "name": "",
       "url": "",
       "packageName": "",
-      "imageUrl": $scope.noImageThumbnailUrl,
+      "imageName": $scope.noImageThumbnailUrl,
       "appType": []
     };
 
     $scope.formErrors = {};
 
+
     $scope.createApplication = function(formData){
+      if($scope.applicationForm.appType.length == 0){
+        swal("Oops...", "You must choose at least one Platform!", "error");
+        return;
+      }
+
       createNewApplicationService.send(formData)
         .then(
           function(result){
@@ -96,5 +106,23 @@ angular.module('ApplicationModule.controllers', ['ApplicationModule.services', '
 
       true
     );
+
+    $scope.handlePhotoUploadSuccess = function(success) {
+      $scope.applicationForm.imageName = success.data.url;
+    };
+
+    $scope.handlePhotoUploadError = function(error) {
+      /** TODO **/
+      console.log(error);
+    }
+
+    $scope.onFileSelect = function(files) {
+      uploadAppImageService.execute(_.first(files))
+        .then(
+          $scope.handlePhotoUploadSuccess,
+          $scope.handlePhotoUploadError
+        );
+    }
+
   }])
 ;

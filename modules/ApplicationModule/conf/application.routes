@@ -4,6 +4,8 @@
 
 # Application routes
 GET     /new                          @controllers.application.CRUDController.newApplication
+#trying to be coeherent but failed miserably
+POST    /new/uploadimage              @controllers.application.CRUDController.uploadImage
 POST    /new/:companyName             @controllers.application.CRUDController.newApplicationSubmit(companyName: String)
 
 # Items routes

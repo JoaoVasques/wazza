@@ -14,7 +14,7 @@ lazy val dependencies = Seq(
   "commons-validator" % "commons-validator" % "1.4.0",
   "com.github.nscala-time" %% "nscala-time" % "1.0.0",
   "org.webjars" % "underscorejs" % "1.6.0-3",
-  "com.amazonaws" % "aws-java-sdk" % "1.7.9",
+  "com.amazonaws" % "aws-java-sdk" % "1.9.1",
   "org.mindrot" % "jbcrypt" % "0.3m",
   "commons-codec" % "commons-codec" % "1.9",
   "org.mongodb" % "casbah_2.10" % "2.7.0",
