@@ -18,7 +18,7 @@ class DashboardController @Inject()(
   userService: UserService
   ) extends Controller {
 
-  def bootstrapDashboard() = UserAuthenticationAction.async {implicit request =>
+  def bootstrap() = UserAuthenticationAction.async {implicit request =>
     userService.getApplications(request.userId) flatMap {applications =>
       userService.find(request.userId) flatMap {userOpt =>
         val user = userOpt.get
