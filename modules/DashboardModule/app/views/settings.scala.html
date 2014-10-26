@@ -1,4 +1,11 @@
-<div class="row" ng-controller="OverviewController">
+<div class="row">
+
+    <div>
+        <div class="col-md-8 col-lg-8">
+          <h2>name:</h2>
+          <h2>e-mail:</h2>
+        </div>
+    </div>
 
     <div ng-hide="applications.length > 0">
         <div class="col-md-8 col-lg-8">
@@ -9,18 +16,20 @@
         </div>
     </div>
 
-    <div ng-show="applications.length > 0">
-        <table class="table">
-          <tr>
-            <td>Application</td>
-            <td>API Key</td> 
-            <td>SDK Key</td>
-          </tr>
-          <tr ng-repeat="app in applications">
-            <td>{{app.name}}</td>
-            <td>{{app.apiKey}}</td> 
-            <td>{{app.sdkKey}}</td>
-          </tr>
-        </table>
+    <div class="row" ng-show="applications.length > 0">
+	    <div class="col-8 text-center">
+	        <table class="table">
+	          <tr>
+	            <td>Application</td>
+	            <td>API Key</td> 
+	            <td>SDK Key</td>
+	          </tr>
+	          <tr ng-repeat="app in applications">
+	            <td>{{app.name}}</td>
+	            <td>{{app.apiKey}}</td> 
+	            <td>{{app.sdkKey}}</td>
+	          </tr>
+	        </table>
+	    </div>
     </div>
 </div>

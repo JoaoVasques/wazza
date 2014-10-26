@@ -21,11 +21,5 @@ class AnalyticsController @Inject()(
 	def analytics = UserAuthenticationAction {implicit request =>
 		Ok(views.html.analytics.generic())
 	}
-
-    //others
-
-    def settingsSection = UserAuthenticationAction {implicit request =>
-        Ok(views.html.settings())
-    }
 }
 

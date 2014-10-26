@@ -4,7 +4,7 @@
 
 # dashboard
 GET     /                             @controllers.dashboard.DashboardController.index
-GET     /bootstrap                    @controllers.dashboard.DashboardController.bootstrapDashboard
+GET     /bootstrap                    @controllers.dashboard.DashboardController.bootstrap
 GET     /kpi                          @controllers.dashboard.DashboardController.kpi
 
 # overview
@@ -27,7 +27,8 @@ GET     /inventory/bootstrap          @controllers.dashboard.InventoryController
 #GET    /store/amazon                 @controllers.dashboard.AnalyticsController.storeAmazon
 
 # other
-GET     /settings                     @controllers.dashboard.AnalyticsController.settingsSection
+GET     /settings                     @controllers.dashboard.SettingsController.settings
+GET     /settings/bootstrap           @controllers.dashboard.SettingsController.bootstrap
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file                 controllers.dashboard.Assets.at(path="/public", file)

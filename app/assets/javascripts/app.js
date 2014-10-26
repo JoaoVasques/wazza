@@ -158,7 +158,7 @@ config(function($stateProvider, $urlRouterProvider, $locationProvider, $httpProv
         .state('home.settings', {
             url: "^/",
             templateUrl: '/dashboard/settings',
-            controller: 'DashboardController'
+            controller: 'SettingsController'
         })
 
       //not available yet
