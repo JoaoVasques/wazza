@@ -47,7 +47,6 @@ dashboard.controller('OverviewController',[
           names.push(appInfo.name);
         });
         ApplicationStateService.updateApplicationsList(names);
-        ApplicationStateService.updateApplicationsInfo($scope.applications);
       })
     }
 
