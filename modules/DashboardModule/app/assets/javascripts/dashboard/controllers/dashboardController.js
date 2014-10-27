@@ -5,7 +5,6 @@ dashboard.controller('DashboardController', [
     "$anchorScroll",
     "$state",
     "$document",
-    'BootstrapDashboardService',
     'ApplicationStateService',
     'GetKPIService',
     "DateModel",
@@ -18,7 +17,6 @@ dashboard.controller('DashboardController', [
         $anchorScroll,
         $state,
         $document,
-        BootstrapDashboardService,
         ApplicationStateService,
         GetKPIService,
         DateModel,
@@ -79,25 +77,8 @@ dashboard.controller('DashboardController', [
             $document.scrollTop(-50, 500); //hack
         };
 
-        var bootstrapSuccessCallback = function (data) {
+        ApplicationStateService.setPath("Dashboard");
 
-            angular.extend($scope.credentials, data.data.credentials);
-            ApplicationStateService.updateUserInfo(data.data.userInfo);
-            ApplicationStateService.setPath("Dashboard");
-
-            $scope.updateKPIs();
-        };
-
-        var bootstrapFailureCallback = function (errorData) {
-            console.log(errorData);
-        };
-
-
-        $scope.credentials = {};
-
-        BootstrapDashboardService.execute()
-            .then(
-                bootstrapSuccessCallback,
-                bootstrapFailureCallback);
+        $scope.updateKPIs();
 
 }]);
