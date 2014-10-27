@@ -4,13 +4,11 @@ service.factory('ApplicationStateService', ['$rootScope',
 		service.applicationName = "";
 		service.companyName = "";
 		service.applicationsList = [];
-		service.userInfo = {
-			name: "",
-			email: ""
-		};
+		service.userInfo = {};
 		service.path = "";
 		service.applicationOverview = "";
 
+		//current view
 		service.getPath = function () {
 			return service.path;
 		};
@@ -21,6 +19,7 @@ service.factory('ApplicationStateService', ['$rootScope',
 			$rootScope.$broadcast("PAGE_UPDATED");
 		};
 
+		//current selected app
 		service.getApplicationName = function () {
 			return service.applicationName;
 		}
@@ -31,6 +30,7 @@ service.factory('ApplicationStateService', ['$rootScope',
 			$rootScope.$broadcast("APPLICATION_NAME_UPDATED"); 
 		};
 
+		//currently logged company
 		service.getCompanyName = function(newName) {
 			return service.companyName;
 		};
@@ -40,6 +40,7 @@ service.factory('ApplicationStateService', ['$rootScope',
 			$rootScope.$broadcast("COMPANY_NAME_UPDATED");
 		};
 
+		//applications of logged user
 		service.getApplicationsList = function (newList) {
 			return service.applicationsList;
 		};
@@ -49,6 +50,7 @@ service.factory('ApplicationStateService', ['$rootScope',
 			$rootScope.$broadcast("APPLICATIONS_LIST_UPDATED");
 		};
 
+		//applications information (overview view)
 		service.getApplicationsOverview = function () {
 			return service.applicationOverview;
 		}
@@ -57,6 +59,7 @@ service.factory('ApplicationStateService', ['$rootScope',
 			service.applicationOverview = apps;
 		};
 
+		//user info: name & mail
 		service.getUserInfo = function (newInfo) {
 			return service.userInfo;
 		};
@@ -66,6 +69,7 @@ service.factory('ApplicationStateService', ['$rootScope',
 			$rootScope.$broadcast("USER_INFO_UPDATED");
 		};
 
+		//hack to mantain initial clean state
 		service.cleanup = function () {
 			service.applicationName = "";
 			service.companyName = "";

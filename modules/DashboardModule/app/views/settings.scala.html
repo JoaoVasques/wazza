@@ -2,8 +2,9 @@
 
     <div>
         <div class="col-md-8 col-lg-8">
-          <h2>name:</h2>
-          <h2>e-mail:</h2>
+          <h2>Name: {{userInfo.name}}</h2>
+          <h2>E-mail: {{userInfo.email}}</h2>
+          <h2>Company: {{userInfo.companyName}}</h2>
         </div>
     </div>
 
@@ -25,9 +26,9 @@
 	            <td>SDK Key</td>
 	          </tr>
 	          <tr ng-repeat="app in applications">
-	            <td>{{app.name}}</td>
-	            <td>{{app.apiKey}}</td> 
-	            <td>{{app.sdkKey}}</td>
+	            <td>{{credentials.appName}}</td>
+	            <td>{{credentials.apiKey}}</td> 
+	            <td>{{credentials.sdkKey}}</td>
 	          </tr>
 	        </table>
 	    </div>

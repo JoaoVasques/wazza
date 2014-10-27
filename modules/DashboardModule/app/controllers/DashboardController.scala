@@ -18,30 +18,6 @@ class DashboardController @Inject()(
   userService: UserService
   ) extends Controller {
 
-  def bootstrap() = UserAuthenticationAction.async {implicit request =>
-    userService.getApplications(request.userId) flatMap {applications =>
-      userService.find(request.userId) flatMap {userOpt =>
-        val user = userOpt.get
-        val companyName = user.company
-        val info = applicationService.find(companyName, applications.head) map {optApp =>
-          (optApp map {application =>
-            Json.obj(
-              "userInfo" -> Json.obj(
-                "name" -> user.name,
-                "email" -> user.email
-                ),
-              "credentials" -> Json.obj(
-                "apiKey" -> application.credentials.apiKey,
-                "sdkKey" -> application.credentials.sdkKey
-                )
-              )
-            }).get
-        }
-        info map {Ok(_)}
-      }
-    }
-  } 
-
   def index() = UserAuthenticationAction {implicit request =>
     Ok(views.html.dashboard())
   }

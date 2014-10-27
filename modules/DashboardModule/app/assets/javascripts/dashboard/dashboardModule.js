@@ -6,7 +6,8 @@ var dashboard = angular.module('DashboardModule', [
     'DashboardModule.controllers',
     'chartjs-directive',
     'OverviewServices',
-    'InventoryServices'
+    'InventoryServices',
+    'SettingsServices'
 ]);
 
 dashboard.value("LineChartConfiguration", {
