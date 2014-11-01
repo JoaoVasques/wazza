@@ -19,8 +19,10 @@ application.controller('SidebarController', [
     };
 
     $scope.followLink = function(state){
-      if(ApplicationStateService.getApplicationName() === "")
+      if(ApplicationStateService.getApplicationName() === ""){
         swal("Which Application?", "You should definitively choose one first!")
+        $state.go("analytics.overview");
+      }
       else if(state !== $state.current.name){
         $state.go(state);
         $document.scrollTop(-50, 500); //hack

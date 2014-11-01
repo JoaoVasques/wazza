@@ -26,11 +26,6 @@ dashboard.controller('SettingsController', [
         $q
         ) {
 
-        $scope.updateKPIs = function(){
-            var companyName = ApplicationStateService.getCompanyName();
-            var app = ApplicationStateService.getApplicationName();
-        }
-
         var bootstrapSuccessCallback = function (data) {
 
             $scope.credentials = data.data.credentials;
@@ -42,6 +37,7 @@ dashboard.controller('SettingsController', [
             $scope.applications = ApplicationStateService.getApplicationsList();
 
             ApplicationStateService.setPath("Settings");
+            ApplicationStateService.updateApplicationName("");
 
         };
 

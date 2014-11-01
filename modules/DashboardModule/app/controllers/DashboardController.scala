@@ -14,16 +14,16 @@ import models.application._
 import java.util.Date
 
 class DashboardController @Inject()(
-  applicationService: ApplicationService,
-  userService: UserService
-  ) extends Controller {
+    applicationService: ApplicationService,
+    userService: UserService
+    ) extends Controller {
 
-  def index() = UserAuthenticationAction {implicit request =>
-    Ok(views.html.dashboard())
-  }
+    def index() = UserAuthenticationAction {implicit request =>
+        Ok(views.html.dashboard())
+    }
 
-  def kpi = UserAuthenticationAction {implicit request =>
-    Ok(views.html.kpi())
-  }
+    def kpi = UserAuthenticationAction {implicit request =>
+        Ok(views.html.kpi())
+    }
 
 }
