@@ -1,7 +1,5 @@
 dashboard.controller('DashboardController', [
     '$scope',
-    '$location',
-    '$rootScope',
     "$anchorScroll",
     "$state",
     "$document",
@@ -12,8 +10,6 @@ dashboard.controller('DashboardController', [
     "$q",
     function (
         $scope,
-        $location,
-        $rootScope,
         $anchorScroll,
         $state,
         $document,
