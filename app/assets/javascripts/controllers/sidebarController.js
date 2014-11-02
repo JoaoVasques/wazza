@@ -19,8 +19,10 @@ application.controller('SidebarController', [
     };
 
     $scope.followLink = function(state){
-      if(ApplicationStateService.getApplicationName() === "")
+      if(ApplicationStateService.getApplicationName() === ""){
         swal("Which Application?", "You should definitively choose one first!")
+        $state.go("analytics.overview");
+      }
       else if(state !== $state.current.name){
         $state.go(state);
         $document.scrollTop(-50, 500); //hack
@@ -36,7 +38,7 @@ application.controller('SidebarController', [
         confirmButtonColor: "#DD6B55",
         confirmButtonText: "Yes, I have no fear!" },
         function(){
-          $scope.followLink(state);
+          $scope.followLink(state); //BUG: this function gets called correctly but swal call (l23) doesn't run.
         });
     }
 

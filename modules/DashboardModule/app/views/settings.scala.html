@@ -1,6 +1,36 @@
+<div class="row">
 
-<div class="checkbox">
-  <label>
-    <input type="checkbox"> Receive Daily Digest
-  </label>
+    <div>
+        <div class="col-md-8 col-lg-8">
+          <h2>Name: {{userInfo.name}}</h2>
+          <h2>E-mail: {{userInfo.email}}</h2>
+          <h2>Company: {{userInfo.companyName}}</h2>
+        </div>
+    </div>
+
+    <div ng-hide="applications.length > 0">
+        <div class="col-md-8 col-lg-8">
+          <h2>It seems you have not registered any application yet.</h2>
+          <p class="lead font-semibold">
+            <a class="btn btn-default btn-lg" ui-sref='home.newapp'><span class="fa fa-edit fa-fw"></span>New Application</a>
+          </p>
+        </div>
+    </div>
+
+    <div class="row" ng-show="applications.length > 0">
+	    <div class="col-8 text-center">
+	        <table class="table">
+	          <tr>
+	            <td>Application</td>
+	            <td>API Key</td> 
+	            <td>SDK Key</td>
+	          </tr>
+	          <tr ng-repeat="app in applications">
+	            <td>{{credentials.appName}}</td>
+	            <td>{{credentials.apiKey}}</td> 
+	            <td>{{credentials.sdkKey}}</td>
+	          </tr>
+	        </table>
+	    </div>
+    </div>
 </div>

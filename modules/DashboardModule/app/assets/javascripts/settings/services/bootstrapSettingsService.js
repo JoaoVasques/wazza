@@ -1,10 +1,10 @@
-dashboardServices.factory('BootstrapDashboardService', ['$http', '$q',
+settingsServices.factory('BootstrapSettingsService', ['$http', '$q',
     function ($http, $q) {
         var service = {};
 
         service.execute = function () {
             var request = $http({
-                url: '/dashboard/bootstrap',
+                url: '/dashboard/settings/bootstrap',
                 method: 'GET'
             });
 
@@ -14,4 +14,4 @@ dashboardServices.factory('BootstrapDashboardService', ['$http', '$q',
         };
 
         return service;
-}])
+}]);
