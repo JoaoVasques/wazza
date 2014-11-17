@@ -239,7 +239,6 @@ class AnalyticsServiceImpl @Inject()(
       val totalRevenue = revenue.value.foldLeft(0.0)((sum, obj) => {
         sum + (obj \ "totalRevenue").as[Double]
       })
-      println(s"TOTAL REVENUE $totalRevenue")
       Json.obj("value" -> totalRevenue)
     }
   }
@@ -340,14 +339,11 @@ class AnalyticsServiceImpl @Inject()(
     )
 
     futureLTV map {ltv =>
-      println("LTV")
-      println(ltv)
       val res = ltv.value.foldLeft(0.0)((acc, el) => {
         acc + (el \ "lifeTimeValue").as[Double]
       })
 
       val days = DateUtils.getNumberDaysBetweenDates(start, end)
-      println(s"LTV $res")
       Json.obj("value" -> (if(days > 0) res / days else res))
     }
   }
@@ -484,8 +480,8 @@ class AnalyticsServiceImpl @Inject()(
     end: Date
   ): Future[JsValue] = {
     calculateNumberPayingCustomers(
-      applicationName,
       companyName,
+      applicationName,
       ("lowerDate", "upperDate"),
       start,
       end
