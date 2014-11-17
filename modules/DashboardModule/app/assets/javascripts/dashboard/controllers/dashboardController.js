@@ -28,7 +28,7 @@ dashboard.controller('DashboardController', [
         /** User KPIs **/
         $scope.ltv = new KpiModel("Life Time Value", "analytics.ltv");
         $scope.payingUsers = new KpiModel("Paying Users", "analytics.payingUsers");
-        $scope.churn = new KpiModel("Churn Rate", "analytics.churn");
+        $scope.avgPurchasesUser = new KpiModel("Avg Purchases Per User", "analytics.avgPurchasesUser");
 
         /** Session KPIs **/
         $scope.purchasesPerSession = new KpiModel("Purchases per Session", "analytics.purchasesPerSession");
@@ -45,7 +45,7 @@ dashboard.controller('DashboardController', [
             GetKPIService.getTotalKpiData(companyName, app, begin, end, "revenue"),
             GetKPIService.getTotalKpiData(companyName, app, begin, end, "ltv"),
             GetKPIService.getTotalKpiData(companyName, app, begin, end, "arpu"),
-            GetKPIService.getTotalKpiData(companyName, app, begin, end, "churn"),
+            GetKPIService.getTotalKpiData(companyName, app, begin, end, "avgPurchasesUser"),
             GetKPIService.getTotalKpiData(companyName, app, begin, end, "avgTimeBetweenPurchases"),
             GetKPIService.getTotalKpiData(companyName, app, begin, end, "payingUsers"),
             GetKPIService.getTotalKpiData(companyName, app, begin, end, "avgTime1stPurchase"),
@@ -59,7 +59,7 @@ dashboard.controller('DashboardController', [
                 $scope.totalRevenue.updateKpiValue(extractValue(0, 'value'), extractValue(0, 'delta'))
                 $scope.ltv.updateKpiValue(extractValue(1, 'value'), extractValue(1, 'delta'))
                 $scope.arpu.updateKpiValue(extractValue(2, 'value'), extractValue(2, 'delta'))
-                $scope.churn.updateKpiValue(extractValue(3, 'value'), extractValue(3, 'delta'))
+                $scope.avgPurchasesUser.updateKpiValue(extractValue(3, 'value'), extractValue(3, 'delta'))
                 $scope.avgTimeBetweenPurchases.updateKpiValue(extractValue(4, 'value'), extractValue(4, 'delta'))
                 $scope.payingUsers.updateKpiValue(extractValue(5, 'value'), extractValue(5, 'delta'))
                 $scope.avgTimeFirstPurchase.updateKpiValue(extractValue(6, 'value'), extractValue(6, 'delta'))

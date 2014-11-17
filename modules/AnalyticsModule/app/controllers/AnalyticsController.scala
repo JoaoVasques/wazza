@@ -237,7 +237,7 @@ class AnalyticsController @Inject()(
       Detailed)
   }
 
-  def getTotalChurnRate(
+  def getTotalAveragePurchasesUser(
     companyName: String,
     applicationName: String,
     startDateStr: String,
@@ -248,11 +248,11 @@ class AnalyticsController @Inject()(
       applicationName,
       startDateStr,
       endDateStr,
-      analyticsService.getTotalChurnRate,
+      analyticsService.getTotalAveragePurchasesUser,
       Total)
   }
   
-  def getDetailedChurnRate(
+  def getDetailedAveragePurchasesUser(
     companyName: String,
     applicationName: String,
     startDateStr: String,
@@ -263,7 +263,7 @@ class AnalyticsController @Inject()(
       applicationName,
       startDateStr,
       endDateStr,
-      analyticsService.getChurnRate,
+      analyticsService.getAveragePurchasesUser,
       Detailed)
   }
 

@@ -18,9 +18,9 @@ GET  /ltv/total/:company/:application/:start/:end @controllers.analytics.Analyti
 
 GET  /ltv/detail/:company/:application/:start/:end @controllers.analytics.AnalyticsController.getDetailedLifeTimeValue(company: String, application: String, start: String, end: String)
 
-GET  /churn/total/:company/:application/:start/:end @controllers.analytics.AnalyticsController.getTotalChurnRate(company: String, application: String, start: String, end: String)
+GET  /avgPurchasesUser/total/:company/:application/:start/:end @controllers.analytics.AnalyticsController.getTotalAveragePurchasesUser(company: String, application: String, start: String, end: String)
 
-GET  /churn/detail/:company/:application/:start/:end @controllers.analytics.AnalyticsController.getDetailedChurnRate(company: String, application: String, start: String, end: String)
+GET  /avgPurchasesUser/detail/:company/:application/:start/:end @controllers.analytics.AnalyticsController.getDetailedAveragePurchasesUser(company: String, application: String, start: String, end: String)
 
 GET  /avgTime1stPurchase/total/:company/:application/:start/:end @controllers.analytics.AnalyticsController.getTotalAverageTimeFirstPurchase(company: String, application: String, start: String, end: String)
 

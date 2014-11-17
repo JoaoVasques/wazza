@@ -32,7 +32,8 @@ dashboard.factory("KpiModel", function() {
 
   KpiModel.prototype = {
     updateKpiValue: function(value, delta) {
-      this.value = value;
+      var DecimalPlaces = 2
+      this.value = value.toFixed(DecimalPlaces);
       this.delta = delta;
       if(this.value > 0) {
         this.css = "kpi-delta-positive";

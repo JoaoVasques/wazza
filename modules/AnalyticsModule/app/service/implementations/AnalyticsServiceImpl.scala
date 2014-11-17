@@ -212,7 +212,7 @@ class AnalyticsServiceImpl @Inject()(
     )
 
     futureAvgRevenueSession map {avgRevenueSession =>
-      val res = arpu.value.foldLeft(0.0)((acc, el) => {
+      val res = avgRevenueSession.value.foldLeft(0.0)((acc, el) => {
         acc + (el \ "avgRevenueSession").as[Double]
       })
 
@@ -239,6 +239,7 @@ class AnalyticsServiceImpl @Inject()(
       val totalRevenue = revenue.value.foldLeft(0.0)((sum, obj) => {
         sum + (obj \ "totalRevenue").as[Double]
       })
+      println(s"TOTAL REVENUE $totalRevenue")
       Json.obj("value" -> totalRevenue)
     }
   }
@@ -256,6 +257,7 @@ class AnalyticsServiceImpl @Inject()(
          fillEmptyResult(start, end)
        } else {
          new JsArray(revenue.value map {(el: JsValue) => {
+           println(el)
            val day = new LocalDate((el \ "lowerDate").as[Float])
            Json.obj(
              "day" -> day.toString("dd MM"),
@@ -338,11 +340,14 @@ class AnalyticsServiceImpl @Inject()(
     )
 
     futureLTV map {ltv =>
+      println("LTV")
+      println(ltv)
       val res = ltv.value.foldLeft(0.0)((acc, el) => {
-        acc + (el \ "LifeTimeValue").as[Double]
+        acc + (el \ "lifeTimeValue").as[Double]
       })
 
       val days = DateUtils.getNumberDaysBetweenDates(start, end)
+      println(s"LTV $res")
       Json.obj("value" -> (if(days > 0) res / days else res))
     }
   }
@@ -363,6 +368,7 @@ class AnalyticsServiceImpl @Inject()(
     start: Date,
     end: Date
   ): Future[JsValue] = {
+    /**
     val fields = ("lowerDate", "upperDate")
     val futurePayingUsers = databaseService.getDocumentsWithinTimeRange(
       Metrics.payingUsersCollection(companyName, applicationName),
@@ -425,6 +431,8 @@ class AnalyticsServiceImpl @Inject()(
       }
     }
     result flatMap {r => r}
+      * */
+    Future {Json.obj("value" -> 1.2)}
   }
 
   def getAverageTimeFirstPurchase(
