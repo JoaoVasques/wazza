@@ -87,7 +87,7 @@ config(function($stateProvider, $urlRouterProvider, $locationProvider, $httpProv
         .state('analytics.avgPurchasesUser', {
             url: "^/",
             templateUrl: '/dashboard/analytics',
-            controller: 'ChurnController'
+            controller: 'AvgPurchasesPerUserController'
         })
 
         .state('analytics.purchasesPerSession', {

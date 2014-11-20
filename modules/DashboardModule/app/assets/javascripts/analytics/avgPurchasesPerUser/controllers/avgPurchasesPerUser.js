@@ -1,24 +1,24 @@
 'use strict';
 
 dashboard
-.controller('ChurnController', [
+.controller('AvgPurchasesPerUserController', [
   '$scope',
   '$rootScope',
   'ApplicationStateService',
   'DateModel',
   'DetailedKpiModel',
-  'ChurnDateChanged',
+  'PurchasesPerUserChanged',
   function (
     $scope,
     $rootScope,
     ApplicationStateService,
     DateModel,
     DetailedKpiModel,
-    ChurnDateChanged
+    PurchasesPerUserChanged
   ) {
 
-    var title = "Churn Rate";
-    var KpiId = "churn";
+    var title = "Avg Purchases Per User";
+    var KpiId = "avgPurchasesUser";
 
     ApplicationStateService.setPath(title);
     $scope.context = new DetailedKpiModel(DateModel.startDate, DateModel.endDate, title);
@@ -26,7 +26,7 @@ dashboard
     $scope.updateChart(title, $scope.context);
     $scope.updateOnChangedDate($scope.context, KpiId, title);
 
-    $scope.$on(ChurnDateChanged, function(ev, data) {
+    $scope.$on(PurchasesPerUserChanged, function(ev, data) {
       $scope.context.beginDate = DateModel.startDate;
       $scope.context.endDate = DateModel.endDate;
       $scope.updateOnChangedDate($scope.context, KpiId, title);
