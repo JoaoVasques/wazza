@@ -117,9 +117,7 @@ class MobileSessionServiceImpl @Inject()(
 
   def exists(id: String): Future[Boolean] = {
     val collection = MobileSessionInfo.collection
-    databaseService.exists(collection, MobileSessionInfo.Id,id) map { result =>
-      result
-    }
+    databaseService.exists(collection, MobileSessionInfo.Id,id)
   }
 
   def calculateSessionLength(session: MobileSession, dateStr: String): Future[Unit] = {
