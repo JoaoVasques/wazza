@@ -10,7 +10,6 @@ case class Buyer(userId: String)
 object Buyer {
 
   val Id = "userId"
-
   def getCollection(companyName: String, applicationName: String) = s"${companyName}_Buyers_${applicationName}"
 }
 

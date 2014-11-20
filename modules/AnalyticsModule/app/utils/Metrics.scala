@@ -71,5 +71,10 @@ object Metrics {
     companyName: String,
     applicationName: String
   ) = s"${companyName}_PurchasesPerSession_${applicationName}"
+
+  def averageTimeFirstPurchaseCollection(
+    companyName: String,
+    applicationName: String
+  ) = s"${companyName}_AvgTimeFirstPurchase_${applicationName}"
 }
 
