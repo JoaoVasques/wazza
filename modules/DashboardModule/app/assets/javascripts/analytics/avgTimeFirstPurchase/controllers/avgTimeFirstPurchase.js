@@ -17,7 +17,7 @@ dashboard
     AT1PDateChanged
   ) {
 
-    var title = "Average Time to First Purchases";
+    var title = "Average Time to First Purchase";
     var KpiId = "avgTime1stPurchase";
 
     ApplicationStateService.setPath(title);
