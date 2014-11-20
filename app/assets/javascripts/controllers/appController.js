@@ -8,6 +8,7 @@ application.controller('AppController', [
   'ItemSearchService',
   'ApplicationStateService',
   '$stateParams',
+  'UserVoiceService',
   function (
     $scope,
     cookiesManagerService,
@@ -17,9 +18,12 @@ application.controller('AppController', [
     LoginLogoutService,
     ItemSearchService,
     ApplicationStateService,
-    $stateParams
+    $stateParams,
+    UserVoiceService
   ) {
 
+    UserVoiceService.bootstrap();
+      
     //auth related
     $scope.authOK = false;
 
@@ -52,7 +56,7 @@ application.controller('AppController', [
     //app related
     $scope.applicationName = "";
     $scope.applicationsList = [];
-
+      
     $scope.$on("APPLICATION_NAME_UPDATED", function(){
       $scope.applicationName = ApplicationStateService.getApplicationName();
     });

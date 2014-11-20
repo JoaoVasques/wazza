@@ -7,6 +7,7 @@ dashboard.controller('OverviewController',[
   'DateModel',
   'ApplicationStateService',
   '$q',
+  'UserVoiceService',
   function(
     $scope,
     $state,
@@ -15,9 +16,11 @@ dashboard.controller('OverviewController',[
     GetKPIService,
     DateModel,
     ApplicationStateService,
-    $q
+    $q,
+    UserVoiceService
   ) {
 
+    UserVoiceService.identifyUser();
     ApplicationStateService.setPath("Overview");
     ApplicationStateService.updateApplicationName("");
 
