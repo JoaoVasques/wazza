@@ -31,7 +31,6 @@ class SettingsController @Inject()(
 								"email" -> user.email
 								),
 							"credentials" -> Json.obj(
-								"appName" -> application.name,
 								"sdkToken" -> application.credentials.sdkToken
 								)
 							)
