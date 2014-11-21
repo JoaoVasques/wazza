@@ -11,13 +11,16 @@ import service.security.definitions.TokenManagerService
 import service.user.definitions.{PurchaseService}
 import scala.concurrent._
 import ExecutionContext.Implicits.global
+import controllers.security._
 
 class PurchaseController @Inject()(
   applicationService: ApplicationService,
   purchaseService: PurchaseService
 ) extends Controller {
 
-  def handlePurchase(companyName: String, applicationName: String) = Action.async(parse.json) {implicit request =>
+  def handlePurchase() = ApiSecurityAction.async(parse.json) {implicit request =>
+    val companyName = request.companyName
+    val applicationName = request.applicationName
     val content = Json.parse((request.body \ "content").as[String].replace("\\", ""))
     applicationService.exists(companyName, applicationName) flatMap {exists =>
       if(!exists) {

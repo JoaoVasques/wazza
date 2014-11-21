@@ -1,8 +1,8 @@
-package service.application.implementations
+package service.security.implementations
 
 import scala.concurrent._
 import play.api.libs.json._
-import service.application.definitions.{RedirectionTableService}
+import service.security.definitions.{RedirectionTableService}
 import com.google.inject._
 import service.persistence.definitions.DatabaseService
 import ExecutionContext.Implicits.global

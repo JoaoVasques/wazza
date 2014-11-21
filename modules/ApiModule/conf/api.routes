@@ -3,11 +3,13 @@
 #POST    /auth                                    @controllers.api.AuthenticationController.authenticate  
 GET     /items/:companyName/:applicationName     @controllers.api.ItemsController.getItems(companyName: String, applicationName: String)
 GET     /items/details/:companyName/:appName     @controllers.api.ItemsController.getItemsWithDetails(companyName: String, appName: String)
-GET     /item/:companyName/:applicationName/:id  @controllers.api.ItemsController.getItemDetails(companyName: String, id: String, applicationName: String)    
-POST    /purchase/:companyName/:applicationName  @controllers.api.PurchaseController.handlePurchase(companyName: String, applicationName: String)
+GET     /item/:companyName/:applicationName/:id  @controllers.api.ItemsController.getItemDetails(companyName: String, id: String, applicationName: String)
+
+# Purchases routes
+POST    /purchase/  @controllers.api.PurchaseController.handlePurchase()
 
 # Session routes
-POST    /session/new/:companyName/:applicationName   @controllers.api.SessionController.saveSession(companyName: String, applicationName: String)
+POST    /session/new/   @controllers.api.SessionController.saveSession()
       
 GET     /assets/*file                 controllers.api.Assets.at(path="/public", file)
 GET     /webjars/*file                controllers.WebJarAssets.at(file)

@@ -1,4 +1,4 @@
-package service.application.definitions
+package service.security.definitions
 
 import scala.concurrent._
 import play.api.libs.json._

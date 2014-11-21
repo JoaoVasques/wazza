@@ -13,7 +13,6 @@ import service.user.modules._
 import service.security.modules._
 import service.aws.modules._
 import service.persistence.modules.PersistenceModule
-import service.recommendation.modules._
 import service.analytics.modules.AnalyticsModule
 import play.api.libs.concurrent.Execution.Implicits._
 import play.api.libs.concurrent.Akka
@@ -29,7 +28,6 @@ object Global extends GlobalSettings {
       new SecurityModule,
       new AWSModule,
       new PersistenceModule,
-      new RecommendationModule,
       new AnalyticsModule
     )
   }

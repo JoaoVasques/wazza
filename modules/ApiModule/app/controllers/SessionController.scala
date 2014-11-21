@@ -20,6 +20,7 @@ import org.joda.time.Interval
 import scala.concurrent._
 import ExecutionContext.Implicits.global
 import persistence.utils._
+import controllers.security._
 
 class SessionController @Inject()(
   mobileUserService: MobileUserService,
@@ -57,7 +58,9 @@ class SessionController @Inject()(
     promise.future
   }
 
-  def saveSession(companyName: String, applicationName: String) = Action.async(parse.json) {implicit request =>
+  def saveSession() = ApiSecurityAction.async(parse.json) {implicit request =>
+    val companyName = request.companyName
+    val applicationName = request.applicationName
     val content = (Json.parse((request.body \ "content").as[String].replace("\\", "")) \ "session").as[JsArray]
     applicationService.exists(companyName, applicationName) flatMap {exists =>
       if(!exists){

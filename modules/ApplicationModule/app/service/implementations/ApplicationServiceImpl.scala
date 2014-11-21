@@ -19,6 +19,7 @@ import service.persistence.definitions.DatabaseService
 import WazzaApplicationImplicits._
 import service.user.definitions.PurchaseService
 import models.user.PurchaseInfo
+import service.security.definitions._
 
 class ApplicationServiceImpl @Inject()(
   photosService: PhotosService,

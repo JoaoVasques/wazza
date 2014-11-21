@@ -44,7 +44,6 @@ lazy val home = project.in(file("."))
     awsModule,
     apiModule,
     persistenceModule,
-    recommendationModule,
     analyticsModule)
   .dependsOn(dashboardModule,
     userModule,
@@ -53,7 +52,6 @@ lazy val home = project.in(file("."))
     awsModule,
     apiModule,
     persistenceModule,
-    recommendationModule,
     analyticsModule)
   .settings(mySettings: _*)
 
@@ -101,7 +99,7 @@ lazy val apiModule = play.Project("api",
                     dependencies,
                     path = file("modules/ApiModule")
               )
-              .dependsOn(securityModule, awsModule, userModule, applicationModule, recommendationModule)
+              .dependsOn(securityModule, awsModule, userModule, applicationModule)
               .settings(mySettings: _*)
 
 
@@ -111,14 +109,6 @@ lazy val persistenceModule = play.Project("persistence",
                   path = file("modules/PersistenceModule")
               )
               .settings(mySettings: _*)
-
-lazy val recommendationModule = play.Project("recommendation",
-  version.toString,
-  dependencies,
-  path = file("modules/RecommendationModule")
-)
-  .dependsOn(userModule, applicationModule, persistenceModule)
-  .settings(mySettings: _*)
 
 lazy val analyticsModule = play.Project("analytics",
   version.toString,

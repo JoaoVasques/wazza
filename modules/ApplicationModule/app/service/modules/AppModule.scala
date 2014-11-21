@@ -8,6 +8,6 @@ class AppModule extends ScalaModule {
   def configure() {
     bind[ApplicationService].to[ApplicationServiceImpl]
     bind[ItemService].to[ItemServiceImpl]
-    bind[RedirectionTableService].to[RedirectionTableServiceImpl]
   }
 }
+
