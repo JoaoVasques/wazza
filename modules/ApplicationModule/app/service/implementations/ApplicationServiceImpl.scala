@@ -21,9 +21,10 @@ import service.user.definitions.PurchaseService
 import models.user.PurchaseInfo
 
 class ApplicationServiceImpl @Inject()(
-    photosService: PhotosService,
-    databaseService: DatabaseService,
-    purchaseService: PurchaseService
+  photosService: PhotosService,
+  databaseService: DatabaseService,
+  purchaseService: PurchaseService,
+  redirectTableService: RedirectionTableService
 ) extends ApplicationService with ApplicationErrors{
 
   private implicit def convertItemToJsObject(item: Item): JsObject = {
@@ -67,6 +68,7 @@ class ApplicationServiceImpl @Inject()(
         for{
           res <- databaseService.insert(collection, application)
           app <- addApplication(companyName, application.name)
+          res <- redirectTableService.save(application.credentials.sdkToken, companyName, application.name)
         } yield application
       } else Future {null}
     }

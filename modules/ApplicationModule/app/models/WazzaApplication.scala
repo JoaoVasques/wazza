@@ -7,36 +7,31 @@ import play.api.libs.functional.syntax._
 
 case class Credentials(
   appId: String,
-  apiKey: String,
-  sdkKey: String
+  sdkToken: String
 )
 
 object Credentials {
   implicit val reader = (
     (__ \ "appId").read[String] and
-    (__ \ "apiKey").read[String] and
-    (__ \ "sdkKey").read[String]
+    (__ \ "sdkToken").read[String]
   )(Credentials.apply _)
 
   implicit val write = (
     (__ \ "appId").write[String] and
-    (__ \ "apiKey").write[String] and
-    (__ \ "sdkKey").write[String]
+    (__ \ "sdkToken").write[String]
   )(unlift(Credentials.unapply))
 
   implicit def toJson(credential: Credentials): JsValue = {
     Json.obj(
       "appId" -> credential.appId,
-      "apiKey" -> credential.apiKey,
-      "sdkKey" -> credential.sdkKey
+      "sdkToken" -> credential.sdkToken
     )
   }
 
   implicit def fromJson(json: JsValue): Credentials = {
     new Credentials(
       (json \ "appId").as[String],
-      (json \ "apiKey").as[String],
-      (json \ "sdkKey").as[String]
+      (json \ "sdkToken").as[String]
     )
   }
 }

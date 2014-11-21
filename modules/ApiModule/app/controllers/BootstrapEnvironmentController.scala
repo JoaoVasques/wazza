@@ -42,7 +42,7 @@ class BootstrapEnvironmentController @Inject()(
     val imageName = "image-test"
     val packageName = "com.example"
     val appType = WazzaApplication.applicationTypes.last
-    val credentials = new Credentials("id", "key", "sdk")
+    val credentials = new Credentials("id", "token")
     val items = List[Item]()
     val virtualCurrencies = List[VirtualCurrency]()
   }

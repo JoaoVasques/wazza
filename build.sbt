@@ -30,12 +30,6 @@ lazy val dependencies = Seq(
 
 libraryDependencies ++= dependencies
 
-templatesImport += "org.bson.types.ObjectId"
-
-templatesImport += "models.user._"
-
-templatesImport += "controllers.user._"
-
 lazy val mySettings = Seq(
   scalacOptions ++= Seq("-feature", "-language:reflectiveCalls"),
   scalacOptions ++= Seq("-feature", "-language:postfixOps")
