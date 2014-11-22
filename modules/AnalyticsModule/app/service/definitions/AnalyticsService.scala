@@ -30,14 +30,14 @@ trait AnalyticsService {
 
   def getTotalRevenue(companyName: String, applicationName: String, start: Date, end: Date): Future[JsValue]
 
-  def getTotalChurnRate(
+  def getTotalAveragePurchasesUser(
     companyName: String,
     applicationName: String,
     start: Date,
     end: Date
   ): Future[JsValue]
 
-  def getChurnRate(
+  def getAveragePurchasesUser(
     companyName: String,
     applicationName: String,
     start: Date,

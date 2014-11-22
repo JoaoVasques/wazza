@@ -12,7 +12,7 @@ import play.api.libs.functional.syntax._
 import scala.util.Failure
 import scala.util.Success
 import service.user.definitions._
-import models.user.{PurchaseInfo}
+import models.user.{PurchaseInfo, Buyer}
 import scala.util.Try
 import com.google.inject._
 import service.persistence.definitions.DatabaseService
@@ -46,7 +46,9 @@ class PurchaseServiceImpl @Inject()(
     val collection = PurchaseInfo.getCollection(companyName, applicationName)
     exist(companyName, applicationName, info.id) flatMap {exists =>
       if(!exists) {
-        databaseService.insert(collection, Json.toJson(info))
+        databaseService.insert(collection, Json.toJson(info)) flatMap {r =>
+          saveUserAsBuyer(companyName, applicationName, info.userId)
+        }
       } else {
         Future.failed(new Exception("Duplicated purchase"))
       }
@@ -96,6 +98,17 @@ class PurchaseServiceImpl @Inject()(
         databaseService.delete(collection, Json.toJson(info))
       } else {
         Future {new Exception("Cannot delete purchase that does not exist")}
+      }
+    }
+  }
+
+  private def saveUserAsBuyer(companyName: String, applicationName: String, userId: String) = {
+    val collection = Buyer.getCollection(companyName, applicationName)
+    databaseService.exists(collection, Buyer.Id, userId) flatMap {res =>
+      if(!res) {
+        databaseService.insert(collection, Json.obj("userId" -> userId))
+      } else {
+        Future{}
       }
     }
   }

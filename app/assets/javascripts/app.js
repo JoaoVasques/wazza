@@ -84,10 +84,10 @@ config(function($stateProvider, $urlRouterProvider, $locationProvider, $httpProv
             controller: 'LifeTimeValueController'
         })
 
-        .state('analytics.churn', {
+        .state('analytics.avgPurchasesUser', {
             url: "^/",
             templateUrl: '/dashboard/analytics',
-            controller: 'ChurnController'
+            controller: 'AvgPurchasesPerUserController'
         })
 
         .state('analytics.purchasesPerSession', {

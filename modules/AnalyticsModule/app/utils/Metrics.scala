@@ -36,5 +36,45 @@ object Metrics {
     companyName: String,
     applicationName: String
   ) = s"${companyName}_numberSessionsPerUser_${applicationName}"
+
+  def arpuCollection(
+    companyName: String,
+    applicationName: String
+  ) = s"${companyName}_Arpu_${applicationName}"
+
+  def avgRevenueSessionCollection(
+    companyName: String,
+    applicationName: String
+  ) = s"${companyName}_avgRevenueSession_${applicationName}"
+
+  def avgPurchasesUserCollection(
+    companyName: String,
+    applicationName: String
+  ) = s"${companyName}_avgPurchasesUser_${applicationName}"
+
+  def avgSessionsPerUserCollection(
+    companyName: String,
+    applicationName: String
+  ) = s"${companyName}_numberSessionsPerUser_${applicationName}"
+
+  def lifeTimeValueCollection(
+    companyName: String,
+    applicationName: String
+  ) = s"${companyName}_LifeTimeValue_${applicationName}"
+
+  def averageTimeBetweenPurchasesCollection(
+    companyName: String,
+    applicationName: String
+  ) = s"${companyName}_AvgTimeBetweenPurchases_${applicationName}"
+
+  def averagePurchasePerSessionCollection(
+    companyName: String,
+    applicationName: String
+  ) = s"${companyName}_PurchasesPerSession_${applicationName}"
+
+  def averageTimeFirstPurchaseCollection(
+    companyName: String,
+    applicationName: String
+  ) = s"${companyName}_AvgTimeFirstPurchase_${applicationName}"
 }
 
