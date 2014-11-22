@@ -24,8 +24,7 @@ import service.security.definitions._
 class ApplicationServiceImpl @Inject()(
   photosService: PhotosService,
   databaseService: DatabaseService,
-  purchaseService: PurchaseService,
-  redirectTableService: RedirectionTableService
+  purchaseService: PurchaseService
 ) extends ApplicationService with ApplicationErrors{
 
   private implicit def convertItemToJsObject(item: Item): JsObject = {
@@ -69,7 +68,7 @@ class ApplicationServiceImpl @Inject()(
         for{
           res <- databaseService.insert(collection, application)
           app <- addApplication(companyName, application.name)
-          res <- redirectTableService.save(application.credentials.sdkToken, companyName, application.name)
+          res <- this.saveAppData(application.credentials.sdkToken, companyName, application.name)
         } yield application
       } else Future {null}
     }
@@ -334,6 +333,31 @@ class ApplicationServiceImpl @Inject()(
       }) match {
         case Some(_) => true
         case None => false
+      }
+    }
+  }
+
+  
+  private lazy val collection = "RedirectionTable"
+
+  private def saveAppData(token: String, companyName: String, applicationName: String): Future[Unit] = {
+    val model = Json.obj(
+      "token" -> token,
+      "companyName" -> companyName,
+      "applicationName" -> applicationName
+    )
+    databaseService.insert(collection, model)
+  }
+
+  private def getAppData(token: String): Future[Option[JsValue]] = {
+    databaseService.get(collection, "token", token)
+  }
+
+  private def deleteAppData(token: String): Future[Unit] = {
+    getAppData(token) flatMap {res =>
+      res match {
+        case Some(data) => databaseService.delete(collection, data)
+        case None => Future.successful()
       }
     }
   }

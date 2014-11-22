@@ -23,11 +23,11 @@ object Global extends GlobalSettings {
   
   private lazy val injector = {
     Guice.createInjector(
+      new PersistenceModule,
       new AppModule,
       new UserModule,
       new SecurityModule,
       new AWSModule,
-      new PersistenceModule,
       new AnalyticsModule
     )
   }

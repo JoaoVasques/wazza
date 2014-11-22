@@ -9,6 +9,5 @@ class SecurityModule extends ScalaModule {
     bind[SecretGeneratorService].to[SecretGeneratorServiceImpl]
     bind[TokenManagerService].to[TokenManagerServiceImpl]
     bind[TokenStoreService].to[TokenStoreServiceCacheImpl]
-    bind[RedirectionTableService].to[RedirectionTableServiceImpl]
   }
 }

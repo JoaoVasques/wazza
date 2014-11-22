@@ -76,7 +76,7 @@ lazy val applicationModule = play.Project("application",
                     dependencies,
                     path = file("modules/ApplicationModule")
               )
-              .dependsOn(securityModule, awsModule, userModule, persistenceModule)
+              .dependsOn(persistenceModule, securityModule, awsModule, userModule)
               .settings(mySettings: _*)
 
 lazy val securityModule = play.Project("security",
