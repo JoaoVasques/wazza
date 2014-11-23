@@ -30,7 +30,6 @@ class MobileUserServiceImpl @Inject()(
     userId: String
   ): Future[Unit] = {
     val collection = MobileUser.getCollection(companyName, applicationName)
-
     exists(companyName, applicationName, userId) flatMap {userExists =>
       if(!userExists) {
         val user = new MobileUser(userId)
@@ -53,9 +52,7 @@ class MobileUserServiceImpl @Inject()(
 
   def exists(companyName: String, applicationName: String, userId: String): Future[Boolean] = {
     val collection = MobileUser.getCollection(companyName, applicationName)
-    databaseService.exists(collection, MobileUser.KeyId, userId) map {res =>
-      res
-    }
+    databaseService.exists(collection, MobileUser.KeyId, userId)
   }
 }
 
