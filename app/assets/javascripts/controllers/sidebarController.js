@@ -36,7 +36,7 @@ application.controller('SidebarController', [
         type: "warning",
         showCancelButton: true,
         confirmButtonColor: "#DD6B55",
-        confirmButtonText: "Yes, I have no fear!" },
+        confirmButtonText: "Yes" },
         function(){
           $scope.followLink(state); //BUG: this function gets called correctly but swal call (l23) doesn't run.
         });

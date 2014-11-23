@@ -28,6 +28,7 @@ object Global extends GlobalSettings {
       new UserModule,
       new SecurityModule,
       new AWSModule,
+      new PersistenceModule,
       new AnalyticsModule
     )
   }

@@ -18,12 +18,13 @@ class SettingsController @Inject()(
 	userService: UserService
 	) extends Controller {
 
-	def bootstrap() = UserAuthenticationAction.async {implicit request =>
+	def bootstrap(appName: String) = UserAuthenticationAction.async {implicit request =>
 		userService.getApplications(request.userId) flatMap {applications =>
 			userService.find(request.userId) flatMap {userOpt =>
 				val user = userOpt.get
 				val companyName = user.company
-				val info = applicationService.find(companyName, applications.head) map {optApp =>
+        val application = applications.find(_ == appName).get
+				val info = applicationService.find(companyName, application) map {optApp =>
 					(optApp map {application =>
 						Json.obj(
 							"userInfo" -> Json.obj(
