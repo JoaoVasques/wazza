@@ -10,3 +10,4 @@ class AppModule extends ScalaModule {
     bind[ItemService].to[ItemServiceImpl]
   }
 }
+

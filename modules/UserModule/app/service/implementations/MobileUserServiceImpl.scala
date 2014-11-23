@@ -30,7 +30,6 @@ class MobileUserServiceImpl @Inject()(
     userId: String
   ): Future[Unit] = {
     val collection = MobileUser.getCollection(companyName, applicationName)
-
     exists(companyName, applicationName, userId) flatMap {userExists =>
       if(!userExists) {
         val user = new MobileUser(userId)

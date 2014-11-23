@@ -20,6 +20,7 @@ import org.joda.time.Interval
 import scala.concurrent._
 import ExecutionContext.Implicits.global
 import persistence.utils._
+import controllers.security._
 
 class SessionController @Inject()(
   mobileUserService: MobileUserService,
@@ -27,7 +28,11 @@ class SessionController @Inject()(
   applicationService: ApplicationService
 ) extends Controller {
 
-  private def createNewSessionInfo(content: JsValue): Future[SimpleResult] = {
+  private def createNewSessionInfo(
+    content: JsValue,
+    companyName: String,
+    applicationName: String
+  ): Future[SimpleResult] = {
     val start = DateUtils.buildJodaDateFromString((content \ "startTime").as[String])
     val end = DateUtils.buildJodaDateFromString((content \ "endTime").as[String])
 
@@ -41,8 +46,6 @@ class SessionController @Inject()(
       "purchases" -> (content \ "purchases").as[List[String]]
     )) match {
       case Success(session) => {
-        val companyName = (content \ "companyName").as[String]
-        val applicationName = (content \ "applicationName").as[String]
         sessionService.insert(companyName, applicationName, session) map { r =>
           promise.success(Ok)
         } recover {
@@ -57,7 +60,9 @@ class SessionController @Inject()(
     promise.future
   }
 
-  def saveSession(companyName: String, applicationName: String) = Action.async(parse.json) {implicit request =>
+  def saveSession() = ApiSecurityAction.async(parse.json) {implicit request =>
+    val companyName = request.companyName
+    val applicationName = request.applicationName
     val content = (Json.parse((request.body \ "content").as[String].replace("\\", "")) \ "session").as[JsArray]
     applicationService.exists(companyName, applicationName) flatMap {exists =>
       if(!exists){
@@ -68,12 +73,12 @@ class SessionController @Inject()(
           mobileUserService.exists(companyName, applicationName, userId) map {exist =>
             if(!exist) {
               mobileUserService.createMobileUser(companyName, applicationName, userId) map {r =>
-                createNewSessionInfo(session)
+                createNewSessionInfo(session, companyName, applicationName)
               } recover {
                 case ex: Exception => Future.failed(ex)
               }
             } else {
-              createNewSessionInfo(session)
+              createNewSessionInfo(session, companyName, applicationName)
             }
           }
         }})

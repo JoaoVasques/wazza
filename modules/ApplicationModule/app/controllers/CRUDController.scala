@@ -27,19 +27,6 @@ import scala.language.implicitConversions
 import play.api.libs.Files._
 import java.io.File
 
-/** Uncomment the following lines as needed **/
-/**
-import play.api.Play.current
-import play.api.libs._
-import play.api.libs.iteratee._
-import play.api.libs.concurrent._
-import java.util.concurrent._
-import scala.concurrent.stm._
-import akka.util.duration._
-import play.api.cache._
-import play.api.libs.json._
-**/
-
 class CRUDController @Inject()(
   applicationService: ApplicationService,
   secretGeneratorService: SecretGeneratorService,
@@ -101,8 +88,7 @@ class CRUDController @Inject()(
       "appType" -> list(text),
       "credentials" -> mapping(
         "appId" -> ignored(secretGeneratorService.generateSecret(Id)),
-        "apiKey" -> ignored(secretGeneratorService.generateSecret(ApiKey)),
-        "sdkKey" -> ignored(secretGeneratorService.generateSecret(ApiKey))
+        "sdkToken" -> ignored(secretGeneratorService.generateSecret(ApiKey))
       )(Credentials.apply)(Credentials.unapply),
       "items" -> ignored(List[Item]()),
       "virtualCurrencies"-> ignored(List[VirtualCurrency]())

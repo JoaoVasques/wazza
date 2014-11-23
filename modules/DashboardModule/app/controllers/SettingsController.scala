@@ -31,9 +31,7 @@ class SettingsController @Inject()(
 								"email" -> user.email
 								),
 							"credentials" -> Json.obj(
-								"appName" -> application.name,
-								"apiKey" -> application.credentials.apiKey,
-								"sdkKey" -> application.credentials.sdkKey
+								"sdkToken" -> application.credentials.sdkToken
 								)
 							)
 						}).get
