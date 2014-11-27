@@ -14,6 +14,7 @@ application.controller('SidebarController', [
 
     $scope.selectDashboardSection = function(sectionId) {
       $scope.followLink("analytics.dashboard");
+      //scroll to top
       var someElement = angular.element(document.getElementById(sectionId));
       $document.scrollToElement(someElement, 0, 500);
     };
