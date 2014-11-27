@@ -5,14 +5,14 @@ angular.module('UserModule', ['UserModule.services', 'UserModule.directives', 'S
 //TODO: refactor this -> move to user's controllers module
 .controller('UserRegistrationController',
   ['$scope',
-  '$location',
+  '$state',
   'createNewUserAccountService',
   'cookiesManagerService',
   '$rootScope',
   'LoginLogoutService',
   function (
     $scope,
-    $location,
+    $state,
     createNewUserAccountService,
     cookiesManagerService,
     $rootScope,
@@ -46,7 +46,7 @@ angular.module('UserModule', ['UserModule.services', 'UserModule.directives', 'S
     cookiesManagerService.set('PLAY2AUTH_SESS_ID', success.data.authToken);
     LoginLogoutService.login();
     //document.getElementById("page-wrapper").className = "page-wrapper";
-    $location.path(success.data.url);
+    $state.go(success.data.url);
   };
 
   $scope.handleUserCreationFailure = function(error){
