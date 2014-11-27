@@ -1,17 +1,25 @@
-settingsServices.factory('BootstrapSettingsService', ['$http', '$q',
-    function ($http, $q) {
-        var service = {};
+settingsServices.factory('BootstrapSettingsService', [
+  '$http',
+  '$q',
+  'ApplicationStateService',
+  function (
+    $http,
+    $q,
+    ApplicationStateService
+  ) {
+    var service = {};
+    service.execute = function () {
+      var request = $http({
+        url: '/dashboard/settings/bootstrap/' + ApplicationStateService.applicationName,
+        method: 'GET'
+      });
 
-        service.execute = function () {
-            var request = $http({
-                url: '/dashboard/settings/bootstrap',
-                method: 'GET'
-            });
+      var deferred = $q.defer();
+      deferred.resolve(request);
+      return deferred.promise;
+    };
 
-            var deferred = $q.defer();
-            deferred.resolve(request);
-            return deferred.promise;
-        };
+    return service;
+  }
+]);
 
-        return service;
-}]);

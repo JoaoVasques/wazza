@@ -26,8 +26,8 @@ GET     /inventory/bootstrap          @controllers.dashboard.InventoryController
 #GET    /store/amazon                 @controllers.dashboard.AnalyticsController.storeAmazon
 
 # other
-GET     /settings                     @controllers.dashboard.SettingsController.settings
-GET     /settings/bootstrap           @controllers.dashboard.SettingsController.bootstrap
+GET     /settings                       @controllers.dashboard.SettingsController.settings
+GET     /settings/bootstrap/:appName    @controllers.dashboard.SettingsController.bootstrap(appName: String)
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file                 controllers.dashboard.Assets.at(path="/public", file)

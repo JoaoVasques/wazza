@@ -45,6 +45,8 @@ dashboard.controller('SettingsController', [
             console.log(errorData);
         };
 
+        $scope.appName = ApplicationStateService.applicationName;
+
         BootstrapSettingsService.execute()
         .then(
             bootstrapSuccessCallback,
