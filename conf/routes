@@ -8,6 +8,7 @@ GET     /home                 @controllers.Application.home
 GET		/analyticsframe		  @controllers.Application.analyticsframe
 GET		/notavailableyet	  @controllers.Application.notavailableyet
 GET		/webframe			  @controllers.Application.webframe
+GET		/terms				  @controllers.Application.terms
 GET     /login                @controllers.LoginLogoutController.login
 POST    /login                @controllers.LoginLogoutController.authenticate
 POST    /logout               @controllers.LoginLogoutController.logout

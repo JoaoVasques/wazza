@@ -168,6 +168,12 @@ config(function($stateProvider, $urlRouterProvider, $locationProvider, $httpProv
             controller: 'NotAvailableYetController'
         })
 
+      //random
+        .state('webframe.terms', {
+            url: "^/",
+            templateUrl: '/terms'
+        })
+
     $httpProvider.responseInterceptors.push('SecurityHttpInterceptor');
 
     });
