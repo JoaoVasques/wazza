@@ -23,7 +23,7 @@ class SettingsController @Inject()(
 			userService.find(request.userId) flatMap {userOpt =>
 				val user = userOpt.get
 				val companyName = user.company
-        val application = applications.find(_ == appName).get
+				val application = applications.find(_ == appName).get
 				val info = applicationService.find(companyName, application) map {optApp =>
 					(optApp map {application =>
 						Json.obj(

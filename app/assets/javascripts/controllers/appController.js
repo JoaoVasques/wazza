@@ -48,7 +48,7 @@ application.controller('AppController', [
       ApplicationStateService.cleanup();
       $scope.authOK = false;
 
-      document.body.className = "skin-blue login-screen";
+      document.body.className = "skin-blue";
       $state.go("webframe.login");
       //$state.go(url.value);      //TODO: fix this. url.value returns the relative url instead of the state
     });
