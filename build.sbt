@@ -1,6 +1,8 @@
-name := "Wazza"
+lazy val appName = "Wazza"
 
-version := "alpha"
+lazy val appVersion = "alpha"
+
+scalaVersion := "2.10.4"
 
 lazy val dependencies = Seq(
   anorm,
@@ -8,7 +10,8 @@ lazy val dependencies = Seq(
   "org.webjars" % "jquery" % "1.11.1",
   "com.google.inject" % "guice" % "3.0",
   "com.tzavellas" % "sse-guice" % "0.7.1",
-  "org.webjars" % "webjars-play_2.10" % "2.2.2-1",
+  "org.webjars" % "webjars-play_2.10" % "2.3.0-2",
+  //"org.webjars" % "webjars-play_2.10" % "2.2.2-1",
   "org.webjars" % "angularjs" % "1.2.26",
   "org.webjars" % "bootstrap" % "3.2.0",
   "commons-validator" % "commons-validator" % "1.4.0",
@@ -18,13 +21,14 @@ lazy val dependencies = Seq(
   "org.mindrot" % "jbcrypt" % "0.3m",
   "commons-codec" % "commons-codec" % "1.9",
   "org.mongodb" % "casbah_2.10" % "2.7.0",
-  "com.typesafe.akka" %% "akka-actor" % "2.2.3",
-  "com.typesafe.akka" %% "akka-slf4j" % "2.2.3",
+  "com.typesafe.akka" %% "akka-actor" % "2.3.3",
+  "com.typesafe.akka" %% "akka-slf4j" % "2.3.3",
   "org.webjars" % "angular-ui-bootstrap" % "0.11.2",
   "org.webjars" % "angular-ui-router" % "0.2.11-1",
   "org.webjars" % "momentjs" % "2.8.3",
   "org.webjars" % "chartjs" % "1.0.1-beta.4",
-  "org.reactivemongo" %% "play2-reactivemongo" % "0.10.2",
+  "org.reactivemongo" %% "play2-reactivemongo" % "0.10.5.0.akka23",
+  //"org.reactivemongo" %% "play2-reactivemongo" % "0.10.2",
   "org.mongodb" % "casbah-commons_2.10" % "2.7.3"
 )
 
@@ -35,71 +39,47 @@ lazy val mySettings = Seq(
   scalacOptions ++= Seq("-feature", "-language:postfixOps")
 )
 
-lazy val dashboard = play.Project("dashboard",
-  version.toString,
-  dependencies,
-  path = file("modules/dashboard")
-)
+lazy val dashboard = Project("dashboard", file("modules/dashboard"))
+  .enablePlugins(play.PlayScala)
   .dependsOn(user, application)
-  .settings(mySettings: _*)
+  .settings(version := appVersion, libraryDependencies ++= dependencies)
 
-lazy val user = play.Project("user",
-  version.toString,
-  dependencies,
-  path = file("modules/user")
-)
+lazy val user = Project("user", file("modules/user"))
+  .enablePlugins(play.PlayScala)
   .dependsOn(security, persistence)
-  .settings(mySettings: _*)
+  .settings(version := appVersion, libraryDependencies ++= dependencies)
 
-lazy val application = play.Project("application",
-  version.toString,
-  dependencies,
-  path = file("modules/application")
-)
+lazy val application = Project("application", file("modules/application"))
+  .enablePlugins(play.PlayScala)
   .dependsOn(persistence, security, aws, user)
-  .settings(mySettings: _*)
+  .settings(version := appVersion, libraryDependencies ++= dependencies)
 
-lazy val security = play.Project("security",
-  version.toString,
-  dependencies,
-  path = file("modules/security")
-)
+lazy val security = Project("security", file("modules/security"))
+  .enablePlugins(play.PlayScala)
   .dependsOn(persistence)
-  .settings(mySettings: _*)
+  .settings(version := appVersion, libraryDependencies ++= dependencies)
 
-lazy val aws = play.Project("aws",
-  version.toString,
-  dependencies,
-  path = file("modules/aws")
-)
-  .settings(mySettings: _*)
+lazy val aws = Project("aws", file("modules/aws"))
+  .enablePlugins(play.PlayScala)
+  .settings(version := appVersion, libraryDependencies ++= dependencies)
 
-lazy val api = play.Project("api",
-  version.toString,
-  dependencies,
-  path = file("modules/api")
-)
+lazy val api = Project("api", file("modules/api"))
+  .enablePlugins(play.PlayScala)
   .dependsOn(security, aws, user, application)
-  .settings(mySettings: _*)
+  .settings(version := appVersion, libraryDependencies ++= dependencies)
 
+lazy val persistence = Project("persistence", file("modules/persistence"))
+  .enablePlugins(play.PlayScala)
+  .settings(version := appVersion, libraryDependencies ++= dependencies)
 
-lazy val persistence = play.Project("persistence",
-  version.toString,
-  dependencies,
-  path = file("modules/persistence")
-)
-  .settings(mySettings: _*)
-
-lazy val analytics = play.Project("analytics",
-  version.toString,
-  dependencies,
-  path = file("modules/analytics")
-)
+lazy val analytics = Project("analytics",file("modules/analytics"))
+  .enablePlugins(play.PlayScala)
   .dependsOn(user, application, persistence, security)
-  .settings(mySettings: _*)
+  .settings(version := appVersion, libraryDependencies ++= dependencies)
 
 // Root
-lazy val home = project.in(file("."))
+lazy val home = Project(appName, file("."))
+  .enablePlugins(play.PlayScala)
   .aggregate(dashboard,
     user,
     application,
@@ -116,8 +96,6 @@ lazy val home = project.in(file("."))
     api,
     persistence,
     analytics)
-  .settings(mySettings: _*)
-
-play.Project.playScalaSettings
+  .settings(version := appVersion, libraryDependencies ++= dependencies)
 
 sources in doc in Compile := List()

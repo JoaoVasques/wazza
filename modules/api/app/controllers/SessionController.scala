@@ -32,11 +32,11 @@ class SessionController @Inject()(
     content: JsValue,
     companyName: String,
     applicationName: String
-  ): Future[SimpleResult] = {
+  ): Future[Result] = {
     val start = DateUtils.buildJodaDateFromString((content \ "startTime").as[String])
     val end = DateUtils.buildJodaDateFromString((content \ "endTime").as[String])
 
-    val promise = Promise[SimpleResult]
+    val promise = Promise[Result]
     sessionService.create(Json.obj(
       "id" -> (content \ "hash").as[String],
       "userId" -> (content \ "userId").as[String],

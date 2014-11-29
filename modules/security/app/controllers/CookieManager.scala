@@ -13,13 +13,13 @@ trait CookieManager { self: Controller =>
   private val AuthTokenCookieKey = "XSRF-TOKEN"
   private val AuthTokenUrlKey = "auth"
 
-  implicit class ResultWithToken(result: SimpleResult) {
+  implicit class ResultWithToken(result: Result) {
 
-    def withToken(token: String): SimpleResult = {
+    def withToken(token: String): Result = {
       result.withCookies(Cookie(AuthTokenCookieKey, token, None, httpOnly = false))
     }
 
-    def discardingToken(token: String)(removeToken: AuthenticityToken => Unit): SimpleResult = {
+    def discardingToken(token: String)(removeToken: AuthenticityToken => Unit): Result = {
       removeToken(token)
       result.discardingCookies(DiscardingCookie(name = AuthTokenCookieKey))
     }

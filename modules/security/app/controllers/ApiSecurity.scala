@@ -59,7 +59,7 @@ private[security] case class ApiAction[A](action: Action[A]) extends Action[A] {
   private val TokenHeader = ApiSecurityAction.TokenHeader
   lazy val parser = action.parser
 
-  def apply(request: Request[A]): Future[SimpleResult] = {
+  def apply(request: Request[A]): Future[Result] = {
     request.headers.get(TokenHeader).orElse(None) match {
       case Some(token) => {
         this.getAppData(token.filter(_ != '"')) flatMap {res =>
@@ -88,7 +88,7 @@ object ApiSecurityAction extends ActionBuilder[ApiRequest] {
 
   lazy val TokenHeader = "SDK-TOKEN"
 
-  def invokeBlock[A](request: Request[A], block: (ApiRequest[A] => Future[SimpleResult])) = {
+  def invokeBlock[A](request: Request[A], block: (ApiRequest[A] => Future[Result])) = {
     request match {
       case req: ApiRequest[A] => block(req)
       case _ => Future.successful(BadRequest("Invalid Request"))

@@ -7,7 +7,6 @@ import org.bson.BSONObject
 import play.api.libs.json.JsObject
 import play.api.libs.json.JsValue
 import play.api.libs.json.Json
-import play.api.libs.ws.WS
 import scala.collection.mutable.ListBuffer
 import scala.collection.immutable.StringOps
 import scala.collection.mutable.Map

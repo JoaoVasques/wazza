@@ -100,7 +100,7 @@ class CRUDController @Inject()(
     Ok(views.html.newApplication(applicationService.getApplicationyTypes))
   }
 
-  private def generateBadRequestResponse(errors: Form[WazzaApplication]): SimpleResult = {
+  private def generateBadRequestResponse(errors: Form[WazzaApplication]): Result = {
     BadRequest(Json.obj("errors" -> errors.errorsAsJson))
   }
 

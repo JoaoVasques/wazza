@@ -36,7 +36,7 @@ private[security] case class UserAction[A](action: Action[A]) extends Action[A] 
 
   lazy val parser = action.parser
 
-  def apply(request: Request[A]): Future[SimpleResult] = {
+  def apply(request: Request[A]): Future[Result] = {
     val maybeToken = request.headers.get(AuthTokenHeader).orElse(request.getQueryString(AuthTokenUrlKey))
     maybeToken flatMap {token =>
       tokenService.get(token.filter(_ != '"'))
@@ -50,7 +50,7 @@ private[security] case class UserAction[A](action: Action[A]) extends Action[A] 
 object UserAuthenticationAction extends ActionBuilder[UserRequest] {
 
   val AuthTokenHeader = "X-XSRF-TOKEN"
-  def invokeBlock[A](request: Request[A], block: (UserRequest[A] => Future[SimpleResult])) = {
+  def invokeBlock[A](request: Request[A], block: (UserRequest[A] => Future[Result])) = {
     request match {
       case req: UserRequest[A] => block(req)
       case _ => Future.successful(BadRequest("Invalid Request"))
