@@ -5,16 +5,9 @@
 # Home page
 GET     /                     @controllers.Application.index
 GET     /home                 @controllers.Application.home
-<<<<<<< HEAD
-GET		/analyticsframe		  @controllers.Application.analyticsframe
-GET		/notavailableyet	  @controllers.Application.notavailableyet
-GET		/webframe			  @controllers.Application.webframe
-GET		/terms				  @controllers.Application.terms
-=======
 GET		  /analyticsframe		    @controllers.Application.analyticsframe
 GET		  /notavailableyet	    @controllers.Application.notavailableyet
 GET		  /webframe			        @controllers.Application.webframe
->>>>>>> major refactoring to avoid error while running stage task
 GET     /login                @controllers.LoginLogoutController.login
 POST    /login                @controllers.LoginLogoutController.authenticate
 POST    /logout               @controllers.LoginLogoutController.logout
