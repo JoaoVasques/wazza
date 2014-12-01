@@ -15,12 +15,129 @@ POST	/logout					@controllers.LoginLogoutController.logout
 GET		/error					@controllers.Application.httpError
 
 # Modules
-->  /dashboard					dashboard.Routes
+->  /analytics					analytics.Routes
+->  /api						api.Routes
 ->  /user						user.Routes
 ->  /app						application.Routes
-->  /api						api.Routes
-->  /analytics					analytics.Routes
+->  /dashboard					dashboard.Routes
 
+# Analytics routes
+# ~~~~
+
+# General Routes  
+GET   /analytics/revenue/total/:company/:application/:start/:end   @controllers.analytics.AnalyticsController.getTotalRevenue(company: String, application: String, start: String, end: String)
+
+GET   /analytics/revenue/detail/:company/:application/:start/:end  @controllers.analytics.AnalyticsController.getDetailedTotalRevenue(company: String, application: String, start: String, end: String)
+
+GET  /analytics/arpu/total/:company/:application/:start/:end @controllers.analytics.AnalyticsController.getTotalARPU(company: String, application: String, start: String, end: String)
+
+GET  /analytics/arpu/detail/:company/:application/:start/:end @controllers.analytics.AnalyticsController.getDetailedARPU(company: String, application: String, start: String, end: String)
+
+GET  /analytics/avgRevenueSession/total/:company/:application/:start/:end @controllers.analytics.AnalyticsController.getTotalAverageRevenuePerSession(company: String, application: String, start: String, end: String)
+
+GET  /analytics/avgRevenueSession/detail/:company/:application/:start/:end @controllers.analytics.AnalyticsController.getDetailedAverageRevenuePerSession(company: String, application: String, start: String, end: String)
+
+GET  /analytics/ltv/total/:company/:application/:start/:end @controllers.analytics.AnalyticsController.getTotalLifeTimeValue(company: String, application: String, start: String, end: String)
+
+GET  /analytics/ltv/detail/:company/:application/:start/:end @controllers.analytics.AnalyticsController.getDetailedLifeTimeValue(company: String, application: String, start: String, end: String)
+
+GET  /analytics/avgPurchasesUser/total/:company/:application/:start/:end @controllers.analytics.AnalyticsController.getTotalAveragePurchasesUser(company: String, application: String, start: String, end: String)
+
+GET  /analytics/avgPurchasesUser/detail/:company/:application/:start/:end @controllers.analytics.AnalyticsController.getDetailedAveragePurchasesUser(company: String, application: String, start: String, end: String)
+
+GET  /analytics/avgTime1stPurchase/total/:company/:application/:start/:end @controllers.analytics.AnalyticsController.getTotalAverageTimeFirstPurchase(company: String, application: String, start: String, end: String)
+
+GET  /analytics/avgTime1stPurchase/detail/:company/:application/:start/:end @controllers.analytics.AnalyticsController.getAverageTimeFirstPurchase(company: String, application: String, start: String, end: String)
+
+GET  /analytics/avgTimeBetweenPurchases/total/:company/:application/:start/:end @controllers.analytics.AnalyticsController.getTotalAverageTimeBetweenPurchases(company: String, application: String, start: String, end: String)
+
+GET  /analytics/avgTimeBetweenPurchases/detail/:company/:application/:start/:end @controllers.analytics.AnalyticsController.getAverageTimeBetweenPurchases(company: String, application: String, start: String, end: String)
+
+GET  /analytics/payingUsers/total/:company/:application/:start/:end @controllers.analytics.AnalyticsController.getTotalNumberPayingCustomers(company: String, application: String, start: String, end: String)
+
+GET  /analytics/payingUsers/detail/:company/:application/:start/:end @controllers.analytics.AnalyticsController.getNumberPayingCustomers(company: String, application: String, start: String, end: String)
+
+GET  /analytics/purchasesPerSession/total/:company/:application/:start/:end @controllers.analytics.AnalyticsController.getTotalAveragePurchasePerSession(company: String, application: String, start: String, end: String)
+
+GET  /analytics/purchasesPerSession/detail/:company/:application/:start/:end @controllers.analytics.AnalyticsController.getAveragePurchasePerSession(company: String, application: String, start: String, end: String)
+
+
+## API ROUTES
+
+#POST   /api/auth                                   @controllers.api.AuthenticationController.authenticate  
+GET     /api/items/:companyName/:applicationName     @controllers.api.ItemsController.getItems(companyName: String, applicationName: String)
+GET     /api/items/details/:companyName/:appName     @controllers.api.ItemsController.getItemsWithDetails(companyName: String, appName: String)
+GET     /api/item/:companyName/:applicationName/:id  @controllers.api.ItemsController.getItemDetails(companyName: String, id: String, applicationName: String)
+
+# Purchases routes
+POST    /api/purchase/  @controllers.api.PurchaseController.handlePurchase()
+
+# Session routes
+POST    /api/session/new/   @controllers.api.SessionController.saveSession()
+      
+#Internal - bootstrap test scenarios
+#POST    /api/bootstrap/:companyName/:appName @controllers.api.BootstrapEnvironmentController.execute(companyName: String, appName: String)
+
+#POST    /api/bootstrap/sessions/:companyName/:appName @controllers.api.GenerateSessionsController.execute(companyName: String, appName: String)
+
+#POST    /api/bootstrap/purchases/:companyName/:appName @controllers.api.GeneratePurchasesController.execute(companyName: String, appName: String)
+
+
+# USER ROUTES
+
+# Home page
+GET   /user                 @controllers.user.ApplicationUser.index
+GET   /user/register        @controllers.user.RegistrationController.registerUser
+POST  /user/register        @controllers.user.RegistrationController.submitUser
+
+# APPLICATION ROUTES
+
+# Application routes
+GET     /app/new                          @controllers.application.CRUDController.newApplication
+#trying to be coeherent but failed miserably
+POST    /app/new/uploadimage              @controllers.application.CRUDController.uploadImage
+POST    /app/new/:companyName             @controllers.application.CRUDController.newApplicationSubmit(companyName: String)
+
+# Items routes
+GET     /app/item/new/                                 @controllers.application.ItemCRUDController.newItem
+POST    /app/item/new/:companyName/:applicationName    @controllers.application.ItemCRUDController.newItemSubmit(companyName: String, applicationName: String)
+POST    /app/item/uploadimage                          @controllers.application.ItemCRUDController.uploadImage
+POST    /app/item/delete/:companyName/:appName/:itemId @controllers.application.ItemCRUDController.deleteItem(companyName: String, appName: String, itemId)
+
+#API endpoints
+GET     /app/api/virtualcurrencies/all/:applicationName/:companyName  @controllers.application.APIController.getVirtualCurrencies(applicationName, companyName)
+GET     /app/api/item/get/:applicationName/:offset/:companyName       @controllers.application.APIController.getItems(applicationName, companyName, offset: Int)
+
+
+# DASHBOARD ROUTES
+
+# dashboard (root route is /dashboard/)
+GET     /dashboard                   @controllers.dashboard.DashboardController.index
+GET     /dashboard/kpi                @controllers.dashboard.DashboardController.kpi
+
+# overview
+GET     /dashboard/overview                     @controllers.dashboard.OverviewController.overview
+GET     /dashboard/overview/bootstrap           @controllers.dashboard.OverviewController.bootstrapOverview
+GET     /dashboard/overview/company             @controllers.dashboard.OverviewController.company
+
+# analytics
+GET     /dashboard/analytics                    @controllers.dashboard.AnalyticsController.analytics
+
+# inventory
+GET     /dashboard/inventory                    @controllers.dashboard.InventoryController.inventory
+GET     /dashboard/inventory/crud               @controllers.dashboard.InventoryController.inventoryCRUD
+GET     /dashboard/inventory/virtualCurrencies  @controllers.dashboard.InventoryController.inventoryVirtualCurrencies
+GET     /dashboard/inventory/bootstrap          @controllers.dashboard.InventoryController.bootstrapInventory
+
+# not used atm
+#GET    /dashboard/store/android                @controllers.dashboard.AnalyticsController.storeAndroid
+#GET    /dashboard/store/apple                  @controllers.dashboard.AnalyticsController.storeApple
+#GET    /dashboard/store/amazon                 @controllers.dashboard.AnalyticsController.storeAmazon
+
+# other
+GET     /dashboard/settings                       @controllers.dashboard.SettingsController.settings
+GET     /dashboard/settings/bootstrap/:appName    @controllers.dashboard.SettingsController.bootstrap(appName: String)
+  
 # Map static resources from the /public folder to the /assets URL path
-GET		/assets/*file			controllers.Assets.at(path="/public", file)
-GET		/webjars/*file			controllers.WebJarAssets.at(file)
+GET     /assets/*file         controllers.Assets.at(path="/public", file)
+GET     /webjars/*file        controllers.WebJarAssets.at(file)
