@@ -19,4 +19,6 @@ conf/application.conf
 conf/prod.conf
 .ensime*
 .vagrant/
+ops/deployment/*.pyc
+  
   
