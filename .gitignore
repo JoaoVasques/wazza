@@ -15,8 +15,7 @@ dist
 /.settings
 conf/prod
 conf/dev
-conf/application.conf
-conf/prod.conf
+conf/*.conf
 .ensime*
 .vagrant/
 ops/deployment/*.pyc
