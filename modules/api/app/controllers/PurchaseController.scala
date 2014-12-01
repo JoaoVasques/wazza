@@ -22,7 +22,6 @@ class PurchaseController @Inject()(
     val companyName = request.companyName
     val applicationName = request.applicationName
     val content = Json.parse((request.body \ "content").as[String].replace("\\", ""))
-    //TODO fetch company and app's name and add it to content
     applicationService.exists(companyName, applicationName) flatMap {exists =>
       if(!exists) {
         Future.successful(NotFound("Application does not exist"))
