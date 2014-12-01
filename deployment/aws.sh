@@ -9,3 +9,4 @@ activator universal:packageZipTarball
 cd -
 
 zip --junk-paths ../target/aws.zip Dockerfile ../target/universal/wazza-alpha.tgz
+zip --junk-paths ../conf/prod.conf ../target/universal/wazza-alpha.tgz deployment.tgz
