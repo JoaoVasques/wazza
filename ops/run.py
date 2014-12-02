@@ -1,5 +1,4 @@
-from deployment import deploy
-
+from deployment.deploy import Deploy
 
 import shutil
 import os
@@ -19,11 +18,15 @@ class Run:
         self.output = "wazza-" + self.version
     
     def execute(self):
+        print "TAR PATH: " + self.tarPath
+        pwd = os.getcwd()
         if not os.path.exists(self.tarPath):
             print "tgz file does not exist. Must create it\n"
+            deployDir = pwd + '/deployment'
+            os.chdir(deployDir)
             Deploy(self.version).execute()
+            os.chdir(pwd)
 
-        pwd = os.getcwd()
         if os.path.exists(self.output):
             shutil.rmtree(self.output)
 
