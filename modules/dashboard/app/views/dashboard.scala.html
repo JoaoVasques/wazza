@@ -1,0 +1,27 @@
+<div ng-controller="DashboardController">
+
+  <!-- General KPIs -->
+  <h1 class="dashboard-title" id="general"><i class="fa fa-money"></i> General</h1>
+  <div class="row">
+    <kpi info="totalRevenue"></kpi>
+    <kpi info="arpu"></kpi>
+    <kpi info="avgRevSession"></kpi>
+  </div>
+
+  <!-- User KPIs -->
+  <h1 class="dashboard-title" id="users"><i class="fa fa-user"></i> User</h1>
+  <div class="row">
+    <kpi info="ltv"></kpi>
+    <kpi info="payingUsers"></kpi>
+    <kpi info="avgPurchasesUser"></kpi>
+  </div>
+
+  <!-- Session KPIs -->
+  <h1 class="dashboard-title" id="sessions"><i class="fa fa-clock-o"></i> Session</h1>
+  <div class="row">
+    <kpi info="purchasesPerSession"></kpi>
+    <kpi info="avgTimeFirstPurchase"></kpi>
+    <kpi info="avgTimeBetweenPurchases"></kpi>
+  </div>
+
+</div>

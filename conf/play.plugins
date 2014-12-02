@@ -1,3 +1,2 @@
 1100:play.modules.reactivemongo.ReactiveMongoPlugin
-1120:persistence.plugins.DatabasePlugin
-
+5000:persistence.plugins.DatabasePlugin

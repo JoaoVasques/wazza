@@ -3,25 +3,24 @@
 # ~~~~
 
 # Home page
-GET     /                     @controllers.Application.index
-GET     /home                 @controllers.Application.home
-GET		/analyticsframe		  @controllers.Application.analyticsframe
-GET		/notavailableyet	  @controllers.Application.notavailableyet
-GET		/webframe			  @controllers.Application.webframe
-GET     /login                @controllers.LoginLogoutController.login
-POST    /login                @controllers.LoginLogoutController.authenticate
-POST    /logout               @controllers.LoginLogoutController.logout
-
-GET		/error				  @controllers.Application.httpError
+GET		/						@controllers.Application.index
+GET		/home					@controllers.Application.home
+GET		/analyticsframe			@controllers.Application.analyticsframe
+GET		/notavailableyet		@controllers.Application.notavailableyet
+GET		/webframe				@controllers.Application.webframe
+GET		/terms					@controllers.Application.terms
+GET		/login					@controllers.LoginLogoutController.login
+POST	/login					@controllers.LoginLogoutController.authenticate
+POST	/logout					@controllers.LoginLogoutController.logout
+GET		/error					@controllers.Application.httpError
 
 # Modules
-->  /dashboard                dashboard.Routes
-->  /user                     user.Routes
-->  /app                      application.Routes
-->  /api                      api.Routes
-->  /analytics                analytics.Routes
-    
-# Map static resources from the /public folder to the /assets URL path
-GET     /assets/*file         controllers.Assets.at(path="/public", file)
-GET     /webjars/*file        controllers.WebJarAssets.at(file)
+->		/analytics				analytics.Routes
+->		/api					api.Routes
+->		/user					user.Routes
+->		/app					application.Routes
+->		/dashboard				dashboard.Routes
 
+# Map static resources from the /public folder to the /assets URL path
+GET		/assets/*file			controllers.Assets.at(path="/public", file)
+GET		/webjars/*file			controllers.WebJarAssets.at(file)

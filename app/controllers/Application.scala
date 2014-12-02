@@ -34,5 +34,9 @@ class Application extends Controller {
     Ok(views.html.errorPage())
   }
 
+  def terms = Action {
+    Ok(views.html.terms())
+  }
+
 }
 

@@ -1,0 +1,58 @@
+<script src="@routes.WebJarAssets.at(WebJarAssets.locate("jquery.min.js"))"></script>
+<script src="@routes.WebJarAssets.at(WebJarAssets.locate("angular.js"))"></script>
+<script src="@routes.WebJarAssets.at(WebJarAssets.locate("angular-route.js"))"></script>
+<script src="@routes.WebJarAssets.at(WebJarAssets.locate("angular-cookies.min.js"))"></script>
+<script src="@routes.WebJarAssets.at(WebJarAssets.locate("angular-ui-router.js"))"></script>
+<script defer src="@routes.WebJarAssets.at(WebJarAssets.locate("underscore-min.js"))"></script>
+<script defer src="@routes.WebJarAssets.at(WebJarAssets.locate("ui-bootstrap.js"))"></script>
+<script defer src="@routes.WebJarAssets.at(WebJarAssets.locate("ui-bootstrap-tpls.min.js"))"></script>
+<script defer src="@routes.WebJarAssets.at(WebJarAssets.locate("moment.min.js"))"></script>
+<script defer src="@routes.WebJarAssets.at(WebJarAssets.locate("bootstrap.min.js"))"></script>
+<script defer src="@routes.WebJarAssets.at(WebJarAssets.locate("1.0.1-beta.4/Chart.min.js"))"></script>
+<!-- app -->
+<script defer src="@routes.Assets.at("modules/root/javascripts/app.js")"></script>
+<script defer src="@routes.Assets.at("modules/root/javascripts/services.js")"></script>
+<script defer src="@routes.Assets.at("modules/root/javascripts/controllers.js")"></script>
+<script defer src="@routes.Assets.at("modules/root/javascripts/events.js")"></script>
+<!-- controllers -->
+<script defer src="@routes.Assets.at("modules/root/javascripts/controllers/appController.js")"></script>
+<script defer src="@routes.Assets.at("modules/root/javascripts/controllers/loginController.js")"></script>
+<script defer src="@routes.Assets.at("modules/root/javascripts/controllers/tweakbarController.js")"></script>
+<script defer src="@routes.Assets.at("modules/root/javascripts/controllers/notAvailableYetController.js")"></script>
+<script defer src="@routes.Assets.at("modules/root/javascripts/controllers/sidebarController.js")"></script>
+<!-- services -->
+<script defer src="@routes.Assets.at("modules/root/javascripts/services/submitLoginCredentialsService.js")"></script>
+<script defer src="@routes.Assets.at("modules/root/javascripts/services/SecurityHttpInterceptor.js")"></script>
+<script defer src="@routes.Assets.at("modules/root/javascripts/services/redirectToDashboardService.js")"></script>
+<script defer src="@routes.Assets.at("modules/root/javascripts/services/DateModel.js")"></script>
+<script defer src="@routes.Assets.at("modules/root/javascripts/services/ApplicationStateService.js")"></script>
+<script defer src="@routes.Assets.at("modules/root/javascripts/services/LoginLogoutService.js")"></script>
+<script defer src="@routes.Assets.at("modules/root/javascripts/services/UserVoiceService.js")"></script>
+
+<!-- directives -->
+<script defer src="@routes.Assets.at("modules/root/javascripts/directives/chartjs-directive.js")"></script>
+<!-- others -->
+<script defer src="@routes.Assets.at("vendors/angular-file-upload.min.js")"></script>
+<script defer src="@routes.Assets.at("vendors/angular-file-upload-html5-shim.min.js")"></script>
+<script defer src="@routes.Assets.at("vendors/sweet-alert.min.js")"></script>
+<!-- https://github.com/durated/angular-scroll -->
+<script defer src="@routes.Assets.at("vendors/angular-scroll.min.js")"></script>
+<script defer src="//cdnjs.cloudflare.com/ajax/libs/numeral.js/1.4.5/numeral.min.js"></script>
+
+<!-- external controllers -->
+@views.html.js.applicationJavascripts.render()
+@views.html.js.userJavascripts.render()
+@views.html.js.securityJavascripts.render()
+@views.html.js.dashboardJavascripts.render()
+
+<!-- AdminLTE App -->
+<script defer src="@routes.Assets.at("vendors/app.js")"></script>
+<!-- everything else -->
+<!--<script defer src="@routes.Assets.at("custom.js")"></script> -->
+
+<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+<!--[if lt IE 9]>
+  <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+  <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+<![endif]-->

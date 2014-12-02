@@ -1,0 +1,39 @@
+# Analytics routes
+# ~~~~
+
+# General Routes  
+GET   /revenue/total/:company/:application/:start/:end   @controllers.analytics.AnalyticsController.getTotalRevenue(company: String, application: String, start: String, end: String)
+
+GET   /revenue/detail/:company/:application/:start/:end  @controllers.analytics.AnalyticsController.getDetailedTotalRevenue(company: String, application: String, start: String, end: String)
+
+GET  /arpu/total/:company/:application/:start/:end @controllers.analytics.AnalyticsController.getTotalARPU(company: String, application: String, start: String, end: String)
+
+GET  /arpu/detail/:company/:application/:start/:end @controllers.analytics.AnalyticsController.getDetailedARPU(company: String, application: String, start: String, end: String)
+
+GET  /avgRevenueSession/total/:company/:application/:start/:end @controllers.analytics.AnalyticsController.getTotalAverageRevenuePerSession(company: String, application: String, start: String, end: String)
+
+GET  /avgRevenueSession/detail/:company/:application/:start/:end @controllers.analytics.AnalyticsController.getDetailedAverageRevenuePerSession(company: String, application: String, start: String, end: String)
+
+GET  /ltv/total/:company/:application/:start/:end @controllers.analytics.AnalyticsController.getTotalLifeTimeValue(company: String, application: String, start: String, end: String)
+
+GET  /ltv/detail/:company/:application/:start/:end @controllers.analytics.AnalyticsController.getDetailedLifeTimeValue(company: String, application: String, start: String, end: String)
+
+GET  /avgPurchasesUser/total/:company/:application/:start/:end @controllers.analytics.AnalyticsController.getTotalAveragePurchasesUser(company: String, application: String, start: String, end: String)
+
+GET  /avgPurchasesUser/detail/:company/:application/:start/:end @controllers.analytics.AnalyticsController.getDetailedAveragePurchasesUser(company: String, application: String, start: String, end: String)
+
+GET  /avgTime1stPurchase/total/:company/:application/:start/:end @controllers.analytics.AnalyticsController.getTotalAverageTimeFirstPurchase(company: String, application: String, start: String, end: String)
+
+GET  /avgTime1stPurchase/detail/:company/:application/:start/:end @controllers.analytics.AnalyticsController.getAverageTimeFirstPurchase(company: String, application: String, start: String, end: String)
+
+GET  /avgTimeBetweenPurchases/total/:company/:application/:start/:end @controllers.analytics.AnalyticsController.getTotalAverageTimeBetweenPurchases(company: String, application: String, start: String, end: String)
+
+GET  /avgTimeBetweenPurchases/detail/:company/:application/:start/:end @controllers.analytics.AnalyticsController.getAverageTimeBetweenPurchases(company: String, application: String, start: String, end: String)
+
+GET  /payingUsers/total/:company/:application/:start/:end @controllers.analytics.AnalyticsController.getTotalNumberPayingCustomers(company: String, application: String, start: String, end: String)
+
+GET  /payingUsers/detail/:company/:application/:start/:end @controllers.analytics.AnalyticsController.getNumberPayingCustomers(company: String, application: String, start: String, end: String)
+
+GET  /purchasesPerSession/total/:company/:application/:start/:end @controllers.analytics.AnalyticsController.getTotalAveragePurchasePerSession(company: String, application: String, start: String, end: String)
+
+GET  /purchasesPerSession/detail/:company/:application/:start/:end @controllers.analytics.AnalyticsController.getAveragePurchasePerSession(company: String, application: String, start: String, end: String)
