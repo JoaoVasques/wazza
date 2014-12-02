@@ -1,6 +1,6 @@
-#Wazza
+# Wazza
 
-##Setup and Run<
+## Setup and Run
 
 Install activator and put it in your system's PATH
     ```
