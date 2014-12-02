@@ -18,15 +18,15 @@
             <ul class="nav navbar-nav">
                 <!-- User Account: style can be found in dropdown.less -->
                 <li class="dropdown" ng-model="userInfo.name">
-                  <a href="#" class="dropdown-toggle" dropdown-toggle ng-disabled="disabled"> <!-- TODO: disable after clicking again ></-->
+                  <a href="#" class="dropdown-toggle" dropdown-toggle ng-disabled="disabled">
                       <i class="glyphicon glyphicon-user"></i>
-                      <span>{{userInfo.name}} <i class="caret"></i></span>
+                      <span>{{userInfo.name}}</span>
                   </a>
-                  <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
-                    <li role="presentation"><a ui-sref="home.notavailableyet" class="btn btn-default btn-flat" style="color:black">Settings</a></li>
-                    <li role="presentation" class="divider"></li>
-                    <li role="presentation"><a ng-click="logout()" class="btn btn-default btn-flat" style="color:black">Sign out</a></li>
-                  </ul>
+                </li>
+                <li class="dropdown">
+                  <a href="#" class="dropdown-toggle" ng-click="logout()">
+                      <span>Logout</span>
+                  </a>
                 </li>
             </ul>
         </div>
