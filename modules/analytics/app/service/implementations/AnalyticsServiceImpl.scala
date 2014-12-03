@@ -43,7 +43,7 @@ class AnalyticsServiceImpl @Inject()(
     new JsArray(List.range(0, days) map {i =>{
       Json.obj(
         "day" -> s.withFieldAdded(DurationFieldType.days(), i).toString("dd MMM"),
-        "val" -> 0
+        "value" -> 0
       )
     }})
   }
@@ -65,7 +65,7 @@ class AnalyticsServiceImpl @Inject()(
       f(companyName, applicationName, previousDay.toDate, currentDay.toDate) map {res: JsValue =>
         Json.obj(
           "day" -> currentDay.toString("dd MMM"),
-          "val" -> (res \ "value").as[Float]
+          "value" -> (res \ "value").as[Float]
         )
       }
     })
@@ -90,11 +90,9 @@ class AnalyticsServiceImpl @Inject()(
         0
       } else {
         var users = List[String]()
-        for(c <- payingUsers.value) {
-          val payingUserIds = (c \ "payingUsers").as[List[JsValue]] map {el =>
-            (el \ "userId").as[String]
-          }
-          users = (payingUserIds ++ users).distinct
+        for(el <- payingUsers.value) {
+          val userId = (el \ "userId").as[String]
+          users = (userId :: users).distinct
         }
         users.size
       }
@@ -132,7 +130,7 @@ class AnalyticsServiceImpl @Inject()(
         fillEmptyResult(start, end)
       } else {
         new JsArray(arpu.value map {el =>
-          val day = new LocalDate((el \ "lowerDate").as[Float])
+          val day = new LocalDate((el \ "lowerDate").as[Double].longValue)
           Json.obj(
             "day" -> day.toString("dd MM"),
             "value" -> (el \ "arpu").as[Double]
@@ -186,7 +184,7 @@ class AnalyticsServiceImpl @Inject()(
         fillEmptyResult(start, end)
       } else {
         new JsArray(avgRevenueSession.value.map {el =>
-          val day = new LocalDate((el \ "lowerDate").as[Float])
+          val day = new LocalDate((el \ "lowerDate").as[Double].longValue)
           Json.obj(
             "day" -> day.toString("dd MM"),
             "value" -> (el \ "avgRevenueSession").as[Double]
@@ -256,10 +254,10 @@ class AnalyticsServiceImpl @Inject()(
        } else {
          new JsArray(revenue.value map {(el: JsValue) => {
            println(el)
-           val day = new LocalDate((el \ "lowerDate").as[Float])
+           val day = new LocalDate((el \ "lowerDate").as[Double].longValue)
            Json.obj(
              "day" -> day.toString("dd MM"),
-             "val" -> (el \ "totalRevenue").as[Int]
+             "value" -> (el \ "totalRevenue").as[Int]
            )
          }})
        }
