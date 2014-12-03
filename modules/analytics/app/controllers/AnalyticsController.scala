@@ -81,7 +81,6 @@ class AnalyticsController @Inject()(
         Ok(r)
       } recover {
         case ex: Exception => {
-          println(ex)
           BadRequest("Error ocurred")
         }
       }
@@ -92,7 +91,6 @@ class AnalyticsController @Inject()(
         Ok(result)
       } recover {
         case ex: Exception => {
-          println(ex)
           BadRequest("Error ocurred")
         }
       }
