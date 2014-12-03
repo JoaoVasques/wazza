@@ -43,7 +43,7 @@ class AnalyticsServiceImpl @Inject()(
     new JsArray(List.range(0, days) map {i =>{
       Json.obj(
         "day" -> s.withFieldAdded(DurationFieldType.days(), i).toString("dd MMM"),
-        "val" -> 0
+        "value" -> 0
       )
     }})
   }
@@ -90,11 +90,9 @@ class AnalyticsServiceImpl @Inject()(
         0
       } else {
         var users = List[String]()
-        for(c <- payingUsers.value) {
-          val payingUserIds = (c \ "payingUsers").as[List[JsValue]] map {el =>
-            (el \ "userId").as[String]
-          }
-          users = (payingUserIds ++ users).distinct
+        for(el <- payingUsers.value) {
+          val userId = (el \ "userId").as[String]
+          users = (userId :: users).distinct
         }
         users.size
       }
@@ -255,11 +253,10 @@ class AnalyticsServiceImpl @Inject()(
          fillEmptyResult(start, end)
        } else {
          new JsArray(revenue.value map {(el: JsValue) => {
-           println(el)
            val day = new LocalDate((el \ "lowerDate").as[Float])
            Json.obj(
              "day" -> day.toString("dd MM"),
-             "val" -> (el \ "totalRevenue").as[Int]
+             "value" -> (el \ "totalRevenue").as[Int]
            )
          }})
        }
