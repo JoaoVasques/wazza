@@ -65,7 +65,7 @@ class AnalyticsServiceImpl @Inject()(
       f(companyName, applicationName, previousDay.toDate, currentDay.toDate) map {res: JsValue =>
         Json.obj(
           "day" -> currentDay.toString("dd MMM"),
-          "val" -> (res \ "value").as[Float]
+          "value" -> (res \ "value").as[Float]
         )
       }
     })

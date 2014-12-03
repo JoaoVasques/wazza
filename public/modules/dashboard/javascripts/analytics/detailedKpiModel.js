@@ -20,7 +20,7 @@ dashboard.factory('DetailedKpiModel', ['KpiModel', function(KpiModel) {
       this.values = [];
       _.each(chartData.data, function(el) {
         _this.labels.push(el.day);
-        _this.values.push(el.val);
+        _this.values.push(el.value);
       });
     }
   };
