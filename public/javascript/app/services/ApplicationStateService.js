@@ -60,7 +60,7 @@ service.factory('ApplicationStateService', ['$rootScope', 'localStorageService',
 		};
 
 		//user info: name & mail
-		service.getUserInfo = function (newInfo) {
+		service.getUserInfo = function () {
 			service.userInfo = localStorageService.get("userInfo");
 			return service.userInfo;
 		};
