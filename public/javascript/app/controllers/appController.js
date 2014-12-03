@@ -32,7 +32,6 @@ application.controller('AppController', [
     };
 
     $scope.$on("LOGIN_SUCCESS", function(event, data){
-      document.body.className = "skin-blue";
       $scope.authOK = true;
     });
 
