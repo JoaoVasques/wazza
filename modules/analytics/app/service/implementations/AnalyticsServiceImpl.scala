@@ -130,7 +130,7 @@ class AnalyticsServiceImpl @Inject()(
         fillEmptyResult(start, end)
       } else {
         new JsArray(arpu.value map {el =>
-          val day = new LocalDate((el \ "lowerDate").as[Float])
+          val day = new LocalDate((el \ "lowerDate").as[Double].longValue)
           Json.obj(
             "day" -> day.toString("dd MM"),
             "value" -> (el \ "arpu").as[Double]
@@ -184,7 +184,7 @@ class AnalyticsServiceImpl @Inject()(
         fillEmptyResult(start, end)
       } else {
         new JsArray(avgRevenueSession.value.map {el =>
-          val day = new LocalDate((el \ "lowerDate").as[Float])
+          val day = new LocalDate((el \ "lowerDate").as[Double].longValue)
           Json.obj(
             "day" -> day.toString("dd MM"),
             "value" -> (el \ "avgRevenueSession").as[Double]
@@ -253,7 +253,8 @@ class AnalyticsServiceImpl @Inject()(
          fillEmptyResult(start, end)
        } else {
          new JsArray(revenue.value map {(el: JsValue) => {
-           val day = new LocalDate((el \ "lowerDate").as[Float])
+           println(el)
+           val day = new LocalDate((el \ "lowerDate").as[Double].longValue)
            Json.obj(
              "day" -> day.toString("dd MM"),
              "value" -> (el \ "totalRevenue").as[Int]

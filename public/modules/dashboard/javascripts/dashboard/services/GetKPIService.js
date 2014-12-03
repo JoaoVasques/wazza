@@ -3,13 +3,14 @@ dashboardServices.factory('GetKPIService', ['$http', '$q',
       var service = {};
 
       var buildUrl = function(companyName, applicationName, urlType, subType, startDate, endDate) {
-        return '/analytics/' +
+        var url = ('/analytics/' +
          urlType + '/' +
          subType + '/' +
          companyName + '/' +
          applicationName + '/'+
          startDate + '/' +
-         endDate;
+         endDate).replace(" ", "%20");
+        return url;
       };
 
       service.getTotalKpiData = function(companyName, applicationName, start, end, kpiName) {
