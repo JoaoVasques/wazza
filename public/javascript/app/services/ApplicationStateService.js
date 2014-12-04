@@ -1,5 +1,5 @@
-service.factory('ApplicationStateService', ['$rootScope',
-	function ($rootScope) {
+service.factory('ApplicationStateService', ['$rootScope', 'localStorageService',
+	function ($rootScope, localStorageService) {
 		var service = {};
 		service.applicationName = "";
 		service.companyName = "";
@@ -60,12 +60,14 @@ service.factory('ApplicationStateService', ['$rootScope',
 		};
 
 		//user info: name & mail
-		service.getUserInfo = function (newInfo) {
+		service.getUserInfo = function () {
+			service.userInfo = localStorageService.get("userInfo");
 			return service.userInfo;
 		};
 
 		service.updateUserInfo = function (newInfo) {
 			service.userInfo = newInfo;
+			localStorageService.set("userInfo", newInfo);
 			$rootScope.$broadcast("USER_INFO_UPDATED");
 		};
 

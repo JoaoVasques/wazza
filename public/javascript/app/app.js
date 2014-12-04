@@ -4,6 +4,7 @@
 // Declare app level module which depends on filters, and services
 angular.module('Wazza', [
     'ui.router',
+    'LocalStorageModule',
     'ngRoute',
     'Wazza.controllers',
     'ItemModule',
@@ -14,7 +15,7 @@ angular.module('Wazza', [
     'duScroll'
 ]).
 
-config(function($stateProvider, $urlRouterProvider, $locationProvider, $httpProvider){
+config(function($stateProvider, $urlRouterProvider, $locationProvider, $httpProvider, localStorageServiceProvider){
 
       $locationProvider.html5Mode(true);
 
@@ -175,6 +176,10 @@ config(function($stateProvider, $urlRouterProvider, $locationProvider, $httpProv
         })
 
     $httpProvider.responseInterceptors.push('SecurityHttpInterceptor');
+
+
+    //local storage
+    localStorageServiceProvider.setPrefix('wazza');
 
     });
 
