@@ -16,12 +16,16 @@ import service.persistence.modules.PersistenceModule
 import service.analytics.modules.AnalyticsModule
 import play.api.libs.concurrent.Execution.Implicits._
 import play.api.libs.concurrent.Akka
-import akka.actor.{ActorRef, Actor, ActorSystem, Kill}
+import akka.actor.{ActorRef, Actor, ActorSystem, Kill, Props}
 import persistence._
 import application._
 import user._
-  
-object Global extends GlobalSettings {
+import notifications.plugins._
+import java.io.{StringWriter, PrintWriter}  
+import scala.concurrent._
+import scala.concurrent.duration._
+
+object Global extends GlobalSettings with MailConnector {
 
   private var modulesProxies = List[ActorRef]()
 
@@ -37,7 +41,13 @@ object Global extends GlobalSettings {
 
   // 500 - internal server error
   override def onError(request: RequestHeader, throwable: Throwable) = {
-    Future.successful(InternalServerError(views.html.index()))
+    val sw = new StringWriter()
+    val pw = new PrintWriter(sw)
+    throwable.printStackTrace(pw)
+    val stack = sw.toString()
+    val msg = s"Message: ${throwable.getMessage}\nStack Trace: ${stack}"
+    MailProxy.sendEmail("500 ERROR", List("support@wazza.io"), msg)
+    Future.successful(InternalServerError(views.html.errorPage()))
   }
   /**
     Shutdowns all modules' systems and actors
@@ -64,6 +74,8 @@ object Global extends GlobalSettings {
   }
 
   override def onHandlerNotFound(request: RequestHeader) = {
+    val msg = s"Trying to access path: ${request.path}"
+    MailProxy.sendEmail("404 ERROR", List("support@wazza.io"), msg)
     Future.successful(NotFound(
       views.html.index()
     ))

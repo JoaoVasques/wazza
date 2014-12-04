@@ -57,7 +57,7 @@ lazy val user = Project("user", file("modules/user"))
 
 lazy val application = Project("application", file("modules/application"))
   .enablePlugins(play.PlayScala)
-  .dependsOn(persistence, security, aws, user)
+  .dependsOn(persistence, security, aws, user, notifications)
   .settings(version := appVersion, libraryDependencies ++= dependencies)
 
 lazy val security = Project("security", file("modules/security"))
@@ -86,6 +86,7 @@ lazy val analytics = Project("analytics",file("modules/analytics"))
 
 lazy val notifications = Project("notifications",file("modules/notifications"))
   .enablePlugins(play.PlayScala)
+  .dependsOn(common)
   .settings(version := appVersion, libraryDependencies ++= dependencies)
 
 // Root
