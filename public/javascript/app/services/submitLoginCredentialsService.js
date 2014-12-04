@@ -7,5 +7,6 @@ service.factory('submitLoginCredentialsService', ['$http', '$q', function($http,
 		deferred.resolve(request);
 		return deferred.promise;
 	};
+
 	return service;
 }]);
