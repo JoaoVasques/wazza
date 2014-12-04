@@ -83,6 +83,10 @@ lazy val analytics = Project("analytics",file("modules/analytics"))
   .dependsOn(user, application, persistence, security)
   .settings(version := appVersion, libraryDependencies ++= dependencies)
 
+lazy val notifications = Project("notifications",file("modules/notifications"))
+  .enablePlugins(play.PlayScala)
+  .settings(version := appVersion, libraryDependencies ++= dependencies)
+
 // Root
 lazy val home = Project(appName, file("."))
   .enablePlugins(play.PlayScala)
@@ -94,7 +98,8 @@ lazy val home = Project(appName, file("."))
     api,
     persistence,
     analytics,
-    common)
+    common,
+    notifications)
   .dependsOn(dashboard,
     user,
     application,
@@ -103,7 +108,9 @@ lazy val home = Project(appName, file("."))
     api,
     persistence,
     analytics,
-    common)
+    common,
+    notifications)
   .settings(version := appVersion, libraryDependencies ++= dependencies)
 
 sources in doc in Compile := List()
+
