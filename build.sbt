@@ -7,6 +7,7 @@ scalaVersion := "2.10.4"
 lazy val dependencies = Seq(
   anorm,
   cache,
+  ws,
   "com.google.inject" % "guice" % "3.0",
   "com.tzavellas" % "sse-guice" % "0.7.1",
   "com.amazonaws" % "aws-java-sdk" % "1.9.8",

@@ -35,13 +35,18 @@ object Global extends GlobalSettings {
     modulesProxies = List(databaseProxy, userProxy, applicationProxy)
   }
 
+  // 500 - internal server error
+  override def onError(request: RequestHeader, throwable: Throwable) = {
+    Future.successful(InternalServerError(views.html.index()))
+  }
   /**
     Shutdowns all modules' systems and actors
   **/
-  override def onStop(app: Application) = {
-    modulesProxies.foreach{_ ! Kill}
-  }
+  override def onStop(app: Application) = modulesProxies.foreach{_ ! Kill}
 
+  /**
+    Dependency injection setup
+  **/
   private lazy val injector = {
     Guice.createInjector(
       new PersistenceModule,

@@ -2,7 +2,7 @@ package notifications.plugins
 
 import play.api.Play.current
 
-trait UserVoiceConnector {
+trait MailConnector {
 
-  def actor = UserVoicePlugin.actor
+  def actor = MailPlugin.actor
 }
