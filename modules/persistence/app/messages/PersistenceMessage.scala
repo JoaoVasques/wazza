@@ -9,7 +9,14 @@ import play.api.libs.json.JsObject
 import play.api.libs.json.JsValue
 
 trait PersistenceMessage extends WazzaMessage
-case class Msg(sendersStack: Stack[ActorRef], hey: String) extends WazzaMessage
+case class Msg(sendersStack: Stack[ActorRef], hey: String) extends PersistenceMessage
+
+case class Exists(
+  sendersStack: Stack[ActorRef],
+  collectionName: String,
+  key: String,
+  value: String
+) extends PersistenceMessage
 
 case class Get(
   sendersStack: Stack[ActorRef],
@@ -17,7 +24,7 @@ case class Get(
   key: String,
   value: String,
   projection: String = null
-) extends WazzaMessage
+) extends PersistenceMessage
 
 case class GetListElements(
   sendersStack: Stack[ActorRef],
@@ -25,7 +32,7 @@ case class GetListElements(
   key: String,
   value: String,
   projection: String = null
-) extends WazzaMessage
+) extends PersistenceMessage
 
 case class GetElementsWithoutArrayContent(
   sendersStack: Stack[ActorRef],
@@ -34,18 +41,18 @@ case class GetElementsWithoutArrayContent(
   elementKey: String,
   array: List[String],
   limit: Int
-) extends WazzaMessage
+) extends PersistenceMessage
 
-case class GetCollectionElements(sendersStack: Stack[ActorRef], collectionName: String) extends WazzaMessage
+case class GetCollectionElements(sendersStack: Stack[ActorRef], collectionName: String) extends PersistenceMessage
 
 case class Insert(
   sendersStack: Stack[ActorRef],
   collectionName: String,
   model: JsValue,
   extra: Map[String, ObjectId] = null
-) extends WazzaMessage
+) extends PersistenceMessage
 
-case class Delete(sendersStack: Stack[ActorRef], collectionName: String, el: JsValue) extends WazzaMessage
+case class Delete(sendersStack: Stack[ActorRef], collectionName: String, el: JsValue) extends PersistenceMessage
 
 case class Update(
   sendersStack: Stack[ActorRef],
@@ -54,7 +61,7 @@ case class Update(
   keyValue: String,
   valueKey: String,
   newValue: Any
-) extends WazzaMessage
+) extends PersistenceMessage
 
 /**
   Time-ranged queries
@@ -65,7 +72,7 @@ case class GetDocumentsWithinTimeRange(
   dateFields: Tuple2[String, String],
   start: Date,
   end: Date
-) extends WazzaMessage
+) extends PersistenceMessage
 
 case class GetDocumentsByTimeRange(
   sendersStack: Stack[ActorRef],
@@ -73,7 +80,7 @@ case class GetDocumentsByTimeRange(
   dateField: String,
   start: Date,
   end: Date
-) extends WazzaMessage
+) extends PersistenceMessage
 
 /**
   Array operations
@@ -87,7 +94,7 @@ case class ExistsInArray[T <: Any](
   arrayKey: String,
   elementKey: String,
   elementValue: T
-) extends WazzaMessage
+) extends PersistenceMessage
 
 case class GetElementFromArray[T <: Any](
   sendersStack: Stack[ActorRef],
@@ -97,7 +104,7 @@ case class GetElementFromArray[T <: Any](
   arrayKey: String,
   elementKey: String,
   elementValue: T
-) extends WazzaMessage
+) extends PersistenceMessage
 
 case class GetElementsOfArray(
   sendersStack: Stack[ActorRef],
@@ -106,7 +113,7 @@ case class GetElementsOfArray(
   docIdValue: String,
   arrayKey: String,
   limit: Option[Int]
-) extends WazzaMessage
+) extends PersistenceMessage
 
 case class AddElementToArray[T <: Any](
   sendersStack: Stack[ActorRef],
@@ -115,7 +122,7 @@ case class AddElementToArray[T <: Any](
   docIdValue: String,
   arrayKey: String,
   model: T
-) extends WazzaMessage
+) extends PersistenceMessage
 
 case class DeleteElementFromArray[T <: Any](
   sendersStack: Stack[ActorRef],
@@ -125,7 +132,7 @@ case class DeleteElementFromArray[T <: Any](
   arrayKey: String,
   elementKey: String,
   elementValue:T
-) extends WazzaMessage
+) extends PersistenceMessage
 
 case class UpdateElementOnArray[T](
   sendersStack: Stack[ActorRef],
@@ -136,5 +143,5 @@ case class UpdateElementOnArray[T](
   elementId: String,
   elementIdValue: String,
   m: T
-) extends WazzaMessage
+) extends PersistenceMessage
 

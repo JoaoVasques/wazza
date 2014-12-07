@@ -17,8 +17,6 @@ import scala.concurrent._
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.api.Play
 import play.api.Play.current
-import play.modules.reactivemongo._
-import play.modules.reactivemongo.json.collection.JSONCollection
 import com.mongodb.WriteResult
 import com.mongodb.util.JSON
 import scala.language.implicitConversions
@@ -39,6 +37,7 @@ import persistence.MongoFactory
 class PersistenceWorker extends Actor with Worker {
 
   def receive = {
+    case m: Exists => {}
     case m: Get => {}
     case m: GetListElements => {}
     case m: GetElementsWithoutArrayContent => {}
@@ -61,8 +60,9 @@ class PersistenceWorker extends Actor with Worker {
     MongoFactory.getCollection(name)
   }
 
-  def exists(collectionName: String, key: String, value: String): Future[Boolean] = {
-    this.get(collectionName, key, value) map { result =>
+  //Boolean
+  def exists(msg: Exists) = {
+    this.get(new Get(null, msg.collectionName, msg.key, msg.value)) map { result =>
       result match {
         case Some(_) => true
         case _ => false
@@ -70,66 +70,51 @@ class PersistenceWorker extends Actor with Worker {
     }
   }
 
-  def get(
-    collectionName: String,
-    key: String,
-    value: String,
-    projection: String = null
-  ): Future[Option[JsValue]] = {
+  //Option[JsValue]
+  def get(msg: Get): Future[Option[JsValue]] = {
 
     val promise = Promise[Option[JsValue]]
-    val query = MongoDBObject(key -> value)
-    val proj = if(projection != null) {
-      MongoDBObject(projection -> 1)
+    val query = MongoDBObject(msg.key -> msg.value)
+    val proj = if(msg.projection != null) {
+      MongoDBObject(msg.projection -> 1)
     } else {
       MongoDBObject()
     }
 
     Future {
-      collection(collectionName).findOne(query,proj) match {
-        case Some(obj) => promise.success(Some(Json.parse(obj.toString)))
-        case _ => promise.success(None)
-      }    
+      val res = collection(msg.collectionName).findOne(query,proj) match {
+        case Some(obj) => Some(Json.parse(obj.toString))
+        case _ => None
+      }
+      promise.success(res)
+
+      if(msg.sendersStack != null) msg.sendersStack.head ! new PROptionResponse(msg.sendersStack, res)
     }
-    
     promise.future
   }
 
-  def getListElements(
-    collectionName: String,
-    key: String,
-    value: String,
-    projection: String = null
-  ): Future[List[JsValue]] = {
+  //List[JsValue]
+  def getListElements(msg: GetListElements) = {
 
-    val promise = Promise[List[JsValue]]
-    val query = MongoDBObject(key -> value)
-    val proj = if(projection != null) {
-      MongoDBObject(projection -> 1)
+    val query = MongoDBObject(msg.key -> msg.value)
+    val proj = if(msg.projection != null) {
+      MongoDBObject(msg.projection -> 1)
     } else {
       MongoDBObject()
     }
 
     Future {
-      val res = collection(collectionName).find(query,proj).toList.map{(el: DBObject) => Json.parse(el.toString)}
-      promise.success(res)
+      val res = collection(msg.collectionName).find(query,proj).toList.map{(el: DBObject) => Json.parse(el.toString)}
+
+      msg.sendersStack.head ! new PRListResponse(msg.sendersStack, res)
     }
-    
-    promise.future
   }
 
   // TODO
-  def getElementsWithoutArrayContent(
-    collectionName: String,
-    arrayKey: String,
-    elementKey: String,
-    array: List[String],
-    limit: Int
-  ): Future[List[JsValue]] = {
+  def getElementsWithoutArrayContent(msg: GetElementsWithoutArrayContent) = {
 
-    val promise = Promise[List[JsValue]]
-    val query = arrayKey $nin array
-    val projection = MongoDBObject(arrayKey -> 1)
+    val query = msg.arrayKey $nin msg.array
+    val projection = MongoDBObject(msg.arrayKey -> 1)
     Future {
       /**val output = collection(collectionName).find(query, projection).toList.map{(el: DBObject) => Json.parse(el.toString)}
       val r = output map {list =>
@@ -144,116 +129,89 @@ class PersistenceWorker extends Actor with Worker {
 
         if(limit > 0) result.take(limit) else result
       }**/
-      promise.success(List())
     }
-
-    promise.future
-  }
-  
-  def getCollectionElements(collectionName: String): Future[List[JsValue]] = {
-    val promise = Promise[List[JsValue]]
-    Future {
-      val res = collection(collectionName).find().toList map {(el: DBObject) => Json.parse(el.toString)}
-      promise.success(res)
-    }
-    promise.future
   }
 
-  def insert(collectionName: String, model: JsValue, extra: Map[String, ObjectId] = null): Future[Unit] = {
-    val promise = Promise[Unit]
-
+  // List[JsValue]
+  def getCollectionElements(msg: GetCollectionElements) = {
+    
     Future {
-      if(extra == null) {
-        promise.success(collection(collectionName).insert(JSON.parse(model.toString).asInstanceOf[DBObject]))
+      val res = collection(msg.collectionName).find().toList map {(el: DBObject) => Json.parse(el.toString)}
+
+      msg.sendersStack.head ! new PRListResponse(msg.sendersStack, res)
+    }
+  }
+
+  def insert(msg: Insert) = {
+    Future {
+      if(msg.extra == null) {
+        collection(msg.collectionName).insert(JSON.parse(msg.model.toString).asInstanceOf[DBObject])
       } else {
         val builder = MongoDBObject.newBuilder
-        builder += "created_at" -> (model \ "created_at").as[String]
-        builder += "user_id" -> extra("user_id")
-        builder += "purchase_id" -> extra("purchase_id")
-        promise.success(collection(collectionName).insert(builder.result))
+        builder += "created_at" -> (msg.model \ "created_at").as[String]
+        builder += "user_id" -> msg.extra("user_id")
+        builder += "purchase_id" -> msg.extra("purchase_id")
+        collection(msg.collectionName).insert(builder.result)
       }
-    }  
-    
-    promise.future
+    }
   }
 
-  def delete(collectionName: String, el: JsValue): Future[Unit] = {
-    val promise = Promise[Unit]
+  def delete(msg: Delete) = {
     Future {
-      val element = JSON.parse(el.toString).asInstanceOf[DBObject]
-      promise.success(collection(collectionName).remove(JSON.parse(el.toString).asInstanceOf[DBObject]))
+      val element = JSON.parse(msg.el.toString).asInstanceOf[DBObject]
+      collection(msg.collectionName).remove(JSON.parse(msg.el.toString).asInstanceOf[DBObject])
     }
-    promise.future
   }
 
-  def update(
-    collectionName: String,
-    key: String,
-    keyValue: String,
-    valueKey: String,
-    newValue: Any
-  ): Future[Unit] = {
-    val promise = Promise[Unit]
-    val query = MongoDBObject(key -> keyValue)
-    val update = $set(valueKey -> (JSON.parse(newValue.toString).asInstanceOf[DBObject]))
+  def update(msg: Update) = {
+    val query = MongoDBObject(msg.key -> msg.keyValue)
+    val update = $set(msg.valueKey -> (JSON.parse(msg.newValue.toString).asInstanceOf[DBObject]))
     Future {
-      promise.success(collection(collectionName).update(query, update))
+      collection(msg.collectionName).update(query, update)
     }
-    promise.future
   }
 
   /**
     Time-ranged queries
     **/
-  def getDocumentsWithinTimeRange(
-    collectionName: String,
-    dateFields: Tuple2[String, String],
-    start: Date,
-    end: Date
-  ): Future[JsArray] = {
-    val promise = Promise[JsArray]
-    val query = (dateFields._1 $gte start.getTime $lte end.getTime) ++ (dateFields._2 $gte start.getTime $lte end.getTime)
-    val sortCriteria = MongoDBObject(dateFields._1 -> 1)
+  def getDocumentsWithinTimeRange(msg: GetDocumentsWithinTimeRange) = {
+    val query = (msg.dateFields._1 $gte msg.start.getTime $lte msg.end.getTime) ++ (msg.dateFields._2 $gte msg.start.getTime $lte msg.end.getTime)
+    val sortCriteria = MongoDBObject(msg.dateFields._1 -> 1)
 
     Future {
-      val lst = collection(collectionName).find(query).sort(sortCriteria).toList map {(el: DBObject) => Json.parse(el.toString)}
-      promise.success(new JsArray(lst))
+      val lst = collection(msg.collectionName).find(query).sort(sortCriteria).toList map {(el: DBObject) => Json.parse(el.toString)}
+      msg.sendersStack.head ! new PRJsArrayResponse(msg.sendersStack, new JsArray(lst))
     }
-
-    promise.future
   }
 
-  def getDocumentsByTimeRange(
-    collectionName: String,
-    dateField: String,
-    start: Date,
-    end: Date
-  ): Future[JsArray] = {
-    val promise = Promise[JsArray]
-    val query = (dateField $lte start.getTime $gt end.getTime)
-    val sortCriteria = MongoDBObject(dateField -> 1)
+  //JsArray
+  def getDocumentsByTimeRange(msg: GetDocumentsByTimeRange) = {
+    val query = (msg.dateField $lte msg.start.getTime $gt msg.end.getTime)
+    val sortCriteria = MongoDBObject(msg.dateField -> 1)
 
     Future {
-      val lst = collection(collectionName).find(query).sort(sortCriteria).toList map {(el: DBObject) => Json.parse(el.toString)}
-      promise.success(new JsArray(lst))
+      val lst = collection(msg.collectionName).find(query).sort(sortCriteria).toList map {(el: DBObject) => Json.parse(el.toString)}
+      msg.sendersStack.head ! new PRJsArrayResponse(msg.sendersStack, new JsArray(lst))
     }
-
-    promise.future
   }
 
   /**
     Array operations
     **/
 
-  def existsInArray[T <: Any](
-    collectionName: String,
-    docIdKey: String,
-    docIdValue: String,
-    arrayKey: String,
-    elementKey: String,
-    elementValue: T
-  ): Future[Boolean] = {
-    this.getElementFromArray[T](collectionName, docIdKey, docIdValue, arrayKey, elementKey, elementValue) map { res =>
+  // Boolean
+  def existsInArray[T <: Any](msg: ExistsInArray[T]) = {
+    this.getElementFromArray[T](
+      new GetElementFromArray[T](
+        null,
+        msg.collectionName,
+        msg.docIdKey,
+        msg.docIdValue,
+        msg.arrayKey,
+        msg.elementKey,
+        msg.elementValue
+      )
+    ) map { res =>
       res match {
         case Some(_) => true
         case None => false
@@ -261,129 +219,92 @@ class PersistenceWorker extends Actor with Worker {
     }
   }
 
-  def getElementFromArray[T <: Any](
-    collectionName: String,
-    docIdKey: String,
-    docIdValue: String,
-    arrayKey: String,
-    elementKey: String,
-    elementValue: T
-  ): Future[Option[JsValue]] = {
+  // Option[JsValue]
+  def getElementFromArray[T <: Any](msg: GetElementFromArray[T]) = {
 
     def findElementAux(array: JsArray): Option[JsValue] = {
       array.value.find{ el=> {
-        (el \ elementKey).as[String].filter(_ != '"').equals(elementValue)
+        (el \ msg.elementKey).as[String].filter(_ != '"').equals(msg.elementValue)
       }}
     }
 
     val promise = Promise[Option[JsValue]]
-    val query = MongoDBObject(docIdKey -> docIdValue)
-    val projection = MongoDBObject(arrayKey -> 1)
+    val query = MongoDBObject(msg.docIdKey -> msg.docIdValue)
+    val projection = MongoDBObject(msg.arrayKey -> 1)
     Future {
-      val list = collection(collectionName).find(query,projection).toList map {(el: DBObject) => Json.parse(el.toString)}
-      if(list.isEmpty)
-        promise.success(None)
+      val list = collection(msg.collectionName).find(query,projection).toList map {(el: DBObject) => Json.parse(el.toString)}
+      val res = if(list.isEmpty)
+        None
       else {
-        promise.success(findElementAux((list.head \ arrayKey).as[JsArray]))
+        findElementAux((list.head \ msg.arrayKey).as[JsArray])
       }
+
+      if(msg.sendersStack != null) {
+        msg.sendersStack.head ! new PROptionResponse(msg.sendersStack, res)
+      }
+      promise.success(res)
     }
     promise.future
   }
 
-  def getElementsOfArray(
-    collectionName: String,
-    docIdKey: String,
-    docIdValue: String,
-    arrayKey: String,
-    limit: Option[Int]
-  ): Future[List[JsValue]] = {
+  // List[JsValue]
+  def getElementsOfArray(msg: GetElementsOfArray) = {
 
-    val promise = Promise[List[JsValue]]
-    val query = MongoDBObject(docIdKey -> docIdValue)
-    val projection = MongoDBObject(arrayKey -> 1)
+    val query = MongoDBObject(msg.docIdKey -> msg.docIdValue)
+    val projection = MongoDBObject(msg.arrayKey -> 1)
     Future {
-      limit match {
+          val res = collection(msg.collectionName).find(query, projection).toList map {(el: DBObject) => Json.parse(el.toString)}
+      msg.sendersStack.head ! new PRListResponse(msg.sendersStack, res)
+      /**limit match {
         case Some(maxNumberElements) => {
           //TODO
-          val res = collection(collectionName).find(query, projection).toList map {(el: DBObject) => Json.parse(el.toString)}
-          promise.success(res)
+          
         }
         case None => {
-          val res = collection(collectionName).find(query, projection).toList map {(el: DBObject) => Json.parse(el.toString)}
-          promise.success(res)
+          val res = collection(msg.collectionName).find(query, projection).toList map {(el: DBObject) => Json.parse(el.toString)}
+          
         }
-      }
+      }**/
     }
-    
-    promise.future
   }
 
-  def addElementToArray[T <: Any](
-    collectionName: String,
-    docIdKey: String,
-    docIdValue: String,
-    arrayKey: String,
-    model: T
-  ): Future[Unit] = {
-    val promise = Promise[Unit]
-    val query = MongoDBObject(docIdKey -> docIdValue)
-    val m = model match {
+  def addElementToArray[T <: Any](msg: AddElementToArray[T]) = {
+    val query = MongoDBObject(msg.docIdKey -> msg.docIdValue)
+    val m = msg.model match {
       case j: JsObject => JSON.parse(j.toString).asInstanceOf[DBObject]
-      case _ => model
+      case _ => msg.model
     }
-    val update = $push(arrayKey -> m)
+    val update = $push(msg.arrayKey -> m)
     Future {
-      promise.success(collection(collectionName).update(query, update))
+      collection(msg.collectionName).update(query, update)
     }
-    promise.future
   }
 
-  def deleteElementFromArray[T <: Any](
-    collectionName: String,
-    docIdKey: String,
-    docIdValue: String,
-    arrayKey: String,
-    elementKey: String,
-    elementValue:T
-  ): Future[Unit] = {
-    val promise = Promise[Unit]
-    val query = MongoDBObject(docIdKey -> docIdValue)
+  def deleteElementFromArray[T <: Any](msg: DeleteElementFromArray[T]) = {
+    val query = MongoDBObject(msg.docIdKey -> msg.docIdValue)
     val update = $pull(
-      arrayKey -> MongoDBObject(
-        elementKey -> JSON.parse(elementValue.toString).asInstanceOf[DBObject])
+      msg.arrayKey -> MongoDBObject(
+        msg.elementKey -> JSON.parse(msg.elementValue.toString).asInstanceOf[DBObject])
     )
 
     Future {
-      promise.success(collection(collectionName).update(query, update))
+      collection(msg.collectionName).update(query, update)
     }
-
-    promise.future
   }
 
-  def updateElementOnArray[T <: Any](
-    collectionName: String,
-    docIdKey: String,
-    docIdValue: String,
-    arrayKey: String,
-    elementId: String,
-    elementIdValue: String,
-    m: T
-  ): Future[Unit] = {
+  def updateElementOnArray[T <: Any](msg: UpdateElementOnArray[T]) = {
 
-    val promise = Promise[Unit]
-    val model = m match {
+    val model = msg.m match {
       case j: JsObject => JSON.parse(j.toString).asInstanceOf[DBObject]
-      case _ => m
+      case _ => msg.m
     }
 
-    val query = MongoDBObject(docIdKey -> docIdValue, s"$arrayKey.$elementId" -> elementIdValue)
-    val update = $set((arrayKey+".$." + elementId) -> model)
+    val query = MongoDBObject(msg.docIdKey -> msg.docIdValue, s"${msg.arrayKey}.${msg.elementId}" -> msg.elementIdValue)
+    val update = $set((msg.arrayKey+".$." + msg.elementId) -> model)
 
     Future {
-      promise.success(collection(collectionName).update(query, update))
+      collection(msg.collectionName).update(query, update)
     }
-
-    promise.future
   }
 }
 
