@@ -16,9 +16,9 @@ GET		/error					@controllers.Application.httpError
 
 # Modules
 ->		/analytics				analytics.Routes
-->		/api					api.Routes
-->		/user					user.Routes
-->		/app					application.Routes
+->		/api					    api.Routes
+->		/user					    user.Routes
+->		/app					    application.Routes
 ->		/dashboard				dashboard.Routes
 
 # Map static resources from the /public folder to the /assets URL path

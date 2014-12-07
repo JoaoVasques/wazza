@@ -33,10 +33,16 @@ lazy val dependencies = Seq(
 
 libraryDependencies ++= dependencies
 
+resolvers += "Sonatype releases" at "https://oss.sonatype.org/content/repositories/releases"
+
 lazy val mySettings = Seq(
   scalacOptions ++= Seq("-feature", "-language:reflectiveCalls"),
   scalacOptions ++= Seq("-feature", "-language:postfixOps")
 )
+
+lazy val common = Project("common", file("modules/common"))
+  .enablePlugins(play.PlayScala)
+  .settings(version := appVersion, libraryDependencies ++= dependencies)
 
 lazy val dashboard = Project("dashboard", file("modules/dashboard"))
   .enablePlugins(play.PlayScala)
@@ -69,6 +75,7 @@ lazy val api = Project("api", file("modules/api"))
 
 lazy val persistence = Project("persistence", file("modules/persistence"))
   .enablePlugins(play.PlayScala)
+  .dependsOn(common)
   .settings(version := appVersion, libraryDependencies ++= dependencies)
 
 lazy val analytics = Project("analytics",file("modules/analytics"))
@@ -86,7 +93,8 @@ lazy val home = Project(appName, file("."))
     aws,
     api,
     persistence,
-    analytics)
+    analytics,
+    common)
   .dependsOn(dashboard,
     user,
     application,
@@ -94,7 +102,8 @@ lazy val home = Project(appName, file("."))
     aws,
     api,
     persistence,
-    analytics)
+    analytics,
+    common)
   .settings(version := appVersion, libraryDependencies ++= dependencies)
 
 sources in doc in Compile := List()
