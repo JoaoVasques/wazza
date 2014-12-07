@@ -56,13 +56,21 @@ class PersistenceWorker extends Actor with Worker {
     case m => println("persistence worker received a message: " + m)
   }
 
+  private def sendResponse[R <: PersistenceMessage](request: R,  msg: PersistenceResponse[_],  sender: ActorRef) = {
+    if(request.direct) {
+      sender ! msg
+    } else {
+      msg.sendersStack.head ! msg
+    }
+  }
+
   private def collection(name: String) = {
     MongoFactory.getCollection(name)
   }
 
   //Boolean
-  def exists(msg: Exists) = {
-    this.get(new Get(null, msg.collectionName, msg.key, msg.value)) map { result =>
+  def exists(msg: Exists, sender: ActorRef) = {
+    this.get(new Get(null, msg.collectionName, msg.key, msg.value), sender) map { result =>
       result match {
         case Some(_) => true
         case _ => false
@@ -71,7 +79,7 @@ class PersistenceWorker extends Actor with Worker {
   }
 
   //Option[JsValue]
-  def get(msg: Get): Future[Option[JsValue]] = {
+  def get(msg: Get, sender: ActorRef): Future[Option[JsValue]] = {
 
     val promise = Promise[Option[JsValue]]
     val query = MongoDBObject(msg.key -> msg.value)
@@ -88,13 +96,15 @@ class PersistenceWorker extends Actor with Worker {
       }
       promise.success(res)
 
-      if(msg.sendersStack != null) msg.sendersStack.head ! new PROptionResponse(msg.sendersStack, res)
+      if(msg.sendersStack != null) {
+        sendResponse[Get](msg, new PROptionResponse(msg.sendersStack, res), sender)
+      }
     }
     promise.future
   }
 
   //List[JsValue]
-  def getListElements(msg: GetListElements) = {
+  def getListElements(msg: GetListElements, sender: ActorRef) = {
 
     val query = MongoDBObject(msg.key -> msg.value)
     val proj = if(msg.projection != null) {
@@ -105,13 +115,12 @@ class PersistenceWorker extends Actor with Worker {
 
     Future {
       val res = collection(msg.collectionName).find(query,proj).toList.map{(el: DBObject) => Json.parse(el.toString)}
-
-      msg.sendersStack.head ! new PRListResponse(msg.sendersStack, res)
+      sendResponse[GetListElements](msg, new PRListResponse(msg.sendersStack, res), sender)
     }
   }
 
   // TODO
-  def getElementsWithoutArrayContent(msg: GetElementsWithoutArrayContent) = {
+  def getElementsWithoutArrayContent(msg: GetElementsWithoutArrayContent, sender: ActorRef) = {
 
     val query = msg.arrayKey $nin msg.array
     val projection = MongoDBObject(msg.arrayKey -> 1)
@@ -133,16 +142,15 @@ class PersistenceWorker extends Actor with Worker {
   }
 
   // List[JsValue]
-  def getCollectionElements(msg: GetCollectionElements) = {
+  def getCollectionElements(msg: GetCollectionElements, sender: ActorRef) = {
     
     Future {
       val res = collection(msg.collectionName).find().toList map {(el: DBObject) => Json.parse(el.toString)}
-
-      msg.sendersStack.head ! new PRListResponse(msg.sendersStack, res)
+      sendResponse[GetCollectionElements](msg, new PRListResponse(msg.sendersStack, res), sender)
     }
   }
 
-  def insert(msg: Insert) = {
+  def insert(msg: Insert, sender: ActorRef) = {
     Future {
       if(msg.extra == null) {
         collection(msg.collectionName).insert(JSON.parse(msg.model.toString).asInstanceOf[DBObject])
@@ -156,14 +164,14 @@ class PersistenceWorker extends Actor with Worker {
     }
   }
 
-  def delete(msg: Delete) = {
+  def delete(msg: Delete, sender: ActorRef) = {
     Future {
       val element = JSON.parse(msg.el.toString).asInstanceOf[DBObject]
       collection(msg.collectionName).remove(JSON.parse(msg.el.toString).asInstanceOf[DBObject])
     }
   }
 
-  def update(msg: Update) = {
+  def update(msg: Update, sender: ActorRef) = {
     val query = MongoDBObject(msg.key -> msg.keyValue)
     val update = $set(msg.valueKey -> (JSON.parse(msg.newValue.toString).asInstanceOf[DBObject]))
     Future {
@@ -174,24 +182,24 @@ class PersistenceWorker extends Actor with Worker {
   /**
     Time-ranged queries
     **/
-  def getDocumentsWithinTimeRange(msg: GetDocumentsWithinTimeRange) = {
+  def getDocumentsWithinTimeRange(msg: GetDocumentsWithinTimeRange, sender: ActorRef) = {
     val query = (msg.dateFields._1 $gte msg.start.getTime $lte msg.end.getTime) ++ (msg.dateFields._2 $gte msg.start.getTime $lte msg.end.getTime)
     val sortCriteria = MongoDBObject(msg.dateFields._1 -> 1)
 
     Future {
       val lst = collection(msg.collectionName).find(query).sort(sortCriteria).toList map {(el: DBObject) => Json.parse(el.toString)}
-      msg.sendersStack.head ! new PRJsArrayResponse(msg.sendersStack, new JsArray(lst))
+      sendResponse[GetDocumentsWithinTimeRange](msg, new PRJsArrayResponse(msg.sendersStack, new JsArray(lst)), sender)
     }
   }
 
   //JsArray
-  def getDocumentsByTimeRange(msg: GetDocumentsByTimeRange) = {
+  def getDocumentsByTimeRange(msg: GetDocumentsByTimeRange, sender: ActorRef) = {
     val query = (msg.dateField $lte msg.start.getTime $gt msg.end.getTime)
     val sortCriteria = MongoDBObject(msg.dateField -> 1)
 
     Future {
       val lst = collection(msg.collectionName).find(query).sort(sortCriteria).toList map {(el: DBObject) => Json.parse(el.toString)}
-      msg.sendersStack.head ! new PRJsArrayResponse(msg.sendersStack, new JsArray(lst))
+      sendResponse[GetDocumentsByTimeRange](msg, new PRJsArrayResponse(msg.sendersStack, new JsArray(lst)), sender)
     }
   }
 
@@ -200,7 +208,7 @@ class PersistenceWorker extends Actor with Worker {
     **/
 
   // Boolean
-  def existsInArray[T <: Any](msg: ExistsInArray[T]) = {
+  def existsInArray[T <: Any](msg: ExistsInArray[T], sender: ActorRef) = {
     this.getElementFromArray[T](
       new GetElementFromArray[T](
         null,
@@ -210,7 +218,8 @@ class PersistenceWorker extends Actor with Worker {
         msg.arrayKey,
         msg.elementKey,
         msg.elementValue
-      )
+      ),
+      sender
     ) map { res =>
       res match {
         case Some(_) => true
@@ -220,7 +229,7 @@ class PersistenceWorker extends Actor with Worker {
   }
 
   // Option[JsValue]
-  def getElementFromArray[T <: Any](msg: GetElementFromArray[T]) = {
+  def getElementFromArray[T <: Any](msg: GetElementFromArray[T], sender: ActorRef) = {
 
     def findElementAux(array: JsArray): Option[JsValue] = {
       array.value.find{ el=> {
@@ -240,7 +249,7 @@ class PersistenceWorker extends Actor with Worker {
       }
 
       if(msg.sendersStack != null) {
-        msg.sendersStack.head ! new PROptionResponse(msg.sendersStack, res)
+         sendResponse[GetElementFromArray[T]](msg, new PROptionResponse(msg.sendersStack, res), sender)
       }
       promise.success(res)
     }
@@ -248,13 +257,13 @@ class PersistenceWorker extends Actor with Worker {
   }
 
   // List[JsValue]
-  def getElementsOfArray(msg: GetElementsOfArray) = {
+  def getElementsOfArray(msg: GetElementsOfArray, sender: ActorRef) = {
 
     val query = MongoDBObject(msg.docIdKey -> msg.docIdValue)
     val projection = MongoDBObject(msg.arrayKey -> 1)
     Future {
-          val res = collection(msg.collectionName).find(query, projection).toList map {(el: DBObject) => Json.parse(el.toString)}
-      msg.sendersStack.head ! new PRListResponse(msg.sendersStack, res)
+      val res = collection(msg.collectionName).find(query, projection).toList map {(el: DBObject) => Json.parse(el.toString)}
+      sendResponse[GetElementsOfArray](msg, new PRListResponse(msg.sendersStack, res), sender)
       /**limit match {
         case Some(maxNumberElements) => {
           //TODO
@@ -268,7 +277,7 @@ class PersistenceWorker extends Actor with Worker {
     }
   }
 
-  def addElementToArray[T <: Any](msg: AddElementToArray[T]) = {
+  def addElementToArray[T <: Any](msg: AddElementToArray[T], sender: ActorRef) = {
     val query = MongoDBObject(msg.docIdKey -> msg.docIdValue)
     val m = msg.model match {
       case j: JsObject => JSON.parse(j.toString).asInstanceOf[DBObject]
@@ -280,7 +289,7 @@ class PersistenceWorker extends Actor with Worker {
     }
   }
 
-  def deleteElementFromArray[T <: Any](msg: DeleteElementFromArray[T]) = {
+  def deleteElementFromArray[T <: Any](msg: DeleteElementFromArray[T], sender: ActorRef) = {
     val query = MongoDBObject(msg.docIdKey -> msg.docIdValue)
     val update = $pull(
       msg.arrayKey -> MongoDBObject(
@@ -292,7 +301,7 @@ class PersistenceWorker extends Actor with Worker {
     }
   }
 
-  def updateElementOnArray[T <: Any](msg: UpdateElementOnArray[T]) = {
+  def updateElementOnArray[T <: Any](msg: UpdateElementOnArray[T], sender: ActorRef) = {
 
     val model = msg.m match {
       case j: JsObject => JSON.parse(j.toString).asInstanceOf[DBObject]
