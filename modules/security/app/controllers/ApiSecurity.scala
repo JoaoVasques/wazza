@@ -8,7 +8,6 @@ import play.api.libs.json._
 import play.api.data._
 import play.api.mvc.Results._
 import play.api.mvc.BodyParsers.parse
-import com.github.nscala_time.time.Imports._
 import java.security.SecureRandom
 import scala.annotation.tailrec
 import com.google.inject._
@@ -19,6 +18,11 @@ import ExecutionContext.Implicits.global
 import play.api.Logger
 import service.persistence.definitions._
 import service.persistence.modules.PersistenceModule
+import scala.concurrent.duration._
+import persistence.messages._
+import akka.pattern.ask
+import akka.util.{Timeout}
+import persistence.PersistenceProxy
 
 private[security] class ApiRequest[A](
   val companyName: String,
@@ -27,30 +31,36 @@ private[security] class ApiRequest[A](
 ) extends WrappedRequest[A](request)
 
 private[security] case class ApiAction[A](action: Action[A]) extends Action[A] {
-
-  private val inj = Guice.createInjector(new PersistenceModule)
-  lazy private val databaseService = inj.getInstance(classOf[DatabaseService])
+  
+  private val persistenceProxy = PersistenceProxy.getConnector
 
   private lazy val collection = "RedirectionTable"
 
-  private def saveAppData(token: String, companyName: String, applicationName: String): Future[Unit] = {
+  private def saveAppData(token: String, companyName: String, applicationName: String) = {
     val model = Json.obj(
       "token" -> token,
       "companyName" -> companyName,
       "applicationName" -> applicationName
     )
-    databaseService.insert(collection, model)
+    persistenceProxy ! new Insert(null, collection, model) 
   }
 
   private def getAppData(token: String): Future[Option[JsValue]] = {
-    databaseService.get(collection, "token", token)
+    val query = new Get(null, collection, "token", token, null, true)
+    implicit val timeout = Timeout(5 second)
+    (persistenceProxy ? query).mapTo[PROptionResponse].map {res =>
+      res.res
+    }
   }
 
-  private def deleteAppData(token: String): Future[Unit] = {
-    getAppData(token) flatMap {res =>
+  private def deleteAppData(token: String) = {
+    getAppData(token) map {res =>
       res match {
-        case Some(data) => databaseService.delete(collection, data)
-        case None => Future.successful()
+        case Some(data) => {
+          persistenceProxy ! new Delete(null, collection, data, true)
+          
+        }
+        case None => {}
       }
     }
   }

@@ -12,6 +12,8 @@ import persistence.worker._
 import com.mongodb.casbah.Imports._
 import play.api.Play
 import play.api.Logger
+import play.api.libs.concurrent.Akka
+import play.api.Play.current
 
 class PersistenceProxy(
   system: ActorSystem
@@ -65,8 +67,16 @@ protected[persistence] object MongoFactory {
       case _ => throw new Exception("")
     }
   }
- 
-  private val client: MongoClient = getMongoClient 
+
+  private var _client: MongoClient = null
+
+  private def client: MongoClient = {
+    if(_client == null) {
+      _client = getMongoClient
+    }
+    _client
+  }
+
   def getCollection(collectionName: String) =  {
     val db = getMongoURI.get.database.get
     client(db)(collectionName)
@@ -79,6 +89,15 @@ protected[persistence] object MongoFactory {
 }
 
 object PersistenceProxy {
+
+  private var singleton: ActorRef = null
+
+  def getConnector = {
+    if(singleton == null){
+      singleton = Akka.system.actorOf(PersistenceProxy.props(ActorSystem("Persistence")), name = "persistence")
+    }
+    singleton
+  }
 
   def props(system: ActorSystem): Props = Props(new PersistenceProxy(system))
 }

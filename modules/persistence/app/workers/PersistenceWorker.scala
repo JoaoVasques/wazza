@@ -37,19 +37,19 @@ import persistence.MongoFactory
 class PersistenceWorker extends Actor with Worker {
 
   def receive = {
-    case m: Exists => {}
-    case m: Get => {}
-    case m: GetListElements => {}
-    case m: GetElementsWithoutArrayContent => {}
-    case m: GetCollectionElements => {}
-    case m: Insert => {}
-    case m: Delete => {}
-    case m: Update => {}
-    case m: GetDocumentsWithinTimeRange => {}
-    case m: GetDocumentsByTimeRange => {}
+    case m: Exists => exists(m, sender)
+    case m: Get => get(m, sender)
+    case m: GetListElements => getListElements(m, sender)
+    case m: GetElementsWithoutArrayContent => getElementsWithoutArrayContent(m, sender)
+    case m: GetCollectionElements => getCollectionElements(m, sender)
+    case m: Insert => insert(m, sender)
+    case m: Delete => delete(m , sender)
+    case m: Update => update(m, sender)
+    case m: GetDocumentsWithinTimeRange => getDocumentsWithinTimeRange(m, sender)
+    case m: GetDocumentsByTimeRange => getDocumentsByTimeRange(m, sender)
     case m: ExistsInArray[_] => {}
     case m: GetElementFromArray[_] => {}
-    case m: GetElementsOfArray => {}
+    case m: GetElementsOfArray => getElementsOfArray(m, sender)
     case m: AddElementToArray[_] => {}
     case m: DeleteElementFromArray[_] => {}
     case m: UpdateElementOnArray[_] => {}
@@ -57,7 +57,9 @@ class PersistenceWorker extends Actor with Worker {
   }
 
   private def sendResponse[R <: PersistenceMessage](request: R,  msg: PersistenceResponse[_],  sender: ActorRef) = {
+    println("request: " + request)
     if(request.direct) {
+      println("DIRECT")
       sender ! msg
     } else {
       msg.sendersStack.head ! msg
@@ -81,6 +83,8 @@ class PersistenceWorker extends Actor with Worker {
   //Option[JsValue]
   def get(msg: Get, sender: ActorRef): Future[Option[JsValue]] = {
 
+    println("GET " + msg)
+    println("sender " + sender)
     val promise = Promise[Option[JsValue]]
     val query = MongoDBObject(msg.key -> msg.value)
     val proj = if(msg.projection != null) {
@@ -94,11 +98,9 @@ class PersistenceWorker extends Actor with Worker {
         case Some(obj) => Some(Json.parse(obj.toString))
         case _ => None
       }
+      
+      sendResponse[Get](msg, new PROptionResponse(msg.sendersStack, res), sender)
       promise.success(res)
-
-      if(msg.sendersStack != null) {
-        sendResponse[Get](msg, new PROptionResponse(msg.sendersStack, res), sender)
-      }
     }
     promise.future
   }
@@ -248,9 +250,7 @@ class PersistenceWorker extends Actor with Worker {
         findElementAux((list.head \ msg.arrayKey).as[JsArray])
       }
 
-      if(msg.sendersStack != null) {
-         sendResponse[GetElementFromArray[T]](msg, new PROptionResponse(msg.sendersStack, res), sender)
-      }
+      sendResponse[GetElementFromArray[T]](msg, new PROptionResponse(msg.sendersStack, res), sender)
       promise.success(res)
     }
     promise.future
