@@ -11,22 +11,26 @@ trait PersistenceResponse[T] extends WazzaMessage {
 }
 
 case class PRBooleanResponse(
-  sendersStack: Stack[ActorRef],
-  res: Boolean
+  var sendersStack: Stack[ActorRef],
+  res: Boolean,
+  hash: String = null
 ) extends PersistenceResponse[Boolean]
 
 case class PROptionResponse(
-  sendersStack: Stack[ActorRef],
-  res: Option[JsValue]
+  var sendersStack: Stack[ActorRef],
+  res: Option[JsValue],
+  hash: String = null
 ) extends PersistenceResponse[Option[JsValue]]
 
 case class PRListResponse(
-  sendersStack: Stack[ActorRef],
-  res: List[JsValue]
+  var sendersStack: Stack[ActorRef],
+  res: List[JsValue],
+  hash: String = null
 ) extends PersistenceResponse[List[JsValue]]
 
 case class PRJsArrayResponse(
-  sendersStack: Stack[ActorRef],
-  res: JsArray
+  var sendersStack: Stack[ActorRef],
+  res: JsArray,
+  hash: String = null
 ) extends PersistenceResponse[JsArray]
 

@@ -5,6 +5,7 @@ import scala.collection.mutable.Stack
 
 trait WazzaMessage {
 
-  val sendersStack: Stack[ActorRef]
+  var sendersStack: Stack[ActorRef]
+  val hash: String
 
 }

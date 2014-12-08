@@ -11,17 +11,20 @@ trait ApplicationResponse[T] extends WazzaMessage {
 }
 
 case class ARWApplicationResponse(
-  sendersStack: Stack[ActorRef],
-  res: WazzaApplication
+  var sendersStack: Stack[ActorRef],
+  res: WazzaApplication,
+  hash: String = null
 ) extends ApplicationResponse[WazzaApplication]
 
 case class ARBooleanResponse(
-  sendersStack: Stack[ActorRef],
-  res: Boolean
+  var sendersStack: Stack[ActorRef],
+  res: Boolean,
+  hash: String = null
 ) extends ApplicationResponse[Boolean]
 
 case class AROptionResponse(
-  sendersStack: Stack[ActorRef],
-  res: Option[WazzaApplication]
+  var sendersStack: Stack[ActorRef],
+  res: Option[WazzaApplication],
+  hash: String = null
 ) extends ApplicationResponse[Option[WazzaApplication]]
 

@@ -34,7 +34,7 @@ import org.joda.time.DateTime
 import scala.collection.immutable.StringOps
 import persistence.MongoFactory
 
-class PersistenceWorker extends Actor with Worker {
+class PersistenceWorker extends Actor with Worker  {
 
   def receive = {
     case m: Exists => exists(m, sender)
@@ -57,12 +57,10 @@ class PersistenceWorker extends Actor with Worker {
   }
 
   private def sendResponse[R <: PersistenceMessage](request: R,  msg: PersistenceResponse[_],  sender: ActorRef) = {
-    println("request: " + request)
     if(request.direct) {
-      println("DIRECT")
       sender ! msg
     } else {
-      msg.sendersStack.head ! msg
+      msg.sendersStack.pop ! msg
     }
   }
 
@@ -99,7 +97,7 @@ class PersistenceWorker extends Actor with Worker {
         case _ => None
       }
       
-      sendResponse[Get](msg, new PROptionResponse(msg.sendersStack, res), sender)
+      sendResponse[Get](msg, new PROptionResponse(msg.sendersStack, res, hash = msg.hash), sender)
       promise.success(res)
     }
     promise.future
@@ -117,7 +115,7 @@ class PersistenceWorker extends Actor with Worker {
 
     Future {
       val res = collection(msg.collectionName).find(query,proj).toList.map{(el: DBObject) => Json.parse(el.toString)}
-      sendResponse[GetListElements](msg, new PRListResponse(msg.sendersStack, res), sender)
+      sendResponse[GetListElements](msg, new PRListResponse(msg.sendersStack, res, hash = msg.hash), sender)
     }
   }
 
@@ -148,7 +146,7 @@ class PersistenceWorker extends Actor with Worker {
     
     Future {
       val res = collection(msg.collectionName).find().toList map {(el: DBObject) => Json.parse(el.toString)}
-      sendResponse[GetCollectionElements](msg, new PRListResponse(msg.sendersStack, res), sender)
+      sendResponse[GetCollectionElements](msg, new PRListResponse(msg.sendersStack, res, hash = msg.hash), sender)
     }
   }
 
@@ -190,7 +188,7 @@ class PersistenceWorker extends Actor with Worker {
 
     Future {
       val lst = collection(msg.collectionName).find(query).sort(sortCriteria).toList map {(el: DBObject) => Json.parse(el.toString)}
-      sendResponse[GetDocumentsWithinTimeRange](msg, new PRJsArrayResponse(msg.sendersStack, new JsArray(lst)), sender)
+      sendResponse[GetDocumentsWithinTimeRange](msg, new PRJsArrayResponse(msg.sendersStack, new JsArray(lst), hash = msg.hash), sender)
     }
   }
 
@@ -201,7 +199,7 @@ class PersistenceWorker extends Actor with Worker {
 
     Future {
       val lst = collection(msg.collectionName).find(query).sort(sortCriteria).toList map {(el: DBObject) => Json.parse(el.toString)}
-      sendResponse[GetDocumentsByTimeRange](msg, new PRJsArrayResponse(msg.sendersStack, new JsArray(lst)), sender)
+      sendResponse[GetDocumentsByTimeRange](msg, new PRJsArrayResponse(msg.sendersStack, new JsArray(lst), hash = msg.hash), sender)
     }
   }
 
@@ -250,7 +248,7 @@ class PersistenceWorker extends Actor with Worker {
         findElementAux((list.head \ msg.arrayKey).as[JsArray])
       }
 
-      sendResponse[GetElementFromArray[T]](msg, new PROptionResponse(msg.sendersStack, res), sender)
+      sendResponse[GetElementFromArray[T]](msg, new PROptionResponse(msg.sendersStack, res, hash = msg.hash), sender)
       promise.success(res)
     }
     promise.future
@@ -263,7 +261,7 @@ class PersistenceWorker extends Actor with Worker {
     val projection = MongoDBObject(msg.arrayKey -> 1)
     Future {
       val res = collection(msg.collectionName).find(query, projection).toList map {(el: DBObject) => Json.parse(el.toString)}
-      sendResponse[GetElementsOfArray](msg, new PRListResponse(msg.sendersStack, res), sender)
+      sendResponse[GetElementsOfArray](msg, new PRListResponse(msg.sendersStack, res, hash = msg.hash), sender)
       /**limit match {
         case Some(maxNumberElements) => {
           //TODO

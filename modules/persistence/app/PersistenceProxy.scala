@@ -91,7 +91,7 @@ object PersistenceProxy {
 
   private var singleton: ActorRef = null
 
-  def getConnector = {
+  def getInstance = {
     if(singleton == null){
       singleton = Akka.system.actorOf(PersistenceProxy.props(ActorSystem("Persistence")), name = "persistence")
     }

@@ -16,30 +16,34 @@ trait ApplicationMessageRequest extends WazzaMessage {
 }
 
 case class ARInsert(
-  sendersStack: Stack[ActorRef],
+  var sendersStack: Stack[ActorRef],
   companyName: String,
   application: WazzaApplication,
-  direct: Boolean = false
+  direct: Boolean = false,
+  hash: String = null
 ) extends ApplicationMessageRequest
 
 case class ARDelete(
-  sendersStack: Stack[ActorRef],
+  var sendersStack: Stack[ActorRef],
   companyName: String,
   application: WazzaApplication,
-  direct: Boolean = false
+  direct: Boolean = false,
+  hash: String = null
 ) extends ApplicationMessageRequest
 
 case class ARExists(
-  sendersStack: Stack[ActorRef],
+  var sendersStack: Stack[ActorRef],
   companyName: String,
   name: String,
-  direct: Boolean = false
+  direct: Boolean = false,
+  hash: String = null
 ) extends ApplicationMessageRequest
 
 case class ARFind(
-  sendersStack: Stack[ActorRef],
+  var sendersStack: Stack[ActorRef],
   companyName: String,
-  key: String,
-  direct: Boolean = false
+  appName: String,
+  direct: Boolean = false,
+  hash: String = null
 ) extends ApplicationMessageRequest
 
