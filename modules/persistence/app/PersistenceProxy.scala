@@ -15,7 +15,7 @@ import play.api.Logger
 import play.api.libs.concurrent.Akka
 import play.api.Play.current
 
-class PersistenceProxy(
+class PersistenceProxy (
   system: ActorSystem
 ) extends Actor with Master[PersistenceMessage, PersistenceWorker] {
 
@@ -43,7 +43,6 @@ class PersistenceProxy(
   }
 
   protected def execute[PersistenceMessage](request: PersistenceMessage) = {
-    println(s"EXECUTE: $request")
     workersRouter.route(request, sender())
   }
 
