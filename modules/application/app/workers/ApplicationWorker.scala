@@ -45,7 +45,7 @@ class ApplicationWorker(
           val response = new AROptionResponse(req.originalRequest.sendersStack, m.res, req.originalRequest.hash)
           sendResults[AROptionResponse, ARFind](
             req.originalRequest.asInstanceOf[ARFind],
-            req.sender ,
+            req.sender,
             response
           )
         }
@@ -61,7 +61,7 @@ class ApplicationWorker(
           val response = new ARBooleanResponse(req.originalRequest.sendersStack, m.res, req.originalRequest.hash)
           sendResults[ARBooleanResponse, ARExists](
             req.originalRequest.asInstanceOf[ARExists],
-            req.sender ,
+            req.sender,
             response
           )
         }                                      

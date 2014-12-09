@@ -22,6 +22,13 @@ case class UROptionResponse(
   hash: String = null
 ) extends UserResponse[Option[User]]
 
+case class URApplicationsResponse(
+  var sendersStack: Stack[ActorRef],
+  res: List[String],
+  hash: String = null
+) extends UserResponse[List[String]]
+
+
 case class URBooleanResponse(
   var sendersStack: Stack[ActorRef],
   res: Boolean,
@@ -30,7 +37,7 @@ case class URBooleanResponse(
 
 case class URAuthenticationResponse(
   var sendersStack: Stack[ActorRef],
-  res: Boolean,
+  res: Option[User],
   hash: String = null
-) extends UserResponse[Boolean]
+) extends UserResponse[Option[User]]
 

@@ -26,13 +26,87 @@ import scala.collection.mutable.Map
 import models.user.{CompanyData}
 import scala.collection.mutable.Stack
 import org.mindrot.jbcrypt.BCrypt
+import common.actors._
 
 class UserWorker(
   databaseProxy: ActorRef
 ) extends Actor with Worker[UserMessageRequest] with ActorLogging {
 
+  def handleOptionResponse(m: PROptionResponse) {
+    localStorage.get(m.hash) match {
+      case Some(req) => {
+        req.originalRequest match {
+          case or: URFind => {
+            val response = new UROptionResponse(req.originalRequest.sendersStack, m.res, req.originalRequest.hash)
+            sendResults[UROptionResponse, URFind](
+              req.originalRequest.asInstanceOf[URFind],
+              req.sender,
+              response
+            )
+          }
+          case or: URGetApplications => {
+            val applications = User.buildFromOption(m.res).get.applications
+            val response = new URApplicationsResponse(
+              req.originalRequest.sendersStack,
+              applications,
+              req.originalRequest.hash
+            )
+            sendResults[URApplicationsResponse, URGetApplications](
+              req.originalRequest.asInstanceOf[URGetApplications],
+              req.sender,
+              response
+            )
+          }
+
+          case or: URAuthenticate => {
+            val optUser = User.buildFromOption(m.res).filter{user =>
+              BCrypt.checkpw(or.password, user.password)
+            }
+            val response = new URAuthenticationResponse(
+              req.originalRequest.sendersStack,
+              optUser,
+              req.originalRequest.hash
+            )
+
+            sendResults[URAuthenticationResponse, URAuthenticate](
+              req.originalRequest.asInstanceOf[URAuthenticate],
+              req.sender,
+              response
+            )
+          }
+        }
+      }
+      case None => {
+        log.error("Cannot find request on local storage")
+        //TODO send error message
+      }
+    }
+  }
+
+  private def handleBooleanResponse(m: PRBooleanResponse) = {
+    localStorage.get(m.hash) match {
+      case Some(req) => {
+        val response = new URBooleanResponse(
+          req.originalRequest.sendersStack,
+          m.res,
+          req.originalRequest.hash
+        )
+        sendResults[URBooleanResponse, URExists](
+          req.originalRequest.asInstanceOf[URExists],
+          req.sender,
+          response
+        )
+      }
+      case None => {
+        log.error("Cannot find request on local storage")
+        //TODO send error message
+      }
+    }    
+  }
+
   private def persistenceResponses: Receive = {
-    case _ => println
+    case m: PROptionResponse => handleOptionResponse(m)
+    case m: PRBooleanResponse => handleBooleanResponse(m)
   }
 
   private def userRequests: Receive = {
@@ -88,11 +162,42 @@ class UserWorker(
     databaseProxy ! request
   }
 
-  private def addApplication(msg: URAddApplication) = {}
+  private def addApplication(msg: URAddApplication) = {
+    val collection = User.getCollection
+    val request = new AddElementToArray[String](
+      new Stack,
+      collection,
+      User.Id,
+      msg.email,
+      User.ApplicationsField,
+      msg.applicationId
+    )
+    databaseProxy ! request
+  }
 
-  private def getApplications(msg: URGetApplications, sender: ActorRef) = {}
+  private def getApplications(msg: URGetApplications, sender: ActorRef) = {
+    val hash = localStorage.store(sender, msg)
+    val collection = User.getCollection
+    msg.sendersStack = msg.sendersStack.push(self)
+    val request = new Get(msg.sendersStack, collection, User.Id, msg.email, null, false, hash)
+    databaseProxy ! request
+  }
 
-  private def authenticate(msg: URAuthenticate, sender: ActorRef) = {}
+  private def authenticate(msg: URAuthenticate, sender: ActorRef) = {
+
+  }
+
+  private def sendResults[R <: UserResponse[_], T <: UserMessageRequest](
+    msg: T,
+    sender: ActorRef,
+    response: R
+  ) = {
+    if(msg.sendersStack.isEmpty || msg.direct) {
+      sender ! response
+    } else {
+      msg.sendersStack.pop ! response
+    }
+  }
 }
 
 object UserWorker {

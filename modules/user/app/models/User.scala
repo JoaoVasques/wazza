@@ -15,7 +15,20 @@ case class User(
 
 object User {
 
+  implicit def buildFromOption(opt: Option[JsValue]): Option[User] = {
+    opt match {
+      case Some(jsonUser) => {
+        jsonUser.validate[User].fold(
+          valid = {v => Some(v)},
+          invalid = {_ => None}
+        )
+      }
+      case None => None
+    }
+  }
+
   val Id = "email"
+  val ApplicationsField = "applications"
   def getCollection() = "company_user"
 
   implicit val userReadJson = (

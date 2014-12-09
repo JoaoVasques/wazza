@@ -64,10 +64,3 @@ case class URAuthenticate(
   hash: String = null
 ) extends UserMessageRequest
 
-
-
-
-
-
-
-// TODO user message request
