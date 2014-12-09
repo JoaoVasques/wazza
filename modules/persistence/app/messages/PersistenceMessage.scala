@@ -89,7 +89,7 @@ case class Update(
 
 /**
   Time-ranged queries
-  **/
+**/
 case class GetDocumentsWithinTimeRange(
   var sendersStack: Stack[ActorRef],
   collectionName: String,

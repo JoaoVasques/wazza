@@ -51,7 +51,7 @@ lazy val dashboard = Project("dashboard", file("modules/dashboard"))
 
 lazy val user = Project("user", file("modules/user"))
   .enablePlugins(play.PlayScala)
-  .dependsOn(security, persistence)
+  .dependsOn(security, persistence, common)
   .settings(version := appVersion, libraryDependencies ++= dependencies)
 
 lazy val application = Project("application", file("modules/application"))

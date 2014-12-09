@@ -14,7 +14,7 @@ trait Master[M <: WazzaMessage, W <: Worker[_]] {
   }
 
   override def postStop() = {
-    // send poison messages to workers
+    //TODO send poison messages to workers
   }
 
   protected def killRouter
