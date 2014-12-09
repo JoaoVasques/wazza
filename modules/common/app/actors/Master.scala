@@ -7,7 +7,7 @@ import reflect.runtime.universe._
 import akka.routing.Router
 // Master
 
-trait Master[M <: WazzaMessage, W <: Worker] {
+trait Master[M <: WazzaMessage, W <: Worker[_]] {
   this:  Actor =>
 
   override def preStart() = {

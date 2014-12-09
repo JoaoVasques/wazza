@@ -10,6 +10,12 @@ trait PersistenceResponse[T] extends WazzaMessage {
   val res: T
 }
 
+case class PRInsertResponse(
+  var sendersStack: Stack[ActorRef],
+  res: JsValue,
+  hash: String = null
+) extends PersistenceResponse[JsValue]
+
 case class PRBooleanResponse(
   var sendersStack: Stack[ActorRef],
   res: Boolean,

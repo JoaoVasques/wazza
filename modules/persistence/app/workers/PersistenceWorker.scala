@@ -32,10 +32,11 @@ import com.mongodb.casbah.Imports._
 import com.mongodb.util.JSON
 import org.joda.time.DateTime
 import scala.collection.immutable.StringOps
+import scala.reflect.ClassTag
 import persistence.MongoFactory
 
-class PersistenceWorker extends Actor with Worker  {
-
+class PersistenceWorker extends Actor with Worker[PersistenceMessage]  {
+ 
   def receive = {
     case m: Exists => exists(m, sender)
     case m: Get => get(m, sender)
@@ -47,13 +48,24 @@ class PersistenceWorker extends Actor with Worker  {
     case m: Update => update(m, sender)
     case m: GetDocumentsWithinTimeRange => getDocumentsWithinTimeRange(m, sender)
     case m: GetDocumentsByTimeRange => getDocumentsByTimeRange(m, sender)
-    case m: ExistsInArray[_] => {}
-    case m: GetElementFromArray[_] => {}
+    case m: ExistsInArray[_] => {} //TODO
+    case m: GetElementFromArray[_] => {
+      m.elementValue match {
+        case _: String => getElementFromArray[String](m.asInstanceOf[GetElementFromArray[String]], sender)
+        case _: JsValue => getElementFromArray[JsValue](m.asInstanceOf[GetElementFromArray[JsValue]], sender)
+        case _: Int => getElementFromArray[Int](m.asInstanceOf[GetElementFromArray[Int]], sender)
+      }
+    }
     case m: GetElementsOfArray => getElementsOfArray(m, sender)
-    case m: AddElementToArray[_] => {}
-    case m: DeleteElementFromArray[_] => {}
-    case m: UpdateElementOnArray[_] => {}
-    case m => println("persistence worker received a message: " + m)
+    case m: AddElementToArray[_] => {
+      m.model match {
+        case _: String => addElementToArray[String](m.asInstanceOf[AddElementToArray[String]], sender)
+        case _: JsValue => addElementToArray[JsValue](m.asInstanceOf[AddElementToArray[JsValue]], sender)
+        case _: Int => addElementToArray[Int](m.asInstanceOf[AddElementToArray[Int]], sender)
+      }
+    }
+    case m: DeleteElementFromArray[_] => {} //TODO
+    case m: UpdateElementOnArray[_] => {} //TODO
   }
 
   private def sendResponse[R <: PersistenceMessage](request: R,  msg: PersistenceResponse[_],  sender: ActorRef) = {
@@ -162,6 +174,9 @@ class PersistenceWorker extends Actor with Worker  {
         collection(msg.collectionName).insert(builder.result)
       }
     }
+
+    if(msg.sendersStack.isEmpty)
+      sendResponse[Insert](msg, new PRInsertResponse(msg.sendersStack, msg.model, hash = msg.hash), sender)
   }
 
   def delete(msg: Delete, sender: ActorRef) = {
