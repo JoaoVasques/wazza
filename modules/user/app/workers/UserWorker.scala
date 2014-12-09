@@ -47,7 +47,7 @@ class UserWorker(
           case or: URGetApplications => {
             val applications = User.buildFromOption(m.res).get.applications
             val response = new URApplicationsResponse(
-              req.originalRequest.sendersStack,
+               req.originalRequest.sendersStack,
               applications,
               req.originalRequest.hash
             )
@@ -104,9 +104,36 @@ class UserWorker(
     }    
   }
 
+  private def handleInsertResponse(m: PRInsertResponse) = {
+    localStorage.get(m.hash) match {
+      case Some(req) => {
+        val user = m.res.validate[User].fold(
+          valid = {v => v}, invalid = {_ => null}
+        )
+
+        val response = new URUserResponse(
+          req.originalRequest.sendersStack,
+          user,
+          req.originalRequest.hash
+        )
+
+        sendResults[URUserResponse, URInsert](
+          req.originalRequest.asInstanceOf[URInsert],
+          req.sender,
+          response
+        )
+      }
+      case None => {
+        log.error("Cannot find request on local storage")
+        //TODO send error message
+      }
+    }
+  }
+
   private def persistenceResponses: Receive = {
     case m: PROptionResponse => handleOptionResponse(m)
     case m: PRBooleanResponse => handleBooleanResponse(m)
+    case m: PRInsertResponse => handleInsertResponse(m)
   }
 
   private def userRequests: Receive = {
@@ -116,6 +143,7 @@ class UserWorker(
     case m: URDelete => delete(m)
     case m: URAddApplication => addApplication(m)
     case m: URGetApplications => getApplications(m, sender)
+    case m: URValidate => validate(m, sender)
     case m: URAuthenticate => authenticate(m, sender)
   }
 
@@ -123,7 +151,9 @@ class UserWorker(
 
   private def insert(msg: URInsert) = {
     def insertUserAux = {
+      val hash = localStorage.store(sender, msg)
       val collection = User.getCollection
+      msg.sendersStack = msg.sendersStack.push(self)
       val user = msg.user
       user.password = BCrypt.hashpw(user.password, BCrypt.gensalt())
       val request = new Insert(new Stack, collection, Json.toJson(user))
@@ -184,6 +214,14 @@ class UserWorker(
   }
 
   private def authenticate(msg: URAuthenticate, sender: ActorRef) = {
+    val hash = localStorage.store(sender, msg)
+    val collection = User.getCollection
+    msg.sendersStack = msg.sendersStack.push(self)
+    val request = new Get(msg.sendersStack, collection, User.Id, msg.email, null, false, hash)
+    databaseProxy ! request
+  }
+
+  private def validate(msg: URValidate, sender: ActorRef) = {
 
   }
 
@@ -204,3 +242,4 @@ object UserWorker {
 
   def props(databaseProxy: ActorRef): Props = Props(new UserWorker(databaseProxy))
 }
+

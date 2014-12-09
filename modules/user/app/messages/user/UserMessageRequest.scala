@@ -56,6 +56,13 @@ case class URGetApplications(
   hash: String = null
 ) extends UserMessageRequest
 
+case class URValidate(
+  var sendersStack: Stack[ActorRef],
+  email: String,
+  direct: Boolean = false,
+  hash: String = null
+) extends UserMessageRequest
+
 case class URAuthenticate(
   var sendersStack: Stack[ActorRef],
   email: String,

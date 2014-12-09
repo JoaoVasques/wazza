@@ -175,7 +175,7 @@ class PersistenceWorker extends Actor with Worker[PersistenceMessage]  {
       }
     }
 
-    if(msg.sendersStack.isEmpty)
+    if(!msg.sendersStack.isEmpty)
       sendResponse[Insert](msg, new PRInsertResponse(msg.sendersStack, msg.model, hash = msg.hash), sender)
   }
 

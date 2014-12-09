@@ -74,10 +74,17 @@ class UserServiceImpl @Inject()(
   }
 
   def authenticate(email: String, password: String): Option[User] = {
-   val futureAuth = this.find(email) map {opt =>
-     opt.filter {user => BCrypt.checkpw(password, user.password)}
-   }
-    Await.result(futureAuth, 5 seconds)
+    import user.{UserProxy}
+    import user.messages._
+    import scala.collection.mutable.Stack
+    import akka.util.{Timeout}
+    import akka.pattern.ask
+    import user.messages.URAuthenticationResponse
+
+    val request = new URAuthenticate(new Stack(), email, password, true)
+    implicit val timeout = Timeout(5 seconds)
+    val futureAuth = (UserProxy.getInstance ? request)
+    Await.result(futureAuth, timeout.duration).asInstanceOf[URAuthenticationResponse].res
   }
 }
 
