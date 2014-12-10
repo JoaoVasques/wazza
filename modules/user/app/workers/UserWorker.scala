@@ -86,16 +86,36 @@ class UserWorker(
   private def handleBooleanResponse(m: PRBooleanResponse) = {
     localStorage.get(m.hash) match {
       case Some(req) => {
-        val response = new URBooleanResponse(
-          req.originalRequest.sendersStack,
-          m.res,
-          req.originalRequest.hash
-        )
-        sendResults[URBooleanResponse, URExists](
-          req.originalRequest.asInstanceOf[URExists],
-          req.sender,
-          response
-        )
+        req.originalRequest match {
+          case or: URExists => {
+            val response = new URBooleanResponse(
+              or.sendersStack,
+              m.res,
+              or.hash
+            )
+            sendResults[URBooleanResponse, URExists](
+              or.asInstanceOf[URExists],
+              req.sender,
+              response
+            )
+          }
+          case or: URValidate => {
+            val response = new URValidationResponse(
+              or.sendersStack,
+              (!m.res),
+              or.hash
+            )
+            sendResults[URValidationResponse, URValidate](
+              or.asInstanceOf[URValidate],
+              req.sender,
+              response
+            )
+          }
+          case unkown => {
+            log.error("Handle Boolean response: unkown response - " + unkown )
+            //TODO send error message
+          }
+        }
       }
       case None => {
         log.error("Cannot find request on local storage")
@@ -222,7 +242,12 @@ class UserWorker(
   }
 
   private def validate(msg: URValidate, sender: ActorRef) = {
-
+    val hash = localStorage.store(sender, msg)
+    val collection = User.getCollection
+    msg.sendersStack = msg.sendersStack.push(self)
+    val request = new Exists(msg.sendersStack, collection, User.Id, msg.email, false, hash)
+    println("VALIDATE: " + msg)
+    databaseProxy ! request
   }
 
   private def sendResults[R <: UserResponse[_], T <: UserMessageRequest](

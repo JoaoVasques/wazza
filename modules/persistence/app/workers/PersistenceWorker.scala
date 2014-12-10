@@ -81,20 +81,21 @@ class PersistenceWorker extends Actor with Worker[PersistenceMessage]  {
   }
 
   //Boolean
-  def exists(msg: Exists, sender: ActorRef) = {
-    this.get(new Get(null, msg.collectionName, msg.key, msg.value), sender) map { result =>
-      result match {
-        case Some(_) => true
-        case _ => false
-      }
+  def exists(msg: Exists, sender: ActorRef): Future[Boolean] = {
+    val promise = Promise[Boolean]
+    val query = MongoDBObject(msg.key -> msg.value)
+
+    Future {
+      val res = !collection(msg.collectionName).find(query).limit(1).toList.isEmpty
+      promise.success(res)
+      sendResponse[Exists](msg, new PRBooleanResponse(msg.sendersStack, res, hash = msg.hash), sender)
     }
+
+    promise.future
   }
 
   //Option[JsValue]
   def get(msg: Get, sender: ActorRef): Future[Option[JsValue]] = {
-
-    println("GET " + msg)
-    println("sender " + sender)
     val promise = Promise[Option[JsValue]]
     val query = MongoDBObject(msg.key -> msg.value)
     val proj = if(msg.projection != null) {

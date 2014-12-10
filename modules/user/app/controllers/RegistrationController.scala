@@ -24,12 +24,25 @@ import scala.collection.mutable.Stack
 import user.messages._
 
 class RegistrationController @Inject()(
-  //userService: UserService,
   tokenService: TokenManagerService
 ) extends Controller with CookieManager {
 
   private val userProxy = UserProxy.getInstance
   implicit val timeout = Timeout(5 second)
+
+  private def validateUser(email: String): Boolean = {
+    import user.{UserProxy}
+    import user.messages._
+    import scala.collection.mutable.Stack
+    import akka.util.{Timeout}
+    import akka.pattern.ask
+    import user.messages._
+
+    val request = new URValidate(new Stack, email, true)
+    implicit val timeout = Timeout(10 seconds)
+    val futureValidation = UserProxy.getInstance ? request
+    Await.result(futureValidation, timeout.duration).asInstanceOf[URValidationResponse].res
+  }
 
   val registrationForm : Form[User] = Form(
     mapping(
@@ -39,7 +52,7 @@ class RegistrationController @Inject()(
       "company" -> nonEmptyText,
       "applications" -> ignored(List[String]())
     )(User.apply)(User.unapply) verifying("User with this email already exists", fields => fields match {
-      case userData => true//Await.result(userService.validateUser(userData.email), 5 seconds)
+      case userData => validateUser(userData.email)
     })
   )
 
@@ -59,7 +72,7 @@ class RegistrationController @Inject()(
           Ok(Json.obj(
             "authToken" -> token,
             "userId" -> user.email,
-            "url" -> "analytics.overview"// TODO routes.Application.test().url
+            "url" -> "analytics.overview"
           )).withToken(token)
         )
       }
