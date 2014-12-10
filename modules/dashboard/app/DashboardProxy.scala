@@ -1,5 +1,6 @@
-package application
+package dashboard
 
+// dashboard proxy
 import common.actors._
 import common.messages._
 import akka.actor.{ActorRef, Actor, ActorSystem, Props}
@@ -7,24 +8,27 @@ import akka.routing.ActorRefRoutee
 import akka.routing.Router
 import akka.routing.RoundRobinRoutingLogic
 import play.api.libs.concurrent.Akka._
-import application.messages._
-import application.workers._
+import dashboard.messages._
+import dashboard.workers._
 import play.api.Play
 import play.api.Logger
 import play.api.libs.concurrent.Akka
 import play.api.Play.current
 import persistence._
+import application._
+import user._
 
-class ApplicationProxy(
+class DashboardProxy(
   system: ActorSystem,
-  databaseProxy: ActorRef
-) extends Actor with Master[ApplicationMessageRequest, ApplicationWorker] {
+  applicationProxy: ActorRef,
+  userProxy: ActorRef
+) extends Actor with Master[DashboardMessageRequest, DashboardWorker] {
 
   private val NUMBER_WORKERS = 5
 
   override def workersRouter = {
     val routees = Vector.fill(NUMBER_WORKERS) {
-      val r = context.actorOf(ApplicationWorker.props(databaseProxy))
+      val r = context.actorOf(DashboardWorker.props(applicationProxy, userProxy))
       context watch r
       ActorRefRoutee(r)
     }
@@ -33,21 +37,25 @@ class ApplicationProxy(
 
   override def killRouter = {}
 
-  protected def execute[ApplicationMessageRequest](request: ApplicationMessageRequest) = {
+  protected def execute[DashboardMessageRequest](request: DashboardMessageRequest) = {
     workersRouter.route(request, sender())
   }
 
   def receive = masterReceive
 }
 
-object ApplicationProxy {
+object DashboardProxy {
 
   private var singleton: ActorRef = null
 
   def getInstance = {
     if(singleton == null) {
       singleton = Akka.system.actorOf(
-        ApplicationProxy.props(ActorSystem("application"), PersistenceProxy.getInstance), name = "application"
+        DashboardProxy.props(
+          ActorSystem("dashboard"),
+          ApplicationProxy.getInstance,
+          UserProxy.getInstance
+        ), name = "dashboard"
       )
     }
     singleton
@@ -55,6 +63,7 @@ object ApplicationProxy {
 
   def props(
     system: ActorSystem,
-    databaseProxy: ActorRef
-  ): Props = Props(new ApplicationProxy(system, databaseProxy))
+    applicationProxy: ActorRef,
+    userProxy: ActorRef
+  ): Props = Props(new DashboardProxy(system, applicationProxy, userProxy))
 }
