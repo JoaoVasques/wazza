@@ -16,11 +16,32 @@ import service.persistence.modules.PersistenceModule
 import service.analytics.modules.AnalyticsModule
 import play.api.libs.concurrent.Execution.Implicits._
 import play.api.libs.concurrent.Akka
-import akka.actor.Props
-import scala.concurrent.duration._
-
-object Global extends GlobalSettings {
+import akka.actor.{ActorRef, Actor, ActorSystem, Kill}
+import persistence._
+import application._
+import user._
   
+object Global extends GlobalSettings {
+
+  private var modulesProxies = List[ActorRef]()
+
+  /**
+    Creates modules system's and proxies
+  **/
+  override def onStart(app: Application) = {
+    val databaseProxy = PersistenceProxy.getInstance
+    val userProxy = UserProxy.getInstance
+    val applicationProxy = ApplicationProxy.getInstance
+    modulesProxies = List(databaseProxy, userProxy, applicationProxy)
+  }
+
+  /**
+    Shutdowns all modules' systems and actors
+  **/
+  override def onStop(app: Application) = {
+    modulesProxies.foreach{_ ! Kill}
+  }
+
   private lazy val injector = {
     Guice.createInjector(
       new PersistenceModule,
