@@ -7,45 +7,38 @@ import java.math.BigInteger
 import scala.collection.mutable.Map
 import scala.collection.mutable.ListBuffer
 
-class DependencyStorage[T <: WazzaMessage] {
+/**
+  S - List of all data that was sent for a given request
+  R - List of all received results of that request
+**/
+case class Element[S](originalRequest: WazzaMessage, sendedData: List[S], sender: ActorRef) {
 
-  /**
-    S - List of all data that was sent for a given request
-    R - List of all received results of that request
-  **/
-  case class Element[S, R](originalRequest: T, sendedData: List[S], sender: ActorRef) {
+  private var results = new ListBuffer[Any]()
 
-    private val results: ListBuffer[R] = ListBuffer[R]()
+  def hasReceivedAllResults = sendedData.size == results.size
 
-    def hasReceivedAllResults = sendedData.size == results.size
-
-    def addResult[N](newResult: N) = {
-      newResult match {
-        case r: R => {
-          if(!results.exists(_ == r)) {
-            results += r
-          }
-        }
-        case _ => {
-          //TODO Log
-        }
-      }
-    }
-
-    def getResults: List[R] = results.toList
-
+  def addResult[N](newResult: N) = {
+    results += newResult
+    results = results.distinct
   }
+
+  def getResults = results.toList
+}
+
+class DependencyStorage {
+
+
 
   private val BASE = 32
   private val BITS = 130
   private val random = new SecureRandom
   private def generateId = new BigInteger(BITS, random).toString(32)
 
-  private val storage: Map[String, Element[_,_]] = Map()
+  private val storage: Map[String, Element[_]] = Map()
 
-  def store[S, R](sender: ActorRef, sendedData: List[S], originalReq: T): String = {
+  def store[S](sender: ActorRef, sendedData: List[S], originalReq: WazzaMessage): String = {
     val id = generateId
-    storage += (id -> new Element[S,R](originalReq, sendedData, sender))
+    storage += (id -> new Element[S](originalReq, sendedData, sender))
     id
   }
 
@@ -58,24 +51,31 @@ class DependencyStorage[T <: WazzaMessage] {
 
   def saveResult[R](hash: String, result: R) = {
     storage.get(hash) match {
-       case Some(entry) => entry.addResult[R](result)
+       case Some(entry) => entry.addResult(result)
       case _ => {
         //TODO log error and launch exception
       }
     }
   }
 
-  def get[S, R](hash: String): Option[Element[S,R]] = {
+  def get[S](hash: String): Option[Element[S]] = {
     val res = storage.get(hash) match {
-      case Some(element) => Some(element.asInstanceOf[Element[S,R]])
+      case Some(element) => Some(element.asInstanceOf[Element[S]])
       case _ => None
     }
     storage -= hash
     res
   }
+
+  def getOriginalRequest(hash: String): Option[WazzaMessage] = {
+    storage.get(hash) match {
+      case Some(element) => Some(element.originalRequest)
+      case _ => None
+    }
+  }
 }
 
-trait DependencyStorageDecorator[T <: WazzaMessage] {
-  val dependencyStorage = new DependencyStorage[T]
+trait DependencyStorageDecorator {
+  val dependencyStorage = new DependencyStorage
 }
 
