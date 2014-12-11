@@ -12,6 +12,10 @@ import service.user.definitions.{PurchaseService}
 import scala.concurrent._
 import ExecutionContext.Implicits.global
 import controllers.security._
+import user._
+import user.messages._
+import scala.collection.mutable.Stack
+import scala.util.{Try, Success, Failure}
 
 class PurchaseController @Inject()(
   applicationService: ApplicationService,
@@ -22,16 +26,16 @@ class PurchaseController @Inject()(
     val companyName = request.companyName
     val applicationName = request.applicationName
     val content = Json.parse((request.body \ "content").as[String].replace("\\", ""))
-    applicationService.exists(companyName, applicationName) flatMap {exists =>
-      if(!exists) {
-        Future.successful(NotFound("Application does not exist"))
-      } else {
-        val purchase = purchaseService.create(content)
-        purchaseService.save(companyName, applicationName, purchase) map {res =>
-          Ok
-        } recover {
-          case _ => InternalServerError
-        }
+
+    purchaseService.create(content) match {
+      case Success(purchase) => {
+        val userProxy = UserProxy.getInstance
+        val request = new PRSave(new Stack, companyName, applicationName, purchase)
+        userProxy ! request
+        Future.successful(Ok)
+      }
+      case Failure(_) => {
+        Future.successful(BadRequest("Invalid purchase json description"))
       }
     }
   }

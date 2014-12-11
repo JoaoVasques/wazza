@@ -7,7 +7,7 @@ import scala.concurrent._
 
 trait PurchaseService {
 
-  def create(json: JsValue): PurchaseInfo
+  def create(json: JsValue): Try[PurchaseInfo]
 
   def save(companyName: String, applicationName: String, info: PurchaseInfo): Future[Unit]
 

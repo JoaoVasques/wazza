@@ -47,7 +47,7 @@ class UserProxy (
 
   private def sessionsWorkerRouter = {
     val routees = Vector.fill(NUMBER_WORKERS) {
-      val r = context.actorOf(SessionWorker.props(databaseProxy))
+      val r = context.actorOf(SessionWorker.props(databaseProxy, self))
       context watch r
       ActorRefRoutee(r)
     }

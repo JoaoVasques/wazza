@@ -30,26 +30,38 @@ class PurchaseWorker(
   databaseProxy: ActorRef
 ) extends Actor with Worker[PurchaseMessageRequest] with ActorLogging {
 
-  def receive = {
-    case m: PRSave => savePurchase(m)
+  def storePurchase(msg: PRSave) = {
+    val collection = PurchaseInfo.getCollection(msg.companyName, msg.applicationName)
+    val request = new Insert(msg.sendersStack, collection, Json.toJson(msg.info))
+    databaseProxy ! request
   }
 
-  private def savePurchase(msg: PRSave) = {
-    def storePurchase = {
-      val collection = PurchaseInfo.getCollection(msg.companyName, msg.applicationName)
-      val request = new Insert(msg.sendersStack, collection, Json.toJson(msg.info))
-      databaseProxy ! request
-    }
+  def saveUserAsBuyer(msg: PRSave) = {
+    val collection = Buyer.getCollection(msg.companyName, msg.applicationName)
+    val model = Json.obj("userId" -> msg.info.userId)
+    val request = new Insert(msg.sendersStack, collection, model)
+    databaseProxy ! request
+  }
 
-    def saveUserAsBuyer = {
-      val collection = Buyer.getCollection(msg.companyName, msg.applicationName)
-      val model = Json.obj("userId" -> msg.info.userId)
-      val request = new Insert(msg.sendersStack, collection, model)
-      databaseProxy ! request
-    }
 
-    storePurchase
-    saveUserAsBuyer
+  private def persistenceReceive: Receive = {
+    case r: PRBooleanResponse => {
+      //TODO
+    }
+  }
+
+  private def purchasesReceive: Receive = {
+    case m: PRSave => purchaseExists(m)
+  }
+
+  def receive = purchasesReceive orElse persistenceReceive
+
+  private def purchaseExists(msg: PRSave) = {
+    val hash = localStorage.store(self, msg)
+    msg.sendersStack = msg.sendersStack.push(self)
+    val collection = PurchaseInfo.getCollection(msg.companyName, msg.applicationName)
+    val request = new Exists(msg.sendersStack, collection, PurchaseInfo.Id, msg.info.id, true, hash)
+    databaseProxy ! request
   }
 }
 

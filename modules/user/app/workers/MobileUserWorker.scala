@@ -30,13 +30,35 @@ class MobileUserWorker(
   databaseProxy: ActorRef
 ) extends Actor with Worker[MobileUserMessageRequest] with ActorLogging {
 
-  def receive = {
-    case m: MUCreate => saveMobileUser(m)
+  private def persistenceReceive: Receive = {
+    case r: PRBooleanResponse => {
+      if(!r.res) {
+        localStorage.get(r.hash) match {
+          case Some(or) => {
+            val req = or.originalRequest.asInstanceOf[MUCreate]
+            val user = new MobileUser(req.userId)
+            val insertReq = new Insert(new Stack, "collection", user)
+            databaseProxy ! insertReq
+          }
+          case _ => {
+            //TODO error
+          }
+        }
+      }
+    }
   }
 
-  private def saveMobileUser(msg: MUCreate) = {
+  private def mobileUserReceive: Receive = {
+    case m: MUCreate => mobileUserExists(m)
+  }
+
+  def receive = mobileUserReceive orElse persistenceReceive
+
+  private def mobileUserExists(msg: MUCreate) = {
+    val hash = localStorage.store(self, msg)
+    msg.sendersStack = msg.sendersStack.push(self)
     val collection = MobileUser.getCollection(msg.companyName, msg.applicationName)
-    val request = new Insert(new Stack(), collection, new MobileUser(msg.userId))
+    val request = new Exists(msg.sendersStack, collection, MobileUser.KeyId, msg.userId, true, hash)
     databaseProxy ! request
   }
 }
@@ -45,3 +67,4 @@ object MobileUserWorker {
 
   def props(databaseProxy: ActorRef): Props = Props(new MobileUserWorker(databaseProxy))
 }
+
