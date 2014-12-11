@@ -15,10 +15,10 @@ GET     /overview/company             @controllers.dashboard.OverviewController.
 GET     /analytics                    @controllers.dashboard.AnalyticsController.analytics
 
 # inventory
-GET     /inventory                    @controllers.dashboard.InventoryController.inventory
-GET     /inventory/crud               @controllers.dashboard.InventoryController.inventoryCRUD
-GET     /inventory/virtualCurrencies  @controllers.dashboard.InventoryController.inventoryVirtualCurrencies
-GET     /inventory/bootstrap          @controllers.dashboard.InventoryController.bootstrapInventory
+#GET     /inventory                    @controllers.dashboard.InventoryController.inventory
+#GET     /inventory/crud               @controllers.dashboard.InventoryController.inventoryCRUD
+#GET     /inventory/virtualCurrencies  @controllers.dashboard.InventoryController.inventoryVirtualCurrencies
+#GET     /inventory/bootstrap          @controllers.dashboard.InventoryController.bootstrapInventory
 
 # not used atm
 #GET    /store/android                @controllers.dashboard.AnalyticsController.storeAndroid
