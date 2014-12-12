@@ -82,7 +82,7 @@ class UserServiceImpl @Inject()(
     import user.messages.URAuthenticationResponse
 
     val request = new URAuthenticate(new Stack(), email, password, true)
-    implicit val timeout = Timeout(5 seconds)
+    implicit val timeout = Timeout(10 seconds)
     val futureAuth = (UserProxy.getInstance ? request)
     Await.result(futureAuth, timeout.duration).asInstanceOf[URAuthenticationResponse].res
   }
