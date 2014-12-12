@@ -27,8 +27,7 @@ lazy val dependencies = Seq(
   "org.webjars" % "angular-local-storage" % "0.1.5",
   "org.mongodb" % "casbah_2.10" % "2.7.4",
   "org.mongodb" % "casbah-commons_2.10" % "2.7.4",
-  "org.mindrot" % "jbcrypt" % "0.3m",
-  "org.reactivemongo" %% "play2-reactivemongo" % "0.10.5.0.akka23"
+  "org.mindrot" % "jbcrypt" % "0.3m"
 )
 
 libraryDependencies ++= dependencies
