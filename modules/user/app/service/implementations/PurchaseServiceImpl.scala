@@ -26,20 +26,25 @@ class PurchaseServiceImpl @Inject()(
   mobileSessionService: MobileSessionService
 ) extends PurchaseService {
 
-  def create(json: JsValue): PurchaseInfo = {
-    new PurchaseInfo(
-      (json \ "id").as[String],
-      (json \ "sessionId").as[String],
-      (json \ "userId").as[String],
-      (json \ "itemId").as[String],
-      (json \ "price").as[Double],
-      (json \ "time").as[Date],
-      (json \ "deviceInfo").as[DeviceInfo],
-      (json \ "location").validate[LocationInfo] match {
-        case success: JsSuccess[LocationInfo] => Some(success.value)
-        case JsError(errors) => None
-      }
-    )
+  def create(json: JsValue): Try[PurchaseInfo] = {
+    try {
+      val p = new PurchaseInfo(
+        (json \ "id").as[String],
+        (json \ "sessionId").as[String],
+        (json \ "userId").as[String],
+        (json \ "itemId").as[String],
+        (json \ "price").as[Double],
+        (json \ "time").as[Date],
+        (json \ "deviceInfo").as[DeviceInfo],
+        (json \ "location").validate[LocationInfo] match {
+          case success: JsSuccess[LocationInfo] => Some(success.value)
+          case JsError(errors) => None
+        }
+      )
+      new Success(p)
+    } catch {
+      case ex: Exception => new Failure(new Exception)
+    }
   }
 
   def save(companyName: String, applicationName: String, info: PurchaseInfo): Future[Unit] = {

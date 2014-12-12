@@ -28,16 +28,21 @@ lazy val dependencies = Seq(
   "org.webjars" % "numeral-js" % "1.5.3-1",
   "org.mongodb" % "casbah_2.10" % "2.7.4",
   "org.mongodb" % "casbah-commons_2.10" % "2.7.4",
-  "org.mindrot" % "jbcrypt" % "0.3m",
-  "org.reactivemongo" %% "play2-reactivemongo" % "0.10.5.0.akka23"
+  "org.mindrot" % "jbcrypt" % "0.3m"
 )
 
 libraryDependencies ++= dependencies
+
+resolvers += "Sonatype releases" at "https://oss.sonatype.org/content/repositories/releases"
 
 lazy val mySettings = Seq(
   scalacOptions ++= Seq("-feature", "-language:reflectiveCalls"),
   scalacOptions ++= Seq("-feature", "-language:postfixOps")
 )
+
+lazy val common = Project("common", file("modules/common"))
+  .enablePlugins(play.PlayScala)
+  .settings(version := appVersion, libraryDependencies ++= dependencies)
 
 lazy val dashboard = Project("dashboard", file("modules/dashboard"))
   .enablePlugins(play.PlayScala)
@@ -46,7 +51,7 @@ lazy val dashboard = Project("dashboard", file("modules/dashboard"))
 
 lazy val user = Project("user", file("modules/user"))
   .enablePlugins(play.PlayScala)
-  .dependsOn(security, persistence)
+  .dependsOn(security, persistence, common)
   .settings(version := appVersion, libraryDependencies ++= dependencies)
 
 lazy val application = Project("application", file("modules/application"))
@@ -70,6 +75,7 @@ lazy val api = Project("api", file("modules/api"))
 
 lazy val persistence = Project("persistence", file("modules/persistence"))
   .enablePlugins(play.PlayScala)
+  .dependsOn(common)
   .settings(version := appVersion, libraryDependencies ++= dependencies)
 
 lazy val analytics = Project("analytics",file("modules/analytics"))
@@ -87,7 +93,8 @@ lazy val home = Project(appName, file("."))
     aws,
     api,
     persistence,
-    analytics)
+    analytics,
+    common)
   .dependsOn(dashboard,
     user,
     application,
@@ -95,7 +102,8 @@ lazy val home = Project(appName, file("."))
     aws,
     api,
     persistence,
-    analytics)
+    analytics,
+    common)
   .settings(version := appVersion, libraryDependencies ++= dependencies)
 
 sources in doc in Compile := List()

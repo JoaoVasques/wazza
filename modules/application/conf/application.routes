@@ -15,8 +15,8 @@ POST    /item/uploadimage                          @controllers.application.Item
 POST    /item/delete/:companyName/:appName/:itemId @controllers.application.ItemCRUDController.deleteItem(companyName: String, appName: String, itemId)
 
 #API endpoints
-GET     /api/virtualcurrencies/all/:applicationName/:companyName  @controllers.application.APIController.getVirtualCurrencies(applicationName, companyName)
-GET     /api/item/get/:applicationName/:offset/:companyName       @controllers.application.APIController.getItems(applicationName, companyName, offset: Int)
+#GET     /api/virtualcurrencies/all/:applicationName/:companyName  @controllers.application.APIController.getVirtualCurrencies(applicationName, companyName)
+#GET     /api/item/get/:applicationName/:offset/:companyName       @controllers.application.APIController.getItems(applicationName, companyName, offset: Int)
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               	controllers.application.Assets.at(path="/public", file)
