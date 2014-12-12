@@ -11,6 +11,17 @@
 <script defer src="@routes.WebJarAssets.at(WebJarAssets.locate("bootstrap.min.js"))"></script>
 <script defer src="@routes.WebJarAssets.at(WebJarAssets.locate("Chart.min.js"))"></script>
 <script defer src="@routes.WebJarAssets.at(WebJarAssets.locate("numeral.min.js"))"></script>
+<!-- others -->
+<script defer src="@routes.Assets.at("javascript/vendors/angular-file-upload.min.js")"></script>
+<script defer src="@routes.Assets.at("javascript/vendors/angular-file-upload-html5-shim.min.js")"></script>
+<!-- https://github.com/t4t5/sweetalert -->
+<script defer src="@routes.Assets.at("javascript/vendors/sweet-alert.min.js")"></script>
+<!-- https://github.com/durated/angular-scroll -->
+<script defer src="@routes.Assets.at("javascript/vendors/angular-scroll.min.js")"></script>
+<!-- AdminLTE App -->
+<script defer src="@routes.Assets.at("javascript/vendors/app.js")"></script>
+
+<!-- Angular stuff -->
 <!-- app -->
 <script defer src="@routes.Assets.at("javascript/app/app.js")"></script>
 <script defer src="@routes.Assets.at("javascript/app/services.js")"></script>
@@ -30,24 +41,16 @@
 <script defer src="@routes.Assets.at("javascript/app/services/ApplicationStateService.js")"></script>
 <script defer src="@routes.Assets.at("javascript/app/services/LoginLogoutService.js")"></script>
 <script defer src="@routes.Assets.at("javascript/app/services/UserVoiceService.js")"></script>
-
 <!-- directives -->
 <script defer src="@routes.Assets.at("javascript/app/directives/chartjs-directive.js")"></script>
-<!-- others -->
-<script defer src="@routes.Assets.at("javascript/vendors/angular-file-upload.min.js")"></script>
-<script defer src="@routes.Assets.at("javascript/vendors/angular-file-upload-html5-shim.min.js")"></script>
-<script defer src="@routes.Assets.at("javascript/vendors/sweet-alert.min.js")"></script>
-<!-- https://github.com/durated/angular-scroll -->
-<script defer src="@routes.Assets.at("javascript/vendors/angular-scroll.min.js")"></script>
 
-<!-- external controllers -->
+<!-- external stuff from other modules -->
 @views.html.js.applicationJavascripts.render()
 @views.html.js.userJavascripts.render()
 @views.html.js.securityJavascripts.render()
 @views.html.js.dashboardJavascripts.render()
 
-<!-- AdminLTE App -->
-<script defer src="@routes.Assets.at("javascript/vendors/app.js")"></script>
+
 <!-- everything else -->
 <!--<script defer src="@routes.Assets.at("custom.js")"></script> -->
 
