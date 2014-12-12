@@ -24,6 +24,8 @@ import notifications.plugins._
 import java.io.{StringWriter, PrintWriter}  
 import scala.concurrent._
 import scala.concurrent.duration._
+import notifications._
+import notifications.messages._
 
 object Global extends GlobalSettings with MailConnector {
 
@@ -36,7 +38,8 @@ object Global extends GlobalSettings with MailConnector {
     val databaseProxy = PersistenceProxy.getInstance
     val userProxy = UserProxy.getInstance
     val applicationProxy = ApplicationProxy.getInstance
-    modulesProxies = List(databaseProxy, userProxy, applicationProxy)
+    val notificationsProxy = NotificationsProxy.getInstance
+    modulesProxies = List(databaseProxy, userProxy, applicationProxy, notificationsProxy)
   }
 
   // 500 - internal server error
@@ -46,7 +49,8 @@ object Global extends GlobalSettings with MailConnector {
     throwable.printStackTrace(pw)
     val stack = sw.toString()
     val msg = s"Message: ${throwable.getMessage}\nStack Trace: ${stack}"
-    MailProxy.sendEmail("500 ERROR", List("support@wazza.io"), msg)
+    val request = new SendEmail(null, List("support@wazza.io"), "500 ERROR", msg)
+    NotificationsProxy.getInstance ! request
     Future.successful(InternalServerError(views.html.errorPage()))
   }
   /**

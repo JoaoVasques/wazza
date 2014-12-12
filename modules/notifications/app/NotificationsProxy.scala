@@ -1,6 +1,5 @@
 package notifications
 
-
 import common.actors._
 import common.messages._
 import akka.actor.{ActorRef, Actor, ActorSystem, Props}
@@ -8,16 +7,15 @@ import akka.routing.ActorRefRoutee
 import akka.routing.Router
 import akka.routing.RoundRobinRoutingLogic
 import play.api.libs.concurrent.Akka._
-import application.messages._
-import application.workers._
 import play.api.Play
 import play.api.Logger
 import play.api.libs.concurrent.Akka
 import play.api.Play.current
-import persistence._
+import play.api._
+import notifications.workers._
 
 class NotificationsProxy(
-  system: ActorSystem,
+  system: ActorSystem
 ) extends Actor with Master[WazzaMessage, MailWorker] {
 
   private val NUMBER_WORKERS = 1
@@ -53,6 +51,6 @@ object NotificationsProxy {
     singleton
   }
 
-  def props(system: ActorSystem,): Props = Props(new NotificationsProxy(system))
+  def props(system: ActorSystem): Props = Props(new NotificationsProxy(system))
 }
 

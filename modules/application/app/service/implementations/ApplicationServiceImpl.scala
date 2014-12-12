@@ -20,13 +20,12 @@ import WazzaApplicationImplicits._
 import service.user.definitions.PurchaseService
 import models.user.PurchaseInfo
 import service.security.definitions._
-import notifications.plugins._
 
 class ApplicationServiceImpl @Inject()(
   photosService: PhotosService,
   databaseService: DatabaseService,
   purchaseService: PurchaseService
-) extends ApplicationService with ApplicationErrors with MailConnector {
+) extends ApplicationService with ApplicationErrors {
 
   private implicit def convertItemToJsObject(item: Item): JsObject = {
     Item.convertToJson(item) match {
@@ -71,8 +70,8 @@ class ApplicationServiceImpl @Inject()(
           app <- addApplication(companyName, application.name)
           res <- this.saveAppData(application.credentials.sdkToken, companyName, application.name)
         } yield {
-          val msg = s"Company $companyName has created a new application ${application.name} for ${application.appType}"
-          MailProxy.sendEmail("New Application Created", List("support@wazza.io"), msg)
+//          val msg = s"Company $companyName has created a new application ${application.name} for ${application.appType}"
+          //MailProxy.sendEmail("New Application Created", List("support@wazza.io"), msg)
           application
         }
       } else Future {null}

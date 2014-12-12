@@ -20,6 +20,7 @@ import notifications.messages._
 import play.api.Play.current
 import play.api.libs.concurrent.Execution.Implicits._
 import play.api.libs.ws.{ WSResponse, WS }
+import play.api._
 
 class MailWorker(
   apiKey: String,
@@ -66,13 +67,13 @@ object MailWorker {
 
   private def parseConfig: Option[MailCredentials] = {
     def getConfigElement(config: Configuration, key: String): Option[String] = {
-      Play.current.config.getString(key) match {
+      Play.current.configuration.getString(key) match {
         case Some(element) => Some(element filterNot ("'" contains _))
         case _ => None
       }
     }
 
-    app.configuration.getConfig("mandrill") match {
+    Play.current.configuration.getConfig("mandrill") match {
       case Some(conf) => {
         MailCredentials(
           getConfigElement(conf, "apiKey"),
@@ -86,10 +87,10 @@ object MailWorker {
   def apply: MailWorker = {
     parseConfig match {
       case Some(config) => new MailWorker(config.apiKey, config.endpoint)
-      case _ => throw new PlayException("Wazza Mail","Error occurred while initializing Mail worker")
+      case _ => throw new Exception("Error occurred while initializing Mail worker")
     }
   }
 
-  def props: Props = Props(MailWorker)
+  def props: Props = Props(MailWorker.apply)
 }
 
