@@ -5,17 +5,11 @@ import play.api.libs.concurrent.Akka._
 import akka.actor.{Actor, Props}
 import reflect.runtime.universe._
 import akka.routing.Router
-// Master
+import scala.reflect.runtime.universe._
+import scala.reflect.{ClassTag}
 
 trait Master[M <: WazzaMessage, W <: Worker[_]] {
   this:  Actor =>
-
-  override def preStart() = {
-  }
-
-  override def postStop() = {
-    //TODO send poison messages to workers
-  }
 
   protected def killRouter
 
@@ -23,9 +17,8 @@ trait Master[M <: WazzaMessage, W <: Worker[_]] {
 
   protected def execute[M](request: M)
 
-  def masterReceive: Receive = {
-    case msg: M => execute(msg)
-    //case _: PoisonPill
+  def masterReceive(implicit tag: ClassTag[M]): Receive = {
+    case msg if tag.runtimeClass.isInstance(msg) => execute(msg.asInstanceOf[M])
   }
 }
 
