@@ -13,6 +13,9 @@ import play.api.libs.json._
 import models.application._
 import java.util.Date
 
+/**
+  NOT USED AT THE MOMENT
+  
 class InventoryController @Inject()(
 	applicationService: ApplicationService,
 	userService: UserService
@@ -73,3 +76,5 @@ class InventoryController @Inject()(
 	}
 
 }
+
+  * */

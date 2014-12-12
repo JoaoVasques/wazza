@@ -21,22 +21,23 @@ import scala.concurrent._
 import ExecutionContext.Implicits.global
 import persistence.utils._
 import controllers.security._
+import user._
+import user.messages._
+import scala.collection.mutable.Stack
+import scala.util.{Try, Success, Failure}
 
 class SessionController @Inject()(
-  mobileUserService: MobileUserService,
-  sessionService: MobileSessionService,
-  applicationService: ApplicationService
+  sessionService: MobileSessionService
 ) extends Controller {
 
-  private def createNewSessionInfo(
+  private def createSession(
     content: JsValue,
     companyName: String,
     applicationName: String
-  ): Future[Result] = {
+  ): Try[Unit] = {
     val start = DateUtils.buildJodaDateFromString((content \ "startTime").as[String])
     val end = DateUtils.buildJodaDateFromString((content \ "endTime").as[String])
 
-    val promise = Promise[Result]
     sessionService.create(Json.obj(
       "id" -> (content \ "hash").as[String],
       "userId" -> (content \ "userId").as[String],
@@ -46,49 +47,31 @@ class SessionController @Inject()(
       "purchases" -> (content \ "purchases").as[List[String]]
     )) match {
       case Success(session) => {
-        sessionService.insert(companyName, applicationName, session) map { r =>
-          promise.success(Ok)
-        } recover {
-          case ex: Exception => {
-            promise.failure(ex)
-            null
-          }
-        }
+        val userProxy = UserProxy.getInstance
+        val request = new SRSave(new Stack, companyName, applicationName, session)
+        userProxy ! request
+        new Success
       }
-      case Failure(f) => promise.failure(new Exception(""))
+      case _ => new Failure(new Exception)
     }
-    promise.future
   }
 
   def saveSession() = ApiSecurityAction.async(parse.json) {implicit request =>
     val companyName = request.companyName
     val applicationName = request.applicationName
     val content = (Json.parse((request.body \ "content").as[String].replace("\\", "")) \ "session").as[JsArray]
-    applicationService.exists(companyName, applicationName) flatMap {exists =>
-      if(!exists){
-        Future.successful(NotFound("Application"))
-      } else {
-        val futureResult = Future.sequence(content.value.map{(session: JsValue) => {
-          val userId = (session  \ "userId").as[String]
-          mobileUserService.exists(companyName, applicationName, userId) map {exist =>
-            if(!exist) {
-              mobileUserService.createMobileUser(companyName, applicationName, userId) map {r =>
-                createNewSessionInfo(session, companyName, applicationName)
-              } recover {
-                case ex: Exception => Future.failed(ex)
-              }
-            } else {
-              createNewSessionInfo(session, companyName, applicationName)
-            }
-          }
-        }})
 
-        futureResult map {
-          _ => Ok
-        } recover {
-          case _ => InternalServerError("Save session error: session not saved")
-        }
-      }
+    val res = content.value.map{(sessionJson: JsValue) =>
+      createSession(sessionJson, companyName, applicationName)
+    }
+
+    def hasFailures[A](xs: Seq[Try[A]]) =
+      Try(xs.map(_.get))
+
+    hasFailures[Unit](res) match {
+      case Success(_) => Future.successful(Ok)
+      case Failure(_) => Future.successful(InternalServerError("Invalid session json"))
     }
   }
 }
+

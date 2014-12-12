@@ -26,6 +26,12 @@ import org.joda.time.DurationFieldType
 import org.joda.time.DateTime
 import service.user.definitions.PurchaseService
 import persistence.utils.{DateUtils}
+import persistence._
+import persistence.messages._
+import akka.pattern.ask
+import scala.concurrent.duration._
+import akka.util.{Timeout}
+import scala.collection.mutable.Stack
 
 class AnalyticsServiceImpl @Inject()(
   databaseService: DatabaseService,
@@ -33,6 +39,8 @@ class AnalyticsServiceImpl @Inject()(
 ) extends AnalyticsService {
 
   private lazy val ProfitMargin = 0.7
+  private val databaseProxy = PersistenceProxy.getInstance
+  private implicit val timeout = Timeout(8 seconds)
 
   private def fillEmptyResult(start: Date, end: Date): JsArray = {
     val dates = new ListBuffer[String]()
@@ -83,14 +91,15 @@ class AnalyticsServiceImpl @Inject()(
     e: Date
   ): Future[Float] = {
     val collection = Metrics.payingUsersCollection(companyName, applicationName)
-    val payingUsersFuture = databaseService.getDocumentsWithinTimeRange(collection, fields, s, e)
+    val request = new GetDocumentsWithinTimeRange(new Stack, collection, fields, s, e, true)
+    val payingUsersFuture = (databaseProxy ? request).mapTo[PRJsArrayResponse]
 
     payingUsersFuture map {payingUsers =>
-      if(payingUsers.value.isEmpty) {
+      if(payingUsers.res.value.isEmpty) {
         0
       } else {
         var users = List[String]()
-        for(el <- payingUsers.value) {
+        for(el <- payingUsers.res.value) {
           val userId = (el \ "userId").as[String]
           users = (userId :: users).distinct
         }
@@ -117,19 +126,14 @@ class AnalyticsServiceImpl @Inject()(
   ): Future[JsArray] = {
     val arpuCollection = Metrics.arpuCollection(companyName, applicationName)
     val fields = ("lowerDate", "upperDate")
-
-    val futureArpu = databaseService.getDocumentsWithinTimeRange(
-      arpuCollection,
-      fields,
-      start,
-      end
-    )
+    val request = new GetDocumentsWithinTimeRange(new Stack, arpuCollection, fields, start, end, true)
+    val futureArpu = (databaseProxy ? request).mapTo[PRJsArrayResponse]
 
     futureArpu map {arpu =>
-      if(arpu.value.isEmpty) {
+      if(arpu.res.value.isEmpty) {
         fillEmptyResult(start, end)
       } else {
-        new JsArray(arpu.value map {el =>
+        new JsArray(arpu.res.value map {el =>
           val day = new LocalDate((el \ "lowerDate").as[Double].longValue)
           Json.obj(
             "day" -> day.toString("dd MM"),
@@ -148,15 +152,11 @@ class AnalyticsServiceImpl @Inject()(
   ): Future[JsValue] = {
     val arpuCollection = Metrics.arpuCollection(companyName, applicationName)
     val fields = ("lowerDate", "upperDate")
-    val futureArpu = databaseService.getDocumentsWithinTimeRange(
-      arpuCollection,
-      fields,
-      start,
-      end
-    )
-
+    val request = new GetDocumentsWithinTimeRange(new Stack, arpuCollection, fields, start, end, true)
+    val futureArpu = (databaseProxy ? request).mapTo[PRJsArrayResponse]
+    
     futureArpu map {arpu =>
-      val res = arpu.value.foldLeft(0.0)((acc, el) => {
+      val res = arpu.res.value.foldLeft(0.0)((acc, el) => {
         acc + (el \ "arpu").as[Double]
       })
 
@@ -172,18 +172,15 @@ class AnalyticsServiceImpl @Inject()(
     end: Date
   ): Future[JsArray] = {
     val fields = ("lowerDate", "upperDate")
-    val futureAvgRevenueSession = databaseService.getDocumentsWithinTimeRange(
-      Metrics.avgRevenueSessionCollection(companyName, applicationName),
-      fields,
-      start,
-      end
-    )
-
+    val collection = Metrics.avgRevenueSessionCollection(companyName, applicationName)
+    val request = new GetDocumentsWithinTimeRange(new Stack, collection, fields, start, end, true)
+    val futureAvgRevenueSession = (databaseProxy ? request).mapTo[PRJsArrayResponse]
+    
     futureAvgRevenueSession map {avgRevenueSession =>
-      if(avgRevenueSession.value.isEmpty) {
+      if(avgRevenueSession.res.value.isEmpty) {
         fillEmptyResult(start, end)
       } else {
-        new JsArray(avgRevenueSession.value.map {el =>
+        new JsArray(avgRevenueSession.res.value.map {el =>
           val day = new LocalDate((el \ "lowerDate").as[Double].longValue)
           Json.obj(
             "day" -> day.toString("dd MM"),
@@ -201,15 +198,12 @@ class AnalyticsServiceImpl @Inject()(
     end: Date
   ): Future[JsValue] = {
     val fields = ("lowerDate", "upperDate")
-    val futureAvgRevenueSession = databaseService.getDocumentsWithinTimeRange(
-      Metrics.avgRevenueSessionCollection(companyName, applicationName),
-      fields,
-      start,
-      end
-    )
+    val collection = Metrics.avgRevenueSessionCollection(companyName, applicationName)
+    val request = new GetDocumentsWithinTimeRange(new Stack, collection, fields, start, end, true)
+    val futureAvgRevenueSession = (databaseProxy ? request).mapTo[PRJsArrayResponse]
 
     futureAvgRevenueSession map {avgRevenueSession =>
-      val res = avgRevenueSession.value.foldLeft(0.0)((acc, el) => {
+      val res = avgRevenueSession.res.value.foldLeft(0.0)((acc, el) => {
         acc + (el \ "avgRevenueSession").as[Double]
       })
 
@@ -225,15 +219,12 @@ class AnalyticsServiceImpl @Inject()(
     end: Date
   ): Future[JsValue] = {
     val fields = ("lowerDate", "upperDate")
-    val futureRevenue = databaseService.getDocumentsWithinTimeRange(
-      Metrics.totalRevenueCollection(companyName, applicationName),
-      fields,
-      start,
-      end
-    )
+    val collection = Metrics.totalRevenueCollection(companyName, applicationName)
+    val request = new GetDocumentsWithinTimeRange(new Stack, collection, fields, start, end, true)
+    val futureRevenue = (databaseProxy ? request).mapTo[PRJsArrayResponse]
 
     futureRevenue map {revenue =>
-      val totalRevenue = revenue.value.foldLeft(0.0)((sum, obj) => {
+      val totalRevenue = revenue.res.value.foldLeft(0.0)((sum, obj) => {
         sum + (obj \ "totalRevenue").as[Double]
       })
       Json.obj("value" -> totalRevenue)
@@ -248,11 +239,12 @@ class AnalyticsServiceImpl @Inject()(
   ): Future[JsArray] = {
     val collection = Metrics.totalRevenueCollection(companyName, applicationName)
     val fields = ("lowerDate", "upperDate")
-     databaseService.getDocumentsWithinTimeRange(collection, fields, start, end) map {revenue =>
-       if(revenue.value.size == 0) {
+    val request = new GetDocumentsWithinTimeRange(new Stack, collection, fields, start, end, true)
+      (databaseProxy ? request).mapTo[PRJsArrayResponse] map {revenue =>
+       if(revenue.res.value.size == 0) {
          fillEmptyResult(start, end)
        } else {
-         new JsArray(revenue.value map {(el: JsValue) => {
+         new JsArray(revenue.res.value map {(el: JsValue) => {
            println(el)
            val day = new LocalDate((el \ "lowerDate").as[Double].longValue)
            Json.obj(
@@ -271,15 +263,12 @@ class AnalyticsServiceImpl @Inject()(
     end: Date
   ): Future[JsValue] = {
     val fields = ("lowerDate", "upperDate")
-    val futureAvgPurchasesUser = databaseService.getDocumentsWithinTimeRange(
-      Metrics.avgPurchasesUserCollection(companyName, applicationName),
-      fields,
-      start,
-      end
-    )
-
+    val collection = Metrics.avgPurchasesUserCollection(companyName, applicationName)
+    val request = new GetDocumentsWithinTimeRange(new Stack, collection, fields, start, end, true)
+    val futureAvgPurchasesUser = (databaseProxy ? request).mapTo[PRJsArrayResponse]
+    
     futureAvgPurchasesUser map {avgPurchasesUser =>
-      val res = avgPurchasesUser.value.foldLeft(0.0)((acc, el) => {
+      val res = avgPurchasesUser.res.value.foldLeft(0.0)((acc, el) => {
         acc + (el \ "avgPurchasesUser").as[Double]
       })
 
@@ -304,15 +293,12 @@ class AnalyticsServiceImpl @Inject()(
     end: Date
   ): Future[JsValue] = {
     val fields = ("lowerDate", "upperDate")
-    val futureAvgSessionsPerUser = databaseService.getDocumentsWithinTimeRange(
-      Metrics.avgSessionsPerUserCollection(companyName, applicationName),
-      fields,
-      start,
-      end
-    )
+    val collection = Metrics.avgSessionsPerUserCollection(companyName, applicationName)
+    val request = new GetDocumentsWithinTimeRange(new Stack, collection, fields, start, end, true)
+    val futureAvgSessionsPerUser = (databaseProxy ? request).mapTo[PRJsArrayResponse]
 
     futureAvgSessionsPerUser map {avgSessionsPerUser =>
-      val res = avgSessionsPerUser.value.foldLeft(0.0)((acc, el) => {
+      val res = avgSessionsPerUser.res.value.foldLeft(0.0)((acc, el) => {
         acc + (el \ "nrSessions").as[Double]
       })
 
@@ -328,15 +314,12 @@ class AnalyticsServiceImpl @Inject()(
     end: Date
   ): Future[JsValue] = {
     val fields = ("lowerDate", "upperDate")
-    val futureLTV = databaseService.getDocumentsWithinTimeRange(
-      Metrics.lifeTimeValueCollection(companyName, applicationName),
-      fields,
-      start,
-      end
-    )
-
+    val collection = Metrics.lifeTimeValueCollection(companyName, applicationName)
+    val request = new GetDocumentsWithinTimeRange(new Stack, collection, fields, start, end, true)
+    val futureLTV = (databaseProxy ? request).mapTo[PRJsArrayResponse]
+    
     futureLTV map {ltv =>
-      val res = ltv.value.foldLeft(0.0)((acc, el) => {
+      val res = ltv.res.value.foldLeft(0.0)((acc, el) => {
         acc + (el \ "lifeTimeValue").as[Double]
       })
 
@@ -362,15 +345,12 @@ class AnalyticsServiceImpl @Inject()(
     end: Date
   ): Future[JsValue] = {
     val fields = ("lowerDate", "upperDate")
-    val futureAvgTimeFirstPurchase = databaseService.getDocumentsWithinTimeRange(
-      Metrics.averageTimeFirstPurchaseCollection(companyName, applicationName),
-      fields,
-      start,
-      end
-    )
-
+    val collection = Metrics.averageTimeFirstPurchaseCollection(companyName, applicationName)
+    val request = new GetDocumentsWithinTimeRange(new Stack, collection, fields, start, end, true)
+    val futureAvgTimeFirstPurchase = (databaseProxy ? request).mapTo[PRJsArrayResponse]
+    
     futureAvgTimeFirstPurchase map {avgPurchasesUser =>
-      val res = avgPurchasesUser.value.foldLeft(0.0)((acc, el) => {
+      val res = avgPurchasesUser.res.value.foldLeft(0.0)((acc, el) => {
         acc + (el \ "avgTimeFirstPurchase").as[Double]
       })
 
@@ -395,15 +375,12 @@ class AnalyticsServiceImpl @Inject()(
     end: Date
   ): Future[JsValue] = {
     val fields = ("lowerDate", "upperDate")
-    val futureAvgTimeBetPurchases= databaseService.getDocumentsWithinTimeRange(
-      Metrics.averageTimeBetweenPurchasesCollection(companyName, applicationName),
-      fields,
-      start,
-      end
-    )
-
+    val collection = Metrics.averageTimeBetweenPurchasesCollection(companyName, applicationName)
+    val request = new GetDocumentsWithinTimeRange(new Stack, collection, fields, start, end, true)
+    val futureAvgTimeBetPurchases = (databaseProxy ? request).mapTo[PRJsArrayResponse]
+    
     futureAvgTimeBetPurchases map {time =>
-      val res = time.value.foldLeft(0.0)((acc, el) => {
+      val res = time.res.value.foldLeft(0.0)((acc, el) => {
         acc + (el \ "avgTimeBetweenPurchases").as[Double]
       })
 
@@ -452,15 +429,12 @@ class AnalyticsServiceImpl @Inject()(
     end: Date
   ): Future[JsValue] = {
     val fields = ("lowerDate", "upperDate")
-    val futureAvgPurchasesPerSession= databaseService.getDocumentsWithinTimeRange(
-      Metrics.averagePurchasePerSessionCollection(companyName, applicationName),
-      fields,
-      start,
-      end
-    )
-
+    val collection = Metrics.averagePurchasePerSessionCollection(companyName, applicationName)
+    val request = new GetDocumentsWithinTimeRange(new Stack, collection, fields, start, end, true)
+    val futureAvgPurchasesPerSession = (databaseProxy ? request).mapTo[PRJsArrayResponse]
+    
     futureAvgPurchasesPerSession map {purchasesPerSession =>
-      val res = purchasesPerSession.value.foldLeft(0.0)((acc, el) => {
+      val res = purchasesPerSession.res.value.foldLeft(0.0)((acc, el) => {
         acc + (el \ "avgPurchasesSession").as[Double]
       })
 
