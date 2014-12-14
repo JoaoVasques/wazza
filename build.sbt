@@ -25,6 +25,7 @@ lazy val dependencies = Seq(
   "org.webjars" % "momentjs" % "2.8.3",
   "org.webjars" % "chartjs" % "1.0.1-beta.4",
   "org.webjars" % "angular-local-storage" % "0.1.5",
+  "org.webjars" % "numeral-js" % "1.5.3-1",
   "org.mongodb" % "casbah_2.10" % "2.7.4",
   "org.mongodb" % "casbah-commons_2.10" % "2.7.4",
   "org.mindrot" % "jbcrypt" % "0.3m"
