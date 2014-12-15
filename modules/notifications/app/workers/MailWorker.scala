@@ -42,8 +42,12 @@ class MailWorker(
         "to" -> (to map {m => Json.obj("email" -> m, "type" -> "to")})
       )
     )
-    
-    WS.url(generateEndpoint("messages", "send")).post(params)
+    WS.url(generateEndpoint("messages", "send")).post(params) map {res =>
+      val status = (Json.parse(res.body) \ "status").as[String]
+      if(status != "sent") {
+        log.error("Email was not sent")
+      }
+    }
   }
 
   def receive = {
@@ -67,9 +71,10 @@ object MailWorker {
 
   private def parseConfig: Option[MailCredentials] = {
     def getConfigElement(config: Configuration, key: String): Option[String] = {
-      Play.current.configuration.getString(key) match {
-        case Some(element) => Some(element filterNot ("'" contains _))
-        case _ => None
+      try {
+        Some(config.underlying.root.get(key).render.filter(_ != '"'))
+      } catch {
+        case _: Throwable => None
       }
     }
 

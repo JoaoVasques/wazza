@@ -20,14 +20,13 @@ import akka.actor.{ActorRef, Actor, ActorSystem, Kill, Props}
 import persistence._
 import application._
 import user._
-import notifications.plugins._
 import java.io.{StringWriter, PrintWriter}  
 import scala.concurrent._
 import scala.concurrent.duration._
 import notifications._
 import notifications.messages._
 
-object Global extends GlobalSettings with MailConnector {
+object Global extends GlobalSettings {
 
   private var modulesProxies = List[ActorRef]()
 
@@ -49,7 +48,7 @@ object Global extends GlobalSettings with MailConnector {
     throwable.printStackTrace(pw)
     val stack = sw.toString()
     val msg = s"Message: ${throwable.getMessage}\nStack Trace: ${stack}"
-    val request = new SendEmail(null, List("support@wazza.io"), "500 ERROR", msg)
+    val request = new SendEmail(null, List("joao@wazza.io", "duarte@wazza.io"), "500 ERROR", msg)
     NotificationsProxy.getInstance ! request
     Future.successful(InternalServerError(views.html.errorPage()))
   }
@@ -77,9 +76,10 @@ object Global extends GlobalSettings with MailConnector {
     injector.getInstance(clazz)
   }
 
-  override def onHandlerNotFound(request: RequestHeader) = {
+  override def onHandlerNotFound(request: RequestHeader) =  {
     val msg = s"Trying to access path: ${request.path}"
-    MailProxy.sendEmail("404 ERROR", List("support@wazza.io"), msg)
+    val mailRequest = new SendEmail(null, List("joao@wazza.io", "duarte@wazza.io"), "4xx ERROR", msg)
+    NotificationsProxy.getInstance ! mailRequest
     Future.successful(NotFound(
       views.html.index()
     ))
