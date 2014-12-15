@@ -7,6 +7,7 @@ scalaVersion := "2.10.4"
 lazy val dependencies = Seq(
   anorm,
   cache,
+  ws,
   "com.google.inject" % "guice" % "3.0",
   "com.tzavellas" % "sse-guice" % "0.7.1",
   "com.amazonaws" % "aws-java-sdk" % "1.9.8",
@@ -56,7 +57,7 @@ lazy val user = Project("user", file("modules/user"))
 
 lazy val application = Project("application", file("modules/application"))
   .enablePlugins(play.PlayScala)
-  .dependsOn(persistence, security, aws, user)
+  .dependsOn(persistence, security, aws, user, notifications)
   .settings(version := appVersion, libraryDependencies ++= dependencies)
 
 lazy val security = Project("security", file("modules/security"))
@@ -83,6 +84,11 @@ lazy val analytics = Project("analytics",file("modules/analytics"))
   .dependsOn(user, application, persistence, security)
   .settings(version := appVersion, libraryDependencies ++= dependencies)
 
+lazy val notifications = Project("notifications",file("modules/notifications"))
+  .enablePlugins(play.PlayScala)
+  .dependsOn(common)
+  .settings(version := appVersion, libraryDependencies ++= dependencies)
+
 // Root
 lazy val home = Project(appName, file("."))
   .enablePlugins(play.PlayScala)
@@ -94,7 +100,8 @@ lazy val home = Project(appName, file("."))
     api,
     persistence,
     analytics,
-    common)
+    common,
+    notifications)
   .dependsOn(dashboard,
     user,
     application,
@@ -103,7 +110,9 @@ lazy val home = Project(appName, file("."))
     api,
     persistence,
     analytics,
-    common)
+    common,
+    notifications)
   .settings(version := appVersion, libraryDependencies ++= dependencies)
 
 sources in doc in Compile := List()
+

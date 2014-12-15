@@ -33,9 +33,12 @@ import scala.collection.mutable.Map
 import WazzaApplicationImplicits._
 import models.user.{CompanyData}
 import scala.collection.mutable.Stack
+import notifications._
+import notifications.messages._
 
 class ApplicationWorker(
-  databaseProxy: ActorRef
+  databaseProxy: ActorRef,
+  notificationProxy: ActorRef
 ) extends Actor with Worker[ApplicationMessageRequest] with ActorLogging {
 
   private def persistenceReceive: Receive = {
@@ -111,6 +114,10 @@ class ApplicationWorker(
     msg.sendersStack = msg.sendersStack.push(self)
     val request = new Insert(msg.sendersStack, collection, msg.application, null, false, hash)
     databaseProxy ! request
+
+    val email = s"Company $msg.companyName has created a new application ${msg.application.name} for ${msg.application.appType}"
+    val mailRequest = new SendEmail(new Stack, List("support@wazza.io"), "New Application Created", email)
+    notificationProxy ! mailRequest
   }
 
   private def delete(msg: ARDelete, sender: ActorRef) = {
@@ -187,6 +194,9 @@ class ApplicationWorker(
 
 object ApplicationWorker {
 
-  def props(databaseProxy: ActorRef): Props = Props(new ApplicationWorker(databaseProxy))
+  def props(
+    databaseProxy: ActorRef,
+    notificationProxy: ActorRef
+  ): Props = Props(new ApplicationWorker(databaseProxy, notificationProxy))
 }
 
