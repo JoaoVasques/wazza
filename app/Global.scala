@@ -43,13 +43,16 @@ object Global extends GlobalSettings {
 
   // 500 - internal server error
   override def onError(request: RequestHeader, throwable: Throwable) = {
-    val sw = new StringWriter()
-    val pw = new PrintWriter(sw)
-    throwable.printStackTrace(pw)
-    val stack = sw.toString()
-    val msg = s"Message: ${throwable.getMessage}\nStack Trace: ${stack}"
-    val request = new SendEmail(null, List("joao@wazza.io", "duarte@wazza.io"), "500 ERROR", msg)
-    NotificationsProxy.getInstance ! request
+    if(Play.isProd) {
+      val sw = new StringWriter()
+      val pw = new PrintWriter(sw)
+      throwable.printStackTrace(pw)
+      val stack = sw.toString()
+      val msg = s"Message: ${throwable.getMessage}\nStack Trace: ${stack}"
+      val request = new SendEmail(null, List("joao@wazza.io", "duarte@wazza.io"), "500 ERROR", msg)
+      NotificationsProxy.getInstance ! request
+    }
+    
     Future.successful(InternalServerError(views.html.errorPage()))
   }
   /**
@@ -77,9 +80,12 @@ object Global extends GlobalSettings {
   }
 
   override def onHandlerNotFound(request: RequestHeader) =  {
-    val msg = s"Trying to access path: ${request.path}"
-    val mailRequest = new SendEmail(null, List("joao@wazza.io", "duarte@wazza.io"), "4xx ERROR", msg)
-    NotificationsProxy.getInstance ! mailRequest
+    if(Play.isProd) {
+      val msg = s"Trying to access path: ${request.path}"
+      val mailRequest = new SendEmail(null, List("joao@wazza.io", "duarte@wazza.io"), "4xx ERROR", msg)
+      NotificationsProxy.getInstance ! mailRequest
+    }
+    
     Future.successful(NotFound(
       views.html.index()
     ))
