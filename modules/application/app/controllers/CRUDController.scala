@@ -7,7 +7,6 @@ import play.api.data._
 import models.application._
 import play.api.data.validation._
 import org.apache.commons.validator.routines.UrlValidator
-import service.application.definitions._
 import service.aws.definitions.{PhotosService}
 import com.google.inject._
 import scala.util.{Success, Failure}
@@ -21,18 +20,22 @@ import scala.concurrent.{ExecutionContext, Future}
 import ExecutionContext.Implicits.global
 import controllers.security._
 import service.security.definitions.{TokenManagerService}
-import service.application.definitions._
-import service.user.definitions._
 import scala.language.implicitConversions
 import play.api.libs.Files._
 import java.io.File
+import application._
+import application.messages._
+import user._
+import user.messages._
+import scala.collection.mutable.Stack
 
 class CRUDController @Inject()(
-  applicationService: ApplicationService,
   secretGeneratorService: SecretGeneratorService,
-  userService: UserService,
   photosService: PhotosService
 ) extends Controller {
+
+  private lazy val appProxy = ApplicationProxy.getInstance
+  private lazy val userProxy = UserProxy.getInstance
 
   private def generateErrors(value: String) = {
     BadRequest(Json.obj("errors" -> value))
@@ -97,7 +100,7 @@ class CRUDController @Inject()(
   )
 
   def newApplication = UserAuthenticationAction {implicit request =>
-    Ok(views.html.newApplication(applicationService.getApplicationyTypes))
+    Ok(views.html.newApplication(WazzaApplication.applicationTypes))
   }
 
   private def generateBadRequestResponse(errors: Form[WazzaApplication]): Result = {
@@ -107,16 +110,16 @@ class CRUDController @Inject()(
   def newApplicationSubmit(companyName: String) = UserAuthenticationAction.async(parse.json) {implicit request =>
     applicationForm.bindFromRequest.fold(
       errors => {
-        Future {generateBadRequestResponse(errors) }
+        Future.successful(generateBadRequestResponse(errors))
       },
       application => {
-        applicationService.insertApplication(companyName,application) flatMap {app =>
-          userService.addApplication(request.userId, app.name) map {r =>
-            Redirect("/dashboard")
-          }
-        }recoverWith {
-          case _ => Future.successful(BadRequest("Error while creating application"))
-        }
+        val appInsertRequest = new ARInsert(new Stack, companyName, application, true)
+        appProxy ! appInsertRequest
+
+        val userAddAppRequest = new URAddApplication(new Stack, request.userId, application.name, true)
+        println(userAddAppRequest)
+        userProxy ! userAddAppRequest
+        Future.successful(Redirect("/dashboard"))
       }
     )
   }

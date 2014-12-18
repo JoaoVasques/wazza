@@ -14,7 +14,6 @@ import scala.util.Failure
 import scala.util.Success
 import service.user.definitions.MobileUserService
 import service.user.definitions.MobileSessionService
-import service.application.definitions.{ApplicationService}
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.Interval
 import scala.concurrent._
