@@ -116,7 +116,7 @@ class ApplicationWorker(
     val request = new Insert(msg.sendersStack, collection, msg.application, null, false, hash)
     databaseProxy ! request
 
-    val email = s"Company $msg.companyName has created a new application ${msg.application.name} for ${msg.application.appType}"
+    val email = s"Company ${msg.companyName} has created a new application ${msg.application.name} for ${msg.application.appType}"
     val mailRequest = new SendEmail(new Stack, List("support@wazza.io"), "New Application Created", email)
     notificationProxy ! mailRequest
   }
