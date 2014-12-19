@@ -119,7 +119,7 @@ class CRUDController @Inject()(
         val userAddAppRequest = new URAddApplication(new Stack, request.userId, application.name, true)
         println(userAddAppRequest)
         userProxy ! userAddAppRequest
-        Future.successful(Redirect("/dashboard"))
+        Future.successful(Redirect("/home"))
       }
     )
   }
