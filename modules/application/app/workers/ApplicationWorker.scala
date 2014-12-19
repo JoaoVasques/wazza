@@ -38,7 +38,8 @@ import notifications.messages._
 
 class ApplicationWorker(
   databaseProxy: ActorRef,
-  notificationProxy: ActorRef
+  notificationProxy: ActorRef,
+  userProxy: ActorRef
 ) extends Actor with Worker[ApplicationMessageRequest] with ActorLogging {
 
   private def persistenceReceive: Receive = {
@@ -196,7 +197,8 @@ object ApplicationWorker {
 
   def props(
     databaseProxy: ActorRef,
-    notificationProxy: ActorRef
-  ): Props = Props(new ApplicationWorker(databaseProxy, notificationProxy))
+    notificationProxy: ActorRef,
+    userProxy: ActorRef
+  ): Props = Props(new ApplicationWorker(databaseProxy, notificationProxy, userProxy))
 }
 

@@ -1,4 +1,4 @@
-package controllers.api
+/**package controllers.api
 
 import play.api._
 import play.api.Play.current
@@ -140,3 +140,4 @@ class BootstrapEnvironmentController @Inject()(
   }
 }
 
+  * */

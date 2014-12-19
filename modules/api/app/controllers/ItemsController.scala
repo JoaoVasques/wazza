@@ -1,3 +1,7 @@
+
+/**
+  NOT USED AT THE MOMENT
+
 package controllers.api
 
 import com.google.inject._
@@ -13,9 +17,6 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.util.Failure
 import scala.util.Success
 import service.application.definitions.ApplicationService
-
-/**
-  NOT USED AT THE MOMENT
 
 class ItemsController @Inject()(
   applicationService: ApplicationService

@@ -246,7 +246,6 @@ class UserWorker(
     val collection = User.getCollection
     msg.sendersStack = msg.sendersStack.push(self)
     val request = new Exists(msg.sendersStack, collection, User.Id, msg.email, false, hash)
-    println("VALIDATE: " + msg)
     databaseProxy ! request
   }
 

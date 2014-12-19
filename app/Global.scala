@@ -6,7 +6,6 @@ import play.api.Play.current
 import play.api.mvc._
 import play.api.mvc.Results._
 import scala.concurrent.Future
-import service.application.modules._
 import service.user.definitions._
 import service.user.implementations._
 import service.user.modules._
@@ -66,7 +65,6 @@ object Global extends GlobalSettings {
   private lazy val injector = {
     Guice.createInjector(
       new PersistenceModule,
-      new AppModule,
       new UserModule,
       new SecurityModule,
       new AWSModule,

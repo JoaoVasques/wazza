@@ -6,9 +6,8 @@ import play.api.libs.json.JsError
 import play.api.libs.json.JsSuccess
 import play.api.libs.json.{JsArray, Json}
 import play.api.mvc._
-import service.application.definitions.ApplicationService
 import service.security.definitions.TokenManagerService
-import service.user.definitions.{PurchaseService}
+import service.user.definitions._
 import scala.concurrent._
 import ExecutionContext.Implicits.global
 import controllers.security._
@@ -18,9 +17,8 @@ import scala.collection.mutable.Stack
 import scala.util.{Try, Success, Failure}
 
 class PurchaseController @Inject()(
-  applicationService: ApplicationService,
   purchaseService: PurchaseService
-) extends Controller {
+)extends Controller {
 
   def handlePurchase() = ApiSecurityAction.async(parse.json) {implicit request =>
     val companyName = request.companyName

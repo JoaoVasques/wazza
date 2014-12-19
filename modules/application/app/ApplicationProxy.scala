@@ -15,18 +15,20 @@ import play.api.libs.concurrent.Akka
 import play.api.Play.current
 import persistence._
 import notifications._
+import user._
 
 class ApplicationProxy(
   system: ActorSystem,
   databaseProxy: ActorRef,
-  notificationProxy: ActorRef
+  notificationProxy: ActorRef,
+  userProxy: ActorRef
 ) extends Actor with Master[ApplicationMessageRequest, ApplicationWorker] {
 
   private val NUMBER_WORKERS = 5
 
   override def workersRouter = {
     val routees = Vector.fill(NUMBER_WORKERS) {
-      val r = context.actorOf(ApplicationWorker.props(databaseProxy, notificationProxy))
+      val r = context.actorOf(ApplicationWorker.props(databaseProxy, notificationProxy, userProxy))
       context watch r
       ActorRefRoutee(r)
     }
@@ -52,7 +54,8 @@ object ApplicationProxy {
         ApplicationProxy.props(
           ActorSystem("application"),
           PersistenceProxy.getInstance,
-          NotificationsProxy.getInstance
+          NotificationsProxy.getInstance,
+          UserProxy.getInstance
         ), name = "application"
       )
     }
@@ -62,6 +65,7 @@ object ApplicationProxy {
   def props(
     system: ActorSystem,
     databaseProxy: ActorRef,
-    notificationsProxy: ActorRef
-  ): Props = Props(new ApplicationProxy(system, databaseProxy, notificationsProxy))
+    notificationsProxy: ActorRef,
+    userProxy: ActorRef
+  ): Props = Props(new ApplicationProxy(system, databaseProxy, notificationsProxy, userProxy))
 }

@@ -6,8 +6,6 @@ import scala.concurrent._
 import ExecutionContext.Implicits.global
 import controllers.security._
 import service.security.definitions.{TokenManagerService}
-import service.application.definitions._
-import service.user.definitions._
 import com.google.inject._
 import play.api.libs.json._
 import models.application._
@@ -22,10 +20,7 @@ import scala.concurrent.duration._
 import scala.collection.mutable.Stack
 
 
-class SettingsController @Inject()(
-	applicationService: ApplicationService,
-	userService: UserService
-	) extends Controller {
+class SettingsController  extends Controller {
 
   private implicit val timeout = Timeout(10 seconds)
   private val userProxy = UserProxy.getInstance
