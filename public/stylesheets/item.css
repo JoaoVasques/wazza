@@ -9,8 +9,8 @@
 
 .panel-image ~ .panel-body, .panel-image.hide-panel-body ~ .panel-body {
   overflow: hidden;
-  
 }
+
 .panel-image ~ .panel-footer a {
   padding: 0px 10px;
   font-size: 1.3em;
