@@ -37,7 +37,8 @@ class MobileUserWorker(
           case Some(or) => {
             val req = or.originalRequest.asInstanceOf[MUCreate]
             val user = new MobileUser(req.userId)
-            val insertReq = new Insert(new Stack, "collection", user)
+            val collection = MobileUser.getCollection(req.companyName, req.applicationName)
+            val insertReq = new Insert(new Stack, collection, user)
             databaseProxy ! insertReq
           }
           case _ => {

@@ -34,8 +34,8 @@ class CRUDController @Inject()(
   photosService: PhotosService
 ) extends Controller {
 
-  private lazy val appProxy = ApplicationProxy.getInstance
-  private lazy val userProxy = UserProxy.getInstance
+  private lazy val appProxy = ApplicationProxy.getInstance()
+  private lazy val userProxy = UserProxy.getInstance() 
 
   private def generateErrors(value: String) = {
     BadRequest(Json.obj("errors" -> value))
@@ -117,7 +117,6 @@ class CRUDController @Inject()(
         appProxy ! appInsertRequest
 
         val userAddAppRequest = new URAddApplication(new Stack, request.userId, application.name, true)
-        println(userAddAppRequest)
         userProxy ! userAddAppRequest
         Future.successful(Redirect("/home"))
       }

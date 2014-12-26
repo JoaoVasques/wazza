@@ -61,7 +61,7 @@ protected[persistence] object MongoFactory {
   }
 
   private def getMongoClient() = {
-    getMongoURI match {
+    getMongoURI() match {
       case Some(uri) => MongoClient(uri)
       case _ => throw new Exception("")
     }
@@ -71,13 +71,13 @@ protected[persistence] object MongoFactory {
 
   private def client: MongoClient = {
     if(_client == null) {
-      _client = getMongoClient
+      _client = getMongoClient()
     }
     _client
   }
 
-  def getCollection(collectionName: String) =  {
-    val db = getMongoURI.get.database.get
+  def getCollection(collectionName: String, debug: Boolean = false) =  {
+    val db = getMongoURI().get.database.get
     client(db)(collectionName)
   }
 
@@ -91,12 +91,13 @@ object PersistenceProxy {
 
   private var singleton: ActorRef = null
 
-  def getInstance = {
+  private def props(system: ActorSystem): Props = Props(new PersistenceProxy(system))
+
+  def getInstance(system: ActorSystem = Akka.system) = {
     if(singleton == null){
-      singleton = Akka.system.actorOf(PersistenceProxy.props(ActorSystem("Persistence")), name = "persistence")
+      singleton = system.actorOf(PersistenceProxy.props(ActorSystem("Persistence")), name = "persistence")
     }
     singleton
   }
-
-  def props(system: ActorSystem): Props = Props(new PersistenceProxy(system))
 }
+

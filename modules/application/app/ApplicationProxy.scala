@@ -48,14 +48,14 @@ object ApplicationProxy {
 
   private var singleton: ActorRef = null
 
-  def getInstance = {
+  def getInstance(system: ActorSystem = Akka.system) = {
     if(singleton == null) {
-      singleton = Akka.system.actorOf(
+      singleton = system.actorOf(
         ApplicationProxy.props(
           ActorSystem("application"),
-          PersistenceProxy.getInstance,
-          NotificationsProxy.getInstance,
-          UserProxy.getInstance
+          PersistenceProxy.getInstance(system),
+          NotificationsProxy.getInstance(system),
+          UserProxy.getInstance(system)
         ), name = "application"
       )
     }

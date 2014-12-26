@@ -32,7 +32,9 @@ class NotificationsProxy(
   override def killRouter = {}
 
   protected def execute[MailRequest](request: MailRequest) = {
-    workersRouter.route(request, sender())
+    if(Play.isProd) {
+      workersRouter.route(request, sender())
+    }
   }
 
   def receive = masterReceive
@@ -42,15 +44,15 @@ object NotificationsProxy {
 
   private var singleton: ActorRef = null
 
-  def getInstance = {
+  def getInstance(system: ActorSystem = Akka.system) = {
     if(singleton == null) {
-      singleton = Akka.system.actorOf(
+      singleton = system.actorOf(
         NotificationsProxy.props(ActorSystem("notifications")), name = "notifications"
       )
     }
     singleton
   }
 
-  def props(system: ActorSystem): Props = Props(new NotificationsProxy(system))
+  private def props(system: ActorSystem): Props = Props(new NotificationsProxy(system))
 }
 

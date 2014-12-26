@@ -39,7 +39,7 @@ class AnalyticsServiceImpl @Inject()(
 ) extends AnalyticsService {
 
   private lazy val ProfitMargin = 0.7
-  private val databaseProxy = PersistenceProxy.getInstance
+  private val databaseProxy = PersistenceProxy.getInstance()
   private implicit val timeout = Timeout(8 seconds)
 
   private def fillEmptyResult(start: Date, end: Date): JsArray = {

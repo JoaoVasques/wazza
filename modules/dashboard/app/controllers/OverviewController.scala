@@ -22,8 +22,8 @@ import scala.collection.mutable.Stack
 class OverviewController extends Controller {
 
   private implicit val timeout = Timeout(10 seconds)
-  private val userProxy = UserProxy.getInstance
-  private val appProxy = ApplicationProxy.getInstance
+  private val userProxy = UserProxy.getInstance()
+  private val appProxy = ApplicationProxy.getInstance()
 
   def bootstrapOverview() = UserAuthenticationAction.async {implicit request =>
     val appsFuture = (userProxy ? new URGetApplications(new Stack, request.userId, true)).mapTo[URApplicationsResponse]

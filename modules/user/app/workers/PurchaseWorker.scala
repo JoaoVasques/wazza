@@ -46,7 +46,23 @@ class PurchaseWorker(
 
   private def persistenceReceive: Receive = {
     case r: PRBooleanResponse => {
-      //TODO
+      if(!r.res) {
+        localStorage.get(r.hash) match {
+          case Some(or) => {
+            val req = or.originalRequest.asInstanceOf[PRSave]
+            val purchase = req.info
+            val collection = PurchaseInfo.getCollection(req.companyName, req.applicationName)
+            val insertReq = new Insert(new Stack, collection, Json.toJson(purchase))
+            databaseProxy ! insertReq
+
+          }
+          case _ => {
+            //TODO show error
+          }
+        }
+      } else {
+        //TODO show error on log
+      }
     }
   }
 
