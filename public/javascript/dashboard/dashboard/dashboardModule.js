@@ -28,6 +28,8 @@ dashboard.factory("KpiModel", function() {
     this.unitType = "€";
     this.css = "kpi-delta";
     this.icon = "glyphicon glyphicon-minus";
+    this.platforms = ["iOS"];
+    this.multiPlatform = true;
   };
 
   KpiModel.prototype = {
@@ -48,6 +50,14 @@ dashboard.factory("KpiModel", function() {
     },
     updateUnitType: function(newType) {
       this.unitType = newType;
+    },
+    addPlatform: function(p) {
+      if(!_.contains(this.platforms, p)) {
+        this.platforms.push(p);
+      }
+    },
+    removePlatform: function(p) {
+      this.platforms = _.without(this.platforms, p);
     }
   };
 

@@ -27,3 +27,9 @@
   margin:10px;
   color:#555;
 }
+
+.dashboard-kpi > .panel-heading  > h2 {
+  font-size: 1.6em !important;
+  color: #34495e;
+}
+

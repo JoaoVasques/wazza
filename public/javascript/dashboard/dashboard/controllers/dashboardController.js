@@ -54,7 +54,7 @@ dashboard.controller('DashboardController', [
             ]).then(function(res) {
               var extractValue = function(index, _type) {
                 return (_type == 'value') ?  res[index].data.value : res[index].data.delta;
-            };
+              };
 
                 $scope.totalRevenue.updateKpiValue(extractValue(0, 'value'), extractValue(0, 'delta'))
                 $scope.ltv.updateKpiValue(extractValue(1, 'value'), extractValue(1, 'delta'))

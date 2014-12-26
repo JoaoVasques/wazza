@@ -1,12 +1,13 @@
 <div class="col-md-4 col-xs-10">
-  <div class="col-md-12 well panel panel-default glow profile dashboard-kpi" ng-click="switchDetailedView(kpi.link)">
+  <div class="well panel panel-default glow profile">
     <div class="panel-heading">
-      <h2 class="panel-title text-center">{{kpi.name}}</h2>
+      <h2 class="panel-title text-center">Total Revenue</h2>
     </div>
     <div class="panel-body">
-      <div class="row">
+      <div class="row">       
+        <div class="clearfix"></div>
         <div class="col-xs-12 col-sm-12 text-center">
-          <table class="table text-center" ng-show="kpi.multiPlatform">
+          <table class="table text-center">
             <thead>
               <tr>
                 <th>Platform</th>
@@ -29,18 +30,21 @@
           </table>
         </div>
         <div class="col-xs-12 col-sm-12 text-center">
-          <h3 ng-show="kpi.multiPlatform">Total</h3>
+          <h3>Total</h3>
           <div class="col-xs-12 col-sm-6 text-center emphasis">
-            <h3><strong>{{kpi.unit}} {{kpi.value}} </strong></h3>
+            <h3><strong>43</strong></h3>
             <p><small>Total</small></p>
           </div>
           <div class="col-xs-12 col-sm-6 text-center emphasis">
-            <h3><strong>{{kpi.delta}} % </strong></h3>
+            <h3><strong>43</strong></h3>
             <p><small>Delta</small></p>
           </div>
         </div>
+        <!--/col-->
       </div>
+      <!--/row-->
     </div>
+    <!--/panel-body-->
   </div>
+  <!--/panel-->
 </div>
-
