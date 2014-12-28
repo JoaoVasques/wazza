@@ -36,7 +36,7 @@ import scala.reflect.ClassTag
 import persistence.MongoFactory
 
 class PersistenceWorker extends Actor with Worker[PersistenceMessage]  {
- 
+
   def receive = {
     case m: Exists => exists(m, sender)
     case m: Get => get(m, sender)
@@ -109,7 +109,7 @@ class PersistenceWorker extends Actor with Worker[PersistenceMessage]  {
         case Some(obj) => Some(Json.parse(obj.toString))
         case _ => None
       }
-      
+
       sendResponse[Get](msg, new PROptionResponse(msg.sendersStack, res, hash = msg.hash), sender)
       promise.success(res)
     }
@@ -156,7 +156,7 @@ class PersistenceWorker extends Actor with Worker[PersistenceMessage]  {
 
   // List[JsValue]
   def getCollectionElements(msg: GetCollectionElements, sender: ActorRef) = {
-    
+
     Future {
       val res = collection(msg.collectionName).find().toList map {(el: DBObject) => Json.parse(el.toString)}
       sendResponse[GetCollectionElements](msg, new PRListResponse(msg.sendersStack, res, hash = msg.hash), sender)
@@ -281,11 +281,11 @@ class PersistenceWorker extends Actor with Worker[PersistenceMessage]  {
       /**limit match {
         case Some(maxNumberElements) => {
           //TODO
-          
+
         }
         case None => {
           val res = collection(msg.collectionName).find(query, projection).toList map {(el: DBObject) => Json.parse(el.toString)}
-          
+
         }
       }**/
     }
@@ -323,7 +323,7 @@ class PersistenceWorker extends Actor with Worker[PersistenceMessage]  {
     }
 
     val query = MongoDBObject(msg.docIdKey -> msg.docIdValue, s"${msg.arrayKey}.${msg.elementId}" -> msg.elementIdValue)
-    val update = $set((msg.arrayKey+".$." + msg.elementId) -> model)
+    val update = $set((msg.arrayKey + ".$." + msg.elementId) -> model)
 
     Future {
       collection(msg.collectionName).update(query, update)

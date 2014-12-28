@@ -33,8 +33,6 @@ lazy val dependencies = Seq(
 )
 
 
-libraryDependencies ++= dependencies
-
 resolvers += "Sonatype releases" at "https://oss.sonatype.org/content/repositories/releases"
 
 lazy val mySettings = Seq("-unchecked", "-deprecation", "-feature", "-language:reflectiveCalls", "-language:postfixOps", "-optimize")

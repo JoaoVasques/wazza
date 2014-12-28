@@ -21,7 +21,7 @@ import persistence._
 
 class UserProxy (
   system: ActorSystem,
-  databaseProxy: ActorRef 
+  databaseProxy: ActorRef
 ) extends Actor with Master[WazzaMessage, UserWorker] {
 
   private val NUMBER_WORKERS = 5

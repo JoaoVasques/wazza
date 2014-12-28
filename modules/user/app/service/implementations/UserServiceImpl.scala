@@ -59,7 +59,7 @@ class UserServiceImpl @Inject()(
         Future { new Exception("User does not exists") }
       } else {
         val collection = User.getCollection
-        databaseService.addElementToArray[String](collection, UserId, email, ApplicationsField, applicationId) 
+        databaseService.addElementToArray[String](collection, UserId, email, ApplicationsField, applicationId)
       }
     }
   }

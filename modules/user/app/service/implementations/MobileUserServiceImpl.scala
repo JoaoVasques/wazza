@@ -23,7 +23,7 @@ import ExecutionContext.Implicits.global
 class MobileUserServiceImpl @Inject()(
   databaseService: DatabaseService
 ) extends MobileUserService {
-  
+
   def createMobileUser(
     companyName: String,
     applicationName: String,
