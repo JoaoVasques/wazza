@@ -5,7 +5,7 @@ import java.security.SecureRandom
 import com.github.nscala_time.time.Imports._
 
 trait TokenManagerService {
-  
+
   type AuthenticityToken = String
   type Id = String
   lazy val CookieName: String = "PLAY2AUTH_SESS_ID"

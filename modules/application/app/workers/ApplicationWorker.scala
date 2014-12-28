@@ -68,7 +68,7 @@ class ApplicationWorker(
             req.sender,
             response
           )
-        }                                      
+        }
         case None =>{
           log.error("Cannot find request on local storage")
           //TODO send error message

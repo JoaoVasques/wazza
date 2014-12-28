@@ -1,7 +1,7 @@
 package service.security.definitions
 
 trait TokenStoreService {
-  
+
   type TokenId = String
   type UserId = String
   type AuthenticityToken = String

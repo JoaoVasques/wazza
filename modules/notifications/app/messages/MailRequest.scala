@@ -5,7 +5,7 @@ import akka.actor.{ActorRef}
 import scala.collection.mutable.Stack
 
 trait MailRequest extends WazzaMessage {
-  
+
 }
 
 case class SendEmail(

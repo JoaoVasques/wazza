@@ -33,11 +33,11 @@ class GenerateSessionsController @Inject()(
 ) extends Controller {
 
   private lazy val NumberMobileUsers = 70
-  
+
   private def generateSessions(companyName: String, applicationName: String): Future[Boolean] = {
     val end = new LocalDate()
     val start = end.minusDays(7)
-    val days = Days.daysBetween(start, end).getDays()+1
+    val days = Days.daysBetween(start, end).getDays() + 1
 
     println(s"START $start | END $end")
     println(days)

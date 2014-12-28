@@ -90,7 +90,7 @@ object Item  {
       case Some(item) => {
         Some(this.buildFromJson(item))
       }
-      case None => None 
+      case None => None
     }
   }
 

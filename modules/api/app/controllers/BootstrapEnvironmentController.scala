@@ -113,7 +113,7 @@ class BootstrapEnvironmentController @Inject()(
       })
     }
     Future.sequence(result) map {a => true}// map {a => println("Setup done!")}
-    
+
     //Future {}
   }
 

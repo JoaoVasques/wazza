@@ -31,7 +31,7 @@ private[security] class ApiRequest[A](
 ) extends WrappedRequest[A](request)
 
 private[security] case class ApiAction[A](action: Action[A]) extends Action[A] {
-  
+
   private val persistenceProxy = PersistenceProxy.getInstance
 
   private lazy val collection = "RedirectionTable"
@@ -42,7 +42,7 @@ private[security] case class ApiAction[A](action: Action[A]) extends Action[A] {
       "companyName" -> companyName,
       "applicationName" -> applicationName
     )
-    persistenceProxy ! new Insert(null, collection, model) 
+    persistenceProxy ! new Insert(null, collection, model)
   }
 
   private def getAppData(token: String): Future[Option[JsValue]] = {
@@ -58,7 +58,6 @@ private[security] case class ApiAction[A](action: Action[A]) extends Action[A] {
       res match {
         case Some(data) => {
           persistenceProxy ! new Delete(null, collection, data, true)
-          
         }
         case None => {}
       }

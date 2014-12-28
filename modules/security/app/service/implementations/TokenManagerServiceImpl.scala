@@ -35,7 +35,7 @@ class TokenManagerServiceImpl @Inject()(
   private def unsetUserId(userId: Id) {
     tokenStoreService.remove(userId.toString + userIdSuffix)
   }
-  
+
   private def store(token: AuthenticityToken, userId: Id, timeoutInSeconds: Int) {
     tokenStoreService.put(token + tokenSuffix, userId, timeoutInSeconds)
     tokenStoreService.put(userId.toString + userIdSuffix, token, timeoutInSeconds)

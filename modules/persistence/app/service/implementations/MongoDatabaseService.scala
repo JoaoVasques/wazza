@@ -117,7 +117,7 @@ class MongoDatabaseService extends DatabaseService {
     // TODO
     null
   }
- 
+
   def getElementFromArray[T <: Any](
     collectionName: String,
     docIdKey: String,

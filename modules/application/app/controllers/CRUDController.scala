@@ -54,12 +54,12 @@ class CRUDController @Inject()(
         val iter = new StringCharacterIterator(part)
         var c = iter.first
 
-        if((c == CharacterIterator.DONE) || 
+        if((c == CharacterIterator.DONE) ||
           (!Character.isJavaIdentifierStart(c) && !Character.isIdentifierIgnorable(c))
         ){
           false
         }
-        
+
         c = iter.next
         while (c != CharacterIterator.DONE) {
           if (!Character.isJavaIdentifierPart(c) && !Character.isIdentifierIgnorable(c)){
