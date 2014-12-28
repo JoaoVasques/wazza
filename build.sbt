@@ -36,58 +36,55 @@ libraryDependencies ++= dependencies
 
 resolvers += "Sonatype releases" at "https://oss.sonatype.org/content/repositories/releases"
 
-lazy val mySettings = Seq(
-  scalacOptions ++= Seq("-feature", "-language:reflectiveCalls"),
-  scalacOptions ++= Seq("-feature", "-language:postfixOps")
-)
+lazy val mySettings = Seq("-unchecked", "-deprecation", "-feature", "-language:reflectiveCalls", "-language:postfixOps", "-optimize")
 
 lazy val common = Project("common", file("modules/common"))
   .enablePlugins(play.PlayScala)
-  .settings(version := appVersion, libraryDependencies ++= dependencies)
+  .settings(scalacOptions ++= mySettings, version := appVersion, libraryDependencies ++= dependencies)
 
 lazy val dashboard = Project("dashboard", file("modules/dashboard"))
   .enablePlugins(play.PlayScala)
   .dependsOn(user, application)
-  .settings(version := appVersion, libraryDependencies ++= dependencies)
+  .settings(scalacOptions ++= mySettings, version := appVersion, libraryDependencies ++= dependencies)
 
 lazy val user = Project("user", file("modules/user"))
   .enablePlugins(play.PlayScala)
   .dependsOn(security, persistence, common)
-  .settings(version := appVersion, libraryDependencies ++= dependencies)
+  .settings(scalacOptions ++= mySettings, version := appVersion, libraryDependencies ++= dependencies)
 
 lazy val application = Project("application", file("modules/application"))
   .enablePlugins(play.PlayScala)
   .dependsOn(persistence, security, aws, user, notifications)
-  .settings(version := appVersion, libraryDependencies ++= dependencies)
+  .settings(scalacOptions ++= mySettings, version := appVersion, libraryDependencies ++= dependencies)
 
 lazy val security = Project("security", file("modules/security"))
   .enablePlugins(play.PlayScala)
   .dependsOn(persistence)
-  .settings(version := appVersion, libraryDependencies ++= dependencies)
+  .settings(scalacOptions ++= mySettings, version := appVersion, libraryDependencies ++= dependencies)
 
 lazy val aws = Project("aws", file("modules/aws"))
   .enablePlugins(play.PlayScala)
-  .settings(version := appVersion, libraryDependencies ++= dependencies)
+  .settings(scalacOptions ++= mySettings, version := appVersion, libraryDependencies ++= dependencies)
 
 lazy val api = Project("api", file("modules/api"))
   .enablePlugins(play.PlayScala)
   .dependsOn(security, aws, user, application)
-  .settings(version := appVersion, libraryDependencies ++= dependencies)
+  .settings(scalacOptions ++= mySettings, version := appVersion, libraryDependencies ++= dependencies)
 
 lazy val persistence = Project("persistence", file("modules/persistence"))
   .enablePlugins(play.PlayScala)
   .dependsOn(common)
-  .settings(version := appVersion, libraryDependencies ++= dependencies)
+  .settings(scalacOptions ++= mySettings, version := appVersion, libraryDependencies ++= dependencies)
 
 lazy val analytics = Project("analytics",file("modules/analytics"))
   .enablePlugins(play.PlayScala)
   .dependsOn(user, application, persistence, security)
-  .settings(version := appVersion, libraryDependencies ++= dependencies)
+  .settings(scalacOptions ++= mySettings, version := appVersion, libraryDependencies ++= dependencies)
 
 lazy val notifications = Project("notifications",file("modules/notifications"))
   .enablePlugins(play.PlayScala)
   .dependsOn(common)
-  .settings(version := appVersion, libraryDependencies ++= dependencies)
+  .settings(scalacOptions ++= mySettings, version := appVersion, libraryDependencies ++= dependencies)
 
 // Root
 lazy val home = Project(appName, file("."))
@@ -112,7 +109,7 @@ lazy val home = Project(appName, file("."))
     analytics,
     common,
     notifications)
-  .settings(version := appVersion, libraryDependencies ++= dependencies)
+  .settings(scalacOptions ++= mySettings, version := appVersion, libraryDependencies ++= dependencies)
 
 sources in doc in Compile := List()
 
