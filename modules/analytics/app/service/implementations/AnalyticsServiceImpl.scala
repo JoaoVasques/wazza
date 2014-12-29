@@ -19,12 +19,10 @@ import play.api.Play
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import utils.analytics.Metrics
 import com.google.inject._
-import service.persistence.definitions.DatabaseService
 import org.joda.time.Days
 import org.joda.time.LocalDate
 import org.joda.time.DurationFieldType
 import org.joda.time.DateTime
-import service.user.definitions.PurchaseService
 import persistence.utils.{DateUtils}
 import persistence._
 import persistence.messages._
@@ -33,10 +31,7 @@ import scala.concurrent.duration._
 import akka.util.{Timeout}
 import scala.collection.mutable.Stack
 
-class AnalyticsServiceImpl @Inject()(
-  databaseService: DatabaseService,
-  purchaseService: PurchaseService
-) extends AnalyticsService {
+class AnalyticsServiceImpl extends AnalyticsService {
 
   private lazy val ProfitMargin = 0.7
   private val databaseProxy = PersistenceProxy.getInstance()

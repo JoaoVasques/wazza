@@ -22,22 +22,44 @@ object MobileSession {
 
   def getCollection(companyName: String, applicationName: String) = s"${companyName}_mobileSessions_${applicationName}"
 
-  implicit val readJson = (
-    (__ \ "id").read[String] and
-    (__ \ "userId").read[String] and
-    (__ \ "sessionLength").read[Double] and
-    (__ \ "startTime").read[Date] and
-    (__ \ "deviceInfo").read[DeviceInfo] and
-    (__ \ "purchases").read[List[String]]
-  )(MobileSession.apply _)
+  implicit def buildFromJson(json: JsValue): MobileSession = {
+    new MobileSession(
+      (json \ "id").as[String],
+      (json \ "userId").as[String],
+      (json \ "length").as[Double],
+      new Date((json \ "startTime").as[Long]),
+      (json \ "device").validate[DeviceInfo].asOpt.get,
+      (json \ "purchases").as[List[String]]
+    )
+  }
 
-  implicit val buildFromJson = (
-    (__ \ "id").write[String] and
-    (__ \ "userId").write[String] and
-    (__ \ "sessionLength").write[Double] and
-    (__ \ "startTime").write[Date] and
-    (__ \ "deviceInfo").write[DeviceInfo] and
-    (__ \ "purchases").write[List[String]]
-  )(unlift(MobileSession.unapply))
+  implicit def toJson(session: MobileSession): JsValue = {
+    Json.obj(
+      "id" -> session.id,
+      "userId" -> session.userId,
+      "length" -> session.length,
+      "startTime" -> session.startTime.getTime,
+      "device" -> Json.toJson(session.deviceInfo),
+      "purchases" -> session.purchases
+    )
+  }
+
+  // implicit val readJson = (
+  //   (__ \ "id").read[String] and
+  //   (__ \ "userId").read[String] and
+  //   (__ \ "sessionLength").read[Double] and
+  //   (__ \ "startTime").read[Date] and
+  //   (__ \ "deviceInfo").read[DeviceInfo] and
+  //   (__ \ "purchases").read[List[String]]
+  // )(MobileSession.apply _)
+
+  // implicit val buildFromJson = (
+  //   (__ \ "id").write[String] and
+  //   (__ \ "userId").write[String] and
+  //   (__ \ "sessionLength").write[Double] and
+  //   (__ \ "startTime").write[Date] and
+  //   (__ \ "deviceInfo").write[DeviceInfo] and
+  //   (__ \ "purchases").write[List[String]]
+  // )(unlift(MobileSession.unapply))
 
 }
