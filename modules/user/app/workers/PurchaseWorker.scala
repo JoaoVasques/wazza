@@ -32,7 +32,7 @@ class PurchaseWorker(
 
   def storePurchase(msg: PRSave) = {
     val collection = PurchaseInfo.getCollection(msg.companyName, msg.applicationName)
-    val request = new Insert(msg.sendersStack, collection, Json.toJson(msg.info))
+    val request = new Insert(msg.sendersStack, collection, msg.info)
     databaseProxy ! request
   }
 
@@ -52,9 +52,8 @@ class PurchaseWorker(
             val req = or.originalRequest.asInstanceOf[PRSave]
             val purchase = req.info
             val collection = PurchaseInfo.getCollection(req.companyName, req.applicationName)
-            val insertReq = new Insert(new Stack, collection, Json.toJson(purchase))
+            val insertReq = new Insert(new Stack, collection, purchase)
             databaseProxy ! insertReq
-
           }
           case _ => {
             //TODO show error
