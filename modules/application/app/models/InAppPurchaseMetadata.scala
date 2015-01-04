@@ -57,7 +57,7 @@ case class AppleMetadata(
 ) extends InAppPurchaseMetadata
 
 case class AppleProductProperties(
-  productType: Int, 
+  productType: Int,
   status: String,
   reviewNotes: String
   // screenshot: TODO

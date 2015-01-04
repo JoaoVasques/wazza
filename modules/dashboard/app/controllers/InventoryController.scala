@@ -1,6 +1,6 @@
 /**
   NOT USED AT THE MOMENT
-  
+
 package controllers.dashboard
 
 import play.api._
@@ -47,21 +47,7 @@ class InventoryController @Inject()(
 	            }
 	        }
 	    }
-	} 
-
-	/** store: not used atm
-	def storeAndroid = UserAuthenticationAction {implicit request =>
-	    Ok(views.html.store.storeAndroid())
 	}
-
-	def storeApple = UserAuthenticationAction {implicit request =>
-	    Ok(views.html.store.storeApple())
-	}
-
-	def storeAmazon = UserAuthenticationAction {implicit request =>
-	    Ok(views.html.store.storeAmazon())
-	  }
-	**/
 
 	//inventory
 	def inventory = UserAuthenticationAction {implicit request =>

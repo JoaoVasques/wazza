@@ -46,7 +46,7 @@ class ItemsController @Inject()(
       }))
     }
   }
- 
+
   def getItemDetails(
     companyName: String,
     applicationName:String,

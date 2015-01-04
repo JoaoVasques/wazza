@@ -121,7 +121,7 @@ class UserWorker(
         log.error("Cannot find request on local storage")
         //TODO send error message
       }
-    }    
+    }
   }
 
   private def handleInsertResponse(m: PRInsertResponse) = {

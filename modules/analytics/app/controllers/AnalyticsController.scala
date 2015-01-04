@@ -249,7 +249,7 @@ class AnalyticsController @Inject()(
       analyticsService.getTotalAveragePurchasesUser,
       Total)
   }
-  
+
   def getDetailedAveragePurchasesUser(
     companyName: String,
     applicationName: String,

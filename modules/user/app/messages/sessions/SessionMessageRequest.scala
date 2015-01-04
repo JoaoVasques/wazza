@@ -2,7 +2,7 @@ package user.messages
 
 import common.messages._
 import akka.actor.{ActorRef}
-import scala.collection.mutable.Stack 
+import scala.collection.mutable.Stack
 import models.user._
 
 trait SessionMessageRequest extends WazzaMessage {

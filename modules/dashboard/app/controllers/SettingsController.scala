@@ -51,7 +51,7 @@ class SettingsController  extends Controller {
 				info map {Ok(_)}
 			}
 		}
-	} 
+	}
 
 	def settings = UserAuthenticationAction {implicit request =>
 		Ok(views.html.settings())

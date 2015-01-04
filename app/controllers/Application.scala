@@ -11,7 +11,7 @@ import com.google.inject._
 class Application extends Controller {
 
   def index = Action {
-	Ok(views.html.index())
+	  Ok(views.html.index())
   }
 
   def home = Action {

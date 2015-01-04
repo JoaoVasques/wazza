@@ -46,7 +46,7 @@ class AnalyticsServiceImpl @Inject()(
     val dates = new ListBuffer[String]()
     val s = new LocalDate(start)
     val e = new LocalDate(end)
-    val days = Days.daysBetween(s, e).getDays()+1
+    val days = Days.daysBetween(s, e).getDays() + 1
 
     new JsArray(List.range(0, days) map {i =>{
       Json.obj(
@@ -65,7 +65,7 @@ class AnalyticsServiceImpl @Inject()(
   ): Future[JsArray] = {
     val s = new LocalDate(start)
     val e = new LocalDate(end)
-    val days = Days.daysBetween(s, e).getDays()+1
+    val days = Days.daysBetween(s, e).getDays() + 1
 
     val futureResult = Future.sequence(List.range(0, days) map {dayIndex =>
       val currentDay = s.withFieldAdded(DurationFieldType.days(), dayIndex)
@@ -154,7 +154,7 @@ class AnalyticsServiceImpl @Inject()(
     val fields = ("lowerDate", "upperDate")
     val request = new GetDocumentsWithinTimeRange(new Stack, arpuCollection, fields, start, end, true)
     val futureArpu = (databaseProxy ? request).mapTo[PRJsArrayResponse]
-    
+
     futureArpu map {arpu =>
       val res = arpu.res.value.foldLeft(0.0)((acc, el) => {
         acc + (el \ "arpu").as[Double]
@@ -175,7 +175,7 @@ class AnalyticsServiceImpl @Inject()(
     val collection = Metrics.avgRevenueSessionCollection(companyName, applicationName)
     val request = new GetDocumentsWithinTimeRange(new Stack, collection, fields, start, end, true)
     val futureAvgRevenueSession = (databaseProxy ? request).mapTo[PRJsArrayResponse]
-    
+
     futureAvgRevenueSession map {avgRevenueSession =>
       if(avgRevenueSession.res.value.isEmpty) {
         fillEmptyResult(start, end)
@@ -266,7 +266,7 @@ class AnalyticsServiceImpl @Inject()(
     val collection = Metrics.avgPurchasesUserCollection(companyName, applicationName)
     val request = new GetDocumentsWithinTimeRange(new Stack, collection, fields, start, end, true)
     val futureAvgPurchasesUser = (databaseProxy ? request).mapTo[PRJsArrayResponse]
-    
+
     futureAvgPurchasesUser map {avgPurchasesUser =>
       val res = avgPurchasesUser.res.value.foldLeft(0.0)((acc, el) => {
         acc + (el \ "avgPurchasesUser").as[Double]
@@ -317,7 +317,7 @@ class AnalyticsServiceImpl @Inject()(
     val collection = Metrics.lifeTimeValueCollection(companyName, applicationName)
     val request = new GetDocumentsWithinTimeRange(new Stack, collection, fields, start, end, true)
     val futureLTV = (databaseProxy ? request).mapTo[PRJsArrayResponse]
-    
+
     futureLTV map {ltv =>
       val res = ltv.res.value.foldLeft(0.0)((acc, el) => {
         acc + (el \ "lifeTimeValue").as[Double]
@@ -348,7 +348,7 @@ class AnalyticsServiceImpl @Inject()(
     val collection = Metrics.averageTimeFirstPurchaseCollection(companyName, applicationName)
     val request = new GetDocumentsWithinTimeRange(new Stack, collection, fields, start, end, true)
     val futureAvgTimeFirstPurchase = (databaseProxy ? request).mapTo[PRJsArrayResponse]
-    
+
     futureAvgTimeFirstPurchase map {avgPurchasesUser =>
       val res = avgPurchasesUser.res.value.foldLeft(0.0)((acc, el) => {
         acc + (el \ "avgTimeFirstPurchase").as[Double]
@@ -378,7 +378,7 @@ class AnalyticsServiceImpl @Inject()(
     val collection = Metrics.averageTimeBetweenPurchasesCollection(companyName, applicationName)
     val request = new GetDocumentsWithinTimeRange(new Stack, collection, fields, start, end, true)
     val futureAvgTimeBetPurchases = (databaseProxy ? request).mapTo[PRJsArrayResponse]
-    
+
     futureAvgTimeBetPurchases map {time =>
       val res = time.res.value.foldLeft(0.0)((acc, el) => {
         acc + (el \ "avgTimeBetweenPurchases").as[Double]
@@ -432,7 +432,7 @@ class AnalyticsServiceImpl @Inject()(
     val collection = Metrics.averagePurchasePerSessionCollection(companyName, applicationName)
     val request = new GetDocumentsWithinTimeRange(new Stack, collection, fields, start, end, true)
     val futureAvgPurchasesPerSession = (databaseProxy ? request).mapTo[PRJsArrayResponse]
-    
+
     futureAvgPurchasesPerSession map {purchasesPerSession =>
       val res = purchasesPerSession.res.value.foldLeft(0.0)((acc, el) => {
         acc + (el \ "avgPurchasesSession").as[Double]

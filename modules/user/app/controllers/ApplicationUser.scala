@@ -8,7 +8,7 @@ import com.google.inject._
 class ApplicationUser @Inject()(userService: UserService) extends Controller {
 
   def index = Action {
-	 Ok(views.html.userMain())
+    Ok(views.html.userMain())
   }
 }
 

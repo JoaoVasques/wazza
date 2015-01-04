@@ -5,9 +5,9 @@
 Install activator and put it in your system's PATH
 
     
-    wget http://downloads.typesafe.com/typesafe-activator/1.2.10/typesafe-activator-1.2.10-minimal.zip
-    unzip typesafe-activator-1.2.10-minimal.zip
-    export PATH="${PATH_TO_ACTIVATOR}/activator-1.2.10-minimal/:$PATH"
+    wget http://downloads.typesafe.com/typesafe-activator/1.2.12/typesafe-activator-1.2.12-minimal.zip
+    unzip typesafe-activator-1.2.12-minimal.zip
+    export PATH="${PATH_TO_ACTIVATOR}/activator-1.2.12-minimal/:$PATH"
     
 Clone the repository and add the configuration files to the *conf* folder. After that run:
     

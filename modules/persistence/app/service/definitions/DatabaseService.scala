@@ -36,7 +36,7 @@ trait DatabaseService {
     array: List[String],
     limit: Int
   ): Future[List[JsValue]]
-                                                                                                 
+
   def getCollectionElements(collectionName: String): Future[List[JsValue]]
 
   def insert(collectionName: String, model: JsValue, extra: Map[String, ObjectId] = null): Future[Unit]

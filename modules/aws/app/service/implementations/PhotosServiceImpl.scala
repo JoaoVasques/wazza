@@ -77,7 +77,7 @@ class PhotosServiceImpl extends PhotosService {
           }
         }
         case Failure(failure) => promise.failure(failure)
-      }   
+      }
     }
 
     promise.future

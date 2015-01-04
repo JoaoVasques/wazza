@@ -187,21 +187,3 @@ config(function($stateProvider, $urlRouterProvider, $locationProvider, $httpProv
     localStorageServiceProvider.setPrefix('wazza');
 
     });
-
-/*    leftovers
-
-      //stores
-      .when('/store/android', {
-        templateUrl: '/dashboard/store/android',
-        controller: 'DashboardController'
-      })
-      .when('/store/apple', {
-        templateUrl: '/dashboard/store/apple',
-        controller: 'DashboardController'
-      })
-      .when('/store/amazon', {
-        templateUrl: '/dashboard/store/amazon',
-        controller: 'DashboardController'
-      })
-
-*/
