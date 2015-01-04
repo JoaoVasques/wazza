@@ -38,5 +38,9 @@ class Application extends Controller {
     Ok(views.html.terms())
   }
 
+  def privacy = Action {
+    Ok(views.html.privacy())
+  }
+
 }
 

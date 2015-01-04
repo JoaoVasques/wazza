@@ -175,6 +175,11 @@ config(function($stateProvider, $urlRouterProvider, $locationProvider, $httpProv
             templateUrl: '/terms'
         })
 
+        .state('webframe.privacy', {
+            url: "^/",
+            templateUrl: '/privacy'
+        })
+
     $httpProvider.responseInterceptors.push('SecurityHttpInterceptor');
 
 
