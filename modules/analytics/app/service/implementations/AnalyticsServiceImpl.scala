@@ -37,7 +37,7 @@ class AnalyticsServiceImpl extends AnalyticsService {
   private val databaseProxy = PersistenceProxy.getInstance()
   private implicit val timeout = Timeout(8 seconds)
 
-  private def fillEmptyResult(start: Date, end: Date): JsArray = {
+  private def fillEmptyResult(start: Date, end: Date, platforms: List[String]): JsArray = {
     val dates = new ListBuffer[String]()
     val s = new LocalDate(start)
     val e = new LocalDate(end)
@@ -45,8 +45,9 @@ class AnalyticsServiceImpl extends AnalyticsService {
 
     new JsArray(List.range(0, days) map {i =>{
       Json.obj(
-        "day" -> s.withFieldAdded(DurationFieldType.days(), i).toString("dd MMM"),
-        "value" -> 0
+        "day" -> s.withFieldAdded(DurationFieldType.days(), i).toDate.getTime,//.toString("dd MMM"),
+        "value" -> 0,
+        "platforms" -> (platforms map {p => Json.obj("value" -> 0, "platform" -> p)})
       )
     }})
   }
@@ -56,7 +57,8 @@ class AnalyticsServiceImpl extends AnalyticsService {
     applicationName: String,
     start: Date,
     end: Date,
-    f:(String, String, Date, Date) => Future[JsValue]
+    platforms: List[String],
+    f:(String, String, Date, Date, List[String]) => Future[JsValue]
   ): Future[JsArray] = {
     val s = new LocalDate(start)
     val e = new LocalDate(end)
@@ -65,9 +67,9 @@ class AnalyticsServiceImpl extends AnalyticsService {
     val futureResult = Future.sequence(List.range(0, days) map {dayIndex =>
       val currentDay = s.withFieldAdded(DurationFieldType.days(), dayIndex)
       val previousDay = currentDay.minusDays(1)
-      f(companyName, applicationName, previousDay.toDate, currentDay.toDate) map {res: JsValue =>
+      f(companyName, applicationName, previousDay.toDate, currentDay.toDate, platforms) map {res: JsValue =>
         Json.obj(
-          "day" -> currentDay.toString("dd MMM"),
+          "day" -> currentDay.toDate.getTime,
           "value" -> (res \ "value").as[Float]
         )
       }
@@ -117,7 +119,8 @@ class AnalyticsServiceImpl extends AnalyticsService {
     companyName: String,
     applicationName: String,
     start: Date,
-    end: Date
+    end: Date,
+    platforms: List[String]
   ): Future[JsArray] = {
     val arpuCollection = Metrics.arpuCollection(companyName, applicationName)
     val fields = ("lowerDate", "upperDate")
@@ -126,7 +129,7 @@ class AnalyticsServiceImpl extends AnalyticsService {
 
     futureArpu map {arpu =>
       if(arpu.res.value.isEmpty) {
-        fillEmptyResult(start, end)
+        fillEmptyResult(start, end, platforms)
       } else {
         new JsArray(arpu.res.value map {el =>
           val day = new LocalDate((el \ "lowerDate").as[Double].longValue)
@@ -143,7 +146,8 @@ class AnalyticsServiceImpl extends AnalyticsService {
     companyName: String,
     applicationName: String,
     start: Date,
-    end: Date
+    end: Date,
+    platforms: List[String]
   ): Future[JsValue] = {
     val arpuCollection = Metrics.arpuCollection(companyName, applicationName)
     val fields = ("lowerDate", "upperDate")
@@ -164,7 +168,8 @@ class AnalyticsServiceImpl extends AnalyticsService {
     companyName: String,
     applicationName: String,
     start: Date,
-    end: Date
+    end: Date,
+    platforms: List[String]
   ): Future[JsArray] = {
     val fields = ("lowerDate", "upperDate")
     val collection = Metrics.avgRevenueSessionCollection(companyName, applicationName)
@@ -173,7 +178,7 @@ class AnalyticsServiceImpl extends AnalyticsService {
 
     futureAvgRevenueSession map {avgRevenueSession =>
       if(avgRevenueSession.res.value.isEmpty) {
-        fillEmptyResult(start, end)
+        fillEmptyResult(start, end, platforms)
       } else {
         new JsArray(avgRevenueSession.res.value.map {el =>
           val day = new LocalDate((el \ "lowerDate").as[Double].longValue)
@@ -190,7 +195,8 @@ class AnalyticsServiceImpl extends AnalyticsService {
     companyName: String,
     applicationName: String,
     start: Date,
-    end: Date
+    end: Date,
+    platforms: List[String]
   ): Future[JsValue] = {
     val fields = ("lowerDate", "upperDate")
     val collection = Metrics.avgRevenueSessionCollection(companyName, applicationName)
@@ -211,18 +217,33 @@ class AnalyticsServiceImpl extends AnalyticsService {
     companyName: String,
     applicationName: String,
     start: Date,
-    end: Date
+    end: Date,
+    platforms: List[String]
   ): Future[JsValue] = {
     val fields = ("lowerDate", "upperDate")
     val collection = Metrics.totalRevenueCollection(companyName, applicationName)
     val request = new GetDocumentsWithinTimeRange(new Stack, collection, fields, start, end, true)
     val futureRevenue = (databaseProxy ? request).mapTo[PRJsArrayResponse]
 
+    val emptyResult = Json.obj(
+      "value" -> 0.0,
+      "platforms" -> (platforms map {p => Json.obj("platform" -> p, "value" -> 0.0)})
+    )
+
     futureRevenue map {revenue =>
-      val totalRevenue = revenue.res.value.foldLeft(0.0)((sum, obj) => {
-        sum + (obj \ "totalRevenue").as[Double]
+      revenue.res.value.foldLeft(emptyResult)((res, current) => {
+        val updateResult = (res \ "value").as[Double] + (current \ "result").as[Double]
+        val platformResults = platforms map {platform =>
+          def getPlatform(json: JsValue): JsValue = {
+            (json \ "platforms").as[JsArray].value.find(e => (e \ "platform").as[String] == platform).get
+          }
+          val resPlatform = getPlatform(res)
+          val currentPlatform = getPlatform(current)
+          val updatedValue = (resPlatform \ "value").as[Double] + (currentPlatform \ "res").as[Double]
+          Json.obj("platform" -> platform, "value" -> updatedValue)
+        }
+        Json.obj("value" -> updateResult, "platforms" -> platformResults)
       })
-      Json.obj("value" -> totalRevenue)
     }
   }
 
@@ -230,14 +251,15 @@ class AnalyticsServiceImpl extends AnalyticsService {
     companyName: String,
     applicationName: String,
     start: Date,
-    end: Date
+    end: Date,
+    platforms: List[String]
   ): Future[JsArray] = {
     val collection = Metrics.totalRevenueCollection(companyName, applicationName)
     val fields = ("lowerDate", "upperDate")
     val request = new GetDocumentsWithinTimeRange(new Stack, collection, fields, start, end, true)
       (databaseProxy ? request).mapTo[PRJsArrayResponse] map {revenue =>
-       if(revenue.res.value.size == 0) {
-         fillEmptyResult(start, end)
+        if(revenue.res.value.size == 0) {
+         fillEmptyResult(start, end, platforms)
        } else {
          new JsArray(revenue.res.value map {(el: JsValue) => {
            println(el)
@@ -255,7 +277,8 @@ class AnalyticsServiceImpl extends AnalyticsService {
     companyName: String,
     applicationName: String,
     start: Date,
-    end: Date
+    end: Date,
+    platforms: List[String]
   ): Future[JsValue] = {
     val fields = ("lowerDate", "upperDate")
     val collection = Metrics.avgPurchasesUserCollection(companyName, applicationName)
@@ -276,16 +299,18 @@ class AnalyticsServiceImpl extends AnalyticsService {
     companyName: String,
     applicationName: String,
     start: Date,
-    end: Date
+    end: Date,
+    platforms: List[String]
   ): Future[JsArray] = {
-    calculateDetailedKPIAux(companyName, applicationName, start, end, getTotalAveragePurchasesUser)
+    calculateDetailedKPIAux(companyName, applicationName, start, end, platforms, getTotalAveragePurchasesUser)
   }
 
   def getTotalAverageNumberSessionsPerUser(
     companyName: String,
     applicationName: String,
     start: Date,
-    end: Date
+    end: Date,
+    platforms: List[String]
   ): Future[JsValue] = {
     val fields = ("lowerDate", "upperDate")
     val collection = Metrics.avgSessionsPerUserCollection(companyName, applicationName)
@@ -306,7 +331,8 @@ class AnalyticsServiceImpl extends AnalyticsService {
     companyName: String,
     applicationName: String,
     start: Date,
-    end: Date
+    end: Date,
+    platforms: List[String]
   ): Future[JsValue] = {
     val fields = ("lowerDate", "upperDate")
     val collection = Metrics.lifeTimeValueCollection(companyName, applicationName)
@@ -327,9 +353,10 @@ class AnalyticsServiceImpl extends AnalyticsService {
     companyName: String,
     applicationName: String,
     start: Date,
-    end: Date
+    end: Date,
+    platforms: List[String]
   ): Future[JsArray] = {
-    calculateDetailedKPIAux(companyName, applicationName, start, end, getTotalLifeTimeValue)
+    calculateDetailedKPIAux(companyName, applicationName, start, end, platforms, getTotalLifeTimeValue)
   }
 
   //TODO
@@ -337,7 +364,8 @@ class AnalyticsServiceImpl extends AnalyticsService {
     companyName: String,
     applicationName: String,
     start: Date,
-    end: Date
+    end: Date,
+    platforms: List[String]
   ): Future[JsValue] = {
     val fields = ("lowerDate", "upperDate")
     val collection = Metrics.averageTimeFirstPurchaseCollection(companyName, applicationName)
@@ -358,16 +386,18 @@ class AnalyticsServiceImpl extends AnalyticsService {
     companyName: String,
     applicationName: String,
     start: Date,
-    end: Date
+    end: Date,
+    platforms: List[String]
   ): Future[JsArray] = {
-    calculateDetailedKPIAux(companyName, applicationName, start, end, getTotalAverageTimeFirstPurchase)
+    calculateDetailedKPIAux(companyName, applicationName, start, end, platforms, getTotalAverageTimeFirstPurchase)
   }
 
   def getTotalAverageTimeBetweenPurchases(
     companyName: String,
     applicationName: String,
     start: Date,
-    end: Date
+    end: Date,
+    platforms: List[String]
   ): Future[JsValue] = {
     val fields = ("lowerDate", "upperDate")
     val collection = Metrics.averageTimeBetweenPurchasesCollection(companyName, applicationName)
@@ -388,16 +418,18 @@ class AnalyticsServiceImpl extends AnalyticsService {
     companyName: String,
     applicationName: String,
     start: Date,
-    end: Date
+    end: Date,
+    platforms: List[String]
   ): Future[JsArray] = {
-    calculateDetailedKPIAux(companyName, applicationName, start, end, getTotalAverageTimeBetweenPurchases)
+    calculateDetailedKPIAux(companyName, applicationName, start, end, platforms, getTotalAverageTimeBetweenPurchases)
   }
 
   def getTotalNumberPayingCustomers(
     companyName: String,
     applicationName: String,
     start: Date,
-    end: Date
+    end: Date,
+    platforms: List[String]
   ): Future[JsValue] = {
     calculateNumberPayingCustomers(
       companyName,
@@ -412,16 +444,18 @@ class AnalyticsServiceImpl extends AnalyticsService {
     companyName: String,
     applicationName: String,
     start: Date,
-    end: Date
+    end: Date,
+    platforms: List[String]
   ): Future[JsArray] = {
-    calculateDetailedKPIAux(companyName, applicationName, start, end, getTotalNumberPayingCustomers)
+    calculateDetailedKPIAux(companyName, applicationName, start, end, platforms, getTotalNumberPayingCustomers)
   }
 
   def getTotalAveragePurchasePerSession(
     companyName: String,
     applicationName: String,
     start: Date,
-    end: Date
+    end: Date,
+    platforms: List[String]
   ): Future[JsValue] = {
     val fields = ("lowerDate", "upperDate")
     val collection = Metrics.averagePurchasePerSessionCollection(companyName, applicationName)
@@ -442,8 +476,10 @@ class AnalyticsServiceImpl extends AnalyticsService {
     companyName: String,
     applicationName: String,
     start: Date,
-    end: Date
+    end: Date,
+    platforms: List[String]
   ): Future[JsArray] = {
-    calculateDetailedKPIAux(companyName, applicationName, start, end, getTotalAveragePurchasePerSession)
+    calculateDetailedKPIAux(companyName, applicationName, start, end, platforms, getTotalAveragePurchasePerSession)
   }
 }
+
