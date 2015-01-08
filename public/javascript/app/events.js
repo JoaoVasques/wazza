@@ -11,3 +11,4 @@ broadcastEvents.value('PurchasesPerUserChanged','analytics.avgPurchasesUser');
 broadcastEvents.value('LtvDateChanged','analytics.ltv');
 broadcastEvents.value('PayingUsersDateChanged','analytics.payingUsers');
 broadcastEvents.value('PurchaseDateChanged','analytics.purchasesPerSession');
+broadcastEvents.value("SelectedPlatformsChange", 0);

@@ -4,12 +4,14 @@ application.controller('TweakBarController',[
   '$state',
   '$rootScope',
   '$stateParams',
+  'ApplicationStateService',
   function (
     $scope,
     DateModel,
     $state,
     $rootScope,
-    $stateParams
+    $stateParams,
+    ApplicationStateService
     ) {
 
     $scope.userInfo = {
@@ -29,6 +31,35 @@ application.controller('TweakBarController',[
         $scope.endDate = DateModel.endDate;
       }
     };
+
+    $scope.platforms = {
+      iOS: false,
+      Android: false
+    };
+
+    var initPlatforms = function(){
+      var appPlatforms = ApplicationStateService.selectedPlatforms;
+      console.log(appPlatforms);
+      if(_.contains(appPlatforms, "iOS")) {
+        $scope.platforms.iOS = true;
+      }
+      if(_.contains(appPlatforms, "Android")) {
+        $scope.platforms.Android = true;
+      }
+    };
+    initPlatforms();
+
+    var platformWatcher = function(platform, newValue, oldValue) {
+      newValue ? ApplicationStateService.addPlatforms(platform) : ApplicationStateService.removePlatform(platform);
+    }
+      
+    $scope.$watch("platforms.iOS", function(newValue, oldValue, scope){
+      platformWatcher("iOS", newValue, oldValue);
+    });
+
+    $scope.$watch("platforms.Android", function(newValue, oldValue, scope){
+      platformWatcher("Android", newValue, oldValue);
+    });
 
     $scope.toggleMin = function() {
       $scope.minDate = moment().subtract(1, 'years').format('d-M-YYYY');

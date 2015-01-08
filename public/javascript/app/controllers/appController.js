@@ -65,8 +65,12 @@ application.controller('AppController', [
 
     $scope.chooseApplication = function(app){
       oldName = ApplicationStateService.getApplicationName();
-      ApplicationStateService.updateApplicationName(app);
-      if($state.current.name === "analytics.dashboard" && oldName !== app){
+      ApplicationStateService.updateApplicationName(app.name);
+      _.each(app.platforms, function(platform){
+        ApplicationStateService.addPlatforms(platform);
+      });
+
+      if($state.current.name === "analytics.dashboard" && oldName !== app.name){
         $state.transitionTo($state.current, $stateParams, {
             reload: true,
             inherit: false,
