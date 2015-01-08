@@ -43,16 +43,7 @@ dashboard.factory('DetailedKpiModel', ['KpiModel', function(KpiModel) {
           forceY: [0, 1]
         }
       },
-      data: [
-        /**
-         {
-         key: platform,
-         values: [
-           [xLabel_1, YValue_1], .... [xLabel_N, YValue_N]
-         ] 
-         }
-      **/
-      ]
+      data: []
     };
     this.model = new KpiModel(name, "");
   };

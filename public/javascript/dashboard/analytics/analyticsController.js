@@ -19,24 +19,6 @@ dashboard
     DetailedKpiModel
   ) {
 
-    $scope.updateChart = function(name, context) {
-      $scope.chart = {
-        "data": {
-          "labels": context.labels,
-          "datasets": [
-            {
-              fillColor : "rgba(151,187,205,0.5)",
-              strokeColor : "rgba(151,187,205,1)",
-              pointColor : "rgba(151,187,205,1)",
-              pointStrokeColor : "#fff",
-              data : context.values
-            }
-          ]
-        },
-        "options": {"width": 800}
-      };
-    };
-
     $scope.updateOnChangedDate = function(context, KpiId, label) {
       updateChartData(context, KpiId, label);
       updateTotalValues(context, KpiId);
@@ -48,7 +30,8 @@ dashboard
         ApplicationStateService.getApplicationName(),
         DateModel.formatDate(context.beginDate),
         DateModel.formatDate(context.endDate),
-        KpiId
+        KpiId,
+        ApplicationStateService.selectedPlatforms
       ).then(function(results) {
         kpiDataSuccessHandler(results, context, label);
       },function(err) {console.log(err);}
@@ -61,7 +44,8 @@ dashboard
         ApplicationStateService.getApplicationName(),
         DateModel.formatDate(context.beginDate),
         DateModel.formatDate(context.endDate),
-        KpiId
+        KpiId,
+        ApplicationStateService.selectedPlatforms
       ).then(function(results) {
         totalValueHandler(context, results);
       },function(err) {console.log(err);}
@@ -69,12 +53,16 @@ dashboard
     };
 
     var totalValueHandler = function(context, data) {
-      context.model.updateKpiValue(data.data.value, data.data.delta);
+      context.model.updateKpiValue(data.data);
     };
 
     var kpiDataSuccessHandler = function(data, context, label) {
-      context.updateChartData(data);
-      $scope.updateChart(label, context);
+      context.updateChartData(data, ApplicationStateService.selectedPlatforms);
     };
-      
-}]);
+
+    $scope.updateChart = function(name, context){
+      $scope.options = context.chart.options;
+      $scope.data = context.chart.data;
+    };
+ }]);
+

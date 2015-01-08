@@ -28,25 +28,28 @@ dashboard.factory("KpiModel", function() {
     this.unitType = "€";
     this.css = "kpi-delta";
     this.icon = "glyphicon glyphicon-minus";
-    this.platforms = ["iOS"];
+    this.platforms = [];
     this.multiPlatform = true;
   };
 
   KpiModel.prototype = {
-    updateKpiValue: function(value, delta) {
+    updateKpiValue: function(data) {
+      var value = data.value;
+      var delta = data.delta;
       var DecimalPlaces = 2
       this.value = value.toFixed(DecimalPlaces);
       this.delta = delta;
-      if(this.value > 0) {
-        this.css = "kpi-delta-positive";
-        this.icon = "glyphicon glyphicon-arrow-up";
-      } else if(this.value < 0){
-        this.css = "kpi-delta-negative";
-        this.icon = "glyphicon glyphicon-arrow-down";
-      } else {
-        this.css = "kpi-delta";
-        this.icon = "glyphicon glyphicon-minus";
-      }
+      this.platforms = data.platforms;
+      // if(this.value > 0) {
+      //   this.css = "kpi-delta-positive";
+      //   this.icon = "glyphicon glyphicon-arrow-up";
+      // } else if(this.value < 0){
+      //   this.css = "kpi-delta-negative";
+      //   this.icon = "glyphicon glyphicon-arrow-down";
+      // } else {
+      //   this.css = "kpi-delta";
+      //   this.icon = "glyphicon glyphicon-minus";
+      // }
     },
     updateUnitType: function(newType) {
       this.unitType = newType;
