@@ -1,0 +1,23 @@
+{
+  "name": "wazza",
+  "version": "0.0.0",
+  "homepage": "http://wazza.io",
+  "authors": [
+    "Joao Vasques <joao.vasques@tecnico.ulisboa.pt>"
+  ],
+  "keywords": [
+    "wazza"
+  ],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular-nvd3": "~0.0.9"
+  }
+}
