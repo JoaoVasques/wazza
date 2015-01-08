@@ -50,10 +50,8 @@ class PurchaseWorker(
         localStorage.get(r.hash) match {
           case Some(or) => {
             val req = or.originalRequest.asInstanceOf[PRSave]
-            val purchase = req.info
-            val collection = PurchaseInfo.getCollection(req.companyName, req.applicationName)
-            val insertReq = new Insert(new Stack, collection, purchase)
-            databaseProxy ! insertReq
+            storePurchase(req)
+            saveUserAsBuyer(req)
           }
           case _ => {
             //TODO show error
