@@ -13,10 +13,13 @@ dashboardServices.factory('GetKPIService', ['$http', '$q',
         return url;
       };
 
-      service.getTotalKpiData = function(companyName, applicationName, start, end, kpiName) {
+      service.getTotalKpiData = function(companyName, applicationName, start, end, kpiName, platforms) {
         var request = $http({
           url: buildUrl(companyName, applicationName, kpiName, "total", start, end),
-          method: 'GET'
+          method: 'GET',
+          headers: {
+            "X-Platforms": platforms
+          }
         });
 
         var deferred = $q.defer();
@@ -24,10 +27,13 @@ dashboardServices.factory('GetKPIService', ['$http', '$q',
         return deferred.promise;
       };
 
-      service.getDetailedKPIData = function(companyName, applicationName, start, end, kpiName) {
+      service.getDetailedKPIData = function(companyName, applicationName, start, end, kpiName, platforms) {
         var request = $http({
           url: buildUrl(companyName, applicationName, kpiName, "detail", start, end),
-          method: 'GET'
+          method: 'GET',
+          headers: {
+            "X-Platforms": platforms
+          }
         });
 
         var deferred = $q.defer();
