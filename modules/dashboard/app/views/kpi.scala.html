@@ -4,42 +4,20 @@
       <h2 class="panel-title text-center">{{kpi.name}}</h2>
     </div>
     <div class="panel-body">
-      <div class="row">
-        <div class="col-xs-12 col-sm-12 text-center">
-          <table class="table text-center" ng-show="kpi.multiPlatform">
-            <thead>
-              <tr>
-                <th>Platform</th>
-                <th>Value</th>
-                <th>Delta</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td><i class="fa fa-apple"></i></td>
-                <td>22</td>
-                <td>2%</td>
-              </tr>
-              <tr>
-                <td><i class="fa fa-android"></i></td>
-                <td>100</td>
-                <td>3%</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <div class="col-xs-12 col-sm-12 text-center">
-          <h3 ng-show="kpi.multiPlatform">Total</h3>
-          <div class="col-xs-12 col-sm-6 text-center emphasis">
-            <h3><strong>{{kpi.unit}} {{kpi.value}} </strong></h3>
-            <p><small>Total</small></p>
-          </div>
-          <div class="col-xs-12 col-sm-6 text-center emphasis">
-            <h3><strong>{{kpi.delta}} % </strong></h3>
-            <p><small>Delta</small></p>
-          </div>
-        </div>
-      </div>
+      <chart value="kpi.chart" type="Bar"></chart>
+      <!-- <div class="row"> -->
+      <!--   <div class="col-xs-12 col-sm-12 text-center"> -->
+      <!--     <h3 ng-show="kpi.multiPlatform">Total</h3> -->
+      <!--     <div class="col-xs-12 col-sm-6 text-center emphasis"> -->
+      <!--       <h3><strong>{{kpi.unit}} {{kpi.value}} </strong></h3> -->
+      <!--       <p><small>Total</small></p> -->
+      <!--     </div> -->
+      <!--     <div class="col-xs-12 col-sm-6 text-center emphasis"> -->
+      <!--       <h3><strong>{{kpi.delta}} % </strong></h3> -->
+      <!--       <p><small>Delta</small></p> -->
+      <!--     </div> -->
+      <!--   </div> -->
+      <!-- </div> -->
     </div>
   </div>
 </div>
