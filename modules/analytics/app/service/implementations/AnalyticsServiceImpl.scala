@@ -70,7 +70,15 @@ class AnalyticsServiceImpl extends AnalyticsService {
       f(companyName, applicationName, previousDay.toDate, currentDay.toDate, platforms) map {res: JsValue =>
         Json.obj(
           "day" -> currentDay.toDate.getTime,
-          "value" -> (res \ "value").as[Float]
+          "value" -> (res \ "value").as[Double],
+          "platforms" -> (platforms map {p => {
+            val platformInfo = getPlatform(res, p)
+            Json.obj(
+              "platform" -> ((platformInfo \ "platform").as[String]),
+              "value" -> ((platformInfo \ "res").as[Double])
+            )
+          }})
+          
         )
       }
     })
@@ -85,22 +93,30 @@ class AnalyticsServiceImpl extends AnalyticsService {
     applicationName: String,
     fields: Tuple2[String, String],
     s: Date,
-    e: Date
+    e: Date,
+    platform: Option[String] = None
   ): Future[Float] = {
     val collection = Metrics.payingUsersCollection(companyName, applicationName)
     val request = new GetDocumentsWithinTimeRange(new Stack, collection, fields, s, e, true)
     val payingUsersFuture = (databaseProxy ? request).mapTo[PRJsArrayResponse]
 
-    payingUsersFuture map {payingUsers =>
-      if(payingUsers.res.value.isEmpty) {
-        0
-      } else {
-        var users = List[String]()
-        for(el <- payingUsers.res.value) {
-          val userId = (el \ "userId").as[String]
-          users = (userId :: users).distinct
+    platform match {
+      case Some(platform) => {
+        null
+      }
+      case None => {
+        payingUsersFuture map {payingUsers =>
+          if(payingUsers.res.value.isEmpty) {
+            0
+          } else {
+            var users = List[String]()
+            for(el <- payingUsers.res.value) {
+              val userId = (el \ "userId").as[String]
+              users = (userId :: users).distinct
+            }
+            users.size
+          }
         }
-        users.size
       }
     }
   }
@@ -127,14 +143,27 @@ class AnalyticsServiceImpl extends AnalyticsService {
     })
   }
 
-  def getTopTenItems(
-    companyName: String,
-    applicationName: String,
+  private def getAverageOfTotalResults(
+    data: Seq[JsValue],
+    platforms: List[String],
     start: Date,
     end: Date
-  ): Future[JsArray] = {
-    //TODO
-    null
+  ): JsValue = {
+    def averagenizer(v: Double): Double = {
+      val days = DateUtils.getNumberDaysBetweenDates(start, end)
+      if(days > 0) v / days else v
+    }
+
+    val res = getDetailedResult(data, platforms)
+    Json.obj(
+      "value" -> averagenizer((res \ "value").as[Double]),
+      "platforms" -> ((res \ "platforms").as[JsArray].value map {p =>
+        Json.obj(
+          "platform" -> ((p \ "platform").as[String]),
+          "value" -> averagenizer((p \ "value").as[Double])
+        )
+      })
+    )
   }
 
   def getARPU(
@@ -183,22 +212,8 @@ class AnalyticsServiceImpl extends AnalyticsService {
     val request = new GetDocumentsWithinTimeRange(new Stack, arpuCollection, fields, start, end, true)
     val futureArpu = (databaseProxy ? request).mapTo[PRJsArrayResponse]
 
-    def averagenizer(v: Double): Double = {
-      val days = DateUtils.getNumberDaysBetweenDates(start, end)
-      if(days > 0) v / days else v
-    }
-
-    futureArpu map {r =>    
-      val res = getDetailedResult(r.res.value, platforms)
-      Json.obj(
-        "value" -> averagenizer((res \ "value").as[Double]),
-        "platforms" -> ((res \ "platforms").as[JsArray].value map {p =>
-          Json.obj(
-            "platform" -> ((p \ "platform").as[String]),
-            "value" -> averagenizer((p \ "value").as[Double])
-          )
-        })
-      )
+    futureArpu map {r =>
+      getAverageOfTotalResults(r.res.value, platforms, start, end)
     }
   }
 
@@ -299,7 +314,7 @@ class AnalyticsServiceImpl extends AnalyticsService {
            val day = new LocalDate((el \ "lowerDate").as[Double].longValue)
            Json.obj(
              "day" -> day.toString("dd MM"),
-             "value" -> (el \ "totalRevenue").as[Int],
+             "value" -> (el \ "total").as[Double],
              "platforms" -> (platforms map {p => {
                val platformInfo = getPlatform(el, p)
                Json.obj(
@@ -323,15 +338,8 @@ class AnalyticsServiceImpl extends AnalyticsService {
     val fields = ("lowerDate", "upperDate")
     val collection = Metrics.avgPurchasesUserCollection(companyName, applicationName)
     val request = new GetDocumentsWithinTimeRange(new Stack, collection, fields, start, end, true)
-    val futureAvgPurchasesUser = (databaseProxy ? request).mapTo[PRJsArrayResponse]
-
-    futureAvgPurchasesUser map {avgPurchasesUser =>
-      val res = avgPurchasesUser.res.value.foldLeft(0.0)((acc, el) => {
-        acc + (el \ "avgPurchasesUser").as[Double]
-      })
-
-      val days = DateUtils.getNumberDaysBetweenDates(start, end)
-      Json.obj("value" -> (if(days > 0) res / days else res))
+    (databaseProxy ? request).mapTo[PRJsArrayResponse] map {r =>
+      getAverageOfTotalResults(r.res.value, platforms, start, end)
     }
   }
 
@@ -345,6 +353,7 @@ class AnalyticsServiceImpl extends AnalyticsService {
     calculateDetailedKPIAux(companyName, applicationName, start, end, platforms, getTotalAveragePurchasesUser)
   }
 
+  // TODO
   def getTotalAverageNumberSessionsPerUser(
     companyName: String,
     applicationName: String,
@@ -377,15 +386,8 @@ class AnalyticsServiceImpl extends AnalyticsService {
     val fields = ("lowerDate", "upperDate")
     val collection = Metrics.lifeTimeValueCollection(companyName, applicationName)
     val request = new GetDocumentsWithinTimeRange(new Stack, collection, fields, start, end, true)
-    val futureLTV = (databaseProxy ? request).mapTo[PRJsArrayResponse]
-
-    futureLTV map {ltv =>
-      val res = ltv.res.value.foldLeft(0.0)((acc, el) => {
-        acc + (el \ "lifeTimeValue").as[Double]
-      })
-
-      val days = DateUtils.getNumberDaysBetweenDates(start, end)
-      Json.obj("value" -> (if(days > 0) res / days else res))
+    (databaseProxy ? request).mapTo[PRJsArrayResponse] map {ltv =>
+      getAverageOfTotalResults(ltv.res.value, platforms, start, end)
     }
   }
 
@@ -422,6 +424,7 @@ class AnalyticsServiceImpl extends AnalyticsService {
     }
   }
 
+  // TODO
   def getAverageTimeFirstPurchase(
     companyName: String,
     applicationName: String,
@@ -442,15 +445,8 @@ class AnalyticsServiceImpl extends AnalyticsService {
     val fields = ("lowerDate", "upperDate")
     val collection = Metrics.averageTimeBetweenPurchasesCollection(companyName, applicationName)
     val request = new GetDocumentsWithinTimeRange(new Stack, collection, fields, start, end, true)
-    val futureAvgTimeBetPurchases = (databaseProxy ? request).mapTo[PRJsArrayResponse]
-
-    futureAvgTimeBetPurchases map {time =>
-      val res = time.res.value.foldLeft(0.0)((acc, el) => {
-        acc + (el \ "avgTimeBetweenPurchases").as[Double]
-      })
-
-      val days = DateUtils.getNumberDaysBetweenDates(start, end)
-      Json.obj("value" -> (if(days > 0) res / days else res))
+    (databaseProxy ? request).mapTo[PRJsArrayResponse] map {time =>
+      getAverageOfTotalResults(time.res.value, platforms, start, end)
     }
   }
 
@@ -500,15 +496,8 @@ class AnalyticsServiceImpl extends AnalyticsService {
     val fields = ("lowerDate", "upperDate")
     val collection = Metrics.averagePurchasePerSessionCollection(companyName, applicationName)
     val request = new GetDocumentsWithinTimeRange(new Stack, collection, fields, start, end, true)
-    val futureAvgPurchasesPerSession = (databaseProxy ? request).mapTo[PRJsArrayResponse]
-
-    futureAvgPurchasesPerSession map {purchasesPerSession =>
-      val res = purchasesPerSession.res.value.foldLeft(0.0)((acc, el) => {
-        acc + (el \ "avgPurchasesSession").as[Double]
-      })
-
-      val days = DateUtils.getNumberDaysBetweenDates(start, end)
-      Json.obj("value" -> (if(days > 0) res / days else res))
+    (databaseProxy ? request).mapTo[PRJsArrayResponse] map {p =>
+      getAverageOfTotalResults(p.res.value, platforms, start, end)
     }
   }
 
