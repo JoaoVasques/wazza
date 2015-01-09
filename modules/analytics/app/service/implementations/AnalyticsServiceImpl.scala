@@ -45,7 +45,7 @@ class AnalyticsServiceImpl extends AnalyticsService {
 
     new JsArray(List.range(0, days) map {i =>{
       Json.obj(
-        "day" -> s.withFieldAdded(DurationFieldType.days(), i).toDate.getTime,//.toString("dd MMM"),
+        "day" -> s.withFieldAdded(DurationFieldType.days(), i).toDate.getTime,
         "value" -> 0.0,
         "platforms" -> (platforms map {p => Json.obj("value" -> 0.0, "platform" -> p)})
       )
@@ -75,7 +75,7 @@ class AnalyticsServiceImpl extends AnalyticsService {
             val platformInfo = getPlatform(res, p)
             Json.obj(
               "platform" -> ((platformInfo \ "platform").as[String]),
-              "value" -> ((platformInfo \ "res").as[Double])
+              "value" -> ((platformInfo \ "value").as[Double])
             )
           }})
           
@@ -185,7 +185,7 @@ class AnalyticsServiceImpl extends AnalyticsService {
         new JsArray(arpu.res.value map {el =>
           val day = new LocalDate((el \ "lowerDate").as[Double].longValue)
           Json.obj(
-            "day" -> day.toString("dd MM"),
+            "day" -> day.toDate.getTime,
             "value" -> (el \ "arpu").as[Double],
             "platforms" -> (platforms map {p => {
               val platformInfo = getPlatform(el, p)
@@ -236,7 +236,7 @@ class AnalyticsServiceImpl extends AnalyticsService {
         new JsArray(avgRevenueSession.res.value.map {el =>
           val day = new LocalDate((el \ "lowerDate").as[Double].longValue)
           Json.obj(
-            "day" -> day.toString("dd MM"),
+            "day" -> day.toDate.getTime,
             "value" -> (el \ "avgRevenueSession").as[Double],
             "platforms" -> (platforms map {p => {
               val platformInfo = getPlatform(el, p)
@@ -262,6 +262,7 @@ class AnalyticsServiceImpl extends AnalyticsService {
     val collection = Metrics.avgRevenueSessionCollection(companyName, applicationName)
     val request = new GetDocumentsWithinTimeRange(new Stack, collection, fields, start, end, true)
     val futureAvgRevenueSession = (databaseProxy ? request).mapTo[PRJsArrayResponse]
+
 
     def averagenizer(v: Double): Double = {
       val days = DateUtils.getNumberDaysBetweenDates(start, end)
@@ -313,7 +314,7 @@ class AnalyticsServiceImpl extends AnalyticsService {
          new JsArray(revenue.res.value map {(el: JsValue) => {
            val day = new LocalDate((el \ "lowerDate").as[Double].longValue)
            Json.obj(
-             "day" -> day.toString("dd MM"),
+             "day" -> day.toDate.getTime,
              "value" -> (el \ "total").as[Double],
              "platforms" -> (platforms map {p => {
                val platformInfo = getPlatform(el, p)
@@ -338,7 +339,8 @@ class AnalyticsServiceImpl extends AnalyticsService {
     val fields = ("lowerDate", "upperDate")
     val collection = Metrics.avgPurchasesUserCollection(companyName, applicationName)
     val request = new GetDocumentsWithinTimeRange(new Stack, collection, fields, start, end, true)
-    (databaseProxy ? request).mapTo[PRJsArrayResponse] map {r =>
+    val future = (databaseProxy ? request).mapTo[PRJsArrayResponse]
+    future map {r =>
       getAverageOfTotalResults(r.res.value, platforms, start, end)
     }
   }
@@ -386,7 +388,8 @@ class AnalyticsServiceImpl extends AnalyticsService {
     val fields = ("lowerDate", "upperDate")
     val collection = Metrics.lifeTimeValueCollection(companyName, applicationName)
     val request = new GetDocumentsWithinTimeRange(new Stack, collection, fields, start, end, true)
-    (databaseProxy ? request).mapTo[PRJsArrayResponse] map {ltv =>
+    val future = (databaseProxy ? request).mapTo[PRJsArrayResponse]
+    future map {ltv =>
       getAverageOfTotalResults(ltv.res.value, platforms, start, end)
     }
   }
@@ -445,7 +448,8 @@ class AnalyticsServiceImpl extends AnalyticsService {
     val fields = ("lowerDate", "upperDate")
     val collection = Metrics.averageTimeBetweenPurchasesCollection(companyName, applicationName)
     val request = new GetDocumentsWithinTimeRange(new Stack, collection, fields, start, end, true)
-    (databaseProxy ? request).mapTo[PRJsArrayResponse] map {time =>
+    val future = (databaseProxy ? request).mapTo[PRJsArrayResponse]
+    future map {time =>
       getAverageOfTotalResults(time.res.value, platforms, start, end)
     }
   }
@@ -496,7 +500,8 @@ class AnalyticsServiceImpl extends AnalyticsService {
     val fields = ("lowerDate", "upperDate")
     val collection = Metrics.averagePurchasePerSessionCollection(companyName, applicationName)
     val request = new GetDocumentsWithinTimeRange(new Stack, collection, fields, start, end, true)
-    (databaseProxy ? request).mapTo[PRJsArrayResponse] map {p =>
+    val future = (databaseProxy ? request).mapTo[PRJsArrayResponse]
+    future map {p =>
       getAverageOfTotalResults(p.res.value, platforms, start, end)
     }
   }

@@ -140,15 +140,17 @@ class AnalyticsController @Inject()(
     startDateStr: String,
     endDateStr: String
   ) = Action.async {implicit request =>
-    val platforms = List("Android", "iOS")
-    executeRequest[JsValue](
-      companyName,
-      applicationName,
-      startDateStr,
-      endDateStr,
-      analyticsService.getTotalARPU,
-      platforms,
-      Total)
+    getPlatforms(request) match {
+      case Some(platforms) => executeRequest[JsValue](
+        companyName,
+        applicationName,
+        startDateStr,
+        endDateStr,
+        analyticsService.getTotalARPU,
+        platforms,
+        Total)
+      case _ => Future.successful(BadRequest("Please select a platform"))
+    }
   }
 
   def getDetailedARPU(
@@ -157,15 +159,17 @@ class AnalyticsController @Inject()(
     startDateStr: String,
     endDateStr: String
   ) = Action.async {implicit request =>
-    val platforms = List("Android", "iOS")
-    executeRequest(
-      companyName,
-      applicationName,
-      startDateStr,
-      endDateStr,
-      analyticsService.getARPU,
-      platforms,
-      Detailed)
+    getPlatforms(request) match {
+      case Some(platforms) => executeRequest(
+        companyName,
+        applicationName,
+        startDateStr,
+        endDateStr,
+        analyticsService.getARPU,
+        platforms,
+        Detailed)
+      case _ => Future.successful(BadRequest("Please select a platform"))
+    }
   }
 
   def getTotalAverageRevenuePerSession(
@@ -174,15 +178,17 @@ class AnalyticsController @Inject()(
     startDateStr: String,
     endDateStr: String
   ) = Action.async {implicit request =>
-    val platforms = List("Android", "iOS")
-    executeRequest(
-      companyName,
-      applicationName,
-      startDateStr,
-      endDateStr,
-      analyticsService.getTotalAverageRevenuePerSession,
-      platforms,
-      Total)
+    getPlatforms(request) match {
+      case Some(platforms) => executeRequest(
+        companyName,
+        applicationName,
+        startDateStr,
+        endDateStr,
+        analyticsService.getTotalAverageRevenuePerSession,
+        platforms,
+        Total)
+      case _ => Future.successful(BadRequest("Please select a platform"))
+    }
   }
 
   def getDetailedAverageRevenuePerSession(
@@ -191,15 +197,17 @@ class AnalyticsController @Inject()(
     startDateStr: String,
     endDateStr: String
   ) = Action.async {implicit request =>
-    val platforms = List("Android", "iOS")
-    executeRequest(
-      companyName,
-      applicationName,
-      startDateStr,
-      endDateStr,
-      analyticsService.getAverageRevenuePerSession,
-      platforms,
-      Detailed)
+    getPlatforms(request) match {
+      case Some(platforms) => executeRequest(
+        companyName,
+        applicationName,
+        startDateStr,
+        endDateStr,
+        analyticsService.getAverageRevenuePerSession,
+        platforms,
+        Detailed)
+      case _ => Future.successful(BadRequest("Please select a platform"))
+    }
   }
 
   def getTotalRevenue(
@@ -246,15 +254,19 @@ class AnalyticsController @Inject()(
     startDateStr: String,
     endDateStr: String
   ) = Action.async {implicit request =>
-    val platforms = List("Android", "iOS")
-    executeRequest(
-      companyName,
-      applicationName,
-      startDateStr,
-      endDateStr,
-      analyticsService.getTotalLifeTimeValue,
-      platforms,
-      Total)
+    val f = getPlatforms(request) match {
+      case Some(platforms) => executeRequest(
+        companyName,
+        applicationName,
+        startDateStr,
+        endDateStr,
+        analyticsService.getTotalLifeTimeValue,
+        platforms,
+        Total)
+      case _ => Future.successful(BadRequest("Please select a platform"))
+    }
+    f map {r => println("ltv result: " + r)}
+    f
   }
 
   def getDetailedLifeTimeValue(
@@ -263,15 +275,17 @@ class AnalyticsController @Inject()(
     startDateStr: String,
     endDateStr: String
   ) = Action.async {implicit request =>
-    val platforms = List("Android", "iOS")
-    executeRequest(
-      companyName,
-      applicationName,
-      startDateStr,
-      endDateStr,
-      analyticsService.getLifeTimeValue,
-      platforms,
-      Detailed)
+    getPlatforms(request) match {
+      case Some(platforms) => executeRequest(
+        companyName,
+        applicationName,
+        startDateStr,
+        endDateStr,
+        analyticsService.getLifeTimeValue,
+        platforms,
+        Detailed)
+      case _ => Future.successful(BadRequest("Please select a platform"))
+    }
   }
 
   def getTotalAveragePurchasesUser(
@@ -280,15 +294,17 @@ class AnalyticsController @Inject()(
     startDateStr: String,
     endDateStr: String
   ) = Action.async {implicit request =>
-    val platforms = List("Android", "iOS")
-    executeRequest(
-      companyName,
-      applicationName,
-      startDateStr,
-      endDateStr,
-      analyticsService.getTotalAveragePurchasesUser,
-      platforms,
-      Total)
+    getPlatforms(request) match {
+      case Some(platforms) => executeRequest(
+        companyName,
+        applicationName,
+        startDateStr,
+        endDateStr,
+        analyticsService.getTotalAveragePurchasesUser,
+        platforms,
+        Total)
+      case _ => Future.successful(BadRequest("Please select a platform"))
+    }
   }
 
   def getDetailedAveragePurchasesUser(
@@ -297,15 +313,17 @@ class AnalyticsController @Inject()(
     startDateStr: String,
     endDateStr: String
   ) = Action.async {implicit request =>
-    val platforms = List("Android", "iOS")
-    executeRequest(
-      companyName,
-      applicationName,
-      startDateStr,
-      endDateStr,
-      analyticsService.getAveragePurchasesUser,
-      platforms,
-      Detailed)
+    getPlatforms(request) match {
+      case Some(platforms) => executeRequest(
+        companyName,
+        applicationName,
+        startDateStr,
+        endDateStr,
+        analyticsService.getAveragePurchasesUser,
+        platforms,
+        Detailed)
+      case _ => Future.successful(BadRequest("Please select a platform"))
+    }
   }
 
   def getTotalAverageTimeFirstPurchase(
@@ -314,15 +332,17 @@ class AnalyticsController @Inject()(
     startDateStr: String,
     endDateStr: String
   ) = Action.async {implicit request =>
-    val platforms = List("Android", "iOS")
-    executeRequest(
-      companyName,
-      applicationName,
-      startDateStr,
-      endDateStr,
-      analyticsService.getTotalAverageTimeFirstPurchase,
-      platforms,
-      Total)
+    getPlatforms(request) match {
+      case Some(platforms) => executeRequest(
+        companyName,
+        applicationName,
+        startDateStr,
+        endDateStr,
+        analyticsService.getTotalAverageTimeFirstPurchase,
+        platforms,
+        Total)
+      case _ => Future.successful(BadRequest("Please select a platform"))
+    }
   }
 
   def getAverageTimeFirstPurchase(
@@ -331,15 +351,17 @@ class AnalyticsController @Inject()(
     startDateStr: String,
     endDateStr: String
   ) = Action.async {implicit request =>
-    val platforms = List("Android", "iOS")
-    executeRequest(
-      companyName,
-      applicationName,
-      startDateStr,
-      endDateStr,
-      analyticsService.getAverageTimeFirstPurchase,
-      platforms,
-      Detailed)
+    getPlatforms(request) match {
+      case Some(platforms) => executeRequest(
+        companyName,
+        applicationName,
+        startDateStr,
+        endDateStr,
+        analyticsService.getAverageTimeFirstPurchase,
+        platforms,
+        Detailed)
+      case _ => Future.successful(BadRequest("Please select a platform"))
+    }
   }
 
   def getTotalAverageTimeBetweenPurchases(
@@ -348,15 +370,17 @@ class AnalyticsController @Inject()(
     startDateStr: String,
     endDateStr: String
   ) = Action.async {implicit request =>
-    val platforms = List("Android", "iOS")
-    executeRequest(
-      companyName,
-      applicationName,
-      startDateStr,
-      endDateStr,
-      analyticsService.getTotalAverageTimeBetweenPurchases,
-      platforms,
-      Total)
+    getPlatforms(request) match {
+      case Some(platforms) => executeRequest(
+        companyName,
+        applicationName,
+        startDateStr,
+        endDateStr,
+        analyticsService.getTotalAverageTimeBetweenPurchases,
+        platforms,
+        Total)
+      case _ => Future.successful(BadRequest("Please select a platform"))
+    }
   }
 
   def getAverageTimeBetweenPurchases(
@@ -365,15 +389,17 @@ class AnalyticsController @Inject()(
     startDateStr: String,
     endDateStr: String
   ) = Action.async {implicit request =>
-    val platforms = List("Android", "iOS")
-    executeRequest(
-      companyName,
-      applicationName,
-      startDateStr,
-      endDateStr,
-      analyticsService.getAverageTimeBetweenPurchases,
-      platforms,
-      Detailed)
+    getPlatforms(request) match {
+      case Some(platforms) => executeRequest(
+        companyName,
+        applicationName,
+        startDateStr,
+        endDateStr,
+        analyticsService.getAverageTimeBetweenPurchases,
+        platforms,
+        Detailed)
+      case _ => Future.successful(BadRequest("Please select a platform"))
+    }
   }
 
   def getTotalNumberPayingCustomers(
@@ -382,15 +408,17 @@ class AnalyticsController @Inject()(
     startDateStr: String,
     endDateStr: String
   ) = Action.async {implicit request =>
-    val platforms = List("Android", "iOS")
-    executeRequest(
-      companyName,
-      applicationName,
-      startDateStr,
-      endDateStr,
-      analyticsService.getTotalNumberPayingCustomers,
-      platforms,
-      Total)
+    getPlatforms(request) match {
+      case Some(platforms) => executeRequest(
+        companyName,
+        applicationName,
+        startDateStr,
+        endDateStr,
+        analyticsService.getTotalNumberPayingCustomers,
+        platforms,
+        Total)
+      case _ => Future.successful(BadRequest("Please select a platform"))
+    }
   }
 
   def getNumberPayingCustomers(
@@ -399,15 +427,17 @@ class AnalyticsController @Inject()(
     startDateStr: String,
     endDateStr: String
   ) = Action.async {implicit request =>
-    val platforms = List("Android", "iOS")
-    executeRequest(
-      companyName,
-      applicationName,
-      startDateStr,
-      endDateStr,
-      analyticsService.getNumberPayingCustomers,
-      platforms,
-      Detailed)
+    getPlatforms(request) match {
+      case Some(platforms) => executeRequest(
+        companyName,
+        applicationName,
+        startDateStr,
+        endDateStr,
+        analyticsService.getNumberPayingCustomers,
+        platforms,
+        Detailed)
+      case _ => Future.successful(BadRequest("Please select a platform"))
+    }
   }
 
   def getTotalAveragePurchasePerSession(
@@ -416,15 +446,17 @@ class AnalyticsController @Inject()(
     startDateStr: String,
     endDateStr: String
   ) = Action.async {implicit request =>
-    val platforms = List("Android", "iOS")
-    executeRequest(
-      companyName,
-      applicationName,
-      startDateStr,
-      endDateStr,
-      analyticsService.getTotalAveragePurchasePerSession,
-      platforms,
-      Total)
+    getPlatforms(request) match {
+      case Some(platforms) => executeRequest(
+        companyName,
+        applicationName,
+        startDateStr,
+        endDateStr,
+        analyticsService.getTotalAveragePurchasePerSession,
+        platforms,
+        Total)
+      case _ => Future.successful(BadRequest("Please select a platform"))
+    }
   }
 
   def getAveragePurchasePerSession(
@@ -433,15 +465,17 @@ class AnalyticsController @Inject()(
     startDateStr: String,
     endDateStr: String
   ) = Action.async {implicit request =>
-    val platforms = List("Android", "iOS")
-    executeRequest(
-      companyName,
-      applicationName,
-      startDateStr,
-      endDateStr,
-      analyticsService.getAveragePurchasePerSession,
-      platforms,
-      Detailed)
+    getPlatforms(request) match {
+      case Some(platforms) => executeRequest(
+        companyName,
+        applicationName,
+        startDateStr,
+        endDateStr,
+        analyticsService.getAveragePurchasePerSession,
+        platforms,
+        Detailed)
+      case _ => Future.successful(BadRequest("Please select a platform"))
+    }
   }
 }
 
