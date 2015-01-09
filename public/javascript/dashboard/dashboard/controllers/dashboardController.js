@@ -22,7 +22,7 @@ dashboard.controller('DashboardController', [
         SelectedPlatformsChange
         ) {
 
-        /** General KPIs **/
+        /** Revenue KPIs **/
         $scope.totalRevenue = new KpiModel("Total Revenue", "analytics.revenue");
         $scope.arpu = new KpiModel("Avg Revenue Per User", "analytics.arpu");
         $scope.avgRevSession = new KpiModel("Avg Revenue per Session", "analytics.avgRevenueSession");
@@ -50,25 +50,28 @@ dashboard.controller('DashboardController', [
 
           $q.all([
             GetKPIService.getTotalKpiData(companyName, app, begin, end, "revenue", $scope.platforms),
-            GetKPIService.getTotalKpiData(companyName, app, begin, end, "arpu"),
-            GetKPIService.getTotalKpiData(companyName, app, begin, end, "avgRevenueSession")
-            /*GetKPIService.getTotalKpiData(companyName, app, begin, end, "ltv"),
-            GetKPIService.getTotalKpiData(companyName, app, begin, end, "avgPurchasesUser"),
-            GetKPIService.getTotalKpiData(companyName, app, begin, end, "avgTimeBetweenPurchases"),
-            GetKPIService.getTotalKpiData(companyName, app, begin, end, "payingUsers"),
+            GetKPIService.getTotalKpiData(companyName, app, begin, end, "arpu", $scope.platforms),
+            GetKPIService.getTotalKpiData(companyName, app, begin, end, "avgRevenueSession", $scope.platforms),
+            GetKPIService.getTotalKpiData(companyName, app, begin, end, "ltv", $scope.platforms),
+            GetKPIService.getTotalKpiData(companyName, app, begin, end, "payingUsers", $scope.platforms),
+            GetKPIService.getTotalKpiData(companyName, app, begin, end, "avgPurchasesUser", $scope.platforms),
+            GetKPIService.getTotalKpiData(companyName, app, begin, end, "purchasesPerSession", $scope.platforms),
+            GetKPIService.getTotalKpiData(companyName, app, begin, end, "avgTimeBetweenPurchases", $scope.platforms),
+              /*
+            
             GetKPIService.getTotalKpiData(companyName, app, begin, end, "avgTime1stPurchase"),
-            GetKPIService.getTotalKpiData(companyName, app, begin, end, "purchasesPerSession")*/
+            */
             ]).then(function(res) {
               $scope.totalRevenue.updateKpiValue(res[0].data);
               $scope.arpu.updateKpiValue(res[1].data);
               $scope.avgRevSession.updateKpiValue(res[2].data);
-                /*$scope.ltv.updateKpiValue(extractValue(1, 'value'), extractValue(1, 'delta'))
-                $scope.arpu.updateKpiValue(extractValue(2, 'value'), extractValue(2, 'delta'))
-                $scope.avgPurchasesUser.updateKpiValue(extractValue(3, 'value'), extractValue(3, 'delta'))
-                $scope.avgTimeBetweenPurchases.updateKpiValue(extractValue(4, 'value'), extractValue(4, 'delta'))
-                $scope.payingUsers.updateKpiValue(extractValue(5, 'value'), extractValue(5, 'delta'))
-                $scope.avgTimeFirstPurchase.updateKpiValue(extractValue(6, 'value'), extractValue(6, 'delta'))
-                $scope.purchasesPerSession.updateKpiValue(extractValue(8, 'value'), extractValue(8, 'delta'))*/
+              $scope.ltv.updateKpiValue(res[3].data);
+              $scope.payingUsers.updateKpiValue(res[4].data);
+              $scope.avgPurchasesUser.updateKpiValue(res[5].data);
+              $scope.purchasesPerSession.updateKpiValue(res[5].data);
+              $scope.avgTimeBetweenPurchases.updateKpiValue(res[6].data);
+              /*  $scope.avgTimeFirstPurchase.updateKpiValue(extractValue(6, 'value'), extractValue(6, 'delta'))
+                */
             });
         };
 

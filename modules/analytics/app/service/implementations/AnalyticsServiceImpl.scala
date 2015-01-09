@@ -471,13 +471,23 @@ class AnalyticsServiceImpl extends AnalyticsService {
     end: Date,
     platforms: List[String]
   ): Future[JsValue] = {
-    calculateNumberPayingCustomers(
-      companyName,
-      applicationName,
-      ("lowerDate", "upperDate"),
-      start,
-      end
-    ) map {payingCustomers => Json.obj("value" -> payingCustomers)}
+    val collection = Metrics.payingUsersCollection(companyName, applicationName)
+    val request = new GetDocumentsWithinTimeRange(new Stack, collection, ("lowerDate", "upperDate"), start, end, true)
+    val empty = Json.obj("value" -> 0, "platforms" -> (platforms map {p => Json.obj("platform" -> p, "value" -> 0)}))
+    (databaseProxy ? request).mapTo[PRJsArrayResponse] map {r =>
+      if(r.res.value.isEmpty) {
+        empty
+      } else {
+        r.res.value.foldLeft(empty){(res, current) => {
+          val totalUpdated = (res \ "value").as[Int] + 1
+          val updatedPlatforms = platforms map {platform =>
+            val pInfo = (res \ "platforms").as[JsArray].value.find(p => (p \ "platform").as[String] == platform).get
+            Json.obj("platform" -> platform, "value" -> ((pInfo \ "value").as[Int] + 1))
+          }
+          Json.obj("value" -> totalUpdated, "platforms" -> updatedPlatforms)
+        }}
+      }
+    }
   }
 
   def getNumberPayingCustomers(
