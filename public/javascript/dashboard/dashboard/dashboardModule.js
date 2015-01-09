@@ -10,15 +10,6 @@ var dashboard = angular.module('DashboardModule', [
     'SettingsServices'
 ]);
 
-dashboard.value("LineChartConfiguration", {
-  fillColor : "rgba(151,187,205,0.5)",
-  strokeColor : "rgba(151,187,205,1)",
-  pointColor : "rgba(151,187,205,1)",
-  pointStrokeColor : "#fff",
-  data: []
-});
-
-
 dashboard.factory("KpiModel", function() {
   function KpiModel(name, link) {
     this.name = name;
@@ -40,16 +31,6 @@ dashboard.factory("KpiModel", function() {
       this.value = value.toFixed(DecimalPlaces);
       this.delta = delta;
       this.platforms = data.platforms;
-      // if(this.value > 0) {
-      //   this.css = "kpi-delta-positive";
-      //   this.icon = "glyphicon glyphicon-arrow-up";
-      // } else if(this.value < 0){
-      //   this.css = "kpi-delta-negative";
-      //   this.icon = "glyphicon glyphicon-arrow-down";
-      // } else {
-      //   this.css = "kpi-delta";
-      //   this.icon = "glyphicon glyphicon-minus";
-      // }
     },
     updateUnitType: function(newType) {
       this.unitType = newType;

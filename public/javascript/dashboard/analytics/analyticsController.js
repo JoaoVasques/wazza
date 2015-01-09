@@ -6,7 +6,6 @@ dashboard
   '$rootScope',
   'ApplicationStateService',
   'GetKPIService',
-  'LineChartConfiguration',
   'DateModel',
   'DetailedKpiModel',
   function (
@@ -14,7 +13,6 @@ dashboard
     $rootScope,
     ApplicationStateService,
     GetKPIService,
-    LineChartConfiguration,
     DateModel,
     DetailedKpiModel
   ) {
