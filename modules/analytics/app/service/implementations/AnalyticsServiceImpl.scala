@@ -222,7 +222,14 @@ class AnalyticsServiceImpl extends AnalyticsService {
           val day = new LocalDate((el \ "lowerDate").as[Double].longValue)
           Json.obj(
             "day" -> day.toString("dd MM"),
-            "value" -> (el \ "avgRevenueSession").as[Double]
+            "value" -> (el \ "avgRevenueSession").as[Double],
+            "platforms" -> (platforms map {p => {
+              val platformInfo = getPlatform(el, p)
+              Json.obj(
+                "platform" -> ((platformInfo \ "platform").as[String]),
+                "value" -> ((platformInfo \ "res").as[Double])
+              )
+            }})
           )
         })
       }
@@ -241,13 +248,22 @@ class AnalyticsServiceImpl extends AnalyticsService {
     val request = new GetDocumentsWithinTimeRange(new Stack, collection, fields, start, end, true)
     val futureAvgRevenueSession = (databaseProxy ? request).mapTo[PRJsArrayResponse]
 
-    futureAvgRevenueSession map {avgRevenueSession =>
-      val res = avgRevenueSession.res.value.foldLeft(0.0)((acc, el) => {
-        acc + (el \ "avgRevenueSession").as[Double]
-      })
-
+    def averagenizer(v: Double): Double = {
       val days = DateUtils.getNumberDaysBetweenDates(start, end)
-      Json.obj("value" -> (if(days > 0) res / days else res))
+      if(days > 0) v / days else v
+    }
+
+    futureAvgRevenueSession map {r =>
+      val res = getDetailedResult(r.res.value, platforms)
+      Json.obj(
+        "value" -> averagenizer((res \ "value").as[Double]),
+        "platforms" -> ((res \ "platforms").as[JsArray].value map {p =>
+          Json.obj(
+            "platform" -> ((p \ "platform").as[String]),
+            "value" -> averagenizer((p \ "value").as[Double])
+          )
+        })
+      )
     }
   }
 
