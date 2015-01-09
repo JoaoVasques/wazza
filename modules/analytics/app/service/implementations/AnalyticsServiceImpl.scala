@@ -46,8 +46,8 @@ class AnalyticsServiceImpl extends AnalyticsService {
     new JsArray(List.range(0, days) map {i =>{
       Json.obj(
         "day" -> s.withFieldAdded(DurationFieldType.days(), i).toDate.getTime,//.toString("dd MMM"),
-        "value" -> 0,
-        "platforms" -> (platforms map {p => Json.obj("value" -> 0, "platform" -> p)})
+        "value" -> 0.0,
+        "platforms" -> (platforms map {p => Json.obj("value" -> 0.0, "platform" -> p)})
       )
     }})
   }
@@ -105,6 +105,28 @@ class AnalyticsServiceImpl extends AnalyticsService {
     }
   }
 
+  // Gets list of platforms from JSON retrived from database
+  private def getPlatform(json: JsValue, platform: String): JsValue = {
+    (json \ "platforms").as[JsArray].value.find(e => (e \ "platform").as[String] == platform).get
+  }
+
+  private def getDetailedResult(data: Seq[JsValue], platforms: List[String]): JsValue = {
+    val emptyResult = Json.obj(
+      "value" -> 0.0,
+      "platforms" -> (platforms map {p => Json.obj("platform" -> p, "value" -> 0.0)})
+    )
+    data.foldLeft(emptyResult)((res, current) => {
+      val updateResult = (res \ "value").as[Double] + (current \ "result").as[Double]
+      val platformResults = platforms map {platform =>
+        val resPlatform = getPlatform(res, platform)
+        val currentPlatform = getPlatform(current, platform)
+        val updatedValue = (resPlatform \ "value").as[Double] + (currentPlatform \ "res").as[Double]
+        Json.obj("platform" -> platform, "value" -> updatedValue)
+      }
+      Json.obj("value" -> updateResult, "platforms" -> platformResults)
+    })
+  }
+
   def getTopTenItems(
     companyName: String,
     applicationName: String,
@@ -135,7 +157,14 @@ class AnalyticsServiceImpl extends AnalyticsService {
           val day = new LocalDate((el \ "lowerDate").as[Double].longValue)
           Json.obj(
             "day" -> day.toString("dd MM"),
-            "value" -> (el \ "arpu").as[Double]
+            "value" -> (el \ "arpu").as[Double],
+            "platforms" -> (platforms map {p => {
+              val platformInfo = getPlatform(el, p)
+              Json.obj(
+                "platform" -> ((platformInfo \ "platform").as[String]),
+                "value" -> ((platformInfo \ "res").as[Double])
+              )
+            }})
           )
         })
       }
@@ -154,13 +183,22 @@ class AnalyticsServiceImpl extends AnalyticsService {
     val request = new GetDocumentsWithinTimeRange(new Stack, arpuCollection, fields, start, end, true)
     val futureArpu = (databaseProxy ? request).mapTo[PRJsArrayResponse]
 
-    futureArpu map {arpu =>
-      val res = arpu.res.value.foldLeft(0.0)((acc, el) => {
-        acc + (el \ "arpu").as[Double]
-      })
-
+    def averagenizer(v: Double): Double = {
       val days = DateUtils.getNumberDaysBetweenDates(start, end)
-      Json.obj("value" -> (if(days > 0) res / days else res))
+      if(days > 0) v / days else v
+    }
+
+    futureArpu map {r =>    
+      val res = getDetailedResult(r.res.value, platforms)
+      Json.obj(
+        "value" -> averagenizer((res \ "value").as[Double]),
+        "platforms" -> ((res \ "platforms").as[JsArray].value map {p =>
+          Json.obj(
+            "platform" -> ((p \ "platform").as[String]),
+            "value" -> averagenizer((p \ "value").as[Double])
+          )
+        })
+      )
     }
   }
 
@@ -224,27 +262,7 @@ class AnalyticsServiceImpl extends AnalyticsService {
     val collection = Metrics.totalRevenueCollection(companyName, applicationName)
     val request = new GetDocumentsWithinTimeRange(new Stack, collection, fields, start, end, true)
     val futureRevenue = (databaseProxy ? request).mapTo[PRJsArrayResponse]
-
-    val emptyResult = Json.obj(
-      "value" -> 0.0,
-      "platforms" -> (platforms map {p => Json.obj("platform" -> p, "value" -> 0.0)})
-    )
-
-    futureRevenue map {revenue =>
-      revenue.res.value.foldLeft(emptyResult)((res, current) => {
-        val updateResult = (res \ "value").as[Double] + (current \ "result").as[Double]
-        val platformResults = platforms map {platform =>
-          def getPlatform(json: JsValue): JsValue = {
-            (json \ "platforms").as[JsArray].value.find(e => (e \ "platform").as[String] == platform).get
-          }
-          val resPlatform = getPlatform(res)
-          val currentPlatform = getPlatform(current)
-          val updatedValue = (resPlatform \ "value").as[Double] + (currentPlatform \ "res").as[Double]
-          Json.obj("platform" -> platform, "value" -> updatedValue)
-        }
-        Json.obj("value" -> updateResult, "platforms" -> platformResults)
-      })
-    }
+    futureRevenue map {r => getDetailedResult(r.res.value, platforms)}
   }
 
   def getRevenue(
@@ -262,11 +280,17 @@ class AnalyticsServiceImpl extends AnalyticsService {
          fillEmptyResult(start, end, platforms)
        } else {
          new JsArray(revenue.res.value map {(el: JsValue) => {
-           println(el)
            val day = new LocalDate((el \ "lowerDate").as[Double].longValue)
            Json.obj(
              "day" -> day.toString("dd MM"),
-             "value" -> (el \ "totalRevenue").as[Int]
+             "value" -> (el \ "totalRevenue").as[Int],
+             "platforms" -> (platforms map {p => {
+               val platformInfo = getPlatform(el, p)
+               Json.obj(
+                 "platform" -> ((platformInfo \ "platform").as[String]),
+                 "value" -> ((platformInfo \ "res").as[Double])
+               )
+             }})
            )
          }})
        }
