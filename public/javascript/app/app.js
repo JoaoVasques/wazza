@@ -11,6 +11,7 @@ angular.module('Wazza', [
     'UserModule',
     'SecurityModule',
     'DashboardModule',
+    'ChartModule',
     'Wazza.broadcastEvents',
     'duScroll',
     'nvd3'
