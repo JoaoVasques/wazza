@@ -84,8 +84,6 @@ wazzaCharts.factory('LineChartModel', function(){
             isTotal ? getDataValues(dataKey).push([day, data.value]) : getDataValues(dataKey).push([day, getPlatformValue(dataKey)]);
           }
         };
-        console.log("HEYY");
-        console.log(chartData);
         updateEntry("Total", true);
         _.each(platforms, function(p) {
           updateEntry(p, true);
@@ -93,8 +91,6 @@ wazzaCharts.factory('LineChartModel', function(){
       };
 
       _.each(chartData.data, addDataToChart);
-      console.log("UPDATED DATA");
-      console.log(_this.data);
     }
   };
 
