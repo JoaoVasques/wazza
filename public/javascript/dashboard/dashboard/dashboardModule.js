@@ -10,7 +10,7 @@ var dashboard = angular.module('DashboardModule', [
     'SettingsServices'
 ]);
 
-dashboard.factory("KpiModel", function() {
+dashboard.factory("KpiModel", ['HorizontalBarChartModel', function(HorizontalBarChartModel) {
   function KpiModel(name, link) {
     this.name = name;
     this.link = link;
@@ -21,9 +21,13 @@ dashboard.factory("KpiModel", function() {
     this.icon = "glyphicon glyphicon-minus";
     this.platforms = [];
     this.multiPlatform = true;
+    this.chart = new HorizontalBarChartModel(1)
   };
 
   KpiModel.prototype = {
+    updateChartData: function(chartData, platforms) {
+      this.chart.updateChartData(chartData, platforms);
+    },  
     updateKpiValue: function(data) {
       var value = data.value;
       var delta = data.delta;
@@ -31,6 +35,7 @@ dashboard.factory("KpiModel", function() {
       this.value = value.toFixed(DecimalPlaces);
       this.delta = delta;
       this.platforms = data.platforms;
+      this.updateChartData(data, _.map(data.platforms, function(p) {return p.platform;}));
     },
     updateUnitType: function(newType) {
       this.unitType = newType;
@@ -42,9 +47,10 @@ dashboard.factory("KpiModel", function() {
     },
     removePlatform: function(p) {
       this.platforms = _.without(this.platforms, p);
-    }
+    },
+    
   };
 
   return KpiModel;
-});
+}]);
 

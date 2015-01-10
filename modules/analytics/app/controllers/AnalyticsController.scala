@@ -111,6 +111,7 @@ class AnalyticsController @Inject()(
         Ok(result)
       } recover {
         case ex: Exception => {
+          ex.printStackTrace
           BadRequest("Error ocurred")
         }
       }
@@ -254,7 +255,7 @@ class AnalyticsController @Inject()(
     startDateStr: String,
     endDateStr: String
   ) = Action.async {implicit request =>
-    val f = getPlatforms(request) match {
+    getPlatforms(request) match {
       case Some(platforms) => executeRequest(
         companyName,
         applicationName,
@@ -265,8 +266,6 @@ class AnalyticsController @Inject()(
         Total)
       case _ => Future.successful(BadRequest("Please select a platform"))
     }
-    f map {r => println("ltv result: " + r)}
-    f
   }
 
   def getDetailedLifeTimeValue(

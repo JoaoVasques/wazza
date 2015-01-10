@@ -56,5 +56,14 @@ wazzaCharts.factory("HorizontalBarChartModel", function(){
       }
     ];
   };
+
+  HorizontalBarChartModel.prototype = {
+    updateChartData: function(chartData, platforms) {
+      console.log("updateChartData");
+      console.log(chartData);
+      console.log(platforms);
+    }
+  };
+    
   return HorizontalBarChartModel;
 });
