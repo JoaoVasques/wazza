@@ -1,6 +1,52 @@
 'use strict';
 
-wazzaCharts.factory("HorizontalBarChartModel", function(){
+wazzaCharts.factory("HorizontalBarDataValue", function(){
+  function HorizontalBarDataValue(key, color, value) {
+    this.key = key;
+    this.color = color;
+    this.values = [
+      {
+        "label": key,
+        "value": value
+      }
+    ];
+  };
+
+  return HorizontalBarDataValue;
+});
+
+wazzaCharts.factory("HorizontalBarColors", function(){
+  function Color(type, color) {
+    this.type = type;
+    this.color = color;
+  }
+
+
+  var colorsFactory = {
+    colors: []
+  };
+
+  colorsFactory.colors.push(new Color("Total", "#DC7F11"));
+  colorsFactory.colors.push(new Color("Android", "#2CA02C"));
+  colorsFactory.colors.push(new Color("iOS", "#2980b9"));
+  
+  colorsFactory.getColor = function(type) {
+    return _.find(colorsFactory.colors, function(t) {
+      return t.type == type;
+    });
+  };
+    
+    
+  return colorsFactory;
+});
+
+wazzaCharts.factory("HorizontalBarChartModel", [
+  "HorizontalBarDataValue",
+  "HorizontalBarColors",
+  function(
+    HorizontalBarDataValue,
+    HorizontalBarColors
+  ) {
   function HorizontalBarChartModel(xpto) {
     this.options = {
       chart: {
@@ -23,47 +69,20 @@ wazzaCharts.factory("HorizontalBarChartModel", function(){
       }
     };
 
-    this.data = [
-      {
-        "key": "Android",
-        "color": "#2CA02C",
-        "values": [
-          {
-            "label" : "Android" ,
-            "value" : 18.746444827653
-          }
-        ]
-      },
-      {
-        "key": "iOS",
-        "color": "#2980b9",
-        "values": [
-          {
-            "label" : "iOS" ,
-            "value" : 25.307646510375
-          }
-        ]
-      },
-      {
-        "key": "Total",
-        "color": "#DC7F11",
-        "values": [
-          {
-            "label" : "Total" ,
-            "value" : 40.307646510375
-          }
-        ]
-      }
-    ];
+    this.data = [];
   };
 
   HorizontalBarChartModel.prototype = {
     updateChartData: function(chartData, platforms) {
-      console.log("updateChartData");
-      console.log(chartData);
-      console.log(platforms);
+      var results = [];
+      _.each(platforms, function(platform) {
+        var value = _.find(chartData.platforms, function(p) {return p.platform == platform; }).value;
+         results.push(new HorizontalBarDataValue(platform, HorizontalBarColors.getColor(platform), value));
+      });
+      results.push(new HorizontalBarDataValue("Total", HorizontalBarColors.getColor("Total"), chartData.value));
+      this.data = results;
     }
   };
     
   return HorizontalBarChartModel;
-});
+}]);
