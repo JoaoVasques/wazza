@@ -26,10 +26,10 @@ dashboard
     $scope.updateChart(title, $scope.context);
     $scope.updateOnChangedDate($scope.context, KpiId, title);
 
-    $scope.$on(RevenueDateChanged, function(ev, data) {
-      $scope.context.beginDate = DateModel.startDate;
-      $scope.context.endDate = DateModel.endDate;
-      $scope.updateOnChangedDate($scope.context, KpiId, title);
-    });
-
+    // $scope.$on(RevenueDateChanged, function(ev, data) {
+    //   $scope.context.beginDate = DateModel.startDate;
+    //   $scope.context.endDate = DateModel.endDate;
+    //   $scope.updateOnChangedDate($scope.context, KpiId, title);
+    // });
 }]);
+
