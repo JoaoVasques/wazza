@@ -20,7 +20,7 @@ config(function($stateProvider, $urlRouterProvider, $locationProvider, $httpProv
       $locationProvider.html5Mode(true);
 
       $urlRouterProvider.when("/home","/home/overview/"); //Default to the overview
-      $urlRouterProvider.otherwise('/login');
+      $urlRouterProvider.otherwise('/');
 
       $stateProvider
         .state('webframe', {
