@@ -39,7 +39,6 @@ application.controller('TweakBarController',[
 
     var initPlatforms = function(){
       var appPlatforms = ApplicationStateService.selectedPlatforms;
-      console.log(appPlatforms);
       if(_.contains(appPlatforms, "iOS")) {
         $scope.platforms.iOS = true;
       }

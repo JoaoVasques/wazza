@@ -16,9 +16,19 @@
             <h5>Platforms</h5>
           </div>
           <div class="col-md-8">
-            <ul class="list-inline">
-              <li><input type="checkbox" ng-model="platforms.iOS"> iOS</li>
-              <li><input type="checkbox" ng-model="platforms.Android"> Android</li>
+            <ul class="list-inline storeSelect">
+              <li>
+                <div class="iOSstoreSelect">
+                  <input type="checkbox" ng-model="platforms.iOS" id="iOSPlatformSelect">
+                  <label for="iOSPlatformSelect"></label>
+                </div>
+              </li>
+              <li>
+                <div class="androidstoreSelect">
+                  <input type="checkbox" ng-model="platforms.Android" id="AndroidPlatformSelect">
+                  <label for="AndroidPlatformSelect"></label>
+                </div>                
+              </li>
             </ul>
           </div>        
         </div>

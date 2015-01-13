@@ -65,7 +65,8 @@ wazzaCharts.factory("HorizontalBarChartModel", [
             return d3.format(',.2f')(d);
           }
         },
-        showLegend: false
+        showLegend: false,
+        showControls: false
       }
     };
 
