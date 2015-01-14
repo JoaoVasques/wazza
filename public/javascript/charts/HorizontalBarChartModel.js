@@ -21,7 +21,6 @@ wazzaCharts.factory("HorizontalBarColors", function(){
     this.color = color;
   }
 
-
   var colorsFactory = {
     colors: []
   };

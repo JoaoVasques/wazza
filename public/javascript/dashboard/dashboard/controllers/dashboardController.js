@@ -9,6 +9,7 @@ dashboard.controller('DashboardController', [
     "KpiModel",
     "$q",
     "SelectedPlatformsChange",
+    "DashboardCache",
     function (
         $scope,
         $anchorScroll,
@@ -19,7 +20,8 @@ dashboard.controller('DashboardController', [
         DateModel,
         KpiModel,
         $q,
-        SelectedPlatformsChange
+        SelectedPlatformsChange,
+        DashboardCache
         ) {
 
         /** Revenue KPIs **/
@@ -39,10 +41,11 @@ dashboard.controller('DashboardController', [
 
         $scope.platforms = ApplicationStateService.selectedPlatforms;
         $scope.$on(SelectedPlatformsChange, function(event, args){
+            $scope.platforms = ApplicationStateService.selectedPlatforms
             $scope.updateKPIs();
         });
-        
-        $scope.updateKPIs = function(){
+
+        var getDataFromServer = function() {
           var companyName = ApplicationStateService.getCompanyName();
           var app = ApplicationStateService.getApplicationName();
           var begin = DateModel.formatDate(DateModel.startDate);
@@ -73,6 +76,10 @@ dashboard.controller('DashboardController', [
               /*  $scope.avgTimeFirstPurchase.updateKpiValue(extractValue(6, 'value'), extractValue(6, 'delta'))
                 */
             });
+        };
+        
+        $scope.updateKPIs = function(){
+          getDataFromServer();
         };
 
         $scope.switchDetailedView = function(state) {

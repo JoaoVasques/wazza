@@ -10,8 +10,8 @@ var dashboard = angular.module('DashboardModule', [
     'SettingsServices'
 ]);
 
-dashboard.factory("KpiModel", ['HorizontalBarChartModel', function(HorizontalBarChartModel) {
-  function KpiModel(name, link) {
+dashboard.factory("KpiModel", ['HorizontalBarChartModel',function(HorizontalBarChartModel) {
+    function KpiModel(name, link) {
     this.name = name;
     this.link = link;
     this.delta = 0;
