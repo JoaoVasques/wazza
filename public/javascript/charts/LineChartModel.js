@@ -54,7 +54,7 @@ wazzaCharts.factory('LineChartModel', function(){
       return result === undefined ? false : true;
     }
   };
-
+  
   LineChartModel.prototype = {
     updateChartData: function(chartData, platforms) {
       var _this = this;
@@ -85,6 +85,7 @@ wazzaCharts.factory('LineChartModel', function(){
               }).values;
             };
             isTotal ? getDataValues(dataKey).push([day, data.value]) : getDataValues(dataKey).push([day, getPlatformValue(dataKey)]);
+              maxValue = (data.value > maxValue) ? data.value : maxValue; // update max value
           }
         };
         updateEntry("Total", true);
@@ -93,7 +94,11 @@ wazzaCharts.factory('LineChartModel', function(){
         });
       };
       _.each(chartData.data, addDataToChart);
-      console.log();
+      // update options max Y value
+      if(maxValue > 0) {
+        var newYRange = [0, (maxValue + maxValue / 4)]
+        this.options.forceY = newYRange;
+      }
     },
     removeSeries: function(k) {
       if(seriesExist(k, this.data)) {
