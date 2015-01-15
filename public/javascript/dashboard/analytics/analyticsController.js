@@ -17,7 +17,7 @@ dashboard
     DetailedKpiModel
   ) {
 
-    $scope.updateOnChangedDate = function(context, KpiId, label) {
+    $scope.updateData = function(context, KpiId, label) {
       updateChartData(context, KpiId, label);
       updateTotalValues(context, KpiId);
     };
@@ -31,6 +31,7 @@ dashboard
         KpiId,
         ApplicationStateService.selectedPlatforms
       ).then(function(results) {
+        console.log(results);
         kpiDataSuccessHandler(results, context, label);
       },function(err) {console.log(err);}
       );

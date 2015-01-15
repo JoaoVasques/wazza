@@ -80,12 +80,18 @@ class AnalyticsController @Inject()(
         val platformCurrent = getPlatform(current)
         val platformPrevious = getPlatform(previous)
         val delta = calculateDeltaAux((platformCurrent \ "value").as[Double], (platformPrevious \ "value").as[Double])
-        Json.obj("platform" -> p, "value" -> (platformCurrent \ "value").as[Double], "delta" -> delta)
+        Json.obj(
+          "platform" -> p,
+          "value" -> (platformCurrent \ "value").as[Double],
+          "delta" -> delta,
+          "previous" -> (platformPrevious \ "value").as[Double]
+        )
       }
 
       Json.obj(
         "value" -> (current \ "value").as[Double],
         "delta" -> totalDelta,
+        "previous" -> (previous \ "value").as[Double],
         "platforms" -> platformResults
       )
     }

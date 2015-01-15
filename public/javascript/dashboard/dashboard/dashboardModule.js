@@ -15,6 +15,7 @@ dashboard.factory("KpiModel", ['HorizontalBarChartModel',function(HorizontalBarC
     this.name = name;
     this.link = link;
     this.delta = 0;
+    this.previous = 0;
     this.value = 0;
     this.unitType = "€";
     this.css = "kpi-delta";

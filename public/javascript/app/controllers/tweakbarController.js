@@ -50,6 +50,9 @@ application.controller('TweakBarController',[
 
     var platformWatcher = function(platform, newValue, oldValue) {
       newValue ? ApplicationStateService.addPlatforms(platform) : ApplicationStateService.removePlatform(platform);
+      if($state.current.name != "analytics.dashboard" && $state.current.name != "analytics.overview") {
+        $rootScope.$broadcast($state.current.name + "-platformChange", {platform: platform, value: newValue});
+      }
     }
       
     $scope.$watch("platforms.iOS", function(newValue, oldValue, scope){

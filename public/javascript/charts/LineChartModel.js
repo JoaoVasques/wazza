@@ -37,26 +37,28 @@ wazzaCharts.factory('LineChartModel', function(){
           axisLabelDistance: 20,
             showMaxMin: false
         },
-        forceY: [0, 1]
+        forceY: [0, 1],
+        title: "Title XPTO"
       }
     };
     this.data = [];
   };
 
+  var seriesExist = function(key, arr) {
+    if(_.isEmpty(arr)) {
+      return false;
+    } else {
+      var result = _.find(arr, function(el){
+        return el.key == key;
+      });
+      return result === undefined ? false : true;
+    }
+  };
+
   LineChartModel.prototype = {
     updateChartData: function(chartData, platforms) {
       var _this = this;
-      var seriesExist = function(key, arr) {
-        if(_.isEmpty(arr)) {
-          return false;
-        } else {
-          var result = _.find(arr, function(el){
-            return el.key == key;
-          });
-          return result === undefined ? false : true;
-        }
-      };
-
+      var maxValue = 0;
       var addDataToChart = function(data){
         var day = data.day;
         var updateEntry = function(dataKey, isTotal){
@@ -69,6 +71,7 @@ wazzaCharts.factory('LineChartModel', function(){
           if(!seriesExist(dataKey, _this.data)) {
             var vals = [];
             isTotal ? vals.push([day, data.value]) : vals.push([day, getPlatformValue(dataKey)]);
+            maxValue = (data.value > maxValue) ? data.value : maxValue; // update max value 
             var obj = {
               key: dataKey,
               values: vals,
@@ -89,8 +92,15 @@ wazzaCharts.factory('LineChartModel', function(){
           updateEntry(p, true);
         });
       };
-
       _.each(chartData.data, addDataToChart);
+      console.log();
+    },
+    removeSeries: function(k) {
+      if(seriesExist(k, this.data)) {
+        var element = _.findWhere(this.data, {key: k});
+        var arr = _.without(this.data, element);
+        this.data = _.without(this.data, _.findWhere(this.data, {key: k}));
+      }
     }
   };
 

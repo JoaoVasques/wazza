@@ -16,6 +16,9 @@ dashboard.factory('DetailedKpiModel', ['KpiModel', 'LineChartModel', function(Kp
     },
     updateChartData: function(chartData, platforms) {
       this.chart.updateChartData(chartData, platforms);
+    },
+    removeSerieFromChart: function(serieKey) {
+      this.chart.removeSeries(serieKey);
     }
   };
     
