@@ -16,11 +16,11 @@ broadcastEvents.value('PurchaseDateChanged','analytics.purchasesPerSession');
 /** Platform selection changes **/
 broadcastEvents.value("SelectedPlatformsChange", 0);
 broadcastEvents.value('RevenuePlatformsChanged','analytics.revenue-platformChange');
-broadcastEvents.value('ArpuDateChanged','analytics.arpu-platformChange');
+broadcastEvents.value('ArpuPlatformsChanged','analytics.arpu-platformChange');
 broadcastEvents.value('AvgRevenueSessionPlatformsChanged','analytics.avgRevenueSession-platformChange');
 broadcastEvents.value('ATBPPlatformsChanged','analytics.avgTimebetweenPurchase-platformChange');
 broadcastEvents.value('AT1PPlatformsChanged','analytics.avgTimeFirstPurchase-platformChange');
 broadcastEvents.value('PurchasesPerUserPlatformsChanged','analytics.avgPurchasesUser-platformChange');
 broadcastEvents.value('LtvDatePlatformsChanged','analytics.ltv-platformChange');
 broadcastEvents.value('PayingUsersPlatformsChanged','analytics.payingUsers-platformChange');
-broadcastEvents.value('PurchasePlatformsChanged','analytics.purchasesPerSession-platformChange');
+broadcastEvents.value('PurchaseDatePlatformsChanged','analytics.purchasesPerSession-platformChange');

@@ -8,13 +8,15 @@ dashboard
   'DateModel',
   'DetailedKpiModel',
   'PurchaseDateChanged',
+  'PurchaseDatePlatformsChanged',
   function (
     $scope,
     $rootScope,
     ApplicationStateService,
     DateModel,
     DetailedKpiModel,
-    PurchaseDateChanged
+    PurchaseDateChanged,
+    PurchaseDatePlatformsChanged
   ) {
 
     var title = "Purchases";
@@ -32,4 +34,14 @@ dashboard
       $scope.updateData($scope.context, KpiId, title);
     });
 
-}]);
+    $scope.$on(PurchaseDatePlatformsChanged, function(ev, data) {
+      $scope.updateData($scope.context, KpiId, title);
+      if(!data.value) {
+        $scope.context.removeSerieFromChart(data.platform);
+        $scope.updateChart(title, $scope.context);
+      } else {
+        scope.updateData($scope.context, KpiId, title);
+        $scope.updateChart(title, $scope.context);
+      }
+    });
+  }]);

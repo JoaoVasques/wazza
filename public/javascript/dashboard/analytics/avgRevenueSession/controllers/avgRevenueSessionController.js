@@ -8,13 +8,15 @@ dashboard
   'DateModel',
   'DetailedKpiModel',
   'AvgRevenueSessionDateChanged',
+  'AvgRevenueSessionPlatformsChanged',
   function (
     $scope,
     $rootScope,
     ApplicationStateService,
     DateModel,
     DetailedKpiModel,
-    AvgRevenueSessionDateChanged
+    AvgRevenueSessionDateChanged,
+    AvgRevenueSessionPlatformsChanged
   ) {
 
     var title = "Average Revenue Per Session";
@@ -30,6 +32,17 @@ dashboard
       $scope.context.beginDate = DateModel.startDate;
       $scope.context.endDate = DateModel.endDate;
       $scope.updateData($scope.context, KpiId, title);
+    });
+
+    $scope.$on(AvgRevenueSessionPlatformsChanged, function(ev, data) {
+      $scope.updateData($scope.context, KpiId, title);
+      if(!data.value) {
+        $scope.context.removeSerieFromChart(data.platform);
+        $scope.updateChart(title, $scope.context);
+      } else {
+        scope.updateData($scope.context, KpiId, title);
+        $scope.updateChart(title, $scope.context);
+      }
     });
 
 }]);

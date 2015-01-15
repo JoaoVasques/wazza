@@ -8,13 +8,15 @@ dashboard
   'DateModel',
   'DetailedKpiModel',
   'PurchasesPerUserChanged',
+  'PurchasesPerUserPlatformsChanged',
   function (
     $scope,
     $rootScope,
     ApplicationStateService,
     DateModel,
     DetailedKpiModel,
-    PurchasesPerUserChanged
+    PurchasesPerUserChanged,
+    PurchasesPerUserPlatformsChanged
   ) {
 
     var title = "Avg Purchases Per User";
@@ -30,6 +32,17 @@ dashboard
       $scope.context.beginDate = DateModel.startDate;
       $scope.context.endDate = DateModel.endDate;
       $scope.updateData($scope.context, KpiId, title);
+    });
+
+    $scope.$on(PurchasesPerUserPlatformsChanged, function(ev, data) {
+      $scope.updateData($scope.context, KpiId, title);
+      if(!data.value) {
+        $scope.context.removeSerieFromChart(data.platform);
+        $scope.updateChart(title, $scope.context);
+      } else {
+        scope.updateData($scope.context, KpiId, title);
+        $scope.updateChart(title, $scope.context);
+      }
     });
 
 }]);

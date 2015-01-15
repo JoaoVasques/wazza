@@ -8,13 +8,15 @@ dashboard
   'DateModel',
   'DetailedKpiModel',
   'PayingUsersDateChanged',
+  'PayingUsersPlatformsChanged',
   function (
     $scope,
     $rootScope,
     ApplicationStateService,
     DateModel,
     DetailedKpiModel,
-    PayingUsersDateChanged
+    PayingUsersDateChanged,
+    PayingUsersPlatformsChanged
   ) {
 
     var title = "Paying Users";
@@ -32,4 +34,14 @@ dashboard
       $scope.updateData($scope.context, KpiId, title);
     });
 
+    $scope.$on(PayingUsersPlatformsChanged, function(ev, data) {
+      $scope.updateData($scope.context, KpiId, title);
+      if(!data.value) {
+        $scope.context.removeSerieFromChart(data.platform);
+        $scope.updateChart(title, $scope.context);
+      } else {
+        scope.updateData($scope.context, KpiId, title);
+        $scope.updateChart(title, $scope.context);
+      }
+    });
 }]);

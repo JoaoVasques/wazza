@@ -8,13 +8,15 @@ dashboard
   'DateModel',
   'DetailedKpiModel',
   'LtvDateChanged',
+  'LtvDatePlatformsChanged',
   function (
     $scope,
     $rootScope,
     ApplicationStateService,
     DateModel,
     DetailedKpiModel,
-    LtvDateChanged
+    LtvDateChanged,
+    LtvDatePlatformsChanged
   ) {
 
     var title = "Lifetime Value";
@@ -32,4 +34,14 @@ dashboard
       $scope.updateData($scope.context, KpiId, title);
     });
 
+    $scope.$on(LtvDatePlatformsChanged, function(ev, data) {
+      $scope.updateData($scope.context, KpiId, title);
+      if(!data.value) {
+        $scope.context.removeSerieFromChart(data.platform);
+        $scope.updateChart(title, $scope.context);
+      } else {
+        scope.updateData($scope.context, KpiId, title);
+        $scope.updateChart(title, $scope.context);
+      }
+    });
 }]);
