@@ -31,7 +31,6 @@ dashboard
         KpiId,
         ApplicationStateService.selectedPlatforms
       ).then(function(results) {
-        console.log(results);
         kpiDataSuccessHandler(results, context, label);
       },function(err) {console.log(err);}
       );

@@ -22,25 +22,6 @@ dashboard
     var title = "Total Revenue";
     var KpiId = "revenue";
 
-    var seriesExist = function(key, arr) {
-      if(_.isEmpty(arr)) {
-          return false;
-      } else {
-        var result = _.find(arr, function(el){
-          return el.key == key;
-        });
-          return result === undefined ? false : true;
-      }
-    };
-
-    var removeSeries = function(arr, k) {
-      if(seriesExist(k, arr)) {
-        var element = _.findWhere(arr, {key: k});
-        var arr = _.without(arr, element);
-        return _.without(arr, _.findWhere(arr, {key: k}));
-      }
-    };
-      
     ApplicationStateService.setPath(title);
     $scope.context = new DetailedKpiModel(DateModel.startDate, DateModel.endDate, title);
 
@@ -55,13 +36,13 @@ dashboard
 
     $scope.$on(RevenuePlatformsChanged, function(ev, data) {
       $scope.updateData($scope.context, KpiId, title);
-      console.log(data);
       if(!data.value) {
         $scope.context.removeSerieFromChart(data.platform);
-        if(seriesExist(data.platform, $scope.data)) {
-          $scope.data = removeSeries($scope.data, data.platform);
-        }
+        $scope.updateChart(title, $scope.context);
+      } else {
+        scope.updateData($scope.context, KpiId, title);
+        $scope.updateChart(title, $scope.context);
       }
-    })
+    });
 }]);
 
