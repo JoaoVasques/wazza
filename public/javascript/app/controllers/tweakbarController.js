@@ -5,13 +5,15 @@ application.controller('TweakBarController',[
   '$rootScope',
   '$stateParams',
   'ApplicationStateService',
+  'SelectedPlatformsChange',
   function (
     $scope,
     DateModel,
     $state,
     $rootScope,
     $stateParams,
-    ApplicationStateService
+    ApplicationStateService,
+    SelectedPlatformsChange
     ) {
 
     $scope.userInfo = {
@@ -33,20 +35,16 @@ application.controller('TweakBarController',[
     };
 
     $scope.platforms = {
-      iOS: false,
-      Android: false
+      iOS: true,
+      Android: true
     };
 
-    var initPlatforms = function(){
+    var updatePlatformsCheckboxes = function(){
       var appPlatforms = ApplicationStateService.selectedPlatforms;
-      if(_.contains(appPlatforms, "iOS")) {
-        $scope.platforms.iOS = true;
-      }
-      if(_.contains(appPlatforms, "Android")) {
-        $scope.platforms.Android = true;
-      }
+      $scope.platforms.iOS = _.contains(appPlatforms, "iOS") ? true : false;
+      $scope.platforms.Android = _.contains(appPlatforms, "Android") ? true : false;
     };
-    initPlatforms();
+    $scope.$on(SelectedPlatformsChange, updatePlatformsCheckboxes);
 
     var platformWatcher = function(platform, newValue, oldValue) {
       newValue ? ApplicationStateService.addPlatforms(platform) : ApplicationStateService.removePlatform(platform);
