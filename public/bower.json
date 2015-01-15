@@ -18,6 +18,7 @@
     "tests"
   ],
   "dependencies": {
-    "angular-nvd3": "~0.0.9"
+    "angular-nvd3": "~0.0.9",
+    "spinkit": "~1.0.1"
   }
 }
