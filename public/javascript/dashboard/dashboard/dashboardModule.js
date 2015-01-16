@@ -11,7 +11,8 @@ var dashboard = angular.module('DashboardModule', [
 ]);
 
 dashboard.factory("KpiModel", ['HorizontalBarChartModel',function(HorizontalBarChartModel) {
-    function KpiModel(name, link) {
+  function KpiModel(name, link) {
+    this.isCollapsed = true;
     this.name = name;
     this.link = link;
     this.delta = 0;
@@ -19,7 +20,7 @@ dashboard.factory("KpiModel", ['HorizontalBarChartModel',function(HorizontalBarC
     this.value = 0;
     this.unitType = "€";
     this.css = "kpi-delta";
-    this.icon = "glyphicon glyphicon-minus";
+    this.icon = "fa fa-minus";
     this.platforms = [];
     this.multiPlatform = true;
     this.chart = new HorizontalBarChartModel(1)

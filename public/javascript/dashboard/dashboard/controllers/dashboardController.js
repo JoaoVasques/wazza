@@ -24,6 +24,13 @@ dashboard.controller('DashboardController', [
         DashboardCache
         ) {
 
+        /** Modes: 0 = chart ; 1 = numbers **/
+        $scope.viewMode = 0;
+        $scope.updateView = function(value) {
+          $scope.viewMode = value;
+        };
+        $scope.showDetails = true;
+        
         /** Revenue KPIs **/
         $scope.totalRevenue = new KpiModel("Total Revenue", "analytics.revenue");
         $scope.arpu = new KpiModel("Avg Revenue Per User", "analytics.arpu");
