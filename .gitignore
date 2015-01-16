@@ -18,7 +18,5 @@ conf/dev
 conf/*.conf
 .ensime*
 .vagrant/
-ops/deployment/*.pyc
-public/bower_components
-  
+ops/deployment/*.pyc  
   
