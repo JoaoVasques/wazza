@@ -1,18 +1,51 @@
 <div class="col-md-4 col-xs-10">
-  <div class="col-md-12 well panel panel-default glow profile dashboard-kpi" ng-click="switchDetailedView(kpi.link)">
-    <div class="panel-heading">
+  <div class="col-md-12 well panel panel-default glow profile dashboard-kpi">
+    <div class="panel-heading" ng-click="switchDetailedView(kpi.link)">
       <h2 class="panel-title text-center">{{kpi.name}}</h2>
     </div>
     <div class="panel-body">
-      <nvd3 options="kpi.chart.options" data="kpi.chart.data"></nvd3>
-      <table class="table table-bordered">
-        <thead>
-          <tr>
-            <th>Compared to Previous</th>
-            <th>{{kpi.delta}} %</th>
-          </tr>
-        </thead>
-      </table>
+      <div ng-show="v == 0">
+        <nvd3 options="kpi.chart.options" data="kpi.chart.data"></nvd3>
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th>Compared to Previous</th>
+              <th>{{kpi.delta}} %</th>
+            </tr>
+          </thead>
+        </table>
+      </div>
+
+      <div ng-show="v == 1">
+        <div class="row">
+          <div class="col-md-9 text-center">
+            <h1 style="font-size: 50px;">{{kpi.value}}</h1>
+          </div>
+          <div class="col-md-3">
+            <h3><i ng-class="kpi.icon"></i> {{kpi.delta}}%</h3>
+          </div>
+        </div>
+	      <div collapse="showPlatforms">
+          <hr>
+          <h5 class="text-center">Platform Details</h5>
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th>Platform</th>
+                <th>Result</th>
+                <th>Variation</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="platform in kpi.platforms">
+                <th scope="row">{{platform.platform}}</th>
+                <td>{{platform.value}}</td>
+                <td>{{platform.delta}}</td>
+              </tr>
+            </tbody>
+          </table>
+	      </div>
+      </div>
     </div>
   </div>
 </div>
