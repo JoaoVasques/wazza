@@ -30,12 +30,16 @@ dashboard.factory("KpiModel", ['HorizontalBarChartModel',function(HorizontalBarC
       this.chart.updateChartData(chartData, platforms);
     },  
     updateKpiValue: function(data) {
-      var value = data.value;
-      var delta = data.delta;
       var DecimalPlaces = 2
-      this.value = value.toFixed(DecimalPlaces);
-      this.delta = delta;
-      this.platforms = data.platforms;
+      this.value = data.value.toFixed(DecimalPlaces);
+      this.previous = data.previous.toFixed(DecimalPlaces);
+      this.delta = data.delta.toFixed(DecimalPlaces);
+      this.platforms = _.map(data.platforms, function(p) {
+        p.value = p.value.toFixed(DecimalPlaces);
+        p.previous = p.previous.toFixed(DecimalPlaces);
+        p.delta = p.delta.toFixed(DecimalPlaces);
+        return p;
+      });
       this.updateChartData(data, _.map(data.platforms, function(p) {return p.platform;}));
     },
     updateUnitType: function(newType) {

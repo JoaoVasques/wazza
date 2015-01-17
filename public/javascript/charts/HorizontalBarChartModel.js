@@ -53,7 +53,6 @@ wazzaCharts.factory("HorizontalBarChartModel", [
         height: 250,
         x: function(d){return d.label;},
         y: function(d){return d.value;},
-        showControls: true,
         showValues: true,
         transitionDuration: 500,
         xAxis: {
