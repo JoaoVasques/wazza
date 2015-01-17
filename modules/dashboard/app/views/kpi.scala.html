@@ -22,13 +22,17 @@
             <h1 style="font-size: 50px;">{{kpi.value}}</h1>
           </div>
           <div class="col-md-3">
-            <h3><i ng-class="kpi.icon"></i> {{kpi.delta}}%</h3>
-          </div>
-        </div>
+            <div ng-class="{'kpi-delta-positive': kpi.delta > 0, 'kpi-delta-negative': kpi.delta < 0, '': kpi.delta == 0}">
+              <h3><i ng-class="{'fa fa-arrow-up': kpi.delta > 0, 'fa fa-arrow-down': kpi.delta < 0, 'fa fa-minus': kpi.delta == 0}"></i> {{kpi.delta}}%
+              </h3>
+            </div>
+          </div> <!-- col-md-3 -->
+        </div> <!-- row -->
+      </div>
 	      <div collapse="showPlatforms">
           <hr>
           <h5 class="text-center">Platform Details</h5>
-          <table class="table table-bordered">
+          <table class="table table-striped">
             <thead>
               <tr>
                 <th>Platform</th>
@@ -38,9 +42,11 @@
             </thead>
             <tbody>
               <tr ng-repeat="platform in kpi.platforms">
-                <th scope="row">{{platform.platform}}</th>
-                <td>{{platform.value}}</td>
-                <td>{{platform.delta}}</td>
+                <th>{{platform.platform}}</th>
+                <td >{{platform.value}}</td>
+                <td ng-class="{'kpi-delta-positive': platform.delta > 0, 'kpi-delta-negative': platform.delta < 0, '': platform.delta == 0}">{{platform.delta}} % 
+                  <i ng-class="{'fa fa-arrow-up': platform.delta > 0, 'fa fa-arrow-down': platform.delta < 0, 'fa fa-minus': platform.delta == 0}"></i>
+                </td>
               </tr>
             </tbody>
           </table>

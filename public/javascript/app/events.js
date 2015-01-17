@@ -24,3 +24,7 @@ broadcastEvents.value('PurchasesPerUserPlatformsChanged','analytics.avgPurchases
 broadcastEvents.value('LtvDatePlatformsChanged','analytics.ltv-platformChange');
 broadcastEvents.value('PayingUsersPlatformsChanged','analytics.payingUsers-platformChange');
 broadcastEvents.value('PurchaseDatePlatformsChanged','analytics.purchasesPerSession-platformChange');
+
+/** Dashboard view changes **/
+broadcastEvents.value("DashboardViewChanges", 1);
+broadcastEvents.value("DashboardShowPlatformDetails", 2);

@@ -6,6 +6,8 @@ application.controller('TweakBarController',[
   '$stateParams',
   'ApplicationStateService',
   'SelectedPlatformsChange',
+  'DashboardViewChanges',
+  'DashboardShowPlatformDetails',
   function (
     $scope,
     DateModel,
@@ -13,9 +15,24 @@ application.controller('TweakBarController',[
     $rootScope,
     $stateParams,
     ApplicationStateService,
-    SelectedPlatformsChange
+    SelectedPlatformsChange,
+    DashboardViewChanges,
+    DashboardShowPlatformDetails
     ) {
 
+    $scope.viewText = "Numerical";
+    $scope.showDetailsButton = true;
+    $scope.updateView = function(value) {
+      $scope.showDetailsButton = (value == 1) ? true: false;
+      $scope.viewText = (value == 1) ? "Numerical" : "Visual";
+      $rootScope.$broadcast(DashboardViewChanges, {newView: value});
+    };
+    $scope.hideDetails = true;
+    $scope.showDetails = function(){
+      $scope.hideDetails = ! $scope.hideDetails;
+      $rootScope.$broadcast(DashboardShowPlatformDetails, {value: $scope.hideDetails});
+    };
+      
     $scope.userInfo = {
         name: "",
         email: ""

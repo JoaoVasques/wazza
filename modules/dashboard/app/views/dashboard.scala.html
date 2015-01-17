@@ -1,18 +1,5 @@
 <div ng-controller="DashboardController">
 
-  <div class="row">
-    <div class="btn-group" data-toggle="buttons">
-      <h4>Change view</h4>  
-      <label class="btn btn" ng-click="updateView(0)">
-        <input type="radio"><i class="fa fa-bar-chart-o"></i>
-      </label>
-      <label class="btn btn" ng-click="updateView(1)">
-        <input type="radio"><i class="fa fa-table"></i>
-      </label>
-    </div>
-    <button class="btn btn-default" ng-click="showDetails = !showDetails">Toggle collapse</button>
-  </div>
-  
   <!-- General KPIs -->
   <h1 class="dashboard-title" id="revenue"><i class="fa fa-money"></i> Revenue</h1>
   <div class="row">
