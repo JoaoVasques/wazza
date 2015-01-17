@@ -8,8 +8,25 @@
     <section class="content-header" ng-controller="TweakBarController" ng-model="page" style="height:61px">
       <div class="row">
         <div class="col-md-4">
-          <h4 ng-show="page == 'Overview'">{{page}}</h4>
-          <h4 ng-hide="page == 'Overview'">{{applicationName}} / {{page}}</h4> <!--TODO: use bootstrap breadcrumbs instead -->
+          <ul class="list-inline">
+            <li><h5>{{viewText}}</h5></li>
+            <li>
+              <div class="btn-group" role="group" data-toggle="buttons">
+                <label class="btn btn" ng-click="updateView(0)">
+                  <input type="radio"><i class="fa fa-bar-chart-o"></i>
+                </label>
+                <label class="btn btn" ng-click="updateView(1)">
+                  <input type="radio"><i class="fa fa-table"></i>
+                </label>
+              </div>
+            </li>
+            <li>
+              <button class="btn btn-success" ng-click="showDetails()" ng-show="showDetailsButton">Show details</button>   
+            </li>
+          </ul>
+          
+          <!-- <h4 ng-show="page == 'Overview'">{{page}}</h4> -->
+          <!-- <h4 ng-hide="page == 'Overview'">{{applicationName}} / {{page}}</h4> <\!--TODO: use bootstrap breadcrumbs instead -\-> -->
         </div>
         <div class="col-md-3">
           <div class="col-md-4">

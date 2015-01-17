@@ -30,13 +30,6 @@
   text-align: center;
 }
 
-.kpi-delta,
-.kpi-delta-positive,
-.kpi-delta-negative {
-  font-size: 3em;
-  padding-left: 15px;
-}
-
 .kpi-delta {
   color: grey;
 }

@@ -19,13 +19,17 @@
             <th scope="row">{{platform.platform}}</th>
             <td>{{platform.value}}</td>
             <td>{{platform.previous}}</td>
-            <td>{{platform.delta}}</td>
+            <td ng-class="{'kpi-delta-positive': platform.delta > 0, 'kpi-delta-negative': platform.delta < 0, '': platform.delta == 0}">{{platform.delta}} %
+              <i ng-class="{'fa fa-arrow-up': platform.delta > 0, 'fa fa-arrow-down': platform.delta < 0, 'fa fa-minus': platform.delta == 0}"></i>
+            </td>
           </tr>
           <tr>
             <th scope="row">Total</th>
             <td>{{context.model.value}}</td>
             <td>{{context.model.previous}}</td>
-            <td>{{context.model.delta}}</td>
+            <td ng-class="{'kpi-delta-positive': context.model.delta > 0, 'kpi-delta-negative': context.model.delta < 0, '': context.model.delta == 0}">{{context.model.delta}} %
+              <i ng-class="{'fa fa-arrow-up': context.model.delta > 0, 'fa fa-arrow-down': context.model.delta < 0, 'fa fa-minus': context.model.delta == 0}"></i>
+            </td>
           </tr>
         </tbody>
       </table>
