@@ -7,7 +7,7 @@
     <!-- Content Header (Page header) -->
     <section class="content-header" ng-controller="TweakBarController" ng-model="page" style="height:61px">
       <div class="row">
-        <div class="col-md-4">
+        <div class="col-md-4" ng-show="showDashboardViewOptions">
           <ul class="list-inline">
             <li><h5>{{viewText}}</h5></li>
             <li>
@@ -27,7 +27,7 @@
           
           <!-- <h4 ng-show="page == 'Overview'">{{page}}</h4> -->
           <!-- <h4 ng-hide="page == 'Overview'">{{applicationName}} / {{page}}</h4> <\!--TODO: use bootstrap breadcrumbs instead -\-> -->
-        </div>
+        </div> <!-- col-md-4 -->
         <div class="col-md-3">
           <div class="col-md-4">
             <h5>Platforms</h5>

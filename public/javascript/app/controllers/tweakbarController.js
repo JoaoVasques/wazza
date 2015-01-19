@@ -20,6 +20,7 @@ application.controller('TweakBarController',[
     DashboardShowPlatformDetails
     ) {
 
+    $scope.showDashboardViewOptions = false;
     $scope.viewText = "Numerical";
     $scope.showDetailsButton = true;
     $scope.updateView = function(value) {
@@ -32,6 +33,11 @@ application.controller('TweakBarController',[
       $scope.hideDetails = ! $scope.hideDetails;
       $rootScope.$broadcast(DashboardShowPlatformDetails, {value: $scope.hideDetails});
     };
+
+    $rootScope.$on('$stateChangeSuccess',
+      function(event, toState, toParams, fromState, fromParams){
+        $scope.showDashboardViewOptions = (toState.name != 'analytics.dashboard') ? false : true;
+      });
       
     $scope.userInfo = {
         name: "",
