@@ -8,13 +8,15 @@ dashboard
   'DateModel',
   'DetailedKpiModel',
   'AT1PDateChanged',
+  'AT1PPlatformsChanged',
   function (
     $scope,
     $rootScope,
     ApplicationStateService,
     DateModel,
     DetailedKpiModel,
-    AT1PDateChanged
+    AT1PDateChanged,
+    AT1PPlatformsChanged
   ) {
 
     var title = "Average Time to First Purchase";
@@ -31,5 +33,16 @@ dashboard
       $scope.context.endDate = DateModel.endDate;
       $scope.updateData($scope.context, KpiId, title);
     });
+
+    $scope.$on(AT1PPlatformsChanged, function(ev, data) {
+      $scope.updateData($scope.context, KpiId, title);
+      if(!data.value) {
+        $scope.context.removeSerieFromChart(data.platform);
+        $scope.updateChart(title, $scope.context);
+      } else {
+        $scope.updateChart(title, $scope.context);
+      }
+    });
+
 
 }]);
