@@ -9,7 +9,6 @@
 <script defer src="@routes.WebJarAssets.at(WebJarAssets.locate("ui-bootstrap-tpls.min.js"))"></script>
 <script defer src="@routes.WebJarAssets.at(WebJarAssets.locate("moment.min.js"))"></script>
 <script defer src="@routes.WebJarAssets.at(WebJarAssets.locate("bootstrap.min.js"))"></script>
-<script defer src="@routes.WebJarAssets.at(WebJarAssets.locate("Chart.min.js"))"></script>
 <script defer src="@routes.WebJarAssets.at(WebJarAssets.locate("numeral.min.js"))"></script>
 <!-- others -->
 <script defer src="@routes.Assets.at("javascript/vendors/angular-file-upload.min.js")"></script>
@@ -46,8 +45,6 @@
 <script defer src="@routes.Assets.at("javascript/app/services/ApplicationStateService.js")"></script>
 <script defer src="@routes.Assets.at("javascript/app/services/LoginLogoutService.js")"></script>
 <script defer src="@routes.Assets.at("javascript/app/services/UserVoiceService.js")"></script>
-<!-- directives -->
-<script defer src="@routes.Assets.at("javascript/app/directives/chartjs-directive.js")"></script>
 
 <!-- external stuff from other modules -->
 @views.html.js.applicationJavascripts.render()
@@ -55,7 +52,6 @@
 @views.html.js.securityJavascripts.render()
 @views.html.js.chartJavascripts.render()
 @views.html.js.dashboardJavascripts.render()
-
 
 <!-- everything else -->
 <!--<script defer src="@routes.Assets.at("custom.js")"></script> -->
