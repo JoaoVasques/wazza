@@ -24,7 +24,6 @@ lazy val dependencies = Seq(
   "org.webjars" % "angular-ui-router" % "0.2.13",
   "org.webjars" % "angularjs" % "1.2.27",
   "org.webjars" % "bootstrap" % "3.3.1",
-  "org.webjars" % "chartjs" % "1.0.1-beta.4",
   "org.webjars" % "jquery" % "1.11.2",
   "org.webjars" % "momentjs" % "2.8.3",
   "org.webjars" % "numeral-js" % "1.5.3-1",
