@@ -1,16 +1,10 @@
 service.factory('LoginLogoutService', ['$rootScope', '$http', function ($rootScope, $http) {
 	var service = {};
 
-	service.login = function(){
-		$rootScope.$broadcast("LOGIN_SUCCESS");
-	};
-
 	service.logout = function(logoutData){
-
 		var handleLogoutSuccess = function(logoutData){
 			$rootScope.$broadcast("LOGOUT_SUCCESS", {value: logoutData.data});
 		};
-
 		var handleLogoutFailure = function(data){
 			$rootScope.$broadcast("LOGOUT_ERROR", {value: data});
 		};

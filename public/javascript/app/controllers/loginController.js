@@ -23,20 +23,19 @@ application.controller('LoginController',[
     redirectToDashboardService.execute().
       then(
         function(){
-          LoginLogoutService.login();
           $state.go("analytics.overview");
         }
       );
   };
 
-  $scope.handleLoginSuccess = function(success){
+
+    $scope.handleLoginSuccess = function(success){
     cookiesManagerService.set('PLAY2AUTH_SESS_ID', success.data.authToken);
     ApplicationStateService.updateUserInfo({
         name: success.data.userName,
         email: success.data.userId
     });
     ApplicationStateService.updateCompanyName(success.data.companyName);
-    LoginLogoutService.login();
     $state.go(success.data.url);
   };
 

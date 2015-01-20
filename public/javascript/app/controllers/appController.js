@@ -31,10 +31,6 @@ application.controller('AppController', [
       LoginLogoutService.logout();
     };
 
-    $scope.$on("LOGIN_SUCCESS", function(event, data){
-      $scope.authOK = true;
-    });
-
     $scope.$on("LOGOUT_SUCCESS", function(event, url){
       //cleanup!
       $scope.applicationName = "";
@@ -45,9 +41,7 @@ application.controller('AppController', [
       };
 
       ApplicationStateService.cleanup();
-      $scope.authOK = false;
-
-      $state.go("webframe.login");
+      $state.go("login");
       //$state.go(url.value);      //TODO: fix this. url.value returns the relative url instead of the state
     });
 
