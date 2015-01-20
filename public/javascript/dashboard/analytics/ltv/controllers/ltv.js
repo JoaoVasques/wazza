@@ -40,7 +40,6 @@ dashboard
         $scope.context.removeSerieFromChart(data.platform);
         $scope.updateChart(title, $scope.context);
       } else {
-        scope.updateData($scope.context, KpiId, title);
         $scope.updateChart(title, $scope.context);
       }
     });
