@@ -27,7 +27,7 @@ class RegistrationController @Inject()(
   tokenService: TokenManagerService
 ) extends Controller with CookieManager {
 
-  private val userProxy = UserProxy.getInstance
+  private val userProxy = UserProxy.getInstance()
   implicit val timeout = Timeout(5 second)
 
   private def validateUser(email: String): Boolean = {
@@ -40,7 +40,7 @@ class RegistrationController @Inject()(
 
     val request = new URValidate(new Stack, email, true)
     implicit val timeout = Timeout(10 seconds)
-    val futureValidation = UserProxy.getInstance ? request
+    val futureValidation = userProxy ? request
     Await.result(futureValidation, timeout.duration).asInstanceOf[URValidationResponse].res
   }
 

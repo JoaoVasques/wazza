@@ -31,8 +31,8 @@ private[security] class ApiRequest[A](
 ) extends WrappedRequest[A](request)
 
 private[security] case class ApiAction[A](action: Action[A]) extends Action[A] {
-
-  private val persistenceProxy = PersistenceProxy.getInstance
+  
+  private val persistenceProxy = PersistenceProxy.getInstance()
 
   private lazy val collection = "RedirectionTable"
 

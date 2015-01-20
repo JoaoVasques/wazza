@@ -11,8 +11,10 @@ angular.module('Wazza', [
     'UserModule',
     'SecurityModule',
     'DashboardModule',
+    'ChartModule',
     'Wazza.broadcastEvents',
-    'duScroll'
+    'duScroll',
+    'nvd3'
 ]).
 
 config(function($stateProvider, $urlRouterProvider, $locationProvider, $httpProvider, localStorageServiceProvider){

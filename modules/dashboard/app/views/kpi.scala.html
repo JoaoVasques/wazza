@@ -1,16 +1,19 @@
-      <div class="col-md-4 col-lg-4 kpi">
-        <div class="col-md-12 well profile glow dashboard-kpi" ng-click="switchDetailedView(kpi.link)">
-            <h2>{{kpi.name}}</h2>
-            <br>
-            <div class="divider text-center">
-                <div class="col-xs-12 col-sm-6 emphasis">
-                    <h3><strong>{{kpi.unit}} {{kpi.value}} </strong></h3>
-                    <p><small>Total</small></p>
-                </div>
-                <div class="col-xs-12 col-sm-6 emphasis">
-                  <h3><strong>{{kpi.delta}} % </strong></h3>
-                    <p><small>Delta</small></p>
-                </div>
-            </div>
-          </div>
-      </div>
+<div class="col-md-4 col-xs-10">
+  <div class="col-md-12 well panel panel-default glow profile dashboard-kpi" ng-click="switchDetailedView(kpi.link)">
+    <div class="panel-heading">
+      <h2 class="panel-title text-center">{{kpi.name}}</h2>
+    </div>
+    <div class="panel-body">
+      <nvd3 options="kpi.chart.options" data="kpi.chart.data"></nvd3>
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th>Compared to Previous</th>
+            <th>{{kpi.delta}} %</th>
+          </tr>
+        </thead>
+      </table>
+    </div>
+  </div>
+</div>
+

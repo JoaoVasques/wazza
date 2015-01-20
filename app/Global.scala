@@ -33,10 +33,10 @@ object Global extends GlobalSettings {
     Creates modules system's and proxies
   **/
   override def onStart(app: Application) = {
-    val databaseProxy = PersistenceProxy.getInstance
-    val userProxy = UserProxy.getInstance
-    val applicationProxy = ApplicationProxy.getInstance
-    val notificationsProxy = NotificationsProxy.getInstance
+    val databaseProxy = PersistenceProxy.getInstance()
+    val userProxy = UserProxy.getInstance()
+    val applicationProxy = ApplicationProxy.getInstance()
+    val notificationsProxy = NotificationsProxy.getInstance()
     modulesProxies = List(databaseProxy, userProxy, applicationProxy, notificationsProxy)
   }
 
@@ -49,7 +49,7 @@ object Global extends GlobalSettings {
       val stack = sw.toString()
       val msg = s"Message: ${throwable.getMessage}\nStack Trace: ${stack}"
       val request = new SendEmail(null, List("joao@wazza.io", "duarte@wazza.io"), "500 ERROR", msg)
-      NotificationsProxy.getInstance ! request
+      NotificationsProxy.getInstance() ! request
     }
 
     Future.successful(InternalServerError(views.html.errorPage()))
@@ -81,7 +81,7 @@ object Global extends GlobalSettings {
     if(Play.isProd && !(request.path contains "php") && !(request.path contains "cgi")) {
       val msg = s"Trying to access path: ${request.path}"
       val mailRequest = new SendEmail(null, List("joao@wazza.io", "duarte@wazza.io"), "4xx ERROR", msg)
-      NotificationsProxy.getInstance ! mailRequest
+      NotificationsProxy.getInstance() ! mailRequest
     }
 
     Future.successful(NotFound(

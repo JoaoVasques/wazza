@@ -18,6 +18,5 @@ conf/dev
 conf/*.conf
 .ensime*
 .vagrant/
-ops/deployment/*.pyc
-  
+ops/deployment/*.pyc  
   

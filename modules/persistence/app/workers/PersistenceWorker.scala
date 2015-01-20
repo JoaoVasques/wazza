@@ -80,6 +80,24 @@ class PersistenceWorker extends Actor with Worker[PersistenceMessage]  {
     MongoFactory.getCollection(name)
   }
 
+  private def getDatabaseObject(json: JsValue): DBObject = {
+    val dateKeys = List("startTime", "time")
+    val obj = JSON.parse(json.toString).asInstanceOf[DBObject]
+    val res = dateKeys map {key =>
+      (key, obj.contains(key))
+    }
+
+    res.find(_._2 == true) match {
+      case Some(el) => {
+        val key = el._1
+        val date = new Date((json \ key).as[Long])
+        obj += (key -> date)
+        obj
+      }
+      case _ => obj
+    }
+  }
+
   //Boolean
   def exists(msg: Exists, sender: ActorRef): Future[Boolean] = {
     val promise = Promise[Boolean]
@@ -166,7 +184,8 @@ class PersistenceWorker extends Actor with Worker[PersistenceMessage]  {
   def insert(msg: Insert, sender: ActorRef) = {
     Future {
       if(msg.extra == null) {
-        collection(msg.collectionName).insert(JSON.parse(msg.model.toString).asInstanceOf[DBObject])
+        val obj = getDatabaseObject(msg.model)
+        collection(msg.collectionName).insert(obj)//JSON.parse(msg.model.toString).asInstanceOf[DBObject])
       } else {
         val builder = MongoDBObject.newBuilder
         builder += "created_at" -> (msg.model \ "created_at").as[String]
@@ -199,7 +218,7 @@ class PersistenceWorker extends Actor with Worker[PersistenceMessage]  {
     Time-ranged queries
     **/
   def getDocumentsWithinTimeRange(msg: GetDocumentsWithinTimeRange, sender: ActorRef) = {
-    val query = (msg.dateFields._1 $gte msg.start.getTime $lte msg.end.getTime) ++ (msg.dateFields._2 $gte msg.start.getTime $lte msg.end.getTime)
+    val query = (msg.dateFields._1 $gte msg.start $lte msg.end) ++ (msg.dateFields._2 $gte msg.start $lte msg.end)
     val sortCriteria = MongoDBObject(msg.dateFields._1 -> 1)
 
     Future {
@@ -210,7 +229,7 @@ class PersistenceWorker extends Actor with Worker[PersistenceMessage]  {
 
   //JsArray
   def getDocumentsByTimeRange(msg: GetDocumentsByTimeRange, sender: ActorRef) = {
-    val query = (msg.dateField $lte msg.start.getTime $gt msg.end.getTime)
+    val query = (msg.dateField $lte msg.start $gt msg.end)
     val sortCriteria = MongoDBObject(msg.dateField -> 1)
 
     Future {

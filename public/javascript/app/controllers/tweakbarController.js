@@ -4,12 +4,16 @@ application.controller('TweakBarController',[
   '$state',
   '$rootScope',
   '$stateParams',
+  'ApplicationStateService',
+  'SelectedPlatformsChange',
   function (
     $scope,
     DateModel,
     $state,
     $rootScope,
-    $stateParams
+    $stateParams,
+    ApplicationStateService,
+    SelectedPlatformsChange
     ) {
 
     $scope.userInfo = {
@@ -29,6 +33,33 @@ application.controller('TweakBarController',[
         $scope.endDate = DateModel.endDate;
       }
     };
+
+    $scope.platforms = {
+      iOS: true,
+      Android: true
+    };
+
+    var updatePlatformsCheckboxes = function(){
+      var appPlatforms = ApplicationStateService.selectedPlatforms;
+      $scope.platforms.iOS = _.contains(appPlatforms, "iOS") ? true : false;
+      $scope.platforms.Android = _.contains(appPlatforms, "Android") ? true : false;
+    };
+    $scope.$on(SelectedPlatformsChange, updatePlatformsCheckboxes);
+
+    var platformWatcher = function(platform, newValue, oldValue) {
+      newValue ? ApplicationStateService.addPlatforms(platform) : ApplicationStateService.removePlatform(platform);
+      if($state.current.name != "analytics.dashboard" && $state.current.name != "analytics.overview") {
+        $rootScope.$broadcast($state.current.name + "-platformChange", {platform: platform, value: newValue});
+      }
+    }
+      
+    $scope.$watch("platforms.iOS", function(newValue, oldValue, scope){
+      platformWatcher("iOS", newValue, oldValue);
+    });
+
+    $scope.$watch("platforms.Android", function(newValue, oldValue, scope){
+      platformWatcher("Android", newValue, oldValue);
+    });
 
     $scope.toggleMin = function() {
       $scope.minDate = moment().subtract(1, 'years').format('d-M-YYYY');

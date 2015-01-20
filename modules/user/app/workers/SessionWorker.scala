@@ -28,8 +28,7 @@ class SessionWorker(
 
   private def saveSessionAux(msg: SRSave) = {
     val collection = MobileSession.getCollection(msg.companyName, msg.applicationName)
-    val model = Json.toJson(msg.session)
-    val request = new Insert(new Stack(), collection, model)
+    val request = new Insert(new Stack(), collection, msg.session)
     databaseProxy ! request
   }
 

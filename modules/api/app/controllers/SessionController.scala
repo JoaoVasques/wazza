@@ -46,7 +46,7 @@ class SessionController @Inject()(
       "purchases" -> (content \ "purchases").as[List[String]]
     )) match {
       case Success(session) => {
-        val userProxy = UserProxy.getInstance
+        val userProxy = UserProxy.getInstance()
         val request = new SRSave(new Stack, companyName, applicationName, session)
         userProxy ! request
         new Success

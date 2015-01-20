@@ -27,3 +27,40 @@
   margin:10px;
   color:#555;
 }
+
+.dashboard-kpi > .panel-heading  > h2 {
+  font-size: 1.6em !important;
+  color: #34495e;
+}
+
+.storeSelect input[type="checkbox"] {
+  display: none;
+}
+
+.androidstoreSelect input[type="checkbox"] + label {
+  display: inline-block;
+  height: 30px;
+  width: 30px;
+  background: url(../images/android-unselected.png) left top no-repeat;
+}
+
+.androidstoreSelect input[type="checkbox"]:checked + label {
+  display: inline-block;
+  height: 30px;
+  width: 30px;
+  background: url(../images/android.png) left top no-repeat;
+}
+
+.iOSstoreSelect input[type="checkbox"] + label {
+  display: inline-block;
+  height: 30px;
+  width: 30px;
+  background: url(../images/apple-unselected.png) left top no-repeat;
+}
+
+.iOSstoreSelect input[type="checkbox"]:checked + label {
+  display: inline-block;
+  height: 30px;
+  width: 30px;
+  background: url(../images/apple.png) left top no-repeat;
+}

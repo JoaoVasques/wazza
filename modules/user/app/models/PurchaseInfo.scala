@@ -42,26 +42,52 @@ object PurchaseInfo {
   lazy val UserId = "userId"
   def getCollection(companyName: String, applicationName: String) = s"${companyName}_purchases_${applicationName}"
 
-  implicit val reader = (
-    (__ \ "id").read[String] and
-    (__ \ "sessionId").read[String] and
-    (__ \ "userId").read[String] and
-    (__ \ "itemId").read[String] and
-    (__ \ "price").read[Double] and
-    (__ \ "time").read[Date] and
-    (__ \ "deviceInfo").read[DeviceInfo] and
-    (__ \ "location").readNullable[LocationInfo]
-  )(PurchaseInfo.apply _)
+  implicit def buildFromJson(json: JsValue): PurchaseInfo = {
+    def getLocation = {
+      if(json.as[JsObject].keys.contains("location")) {
+        (json \ "location").validate[LocationInfo].asOpt
+      } else {
+        None
+      }
+    }
+    new PurchaseInfo(
+      (json \ "id").as[String],
+      (json \ "sessionId").as[String],
+      (json \ "userId").as[String],
+      (json \ "itemId").as[String],
+      (json \ "price").as[Double],
+      new Date((json \ "time").as[Long]),
+      (json \ "device").validate[DeviceInfo].asOpt.get,
+      getLocation
+    )
+  }
 
-  implicit val writes = (
-    (__ \ "id").write[String] and
-    (__ \ "sessionId").write[String] and
-    (__ \ "userId").write[String] and
-    (__ \ "itemId").write[String] and
-    (__ \ "price").write[Double] and
-    (__ \ "time").write[Date] and
-    (__ \ "deviceInfo").write[DeviceInfo] and
-    (__ \ "location").writeNullable[LocationInfo]
-  )(unlift(PurchaseInfo.unapply))
+  implicit def toJson(purchase: PurchaseInfo): JsValue = {
+    purchase.location match {
+      case Some(_) => {
+        Json.obj(
+          "id" -> purchase.id,
+          "sessionId" -> purchase.sessionId,
+          "userId" -> purchase.userId,
+          "itemId" -> purchase.itemId,
+          "price" -> purchase.price,
+          "time" -> purchase.time.getTime,
+          "device" -> Json.toJson(purchase.deviceInfo),
+          "location" -> Json.toJson(purchase.location)
+        )
+      }
+      case _ => {
+        Json.obj(
+          "id" -> purchase.id,
+          "sessionId" -> purchase.sessionId,
+          "userId" -> purchase.userId,
+          "itemId" -> purchase.itemId,
+          "price" -> purchase.price,
+          "time" -> purchase.time.getTime,
+          "device" -> Json.toJson(purchase.deviceInfo)
+        )
+      }
+    }
+  }
 }
 

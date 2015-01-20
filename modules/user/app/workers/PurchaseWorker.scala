@@ -32,7 +32,7 @@ class PurchaseWorker(
 
   def storePurchase(msg: PRSave) = {
     val collection = PurchaseInfo.getCollection(msg.companyName, msg.applicationName)
-    val request = new Insert(msg.sendersStack, collection, Json.toJson(msg.info))
+    val request = new Insert(msg.sendersStack, collection, msg.info)
     databaseProxy ! request
   }
 
@@ -46,7 +46,20 @@ class PurchaseWorker(
 
   private def persistenceReceive: Receive = {
     case r: PRBooleanResponse => {
-      //TODO
+      if(!r.res) {
+        localStorage.get(r.hash) match {
+          case Some(or) => {
+            val req = or.originalRequest.asInstanceOf[PRSave]
+            storePurchase(req)
+            saveUserAsBuyer(req)
+          }
+          case _ => {
+            //TODO show error
+          }
+        }
+      } else {
+        //TODO show error on log
+      }
     }
   }
 

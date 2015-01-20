@@ -81,10 +81,10 @@ object UserProxy  {
 
   private var singleton: ActorRef = null
 
-  def getInstance = {
+  def getInstance(system: ActorSystem = Akka.system) = {
     if(singleton == null) {
-      singleton = Akka.system.actorOf(
-        UserProxy.props(ActorSystem("user"), PersistenceProxy.getInstance), name = "user"
+      singleton = system.actorOf(
+        UserProxy.props(ActorSystem("user"), PersistenceProxy.getInstance(system)), name = "user"
       )
     }
     singleton

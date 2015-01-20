@@ -1,4 +1,4 @@
-/**package controllers.api
+package controllers.api
 
 import play.api._
 import play.api.Play.current
@@ -8,7 +8,6 @@ import ExecutionContext.Implicits.global
 import controllers.security._
 import service.security.definitions.{TokenManagerService}
 import models.application._
-import service.application.definitions._
 import service.user.definitions._
 import com.google.inject._
 import scala.math.BigDecimal
@@ -23,13 +22,18 @@ import scala.util.Random
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.Date
+import user._
+import user.messages._
+import application._
+import application.messages._
+import models.application._
+import models.user._
+import scala.collection.mutable.Stack
+import akka.actor._
+import persistence._
+import notifications._
 
-class BootstrapEnvironmentController @Inject()(
-  applicationService: ApplicationService,
-  userService: UserService,
-  purchaseService: PurchaseService,
-  mobileSessionService: MobileSessionService
-) extends Controller {
+class BootstrapEnvironmentController extends Controller {
 
   private lazy val LowerPrice = 1.99
   private lazy val UpperPrice = 5.99
@@ -47,78 +51,20 @@ class BootstrapEnvironmentController @Inject()(
     val virtualCurrencies = List[VirtualCurrency]()
   }
 
-  private def generateItems(numberItems: Int): List[(String, Double)] = {
+  private val system = ActorSystem("Bootstrap")
+  private val persistenceProxy = PersistenceProxy.getInstance(system)
+  private val notificationsProxy = NotificationsProxy.getInstance(system)
+  private val userProxy = UserProxy.getInstance(system)
+  private val appProxy = ApplicationProxy.getInstance(system)
 
-    def generateItemPrice(lowerPrice: Double, upperPrice: Double): Double = {
-      lazy val DecimalPlaces = 2
-      val price = (Math.random() * (upperPrice - lowerPrice)) + lowerPrice
-      BigDecimal(price).setScale(DecimalPlaces, BigDecimal.RoundingMode.HALF_UP).toDouble
-    }
-    (1 to numberItems).map {i=>
-      (s"name-$i", generateItemPrice(LowerPrice, UpperPrice))
-    }.toList
-  }
-
-  private def generateSessions(companyName: String, applicationName: String): Future[Boolean] = {
-
-    def willMakePurchases = if(Math.random() > 0.5) true else false
-
-    val items = generateItems(NumberItems)
-    val end = new LocalDate()
-    val start = end.minusDays(7)
-    val days = Days.daysBetween(start, end).getDays()+1
-
-    println(s"START $start | END $end")
-    println(days)
-    val format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z")
-
-    val result = List.range(0, days) map {index =>
-      val currentDay = start.withFieldAdded(DurationFieldType.days(), index)
-      println(s"CURRENT DAY $currentDay")
-      Future.sequence((1 to NumberMobileUsers) map {userNumber =>
-        val session = MobileSession(
-          (currentDay.toString + userNumber), //hash
-          userNumber.toString,
-          2,
-          currentDay.toDate,
-          new DeviceInfo("osType", "name", "version", "model"),
-          List[String]() //List of purchases id's
-        )
-        //println(session)
-        mobileSessionService.insert(companyName, applicationName, session)/** flatMap {r =>
-          val makePurchases = willMakePurchases
-          //println(makePurchases)
-          if(makePurchases) {
-            val itemsAux = items
-            val item = Random.shuffle(itemsAux).head
-            //println(item)
-            val date = format.format(currentDay.toDate)
-            //println(date)
-            val purchaseInfo = new PurchaseInfo(
-              s"purchase-$userNumber-$currentDay.toString",
-              (currentDay.toString + userNumber),
-              userNumber.toString,
-              applicationName,
-              item._1,
-              item._2,
-              date,
-              new DeviceInfo("osType", "name", "version", "model"),
-              None
-            )
-            //println(purchaseInfo)
-            purchaseService.save(companyName, applicationName, purchaseInfo)
-          } else
-            Future.successful()
-        }**/
-      })
-    }
-    Future.sequence(result) map {a => true}// map {a => println("Setup done!")}
-
-    //Future {}
-  }
-
-  def execute(companyName: String, applicationName: String) = Action.async {
+  private def addUser(companyName: String) = {
+    println("Adding new user")
     val user = new User("userName", "me@mail.com", "1", companyName, List[String]())
+    userProxy ! new URInsert(new Stack, user, true)
+  }
+
+  private def addApplication(companyName: String, applicationName: String, email: String) = {
+    println("Adding new application")
     val application = new WazzaApplication(
       applicationName,
       ApplicationData.appUrl,
@@ -129,15 +75,92 @@ class BootstrapEnvironmentController @Inject()(
       ApplicationData.items,
       ApplicationData.virtualCurrencies
     )
+    val appInsertRequest = new ARInsert(new Stack, companyName, application, true)
+    appProxy ! appInsertRequest
+    val userAddAppRequest = new URAddApplication(new Stack, email, application.name, true)
+    userProxy ! userAddAppRequest
+  }
 
-    for{
-      u <- userService.insertUser(user)
-      a <- applicationService.insertApplication(companyName, application)
-      x <- userService.addApplication(user.name, applicationName)
-    } yield {
-      Ok
+  private def createSessions(companyName: String, applicationName: String, platforms: List[String]) = {
+    val end = new LocalDate()
+    val start = end.minusDays(7)
+    val days = Days.daysBetween(start, end).getDays()+1
+    println(s"START $start | END $end")
+    println(days)
+    val result = List.range(0, days) map {index =>
+      val currentDay = start.withFieldAdded(DurationFieldType.days(), index)
+      println(s"CURRENT DAY $currentDay")
+      (1 to NumberMobileUsers) map {userNumber =>
+        val platform = if(Math.random() > 0.5) platforms.head else platforms.last
+        val session = new MobileSession(
+          (s"${currentDay.toString}-$userNumber"), //hash
+          userNumber.toString,
+          2,
+          currentDay.toDate,
+          new DeviceInfo(platform, "name", "version", "model"),
+          List[String]() //List of purchases id's
+        )
+
+        val req = new SRSave(new Stack, companyName, applicationName, session, true)
+        userProxy ! req
+      }
     }
+  }
+
+  private def createPurchases(companyName: String, applicationName: String, platforms: List[String]) = {
+    def generateItems(numberItems: Int): List[(String, Double)] = {
+      def generateItemPrice(lowerPrice: Double, upperPrice: Double): Double = {
+        lazy val DecimalPlaces = 2
+        val price = (Math.random() * (upperPrice - lowerPrice)) + lowerPrice
+        BigDecimal(price).setScale(DecimalPlaces, BigDecimal.RoundingMode.HALF_UP).toDouble
+      }
+        (1 to numberItems).map {i=>
+          (s"name-$i", generateItemPrice(LowerPrice, UpperPrice))
+        }.toList
+    }
+
+    def willMakePurchases = if(Math.random() > 0.5) true else false
+    val items = generateItems(NumberItems)
+    val end = new LocalDate()
+    val start = end.minusDays(7)
+    val days = Days.daysBetween(start, end).getDays()+1
+
+    println(s"START $start | END $end")
+    println(days)
+    val format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z")
+    val result = List.range(0, days) map {index =>
+      val currentDay = start.withFieldAdded(DurationFieldType.days(), index)
+      (1 to NumberMobileUsers) map {userNumber =>
+        val makePurchases = willMakePurchases
+        if(makePurchases) {
+          val itemsAux = items
+          val item = Random.shuffle(itemsAux).head
+          val platform = if(Math.random() > 0.5) platforms.head else platforms.last
+          val purchaseInfo = new PurchaseInfo(
+            s"purchase-$userNumber-${currentDay.toString}",
+            (s"${currentDay.toString}-$userNumber"),
+            userNumber.toString,
+            item._1,
+            item._2,
+            currentDay.toDate,
+            new DeviceInfo(platform, "name", "version", "model"),
+            None
+          )
+          val request = new PRSave(new Stack, companyName, applicationName, purchaseInfo)
+          userProxy ! request
+        }
+      }
+    }
+  }
+  
+  def execute(companyName: String, applicationName: String, platformsOption: Boolean = true) = Action.async {
+    val platforms = List("iOS", "Android")
+    println("company: " + companyName + " | app: " + applicationName + " | platforms: " + platforms)
+    addUser(companyName)
+    addApplication(companyName, applicationName, "me@mail.com")
+    createSessions(companyName, applicationName, platforms)
+    createPurchases(companyName, applicationName, platforms)
+    Future.successful(Ok)
   }
 }
 
-  * */

@@ -1,11 +1,11 @@
 'use strict';
 
-dashboard.factory('DetailedKpiModel', ['KpiModel', function(KpiModel) {
+dashboard.factory('DetailedKpiModel', ['KpiModel', 'LineChartModel', function(KpiModel, LineChartModel) {
+     
   function DetailedKpiModel(beginDate, endDate, name) {
     this.beginDate = beginDate;
     this.endDate = endDate;
-    this.labels = [];
-    this.values = [];
+    this.chart = new LineChartModel(0);
     this.model = new KpiModel(name, "");
   };
 
@@ -14,14 +14,11 @@ dashboard.factory('DetailedKpiModel', ['KpiModel', function(KpiModel) {
       this.beginDate = begin;
       this.endDate = end;
     },
-    updateChartData: function(chartData) {
-      var _this = this;
-      this.labels = [];
-      this.values = [];
-      _.each(chartData.data, function(el) {
-        _this.labels.push(el.day);
-        _this.values.push(el.value);
-      });
+    updateChartData: function(chartData, platforms) {
+      this.chart.updateChartData(chartData, platforms);
+    },
+    removeSerieFromChart: function(serieKey) {
+      this.chart.removeSeries(serieKey);
     }
   };
     

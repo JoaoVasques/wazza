@@ -27,7 +27,7 @@ class PurchaseController @Inject()(
 
     purchaseService.create(content) match {
       case Success(purchase) => {
-        val userProxy = UserProxy.getInstance
+        val userProxy = UserProxy.getInstance()
         val request = new PRSave(new Stack, companyName, applicationName, purchase)
         userProxy ! request
         Future.successful(Ok)
