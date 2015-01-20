@@ -8,7 +8,7 @@ dashboard
   'DateModel',
   'DetailedKpiModel',
   'LtvDateChanged',
-  'LtvDatePlatformsChanged',
+  'LtvPlatformsChanged',
   function (
     $scope,
     $rootScope,
@@ -16,7 +16,7 @@ dashboard
     DateModel,
     DetailedKpiModel,
     LtvDateChanged,
-    LtvDatePlatformsChanged
+    LtvPlatformsChanged
   ) {
 
     var title = "Lifetime Value";
@@ -34,7 +34,7 @@ dashboard
       $scope.updateData($scope.context, KpiId, title);
     });
 
-    $scope.$on(LtvDatePlatformsChanged, function(ev, data) {
+    $scope.$on(LtvPlatformsChanged, function(ev, data) {
       $scope.updateData($scope.context, KpiId, title);
       if(!data.value) {
         $scope.context.removeSerieFromChart(data.platform);
