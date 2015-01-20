@@ -36,13 +36,12 @@ dashboard.controller('DashboardController', [
           $scope.viewMode = data.newView;
         };
         $scope.$on(DashboardViewChanges, updateView);
-        
+
         var showHidePlatformDetails = function(ev, data) {
           $scope.showDetails = data.value;
         };
         $scope.$on(DashboardShowPlatformDetails, showHidePlatformDetails);
-              
-        
+
         /** Revenue KPIs **/
         $scope.totalRevenue = new KpiModel("Total Revenue", "analytics.revenue");
         $scope.arpu = new KpiModel("Avg Revenue Per User", "analytics.arpu");

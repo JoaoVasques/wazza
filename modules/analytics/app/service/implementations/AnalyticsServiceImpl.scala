@@ -308,7 +308,7 @@ class AnalyticsServiceImpl extends AnalyticsService {
     val fields = ("lowerDate", "upperDate")
     val request = new GetDocumentsWithinTimeRange(new Stack, collection, fields, start, end, true)
       (databaseProxy ? request).mapTo[PRJsArrayResponse] map {revenue =>
-        if(revenue.res.value.size == 0) {
+       if(revenue.res.value.size == 0) {
          fillEmptyResult(start, end, platforms)
        } else {
          new JsArray(revenue.res.value map {(el: JsValue) => {

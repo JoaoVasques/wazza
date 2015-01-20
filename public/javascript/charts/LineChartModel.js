@@ -39,7 +39,7 @@ wazzaCharts.factory('LineChartModel', function(){
             showMaxMin: false
         },
         forceY: [0, 1],
-        title: "Title XPTO"
+        title: "TODO: Title XPTO" //TODO
       }
     };
     this.data = [];
