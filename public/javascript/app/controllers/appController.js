@@ -23,9 +23,6 @@ application.controller('AppController', [
   ) {
 
     UserVoiceService.bootstrap();
-      
-    //auth related
-    $scope.authOK = false;
 
     $scope.logout = function(){
       LoginLogoutService.logout();
@@ -42,7 +39,6 @@ application.controller('AppController', [
 
       ApplicationStateService.cleanup();
       $state.go("login");
-      //$state.go(url.value);      //TODO: fix this. url.value returns the relative url instead of the state
     });
 
     //app related
