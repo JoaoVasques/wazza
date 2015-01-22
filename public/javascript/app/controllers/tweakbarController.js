@@ -20,6 +20,11 @@ application.controller('TweakBarController',[
     DashboardShowPlatformDetails
     ) {
 
+    var hideShowBar = ['analytics.newapp', 'analytics.settings'];
+    $rootScope.$on('$stateChangeSuccess', function(event, toState, toParams, fromState, fromParams) {
+      $scope.showBar = _.find(hideShowBar, function(s) {return s == toState.name;}) == undefined ? true : false;
+    });
+
     $scope.showDashboardViewOptions = false;
     $scope.viewText = "Numerical";
     $scope.showDetailsButton = true;

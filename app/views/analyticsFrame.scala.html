@@ -1,7 +1,7 @@
 <div id="page-wrapper" ng-class="{'open': toggle}" ng-cloak>
   @views.html.sidebar.render()
   @views.html.navigationBar.render()
-  <div class="panel panel-default main-view" ng-controller="TweakBarController">
+  <div class="panel panel-default main-view" ng-controller="TweakBarController" ng-show="showBar">
     <div class="panel-heading control-bar">
       <div class="row">
         <div class="col-xs-4 results-toolbar">
