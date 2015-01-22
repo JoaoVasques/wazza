@@ -1,13 +1,10 @@
-<div class="wrapper row-offcanvas row-offcanvas-left">
-  <!-- Left side column. contains the logo and sidebar -->
+<div id="page-wrapper" ng-class="{'open': toggle}" ng-cloak>
   @views.html.sidebar.render()
-
-  <!-- Right side column. Contains the navbar and content of the page -->
-  <aside class="right-side">
-    <!-- Content Header (Page header) -->
-    <section class="content-header" ng-controller="TweakBarController" ng-model="page" style="height:61px">
+  @views.html.navigationBar.render()
+  <div class="panel panel-default main-view" ng-controller="TweakBarController">
+    <div class="panel-heading control-bar">
       <div class="row">
-        <div class="col-md-4" ng-show="showDashboardViewOptions">
+        <div class="col-xs-4 results-toolbar">
           <ul class="list-inline">
             <li><h5>{{viewText}}</h5></li>
             <li>
@@ -21,18 +18,15 @@
               </div>
             </li>
             <li>
-              <button class="btn btn-success call-to-action" ng-click="showDetails()" ng-show="showDetailsButton">Show details</button>   
+              <button class="btn btn-success call-to-action" ng-click="showDetails()" ng-show="showDetailsButton">Show details</button>
             </li>
           </ul>
-          
-          <!-- <h4 ng-show="page == 'Overview'">{{page}}</h4> -->
-          <!-- <h4 ng-hide="page == 'Overview'">{{applicationName}} / {{page}}</h4> <\!--TODO: use bootstrap breadcrumbs instead -\-> -->
-        </div> <!-- col-md-4 -->
-        <div class="col-md-3">
-          <div class="col-md-4">
+        </div>
+        <div class="col-xs-3">
+          <div class="col-xs-4">
             <h5>Platforms</h5>
           </div>
-          <div class="col-md-8">
+          <div class="col-xs-8">
             <ul class="list-inline storeSelect">
               <li>
                 <div class="iOSstoreSelect">
@@ -44,12 +38,12 @@
                 <div class="androidstoreSelect">
                   <input type="checkbox" ng-model="platforms.Android" id="AndroidPlatformSelect">
                   <label for="AndroidPlatformSelect"></label>
-                </div>                
+                </div>
               </li>
             </ul>
-          </div>        
-        </div>
-        <div class="col-md-2">
+          </div>
+        </div><!-- col-xs-3 platforms section -->
+        <div class="col-xs-2">
           <p class="input-group">
             <input type="text" class="form-control" ng-change="updateEndDateMin()" show-button-bar="false" datepicker-popup="{{format}}" ng-model="beginDate" is-open="beginDateOpened" min-date="minDate" max-date="maxDate" date-disabled="disabled(date, mode)" ng-required="true" close-text="Close" />
             <span class="input-group-btn">
@@ -69,12 +63,8 @@
           <button type="button" class="btn btn-success call-to-action" ng-click="updateKPIs()">Update</button>
         </div>
       </div>
-    </section>
-
-    <!-- Main content -->
-    <section class="content">
-      <div ui-view></div>
-    </section>
-
-  </aside>
+    </div> <!-- panel heading -->
+  </div> <!-- panel-default -->
+  <div class="main-view" ui-view>
+  </div>
 </div>

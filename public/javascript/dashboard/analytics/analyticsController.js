@@ -8,15 +8,49 @@ dashboard
   'GetKPIService',
   'DateModel',
   'DetailedKpiModel',
+  '$cookieStore',
   function (
     $scope,
     $rootScope,
     ApplicationStateService,
     GetKPIService,
     DateModel,
-    DetailedKpiModel
+    DetailedKpiModel,
+    $cookieStore
   ) {
 
+    $scope.toggle = true;
+
+     /**
+     * Sidebar Toggle & Cookie Control
+     */
+    var mobileView = 992;
+
+    $scope.getWidth = function() {
+        return window.innerWidth;
+    };
+
+    $scope.$watch($scope.getWidth, function(newValue, oldValue) {
+      if (newValue >= mobileView) {
+        if (angular.isDefined($cookieStore.get('toggle'))) {
+          $scope.toggle = ! $cookieStore.get('toggle') ? false : true;
+        } else {
+          $scope.toggle = true;
+        }
+      } else {
+        $scope.toggle = false;
+      }
+    });
+
+    window.onresize = function() {
+      $scope.$apply();
+    };
+
+    $rootScope.$on('sidebar', function(ev, data) {
+      $scope.toggle = !$scope.toggle;
+      $cookieStore.put('toggle', $scope.toggle);
+    });
+      
     $scope.updateData = function(context, KpiId, label) {
       updateChartData(context, KpiId, label);
       updateTotalValues(context, KpiId);

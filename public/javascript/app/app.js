@@ -138,11 +138,11 @@ config(function($stateProvider, $urlRouterProvider, $locationProvider, $httpProv
             controller : ''
         })
 
-        // .state('webframe.newuser', {
-        //     url: "^/",
-        //     templateUrl: '/user/register',
-        //     controller: 'UserRegistrationController'
-        // })
+        .state('home.newuser', {
+            url: "^/",
+            templateUrl: '/user/register',
+            controller: 'UserRegistrationController'
+        })
 
       //items
         // .state('home.newitem', {
@@ -152,14 +152,14 @@ config(function($stateProvider, $urlRouterProvider, $locationProvider, $httpProv
         // })
 
       //applications
-        .state('home.newapp', {
+        .state('analytics.newapp', {
             url: "^/",
             templateUrl : '/app/new',
             controller : 'NewApplicationFormController'
         })
 
       //settings
-        .state('home.settings', {
+        .state('analytics.settings', {
             url: "^/",
             templateUrl: '/dashboard/settings',
             controller: 'SettingsController'

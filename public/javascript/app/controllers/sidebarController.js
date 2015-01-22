@@ -4,14 +4,22 @@ application.controller('SidebarController', [
   '$state',
   '$document',
   'ApplicationStateService',
+  '$cookieStore',
   function(
     $scope,
     $rootScope,
     $state,
     $document,
-    ApplicationStateService
+    ApplicationStateService,
+    $cookieStore
     ) {
 
+    $scope.barState = true;
+    $scope.toggleSidebar = function() {
+      $scope.barState = !$scope.barState;
+      $rootScope.$broadcast('sidebar');
+    };
+      
     $scope.selectDashboardSection = function(sectionId) {
       $scope.followLink("analytics.dashboard");
       //scroll to top
