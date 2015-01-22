@@ -25,11 +25,11 @@ config(function($stateProvider, $urlRouterProvider, $locationProvider, $httpProv
       $urlRouterProvider.otherwise('/');
 
       $stateProvider
-        .state('webframe', {
-            templateUrl: '/webframe'
-        })
+        // .state('webframe', {
+        //     templateUrl: '/webframe'
+        // })
 
-        .state('webframe.login', {
+        .state('login', {
             url: "/",
             templateUrl: '/login',
             controller: 'LoginController'
@@ -41,7 +41,8 @@ config(function($stateProvider, $urlRouterProvider, $locationProvider, $httpProv
 
         .state('analytics', {
             templateUrl: '/analyticsframe',
-            controller: 'AnalyticsController'
+            controller: 'AnalyticsController',
+            abstract: true
         })
 
         .state('analytics.overview', {
@@ -112,23 +113,23 @@ config(function($stateProvider, $urlRouterProvider, $locationProvider, $httpProv
         })
 
       //inventory
-        .state('home.inventory', {
-            url: "^/",
-            templateUrl: '/dashboard/inventory',
-            controller: 'InventoryController'
-        })
+        // .state('home.inventory', {
+        //     url: "^/",
+        //     templateUrl: '/dashboard/inventory',
+        //     controller: 'InventoryController'
+        // })
 
-        .state('home.inventory.crud', {
-            url: "^/",
-            templateUrl: '/dashboard/inventory/crud',
-            controller: 'InventoryController'
-        })
+        // .state('home.inventory.crud', {
+        //     url: "^/",
+        //     templateUrl: '/dashboard/inventory/crud',
+        //     controller: 'InventoryController'
+        // })
 
-        .state('home.inventory.virtualCurrencies', {
-            url: "^/",
-            templateUrl: '/dashboard/inventory/virtualCurrencies',
-            controller: 'InventoryController'
-        })
+        // .state('home.inventory.virtualCurrencies', {
+        //     url: "^/",
+        //     templateUrl: '/dashboard/inventory/virtualCurrencies',
+        //     controller: 'InventoryController'
+        // })
 
       //users
         .state('home.user', {
@@ -137,18 +138,18 @@ config(function($stateProvider, $urlRouterProvider, $locationProvider, $httpProv
             controller : ''
         })
 
-        .state('webframe.newuser', {
-            url: "^/",
-            templateUrl: '/user/register',
-            controller: 'UserRegistrationController'
-        })
+        // .state('webframe.newuser', {
+        //     url: "^/",
+        //     templateUrl: '/user/register',
+        //     controller: 'UserRegistrationController'
+        // })
 
       //items
-        .state('home.newitem', {
-            url: "^/",
-            templateUrl: '/app/item/new/',
-            controller: 'NewItemController'
-        })
+        // .state('home.newitem', {
+        //     url: "^/",
+        //     templateUrl: '/app/item/new/',
+        //     controller: 'NewItemController'
+        // })
 
       //applications
         .state('home.newapp', {
@@ -172,18 +173,17 @@ config(function($stateProvider, $urlRouterProvider, $locationProvider, $httpProv
         })
 
       //random
-        .state('webframe.terms', {
-            url: "^/",
-            templateUrl: '/terms'
-        })
+        // .state('webframe.terms', {
+        //     url: "^/",
+        //     templateUrl: '/terms'
+        // })
 
-        .state('webframe.privacy', {
-            url: "^/",
-            templateUrl: '/privacy'
-        })
+        // .state('webframe.privacy', {
+        //     url: "^/",
+        //     templateUrl: '/privacy'
+        // })
 
     $httpProvider.responseInterceptors.push('SecurityHttpInterceptor');
-
 
     //local storage
     localStorageServiceProvider.setPrefix('wazza');
