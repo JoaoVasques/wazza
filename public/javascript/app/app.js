@@ -138,7 +138,7 @@ config(function($stateProvider, $urlRouterProvider, $locationProvider, $httpProv
             controller : ''
         })
 
-        .state('home.newuser', {
+        .state('newuser', {
             url: "^/",
             templateUrl: '/user/register',
             controller: 'UserRegistrationController'
