@@ -15,7 +15,7 @@ wazzaCharts.factory('LineChartModel', function(){
         },
         x: function(d){ return d[0]; },
         y: function(d){ return d[1]/100; },
-        color: ["#DC7F11", "#2980b9", "#2CA02C"],//Colors: [Total, iOS, Android],
+        color: ["#DC7F11", "#23AE89", "#3498db"],//Colors: [Total, iOS, Android],
         //transitionDuration: 300,
         useInteractiveGuideline: true,
         clipVoronoi: false,

@@ -49,6 +49,7 @@ dashboard.controller('OverviewController',[
           ));
           names.push(appInfo.name);
         });
+        ApplicationStateService.updateApps(results.data);
         ApplicationStateService.updateApplicationsList(names);
       })
     }
