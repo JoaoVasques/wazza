@@ -9,7 +9,7 @@
           </a>
         </li>
         <li class="sidebar-list">
-          <a href="" ng-click="followLink('analytics.overview')">Overview <span class="menu-icon fa fa-tachometer"></span></a>
+          <a href="" ng-click="followLink('analytics.overview')">Overview <span class="menu-icon fa fa-list-alt"></span></a>
         </li>
          <li class="sidebar-list">
           <a href="" ng-click="onDashboardClick()">Dashboard <span class="menu-icon fa fa-tachometer"></span></a>
@@ -20,7 +20,7 @@
         <li class="sidebar-list">
           <a href="" ng-click="onAnalyticsClick()">Analytics <span class="menu-icon fa fa-bar-chart-o"></span></a>
         </li>
-        <li class="sidebar-list" ng-repeat="option in analyticsOptions" ng-show="showAnalyticsOptions && !barState">
+        <li class="sidebar-list" ng-repeat="option in analyticsOptions" ng-show="showAnalyticsOptions">
            <a href="" class="childOptions"
            ng-click="followLink(option.link)">{{option.name}} <span ng-class="option.css"></span></a>
          </li>

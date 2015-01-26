@@ -13,20 +13,20 @@
         <div class="col-md-4 col-lg-4" ng-repeat="app in applications">
           <div class="well profile glow" ng-click="chooseApplication(app)">
             <div class="col-sm-12">
-                <div class="col-xs-12 col-sm-4 text-center">
-                    <figure>
-                        <img ng-src="{{app.imageUrl}}" alt="" class="img-circle img-responsive">
-                    </figure>
-                </div>
-                <div class="col-xs-12 col-sm-8">
-                    <h1>{{app.name}}</h1>
+                <!-- <div class="col-xs-12 col-sm-4 text-center"> -->
+                <!--     <figure> -->
+                <!--         <img ng-src="{{app.imageUrl}}" alt="" class="img-circle img-responsive"> -->
+                <!--     </figure> -->
+                <!-- </div> -->
+                <div class="col-xs-12 col-sm-12 text-center">
+                    <h2>{{app.name}}</h2>
                 </div>
             </div>
             <div class="col-xs-12" style="padding-top: 1em;">
                 <p><strong>Platforms: </strong>
-                    <span class="tags" ng-repeat="platform in app.platforms" style="margin-right: 10px">
-                        {{platform}}
-                    </span>
+                  <i ng-class="{'fa fa-android fa-2x': platform == 'Android', 'fa fa-apple fa-2x': platform == 'iOS'}"
+                     style="color: #23ae89; margin-right: 10px;"
+                     ng-repeat="platform in app.platforms"></i>
                 </p>
             </div>
             <div class="col-xs-12 divider text-center">

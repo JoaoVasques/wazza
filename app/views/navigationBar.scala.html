@@ -3,12 +3,12 @@
   <div class="col-xs-12">
     <div class="user pull-right">
       <div class="btn-group" dropdown is-open="status.isopen" style="margin-top:1em;" ng-show="applicationName != ''">
-        <button href type="button" class="btn btn-primary dropdown-toggle" dropdown-toggle >
+        <button href type="button" class="btn btn-success dropdown-toggle" dropdown-toggle >
           {{applicationName}} <span class="caret"></span>
         </button>
         <ul class="dropdown-menu dropdown-menu-right" role="menu">
           <li ng-repeat="application in applicationsList">
-            <a href="" ng-click="chooseApplication(application)">{{application}}</a>
+            <a href="" ng-disabled="{{application == appName}}" ng-click="changeApp(application)">{{application}}</a>
           </li>
           <li class="divider"></li>
           <li>
@@ -45,28 +45,6 @@
     <div class="meta">
       <div class="page">
         {{page}}
-        <!-- <div class="dropdown" dropdown> -->
-        <!--   <a href="#" class="dropdown-toggle" dropdown-toggle> -->
-        <!--     {{applicationName}} -->
-        <!--   </a> -->
-        <!--   <ul class="dropdown-menu dropdown-menu-right"> -->
-        <!--     <li class="dropdown-header"> -->
-        <!--       userName -->
-        <!--     </li> -->
-        <!--     <li class="divider"></li> -->
-        <!--     <li class="link"> -->
-        <!--       <a href="#"> -->
-        <!--         Documentation -->
-        <!--       </a> -->
-        <!--     </li> -->
-        <!--     <li class="divider"></li> -->
-        <!--     <li class="link"> -->
-        <!--       <a href="" ng-click="logoutClick()"> -->
-        <!--         Logout -->
-        <!--     </a> -->
-        <!--     </li> -->
-        <!--   </ul> -->
-        <!-- </div> <\!-- div dropdown -\-> -->
       </div>
       <!-- <div class="breadcrumb-links"> -->
       <!--   <\!-- Home / Dashboard -\-> -->

@@ -42,13 +42,8 @@ application.controller('AppController', [
     });
 
     //app related
-    $scope.applicationName = "";
+    //$scope.applicationName = "";
     $scope.applicationsList = [];
-      
-    $scope.$on("APPLICATION_NAME_UPDATED", function(){
-      $scope.applicationName = ApplicationStateService.getApplicationName();
-    });
-
     $scope.$on("APPLICATIONS_LIST_UPDATED", function() {
       $scope.applicationsList = ApplicationStateService.applicationsList;
     });

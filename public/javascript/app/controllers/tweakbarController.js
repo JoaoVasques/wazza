@@ -20,7 +20,7 @@ application.controller('TweakBarController',[
     DashboardShowPlatformDetails
     ) {
 
-    var hideShowBar = ['analytics.newapp', 'analytics.settings'];
+    var hideShowBar = ['analytics.newapp', 'analytics.settings', 'analytics.overview'];
     $rootScope.$on('$stateChangeSuccess', function(event, toState, toParams, fromState, fromParams) {
       $scope.showBar = _.find(hideShowBar, function(s) {return s == toState.name;}) == undefined ? true : false;
     });
