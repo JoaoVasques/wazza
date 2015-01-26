@@ -346,6 +346,19 @@ ul.sidebar .sidebar-list .menu-icon {
   line-height: 40px;
   width: 70px;
 }
+
+.childOptions {
+  width: 180px !important;
+  margin-left: 1.2em;
+  line-heigth: 20px !important;
+}
+
+.childIcon {
+  float: right;
+  margin-top: 13px;
+  margin-right: -20px;
+}
+
 #page-wrapper:not(.open) ul.sidebar {
   bottom: 0;
 }

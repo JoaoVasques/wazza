@@ -2,22 +2,28 @@
       <ul class="sidebar">
         <li class="sidebar-main">
           <a ng-click="toggleSidebar()">
-            <img src="@routes.Assets.at("images/wazza_logo_white2.png")" alt="Wazza Logo" style="height: auto; width: 10em;" ng-hide="barState">
+            <img src="@routes.Assets.at("images/wazza_logo_white2.png")" alt="Wazza Logo" style="height: auto; width: 10em;" ng-show="barState">
             <span class="menu-icon" style="padding-right: 18px;">
-              <img src="@routes.Assets.at("images/wazza_icon_white.png")" alt="Wazza Logo" style="height: auto; width: 2.1em;" ng-show="barState">
+              <img src="@routes.Assets.at("images/wazza_icon_white.png")" alt="Wazza Logo" style="height: auto; width: 2.1em;" ng-hide="barState">
             </span>
           </a>
         </li>
-        <li class="sidebar-title"><span>NAVIGATION</span></li>
         <li class="sidebar-list">
           <a href="" ng-click="followLink('analytics.overview')">Overview <span class="menu-icon fa fa-tachometer"></span></a>
         </li>
          <li class="sidebar-list">
-          <a href="" ng-click="followLink('analytics.dashboard')">Dashboard <span class="menu-icon fa fa-tachometer"></span></a>
-        </li>
+          <a href="" ng-click="onDashboardClick()">Dashboard <span class="menu-icon fa fa-tachometer"></span></a>
+         </li>
+         <li class="sidebar-list" ng-repeat="option in dashboardOptions" ng-show="showDashboardOptions">
+           <a href="" class="childOptions" ng-click="selectDashboardSection(option.link)">{{option.name}}</a>
+         </li>
         <li class="sidebar-list">
-          <a href="#/tables">Analytics <span class="menu-icon fa fa-bar-chart-o"></span></a>
+          <a href="" ng-click="onAnalyticsClick()">Analytics <span class="menu-icon fa fa-bar-chart-o"></span></a>
         </li>
+        <li class="sidebar-list" ng-repeat="option in analyticsOptions" ng-show="showAnalyticsOptions && !barState">
+           <a href="" class="childOptions"
+           ng-click="followLink(option.link)">{{option.name}} <span ng-class="option.css"></span></a>
+         </li>
         <li class="sidebar-list">
           <a href="" ng-click="followLink('analytics.settings')">Settings <span class="menu-icon fa fa-gears"></span></a>
         </li>
@@ -46,23 +52,6 @@
 <!--     <section class="sidebar"> -->
 
 <!--         <ul class="sidebar-menu"> -->
-
-<!--             <li class="treeview"> -->
-<!--                 <a data-toggle="collapse" data-target="#collapseChangeApp" href=""> -->
-<!--                     <span><h5><b>Applications</b><i class="fa fa-tasks pull-right" style="padding-right: 20px;"></i></h5></span> -->
-<!--                 </a> -->
-<!--             </li> -->
-<!--             <ul id="collapseChangeApp" class="sidebar-menu collapse"> -->
-<!--                 <h4 class="header text-center">You have {{applicationsList.length}} apps:</h4> -->
-<!--                 <li ng-repeat="app in applicationsList" class="sidebar-menu"> -->
-<!--                     <a href="#" ng-click="chooseApplication(app)"> -->
-<!--                         {{app}} -->
-<!--                     </a> -->
-<!--                 </li> -->
-<!--                 <li class="treeview"> -->
-<!--                     <a ui-sref='home.newapp' class="btn btn-default btn-lg" style="color:#666; margin: 0 20px 10px 20px;"><span class="fa fa-edit fa-fw"></span>Add new App</a> -->
-<!--                 </li> -->
-<!--             </ul> -->
 
 <!--             <\!-- Overview -\-> -->
 <!--             <li class="treeview"> -->
