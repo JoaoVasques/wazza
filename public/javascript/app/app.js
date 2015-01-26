@@ -173,15 +173,15 @@ config(function($stateProvider, $urlRouterProvider, $locationProvider, $httpProv
         })
 
       //random
-        // .state('webframe.terms', {
-        //     url: "^/",
-        //     templateUrl: '/terms'
-        // })
+        .state('analytics.terms', {
+            url: "^/",
+            templateUrl: '/terms'
+        })
 
-        // .state('webframe.privacy', {
-        //     url: "^/",
-        //     templateUrl: '/privacy'
-        // })
+        .state('analytics.privacy', {
+            url: "^/",
+            templateUrl: '/privacy'
+        })
 
     $httpProvider.responseInterceptors.push('SecurityHttpInterceptor');
 
