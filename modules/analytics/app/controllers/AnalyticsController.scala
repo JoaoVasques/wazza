@@ -68,11 +68,11 @@ class AnalyticsController @Inject()(
     def calculateDelta(current: JsValue, previous: JsValue): JsValue = {
       def calculateDeltaAux(currentValue: Double, previousValue: Double): Double = {
         if(currentValue > 0.0) {
-          (currentValue - previousValue) / currentValue
+          ((currentValue - previousValue) / currentValue) * 100
         } else 0.0
       }
 
-      val totalDelta = calculateDeltaAux((current \ "value").as[Double], (current \ "value").as[Double])
+      val totalDelta = calculateDeltaAux((current \ "value").as[Double], (previous \ "value").as[Double])
       val platformResults = platforms map {p =>
         def getPlatform(j: JsValue) = {
           (j \ "platforms").as[JsArray].value.find(e => (e \ "platform").as[String] == p).get
