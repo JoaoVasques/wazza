@@ -1,13 +1,20 @@
 service.factory('ApplicationStateService', ['$rootScope', 'localStorageService', 'SelectedPlatformsChange',
 	function ($rootScope, localStorageService, SelectedPlatformsChange) {
+
+    function AppInfo(name, platforms) {
+      this.name = name;
+      this.platforms = platforms;
+    };
+          
 		var service = {};
 		service.applicationName = "";
 		service.companyName = "";
 		service.applicationsList = [];
 		service.userInfo = {};
 		service.path = "";
-		service.applicationOverview = "";
+	  service.applicationOverview = "";
     service.selectedPlatforms = [];
+    service.apps = [];
 
 		//current view
 		service.getPath = function () {
@@ -30,6 +37,13 @@ service.factory('ApplicationStateService', ['$rootScope', 'localStorageService',
 			$rootScope.applicationName = newName;
 			$rootScope.$broadcast("APPLICATION_NAME_UPDATED"); 
 		};
+
+    service.updateApps = function(apps) {
+      service.apps = [];
+      _.each(apps, function(appInfo) {
+        service.apps.push(new AppInfo(appInfo.name, appInfo.platforms));
+      });
+    }
 
 		//currently logged company
 		service.getCompanyName = function(newName) {
@@ -86,6 +100,11 @@ service.factory('ApplicationStateService', ['$rootScope', 'localStorageService',
 		};
 
     // Platform operations: add and remove platforms that are presented
+
+    service.resetPlatforms = function() {
+      service.selectedPlatforms = [];
+    };
+
     service.addPlatforms = function(platform) {
       if(!_.contains(service.selectedPlatforms, platform)) {
         service.selectedPlatforms.push(platform);

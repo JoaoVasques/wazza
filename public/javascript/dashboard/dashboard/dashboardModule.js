@@ -11,7 +11,8 @@ var dashboard = angular.module('DashboardModule', [
 ]);
 
 dashboard.factory("KpiModel", ['HorizontalBarChartModel',function(HorizontalBarChartModel) {
-    function KpiModel(name, link) {
+  function KpiModel(name, link) {
+    this.isCollapsed = true;
     this.name = name;
     this.link = link;
     this.delta = 0;
@@ -19,7 +20,7 @@ dashboard.factory("KpiModel", ['HorizontalBarChartModel',function(HorizontalBarC
     this.value = 0;
     this.unitType = "€";
     this.css = "kpi-delta";
-    this.icon = "glyphicon glyphicon-minus";
+    this.icon = "fa fa-minus";
     this.platforms = [];
     this.multiPlatform = true;
     this.chart = new HorizontalBarChartModel(1)
@@ -29,15 +30,18 @@ dashboard.factory("KpiModel", ['HorizontalBarChartModel',function(HorizontalBarC
     updateChartData: function(chartData, platforms) {
       this.chart.updateChartData(chartData, platforms);
     },  
-    updateKpiValue: function(data) {
+    updateKpiValue: function(data) {      
+      var value = data.value;
+      var delta = data.delta;
+      var previous = data.previous;
       var DecimalPlaces = 2
-      this.value = data.value.toFixed(DecimalPlaces);
-      this.previous = data.previous.toFixed(DecimalPlaces);
-      this.delta = data.delta.toFixed(DecimalPlaces);
+      this.value = parseFloat(value.toFixed(DecimalPlaces));
+      this.previous = parseFloat(previous.toFixed(DecimalPlaces));
+      this.delta = parseFloat(delta.toFixed(DecimalPlaces));
       this.platforms = _.map(data.platforms, function(p) {
-        p.value = p.value.toFixed(DecimalPlaces);
-        p.previous = p.previous.toFixed(DecimalPlaces);
-        p.delta = p.delta.toFixed(DecimalPlaces);
+        p.value = parseFloat(p.value.toFixed(DecimalPlaces));
+        p.previous = parseFloat(p.previous.toFixed(DecimalPlaces));
+        p.delta = parseFloat(p.delta.toFixed(DecimalPlaces));
         return p;
       });
       this.updateChartData(data, _.map(data.platforms, function(p) {return p.platform;}));

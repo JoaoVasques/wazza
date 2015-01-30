@@ -57,7 +57,7 @@ class RegistrationController @Inject()(
   )
 
   def registerUser = Action {
-    Ok(views.html.registerUser(registrationForm))
+    Ok(views.html.registerUser())
   }
 
   def submitUser = Action.async(parse.json) { implicit request =>

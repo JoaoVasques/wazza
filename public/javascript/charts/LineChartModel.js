@@ -2,7 +2,7 @@
 
 wazzaCharts.factory('LineChartModel', function(){
 
-  function LineChartModel(xpto) {
+  function LineChartModel(name) {
     this.options = {
       chart: {
         type: 'cumulativeLineChart',
@@ -14,9 +14,8 @@ wazzaCharts.factory('LineChartModel', function(){
           left: 65
         },
         x: function(d){ return d[0]; },
-        y: function(d){ return d[1]/100; },
-        color: ["#DC7F11", "#2980b9", "#2CA02C"],//Colors: [Total, iOS, Android],
-        //transitionDuration: 300,
+        y: function(d){ return d[1]; },
+        color: ["#DC7F11", "#23AE89", "#3498db"],//Colors: [Total, iOS, Android],
         useInteractiveGuideline: true,
         clipVoronoi: false,
         showControls: false,
@@ -24,7 +23,7 @@ wazzaCharts.factory('LineChartModel', function(){
         xAxis: {
           axisLabel: 'Days',
             tickFormat: function(d) {
-              return d3.time.format('%m/%d/%y')(new Date(d))
+              return d3.time.format('%d/%m/%y')(new Date(d))
             },
           showMaxMin: true,
           staggerLabels: true
@@ -33,13 +32,13 @@ wazzaCharts.factory('LineChartModel', function(){
         yAxis: {
           axisLabel: name,
           tickFormat: function(d){
-            return d3.format(',.1')(d);
+            return d3.format(',.2')(d);
           },
           axisLabelDistance: 20,
             showMaxMin: false
         },
         forceY: [0, 1],
-        title: "Title XPTO"
+        title: name
       }
     };
     this.data = [];
@@ -64,9 +63,10 @@ wazzaCharts.factory('LineChartModel', function(){
         var day = data.day;
         var updateEntry = function(dataKey, isTotal){
           var getPlatformValue = function(platform) {
-            return _.find(data.platforms, function(p){
-              p.platform == platform;
-            }).value;
+            var platformInfo = _.find(data.platforms, function(p){
+              return p.platform == platform;
+            });
+            return platformInfo.value;
           };
           // If the series does not exist in D3 data, create it
           if(!seriesExist(dataKey, _this.data)) {
@@ -91,9 +91,10 @@ wazzaCharts.factory('LineChartModel', function(){
         };
         updateEntry("Total", true);
         _.each(platforms, function(p) {
-          updateEntry(p, true);
+          updateEntry(p, false);
         });
       };
+
       _.each(chartData.data, addDataToChart);
       // update options max Y value
       if(maxValue > 0) {

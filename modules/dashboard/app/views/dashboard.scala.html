@@ -1,27 +1,25 @@
-<div ng-controller="DashboardController">
 
   <!-- General KPIs -->
   <h1 class="dashboard-title" id="revenue"><i class="fa fa-money"></i> Revenue</h1>
   <div class="row">
-    <kpi info="totalRevenue"></kpi>
-    <kpi info="arpu"></kpi>
-    <kpi info="avgRevSession"></kpi>
+    <kpi info="totalRevenue" view="viewMode" details="showDetails"></kpi>
+    <kpi info="arpu" view="viewMode" details="showDetails"></kpi>
+    <kpi info="avgRevSession" view="viewMode" details="showDetails"></kpi>
   </div>
 
   <!-- User KPIs -->
   <h1 class="dashboard-title" id="users"><i class="fa fa-user"></i> User</h1>
   <div class="row">
-    <kpi info="ltv"></kpi>
-    <kpi info="payingUsers"></kpi>
-    <kpi info="avgPurchasesUser"></kpi>
+    <kpi info="ltv" view="viewMode" details="showDetails"></kpi>
+    <kpi info="payingUsers" view="viewMode" details="showDetails"></kpi>
+    <kpi info="avgPurchasesUser" view="viewMode" details="showDetails"></kpi>
   </div>
 
   <!-- Session KPIs -->
   <h1 class="dashboard-title" id="sessions"><i class="fa fa-clock-o"></i> Session</h1>
   <div class="row">
-    <kpi info="purchasesPerSession"></kpi>
-    <kpi info="avgTimeFirstPurchase"></kpi>
-    <kpi info="avgTimeBetweenPurchases"></kpi>
+    <kpi info="purchasesPerSession" view="viewMode" details="showDetails"></kpi>
+    <kpi info="avgTimeFirstPurchase" view="viewMode" details="showDetails"></kpi>
+    <kpi info="avgTimeBetweenPurchases" view="viewMode" details="showDetails"></kpi>
   </div>
 
-</div>

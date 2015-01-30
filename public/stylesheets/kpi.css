@@ -30,23 +30,16 @@
   text-align: center;
 }
 
-.kpi-delta,
-.kpi-delta-positive,
-.kpi-delta-negative {
-  font-size: 3em;
-  padding-left: 15px;
-}
-
 .kpi-delta {
-  color: grey;
+  color: #1C6A9E;
 }
 
 .kpi-delta-positive {
-  color: #1E824C;
+  color: #23AE89;
 }
 
 .kpi-delta-negative {
-  color: #e74c3c;
+  color: #C0392B;
 }
 
 .kpi .link {
@@ -58,3 +51,8 @@
   padding-left: 1em;
   padding-top: 2.5em;
 }
+
+.kpiValue {
+  color: #1C6A9E
+}
+

@@ -1,18 +1,57 @@
-<div class="col-md-4 col-xs-10">
-  <div class="col-md-12 well panel panel-default glow profile dashboard-kpi" ng-click="switchDetailedView(kpi.link)">
+<div class="col-md-4 col-xs-10" ng-click="switchDetailedView(kpi.link)">
+  <div class="col-md-12 well panel panel-default glow profile dashboard-kpi">
     <div class="panel-heading">
       <h2 class="panel-title text-center">{{kpi.name}}</h2>
     </div>
     <div class="panel-body">
-      <nvd3 options="kpi.chart.options" data="kpi.chart.data"></nvd3>
-      <table class="table table-bordered">
-        <thead>
-          <tr>
-            <th>Compared to Previous</th>
-            <th>{{kpi.delta}} %</th>
-          </tr>
-        </thead>
-      </table>
+      <div ng-show="v == 0">
+        <nvd3 options="kpi.chart.options" data="kpi.chart.data"></nvd3>
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th>Compared to Previous</th>
+              <th class="kpiValue">{{kpi.delta}} %</th>
+            </tr>
+          </thead>
+        </table>
+      </div>
+
+      <div ng-show="v == 1">
+        <div class="row">
+          <div class="col-md-9 text-center">
+            <h1 class="kpiValue" style="font-size: 50px;">{{kpi.value}}</h1>
+          </div>
+          <div class="col-md-3">
+            <div ng-class="{'kpi-delta-positive': kpi.delta > 0, 'kpi-delta-negative': kpi.delta < 0, 'kpi-delta': kpi.delta == 0}">
+              <h3><i ng-class="{'fa fa-arrow-up': kpi.delta > 0, 'fa fa-arrow-down': kpi.delta < 0, 'fa fa-minus': kpi.delta == 0}"></i> {{kpi.delta}}%
+              </h3>
+            </div>
+          </div> <!-- col-md-3 -->
+        </div> <!-- row -->
+      </div>
+	      <div collapse="showPlatforms">
+          <hr>
+          <h5 class="text-center">Platform Details</h5>
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>Platform</th>
+                <th>Result</th>
+                <th>Variation</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="platform in kpi.platforms">
+                <th>{{platform.platform}}</th>
+                <td class="kpiValue">{{platform.value}}</td>
+                <td ng-class="{'kpi-delta-positive': platform.delta > 0, 'kpi-delta-negative': platform.delta < 0, 'kpi-delta': platform.delta == 0}">{{platform.delta}} % 
+                  <i ng-class="{'fa fa-arrow-up': platform.delta > 0, 'fa fa-arrow-down': platform.delta < 0, 'fa fa-minus': platform.delta == 0}"></i>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+	      </div>
+      </div>
     </div>
   </div>
 </div>

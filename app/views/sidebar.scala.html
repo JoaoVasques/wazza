@@ -1,90 +1,118 @@
-<aside class="left-side sidebar-offcanvas" id="sidebar" ng-controller="SidebarController">
-    <section class="sidebar">
+<div id="sidebar-wrapper" ng-controller="SidebarController">
+      <ul class="sidebar">
+        <li class="sidebar-main">
+          <a ng-click="toggleSidebar()">
+            <img src="@routes.Assets.at("images/wazza_logo_white2.png")" alt="Wazza Logo" style="height: auto; width: 10em;" ng-show="barState">
+            <span class="menu-icon" style="padding-right: 18px;">
+              <img src="@routes.Assets.at("images/wazza_icon_white.png")" alt="Wazza Logo" style="height: auto; width: 2.1em;" ng-hide="barState">
+            </span>
+          </a>
+        </li>
+        <li class="sidebar-list">
+          <a href="" ng-click="followLink('analytics.overview')">Overview <span class="menu-icon fa fa-list-alt"></span></a>
+        </li>
+         <li class="sidebar-list">
+          <a href="" ng-click="onDashboardClick()">Dashboard <span class="menu-icon fa fa-tachometer"></span></a>
+         </li>
+         <li class="sidebar-list" ng-repeat="option in dashboardOptions" ng-show="showDashboardOptions">
+           <a href="" class="childOptions" ng-click="selectDashboardSection(option.link)">{{option.name}}</a>
+         </li>
+        <li class="sidebar-list">
+          <a href="" ng-click="onAnalyticsClick()">Analytics <span class="menu-icon fa fa-bar-chart-o"></span></a>
+        </li>
+        <li class="sidebar-list" ng-repeat="option in analyticsOptions" ng-show="showAnalyticsOptions">
+           <a href="" class="childOptions"
+           ng-click="followLink(option.link)">{{option.name}} <span ng-class="option.css"></span></a>
+         </li>
+        <li class="sidebar-list">
+          <a href="" ng-click="followLink('analytics.settings')">Settings <span class="menu-icon fa fa-gears"></span></a>
+        </li>
+      </ul>
+      <div class="sidebar-footer">
+        <div class="col-xs-6">
+          <a href="" ng-click="followLink('analytics.terms')">
+            Terms
+          </a>
+        </div>
+        <div class="col-xs-6">
+          <a href="http://www.wazza.io/documentation" target="_blank">
+            Documentation
+          </a>
+        </div>
+      </div>
+    </div>
+    <!-- End Sidebar -->
 
-        <ul class="sidebar-menu">
+<!-- <aside class="left-side sidebar-offcanvas" id="sidebar" ng-controller="SidebarController"> -->
+<!--     <section class="sidebar"> -->
 
-            <li class="treeview">
-                <a data-toggle="collapse" data-target="#collapseChangeApp" href="">
-                    <span><h5><b>Applications</b><i class="fa fa-tasks pull-right" style="padding-right: 20px;"></i></h5></span>
-                </a>
-            </li>
-            <ul id="collapseChangeApp" class="sidebar-menu collapse">
-                <h4 class="header text-center">You have {{applicationsList.length}} apps:</h4>
-                <li ng-repeat="app in applicationsList" class="sidebar-menu">
-                    <a href="#" ng-click="chooseApplication(app)">
-                        {{app}}
-                    </a>
-                </li>
-                <li class="treeview">
-                    <a ui-sref='home.newapp' class="btn btn-default btn-lg" style="color:#666; margin: 0 20px 10px 20px;"><span class="fa fa-edit fa-fw"></span>Add new App</a>
-                </li>
-            </ul>
+<!--         <ul class="sidebar-menu"> -->
 
-            <!-- Overview -->
-            <li class="treeview">
-                <a ui-sref="analytics.overview"><span><h5><b>Overview</b></h5></span></a>
-            </li>
+<!--             <\!-- Overview -\-> -->
+<!--             <li class="treeview"> -->
+<!--                 <a ui-sref="analytics.overview"><span><h5><b>Overview</b></h5></span></a> -->
+<!--             </li> -->
 
-            <!-- Dashboard -->
-            <li class="treeview">
-                <a data-toggle="collapse" data-target="#collapseDashboard" href="" ng-click="followLink('analytics.dashboard')">
-                    <span><h5><b>Dashboard</b></h5></span>
-                </a>
-            </li>
-            <ul id="collapseDashboard" class="sidebar-menu collapse">
-                <li class="treeview">
-                  <a href="" ng-click="selectDashboardSection('revenue')"><i class="fa fa-money"></i><span> Revenue</span></a>
-                </li>
-                <li class="treeview">
-                  <a href="" ng-click="selectDashboardSection('users')"><i class="fa fa-user"></i> Users</a>
-                </li>
-                <li class="treeview">
-                  <a href="" ng-click="selectDashboardSection('sessions')"><i class="fa fa-clock-o"></i> Sessions</a>
-                </li>
-            </ul>
+<!--             <\!-- Dashboard -\-> -->
+<!--             <li class="treeview"> -->
+<!--                 <a data-toggle="collapse" data-target="#collapseDashboard" href="" ng-click="followLink('analytics.dashboard')"> -->
+<!--                     <span><h5><b>Dashboard</b></h5></span> -->
+<!--                 </a> -->
+<!--             </li> -->
+<!--             <ul id="collapseDashboard" class="sidebar-menu collapse"> -->
+<!--                 <li class="treeview"> -->
+<!--                   <a href="" ng-click="selectDashboardSection('revenue')"><i class="fa fa-money"></i><span> Revenue</span></a> -->
+<!--                 </li> -->
+<!--                 <li class="treeview"> -->
+<!--                   <a href="" ng-click="selectDashboardSection('users')"><i class="fa fa-user"></i> Users</a> -->
+<!--                 </li> -->
+<!--                 <li class="treeview"> -->
+<!--                   <a href="" ng-click="selectDashboardSection('sessions')"><i class="fa fa-clock-o"></i> Sessions</a> -->
+<!--                 </li> -->
+<!--             </ul> -->
 
-            <!-- Analytics -->
-            <li class="treeview">
-                <a data-toggle="collapse" data-target="#collapseAnalytics" href="">
-                    <span><h5><b>Analytics</b></h5></span>
-                </a>
-            </li>
+<!--             <\!-- Analytics -\-> -->
+<!--             <li class="treeview"> -->
+<!--                 <a data-toggle="collapse" data-target="#collapseAnalytics" href=""> -->
+<!--                     <span><h5><b>Analytics</b></h5></span> -->
+<!--                 </a> -->
+<!--             </li> -->
 
-            <ul id="collapseAnalytics" class="sidebar-menu collapse">
-                <li><a href="#"><b>Revenue</b></a></li> <!-- semantically incorrect-->
-                <li><a href="" ng-click="followLink('analytics.revenue')"><i class="fa fa-shopping-cart"></i> Total Revenue</a></li>
-                <li><a href="" ng-click="followLink('analytics.arpu')"><i class="fa fa-shopping-cart"></i> Avg Revenue Per User</a></li>
-                <li><a href="" ng-click="followLink('analytics.avgRevenueSession')"><i class="fa fa-shopping-cart"></i> Avg Revenue Per Session</a></li>
+<!--             <ul id="collapseAnalytics" class="sidebar-menu collapse"> -->
+<!--                 <li><a href="#"><b>Revenue</b></a></li> <\!-- semantically incorrect-\-> -->
+<!--                 <li><a href="" ng-click="followLink('analytics.revenue')"><i class="fa fa-shopping-cart"></i> Total Revenue</a></li> -->
+<!--                 <li><a href="" ng-click="followLink('analytics.arpu')"><i class="fa fa-shopping-cart"></i> Avg Revenue Per User</a></li> -->
+<!--                 <li><a href="" ng-click="followLink('analytics.avgRevenueSession')"><i class="fa fa-shopping-cart"></i> Avg Revenue Per Session</a></li> -->
 
-                <li><a href="#"><b>Users</b></a></li>
-                <li><a href="" ng-click="followLink('analytics.payingUsers')"><i class="fa fa-user"></i> Paying Users</a></li>
-                <li><a href="" ng-click="followLink('analytics.ltv')"><i class="fa fa-user"></i> Lifetime Value</a></li>
-                <li><a href="" ng-click="followLink('analytics.avgPurchasesUser')"><i class="fa fa-user"></i> Avg Purchases User</a></li>
+<!--                 <li><a href="#"><b>Users</b></a></li> -->
+<!--                 <li><a href="" ng-click="followLink('analytics.payingUsers')"><i class="fa fa-user"></i> Paying Users</a></li> -->
+<!--                 <li><a href="" ng-click="followLink('analytics.ltv')"><i class="fa fa-user"></i> Lifetime Value</a></li> -->
+<!--                 <li><a href="" ng-click="followLink('analytics.avgPurchasesUser')"><i class="fa fa-user"></i> Avg Purchases User</a></li> -->
 
-                <li><a href="#"><b>Sessions</b></a></li>
-                <li><a href="" ng-click="followLink('analytics.purchasesPerSession')"><i class="fa fa-clock-o"></i> Purchases</a></li>
-                <li><a href="" ng-click="followLink('analytics.avgTime1stPurchase')"><i class="fa fa-clock-o"></i> Avg Time 1st purchase</a></li>
-                <li><a href="" ng-click="followLink('analytics.avgTimebetweenPurchase')"><i class="fa fa-clock-o"></i> Avg Time between purchase</a></li>
-            </ul>
+<!--                 <li><a href="#"><b>Sessions</b></a></li> -->
+<!--                 <li><a href="" ng-click="followLink('analytics.purchasesPerSession')"><i class="fa fa-clock-o"></i> Purchases</a></li> -->
+<!--                 <li><a href="" ng-click="followLink('analytics.avgTime1stPurchase')"><i class="fa fa-clock-o"></i> Avg Time 1st purchase</a></li> -->
+<!--                 <li><a href="" ng-click="followLink('analytics.avgTimebetweenPurchase')"><i class="fa fa-clock-o"></i> Avg Time between purchase</a></li> -->
+<!--             </ul> -->
 
-           <!-- Management -->
-            <!--li class="treeview">
-                <a data-toggle="collapse" data-target="#collapseManagement" href="">
-                    <span><h5><b>Management</b></h5></span>
-                </a>
-            </li>
-            <ul id="collapseManagement" class="sidebar-menu collapse">
-                <li><a href="" ng-click="experimental('home.inventory')"><i class="fa fa-edit"></i> Inventory</span></a></li>
-            </ul-->
-           <!-- Settings -->
-            <li class="treeview">
-                <a data-toggle="collapse" data-target="#collapseConfiguration" href="">
-                    <span><h5><b>Configuration</b></h5></span>
-                </a>
-            </li>
-            <ul id="collapseConfiguration" class="sidebar-menu collapse">
-                <li><a href="" ng-click="followLink('home.settings')"><i class="fa fa-gears"></i> <span>Settings</span></a></li>
-            </ul>
-        </ul>
-    </section>
-</aside>
+<!--            <\!-- Management -\-> -->
+<!--             <\!--li class="treeview"> -->
+<!--                 <a data-toggle="collapse" data-target="#collapseManagement" href=""> -->
+<!--                     <span><h5><b>Management</b></h5></span> -->
+<!--                 </a> -->
+<!--             </li> -->
+<!--             <ul id="collapseManagement" class="sidebar-menu collapse"> -->
+<!--                 <li><a href="" ng-click="experimental('home.inventory')"><i class="fa fa-edit"></i> Inventory</span></a></li> -->
+<!--             </ul-\-> -->
+<!--            <\!-- Settings -\-> -->
+<!--             <li class="treeview"> -->
+<!--                 <a data-toggle="collapse" data-target="#collapseConfiguration" href=""> -->
+<!--                     <span><h5><b>Configuration</b></h5></span> -->
+<!--                 </a> -->
+<!--             </li> -->
+<!--             <ul id="collapseConfiguration" class="sidebar-menu collapse"> -->
+<!--                 <li><a href="" ng-click="followLink('home.settings')"><i class="fa fa-gears"></i> <span>Settings</span></a></li> -->
+<!--             </ul> -->
+<!--         </ul> -->
+<!--     </section> -->
+<!-- </aside> -->

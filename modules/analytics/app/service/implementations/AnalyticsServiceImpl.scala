@@ -52,6 +52,12 @@ class AnalyticsServiceImpl extends AnalyticsService {
     }})
   }
 
+  protected def parseDate(json: JsValue, key: String): Date = {
+    val dateStr = (json \ key \ "$date").as[String]
+    val ops = new StringOps(dateStr)
+    new SimpleDateFormat("yyyy-MM-dd").parse(ops.take(ops.indexOf('T')))
+  }
+
   private def calculateDetailedKPIAux(
     companyName: String,
     applicationName: String,
@@ -78,7 +84,6 @@ class AnalyticsServiceImpl extends AnalyticsService {
               "value" -> ((platformInfo \ "value").as[Double])
             )
           }})
-          
         )
       }
     })
@@ -173,31 +178,7 @@ class AnalyticsServiceImpl extends AnalyticsService {
     end: Date,
     platforms: List[String]
   ): Future[JsArray] = {
-    val arpuCollection = Metrics.arpuCollection(companyName, applicationName)
-    val fields = ("lowerDate", "upperDate")
-    val request = new GetDocumentsWithinTimeRange(new Stack, arpuCollection, fields, start, end, true)
-    val futureArpu = (databaseProxy ? request).mapTo[PRJsArrayResponse]
-
-    futureArpu map {arpu =>
-      if(arpu.res.value.isEmpty) {
-        fillEmptyResult(start, end, platforms)
-      } else {
-        new JsArray(arpu.res.value map {el =>
-          val day = new LocalDate((el \ "lowerDate").as[Double].longValue)
-          Json.obj(
-            "day" -> day.toDate.getTime,
-            "value" -> (el \ "arpu").as[Double],
-            "platforms" -> (platforms map {p => {
-              val platformInfo = getPlatform(el, p)
-              Json.obj(
-                "platform" -> ((platformInfo \ "platform").as[String]),
-                "value" -> ((platformInfo \ "res").as[Double])
-              )
-            }})
-          )
-        })
-      }
-    }
+    calculateDetailedKPIAux(companyName, applicationName, start, end, platforms, getTotalARPU)
   }
 
   def getTotalARPU(
@@ -224,31 +205,7 @@ class AnalyticsServiceImpl extends AnalyticsService {
     end: Date,
     platforms: List[String]
   ): Future[JsArray] = {
-    val fields = ("lowerDate", "upperDate")
-    val collection = Metrics.avgRevenueSessionCollection(companyName, applicationName)
-    val request = new GetDocumentsWithinTimeRange(new Stack, collection, fields, start, end, true)
-    val futureAvgRevenueSession = (databaseProxy ? request).mapTo[PRJsArrayResponse]
-
-    futureAvgRevenueSession map {avgRevenueSession =>
-      if(avgRevenueSession.res.value.isEmpty) {
-        fillEmptyResult(start, end, platforms)
-      } else {
-        new JsArray(avgRevenueSession.res.value.map {el =>
-          val day = new LocalDate((el \ "lowerDate").as[Double].longValue)
-          Json.obj(
-            "day" -> day.toDate.getTime,
-            "value" -> (el \ "avgRevenueSession").as[Double],
-            "platforms" -> (platforms map {p => {
-              val platformInfo = getPlatform(el, p)
-              Json.obj(
-                "platform" -> ((platformInfo \ "platform").as[String]),
-                "value" -> ((platformInfo \ "res").as[Double])
-              )
-            }})
-          )
-        })
-      }
-    }
+    calculateDetailedKPIAux(companyName, applicationName, start, end, platforms, getTotalAverageRevenuePerSession)
   }
 
   def getTotalAverageRevenuePerSession(
@@ -304,29 +261,7 @@ class AnalyticsServiceImpl extends AnalyticsService {
     end: Date,
     platforms: List[String]
   ): Future[JsArray] = {
-    val collection = Metrics.totalRevenueCollection(companyName, applicationName)
-    val fields = ("lowerDate", "upperDate")
-    val request = new GetDocumentsWithinTimeRange(new Stack, collection, fields, start, end, true)
-      (databaseProxy ? request).mapTo[PRJsArrayResponse] map {revenue =>
-        if(revenue.res.value.size == 0) {
-         fillEmptyResult(start, end, platforms)
-       } else {
-         new JsArray(revenue.res.value map {(el: JsValue) => {
-           val day = new LocalDate((el \ "lowerDate").as[Double].longValue)
-           Json.obj(
-             "day" -> day.toDate.getTime,
-             "value" -> (el \ "total").as[Double],
-             "platforms" -> (platforms map {p => {
-               val platformInfo = getPlatform(el, p)
-               Json.obj(
-                 "platform" -> ((platformInfo \ "platform").as[String]),
-                 "value" -> ((platformInfo \ "res").as[Double])
-               )
-             }})
-           )
-         }})
-       }
-     }
+    calculateDetailedKPIAux(companyName, applicationName, start, end, platforms, getTotalRevenue)
   }
 
   def getTotalAveragePurchasesUser(

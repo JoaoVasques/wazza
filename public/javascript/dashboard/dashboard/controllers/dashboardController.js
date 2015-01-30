@@ -10,6 +10,8 @@ dashboard.controller('DashboardController', [
     "$q",
     "SelectedPlatformsChange",
     "DashboardCache",
+    "DashboardViewChanges",
+    "DashboardShowPlatformDetails",
     function (
         $scope,
         $anchorScroll,
@@ -21,9 +23,26 @@ dashboard.controller('DashboardController', [
         KpiModel,
         $q,
         SelectedPlatformsChange,
-        DashboardCache
+        DashboardCache,
+        DashboardViewChanges,
+        DashboardShowPlatformDetails
         ) {
+        
+        /** Modes: 0 = chart ; 1 = numbers **/
+        $scope.viewMode = 1;
+        $scope.showDetails = true;
 
+        var updateView = function(ev, data) {
+          $scope.viewMode = data.newView;
+        };
+        $scope.$on(DashboardViewChanges, updateView);
+        
+        var showHidePlatformDetails = function(ev, data) {
+          $scope.showDetails = data.value;
+        };
+        $scope.$on(DashboardShowPlatformDetails, showHidePlatformDetails);
+              
+        
         /** Revenue KPIs **/
         $scope.totalRevenue = new KpiModel("Total Revenue", "analytics.revenue");
         $scope.arpu = new KpiModel("Avg Revenue Per User", "analytics.arpu");

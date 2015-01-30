@@ -6,6 +6,8 @@ application.controller('TweakBarController',[
   '$stateParams',
   'ApplicationStateService',
   'SelectedPlatformsChange',
+  'DashboardViewChanges',
+  'DashboardShowPlatformDetails',
   function (
     $scope,
     DateModel,
@@ -13,9 +15,40 @@ application.controller('TweakBarController',[
     $rootScope,
     $stateParams,
     ApplicationStateService,
-    SelectedPlatformsChange
+    SelectedPlatformsChange,
+    DashboardViewChanges,
+    DashboardShowPlatformDetails
     ) {
 
+    var hideShowBar = [
+      'analytics.newapp', 'analytics.settings',
+      'analytics.overview', 'analytics.terms',
+      'analytics.privacy'
+    ];
+
+    $rootScope.$on('$stateChangeSuccess', function(event, toState, toParams, fromState, fromParams) {
+      $scope.showBar = _.find(hideShowBar, function(s) {return s == toState.name;}) == undefined ? true : false;
+    });
+
+    $scope.showDashboardViewOptions = false;
+    $scope.viewText = "Numerical";
+    $scope.showDetailsButton = true;
+    $scope.updateView = function(value) {
+      $scope.showDetailsButton = (value == 1) ? true: false;
+      $scope.viewText = (value == 1) ? "Numerical" : "Visual";
+      $rootScope.$broadcast(DashboardViewChanges, {newView: value});
+    };
+    $scope.hideDetails = true;
+    $scope.showDetails = function(){
+      $scope.hideDetails = ! $scope.hideDetails;
+      $rootScope.$broadcast(DashboardShowPlatformDetails, {value: $scope.hideDetails});
+    };
+
+    $rootScope.$on('$stateChangeSuccess',
+      function(event, toState, toParams, fromState, fromParams){
+        $scope.showDashboardViewOptions = (toState.name != 'analytics.dashboard') ? false : true;
+      });
+      
     $scope.userInfo = {
         name: "",
         email: ""
