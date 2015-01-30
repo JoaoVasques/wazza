@@ -34,7 +34,7 @@ dashboard
       $scope.updateData($scope.context, KpiId, title);
     });
     
-    $scope.$on(RevenuePlatformsChanged, function(ev, data) {
+    $scope.$on(ATBPPlatformsChanged, function(ev, data) {
       $scope.updateData($scope.context, KpiId, title);
       if(!data.value) {
         $scope.context.removeSerieFromChart(data.platform);

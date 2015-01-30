@@ -17,17 +17,17 @@
         <tbody>
           <tr ng-repeat="platform in context.model.platforms">
             <th scope="row">{{platform.platform}}</th>
-            <td>{{platform.value}}</td>
-            <td>{{platform.previous}}</td>
-            <td ng-class="{'kpi-delta-positive': platform.delta > 0, 'kpi-delta-negative': platform.delta < 0, '': platform.delta == 0}">{{platform.delta}} %
+            <td class="kpiValue" style="font-weight: bold;">{{platform.value}}</td>
+            <td class="kpiValue" style="font-weight: bold;">{{platform.previous}}</td>
+            <td ng-class="{'kpi-delta-positive': platform.delta > 0, 'kpi-delta-negative': platform.delta < 0, 'kpi-delta': platform.delta == 0}">{{platform.delta}} %
               <i ng-class="{'fa fa-arrow-up': platform.delta > 0, 'fa fa-arrow-down': platform.delta < 0, 'fa fa-minus': platform.delta == 0}"></i>
             </td>
           </tr>
           <tr>
             <th scope="row">Total</th>
-            <td>{{context.model.value}}</td>
-            <td>{{context.model.previous}}</td>
-            <td ng-class="{'kpi-delta-positive': context.model.delta > 0, 'kpi-delta-negative': context.model.delta < 0, '': context.model.delta == 0}">{{context.model.delta}} %
+            <td class="kpiValue" style="font-weight: bold;">{{context.model.value}}</td>
+            <td class="kpiValue" style="font-weight: bold;">{{context.model.previous}}</td>
+            <td ng-class="{'kpi-delta-positive': context.model.delta > 0, 'kpi-delta-negative': context.model.delta < 0, 'kpi-delta': context.model.delta == 0}">{{context.model.delta}} %
               <i ng-class="{'fa fa-arrow-up': context.model.delta > 0, 'fa fa-arrow-down': context.model.delta < 0, 'fa fa-minus': context.model.delta == 0}"></i>
             </td>
           </tr>

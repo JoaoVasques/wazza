@@ -1,6 +1,6 @@
-<div class="col-md-4 col-xs-10">
+<div class="col-md-4 col-xs-10" ng-click="switchDetailedView(kpi.link)">
   <div class="col-md-12 well panel panel-default glow profile dashboard-kpi">
-    <div class="panel-heading" ng-click="switchDetailedView(kpi.link)">
+    <div class="panel-heading">
       <h2 class="panel-title text-center">{{kpi.name}}</h2>
     </div>
     <div class="panel-body">
@@ -10,7 +10,7 @@
           <thead>
             <tr>
               <th>Compared to Previous</th>
-              <th>{{kpi.delta}} %</th>
+              <th class="kpiValue">{{kpi.delta}} %</th>
             </tr>
           </thead>
         </table>
@@ -19,10 +19,10 @@
       <div ng-show="v == 1">
         <div class="row">
           <div class="col-md-9 text-center">
-            <h1 style="font-size: 50px;">{{kpi.value}}</h1>
+            <h1 class="kpiValue" style="font-size: 50px;">{{kpi.value}}</h1>
           </div>
           <div class="col-md-3">
-            <div ng-class="{'kpi-delta-positive': kpi.delta > 0, 'kpi-delta-negative': kpi.delta < 0, '': kpi.delta == 0}">
+            <div ng-class="{'kpi-delta-positive': kpi.delta > 0, 'kpi-delta-negative': kpi.delta < 0, 'kpi-delta': kpi.delta == 0}">
               <h3><i ng-class="{'fa fa-arrow-up': kpi.delta > 0, 'fa fa-arrow-down': kpi.delta < 0, 'fa fa-minus': kpi.delta == 0}"></i> {{kpi.delta}}%
               </h3>
             </div>
@@ -43,8 +43,8 @@
             <tbody>
               <tr ng-repeat="platform in kpi.platforms">
                 <th>{{platform.platform}}</th>
-                <td >{{platform.value}}</td>
-                <td ng-class="{'kpi-delta-positive': platform.delta > 0, 'kpi-delta-negative': platform.delta < 0, '': platform.delta == 0}">{{platform.delta}} % 
+                <td class="kpiValue">{{platform.value}}</td>
+                <td ng-class="{'kpi-delta-positive': platform.delta > 0, 'kpi-delta-negative': platform.delta < 0, 'kpi-delta': platform.delta == 0}">{{platform.delta}} % 
                   <i ng-class="{'fa fa-arrow-up': platform.delta > 0, 'fa fa-arrow-down': platform.delta < 0, 'fa fa-minus': platform.delta == 0}"></i>
                 </td>
               </tr>

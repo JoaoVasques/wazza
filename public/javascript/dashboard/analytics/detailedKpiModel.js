@@ -5,7 +5,7 @@ dashboard.factory('DetailedKpiModel', ['KpiModel', 'LineChartModel', function(Kp
   function DetailedKpiModel(beginDate, endDate, name) {
     this.beginDate = beginDate;
     this.endDate = endDate;
-    this.chart = new LineChartModel(0);
+    this.chart = new LineChartModel(name);
     this.model = new KpiModel(name, "");
   };
 

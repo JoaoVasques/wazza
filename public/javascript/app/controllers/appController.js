@@ -23,17 +23,10 @@ application.controller('AppController', [
   ) {
 
     UserVoiceService.bootstrap();
-      
-    //auth related
-    $scope.authOK = false;
 
     $scope.logout = function(){
       LoginLogoutService.logout();
     };
-
-    $scope.$on("LOGIN_SUCCESS", function(event, data){
-      $scope.authOK = true;
-    });
 
     $scope.$on("LOGOUT_SUCCESS", function(event, url){
       //cleanup!
@@ -45,20 +38,12 @@ application.controller('AppController', [
       };
 
       ApplicationStateService.cleanup();
-      $scope.authOK = false;
-
-      $state.go("webframe.login");
-      //$state.go(url.value);      //TODO: fix this. url.value returns the relative url instead of the state
+      $state.go("login");
     });
 
     //app related
-    $scope.applicationName = "";
+    //$scope.applicationName = "";
     $scope.applicationsList = [];
-      
-    $scope.$on("APPLICATION_NAME_UPDATED", function(){
-      $scope.applicationName = ApplicationStateService.getApplicationName();
-    });
-
     $scope.$on("APPLICATIONS_LIST_UPDATED", function() {
       $scope.applicationsList = ApplicationStateService.applicationsList;
     });
@@ -86,7 +71,8 @@ application.controller('AppController', [
     });
 
     //user related
-    $scope.userInfo = ApplicationStateService.getUserInfo();
+    user = ApplicationStateService.getUserInfo();
+    $scope.userInfo = (user === null)? {name : "", email : ""} : null;
 
     $scope.$on("USER_INFO_UPDATED", function(){
         $scope.userInfo.name = ApplicationStateService.userInfo.name;

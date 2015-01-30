@@ -156,7 +156,7 @@ class BootstrapEnvironmentController extends Controller {
   def execute(companyName: String, applicationName: String, platformsOption: Boolean = true) = Action.async {
     val platforms = List("iOS", "Android")
     println("company: " + companyName + " | app: " + applicationName + " | platforms: " + platforms)
-    addUser(companyName)
+    //addUser(companyName)
     addApplication(companyName, applicationName, "me@mail.com")
     createSessions(companyName, applicationName, platforms)
     createPurchases(companyName, applicationName, platforms)

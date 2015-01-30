@@ -1,36 +1,56 @@
-<header class="header" ng-show="authOK" id="navbar">
-    
-    <!-- header logo: style can be found in header.less -->
-    <a ui-sref="analytics.overview" class="logo">
-        <!-- Add the class icon to your logo image or logo icon to add the margining -->
-        <img src="@routes.Assets.at("images/wazza_logo_white2.png")" alt="wazza logo" style="width:200px"/>
-    </a>
-    <!-- Header Navbar: style can be found in header.less -->
-    <nav class="navbar navbar-static-top" role="navigation">
-        <!-- Sidebar toggle button-->
-        <a href="#" class="navbar-btn sidebar-toggle" data-toggle="offcanvas" role="button">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-        </a>
-        <div class="navbar-right">
-            <ul class="nav navbar-nav">
-                <!-- User Account: style can be found in dropdown.less -->
-                <li class="dropdown" ng-model="userInfo.name">
-                  <a href="#" class="dropdown-toggle" dropdown-toggle ng-disabled="disabled">
-                      <i class="glyphicon glyphicon-user"></i>
-                      <span>{{userInfo.name}}</span>
-                  </a>
-                </li>
-                <li class="dropdown">
-                  <a href="#" class="dropdown-toggle" ng-click="logout()">
-                      <i class="fa fa-power-off"></i>
-                      <span>Logout</span>
-                  </a>
-                </li>
-            </ul>
-        </div>
-    </nav>
+<!-- Header Bar -->
+<div class="row header" ng-controller="NavBarController">
+  <div class="col-xs-12">
+    <div class="user pull-right">
+      <div class="btn-group" dropdown is-open="status.isopen" style="margin-top:1em;" ng-show="applicationName != ''">
+        <button href type="button" class="btn btn-success dropdown-toggle" dropdown-toggle >
+          {{applicationName}} <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-right" role="menu">
+          <li ng-repeat="application in applicationsList">
+            <a href="" ng-disabled="{{application == appName}}" ng-click="changeApp(application)">{{application}}</a>
+          </li>
+          <li class="divider"></li>
+          <li>
+            <a href="" ng-click="newApp()">
+              <i class="fa fa-plus-circle fa-2x icon-green"></i>Add Application
+            </a>
+          </li>
+        </ul>
+      </div>
 
-</header>
+      <div class="item dropdown" dropdown>
+        <a href class="dropdown-toggle" dropdown-toggle>
+          <i class="fa fa-user"></i>
+        </a>
+        <ul class="dropdown-menu dropdown-menu-right">
+          <li class="dropdown-header">
+            {{userName}}
+          </li>
+          <li class="divider"></li>
+          <li class="link">
+            <a href="#">
+              Documentation
+            </a>
+          </li>
+          <li class="divider"></li>
+          <li class="link">
+            <a href="" ng-click="logoutClick()">
+              Logout
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="meta">
+      <div class="page">
+        {{page}}
+      </div>
+      <!-- <div class="breadcrumb-links"> -->
+      <!--   <\!-- Home / Dashboard -\-> -->
+      <!--   {{page}} -->
+      <!-- </div> -->
+    </div> <!-- meta -->
+  </div>
+</div>
+<!-- End Header Bar -->
