@@ -178,7 +178,12 @@ config(function($stateProvider, $urlRouterProvider, $locationProvider, $httpProv
             templateUrl: '/terms'
         })
 
-        .state('analytics.privacy', {
+        .state('terms', {
+            url: "^/",
+            templateUrl: '/terms'
+        })
+
+        .state('privacy', {
             url: "^/",
             templateUrl: '/privacy'
         })

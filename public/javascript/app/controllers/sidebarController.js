@@ -51,20 +51,19 @@ application.controller('SidebarController', [
 
     $scope.analyticsOptions = [];
     /** Revenue **/
-    $scope.analyticsOptions.push(new SidebarOptions("Revenue", "", "childIcon fa fa-shopping-cart"));
+    $scope.analyticsOptions.push(new SidebarOptions("Revenue", "analytics.dashboard", "childIcon fa fa-shopping-cart"));
     $scope.analyticsOptions.push(new SidebarOptions("Total Revenue", "analytics.revenue", ""));
     $scope.analyticsOptions.push(new SidebarOptions("Avg Revenue Per User", "analytics.arpu", ""));
     $scope.analyticsOptions.push(new SidebarOptions("Avg Revenue Per Session", "analytics.avgRevenueSession", ""));
-        
 
     /** Users **/
-    $scope.analyticsOptions.push(new SidebarOptions("Users", "", "childIcon fa fa-user"));
+    $scope.analyticsOptions.push(new SidebarOptions("Users", "analytics.dashboard", "childIcon fa fa-user"));
     $scope.analyticsOptions.push(new SidebarOptions("Life Time Value", "analytics.ltv", ""));
     $scope.analyticsOptions.push(new SidebarOptions("Paying Users", "analytics.payingUsers", ""));
     $scope.analyticsOptions.push(new SidebarOptions("Avg Purchases Per User", "analytics.avgPurchasesUser", ""));
 
     /** Sessions **/
-    $scope.analyticsOptions.push(new SidebarOptions("Sessions", "", "childIcon fa fa-clock-o"));
+    $scope.analyticsOptions.push(new SidebarOptions("Sessions", "analytics.dashboard", "childIcon fa fa-clock-o"));
     $scope.analyticsOptions.push(new SidebarOptions("Purchases per Session", "analytics.purchasesPerSession", ""));
     $scope.analyticsOptions.push(new SidebarOptions("Time 1st Purchase", "analytics.avgTime1stPurchase", ""));
     $scope.analyticsOptions.push(new SidebarOptions("Time Bet. Purchases", "analytics.avgTimebetweenPurchase", ""));

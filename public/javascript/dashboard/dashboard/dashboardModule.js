@@ -4,7 +4,6 @@ var dashboard = angular.module('DashboardModule', [
     'ItemModule.services',
     'DashboardModule.services',
     'DashboardModule.controllers',
-    'chartjs-directive',
     'OverviewServices',
     'InventoryServices',
     'SettingsServices'

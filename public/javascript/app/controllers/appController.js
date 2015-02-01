@@ -71,7 +71,8 @@ application.controller('AppController', [
     });
 
     //user related
-    $scope.userInfo = ApplicationStateService.getUserInfo();
+    user = ApplicationStateService.getUserInfo();
+    $scope.userInfo = (user === null)? {name : "", email : ""} : user;
 
     $scope.$on("USER_INFO_UPDATED", function(){
         $scope.userInfo.name = ApplicationStateService.userInfo.name;
