@@ -8,6 +8,8 @@ application.controller('TweakBarController',[
   'SelectedPlatformsChange',
   'DashboardViewChanges',
   'DashboardShowPlatformDetails',
+  'DashboardUpdateValuesOnDateChange',
+  'OverviewUpdateValuesOnDateChange',
   function (
     $scope,
     DateModel,
@@ -17,7 +19,9 @@ application.controller('TweakBarController',[
     ApplicationStateService,
     SelectedPlatformsChange,
     DashboardViewChanges,
-    DashboardShowPlatformDetails
+    DashboardShowPlatformDetails,
+    DashboardUpdateValuesOnDateChange,
+    OverviewUpdateValuesOnDateChange
     ) {
 
     var hideShowBar = [
@@ -127,18 +131,16 @@ application.controller('TweakBarController',[
       DateModel.startDate = $scope.beginDate;
       DateModel.endDate = $scope.endDate;
 
-      //update kpi in a given time range
-      if($state.current.name === "analytics.dashboard" || $state.current.name === "analytics.overview"){
-        DateModel.refresh = true;
-        DateModel.min = $scope.beginDate;
-        DateModel.max = $scope.endDate;
-
-        $state.transitionTo($state.current, $stateParams, {
-            reload: true,
-            inherit: false,
-            notify: true
-        });
-      } else
-        $rootScope.$broadcast($state.current.name);
-    }
+      switch($state.current.name) {
+        case "analytics.dashboard":
+            $rootScope.$broadcast(DashboardUpdateValuesOnDateChange);
+            break;
+        case "analytics.overview":
+            $rootScope.$broadcast(OverviewUpdateValuesOnDateChange);
+            break;
+          default:
+            $rootScope.$broadcast($state.current.name);
+            break;
+      };
+    };
   }]);

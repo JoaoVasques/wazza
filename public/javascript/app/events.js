@@ -28,3 +28,7 @@ broadcastEvents.value('PurchaseDatePlatformsChanged','analytics.purchasesPerSess
 /** Dashboard view changes **/
 broadcastEvents.value("DashboardViewChanges", 1);
 broadcastEvents.value("DashboardShowPlatformDetails", 2);
+
+/** Update dates **/
+broadcastEvents.value("DashboardUpdateValuesOnDateChange", 3);
+broadcastEvents.value("OverviewUpdateValuesOnDateChange", 4);
