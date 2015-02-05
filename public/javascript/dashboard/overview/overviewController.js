@@ -8,7 +8,8 @@ dashboard.controller('OverviewController',[
   'ApplicationStateService',
   '$q',
   'UserVoiceService',
-  function(
+  'OverviewUpdateValuesOnDateChange',
+   function(
     $scope,
     $state,
     OverviewInitService,
@@ -17,7 +18,8 @@ dashboard.controller('OverviewController',[
     DateModel,
     ApplicationStateService,
     $q,
-    UserVoiceService
+    UserVoiceService sour,
+    OverviewUpdateValuesOnDateChange
   ) {
 
     UserVoiceService.identifyUser();
@@ -92,6 +94,10 @@ dashboard.controller('OverviewController',[
 
       fetchKPIs();
     }
+
+    $scope.$on(OverviewUpdateValuesOnDateChange, function(ev, args) {
+      fetchKPIs();
+    });
 
     bootstrap();
   }

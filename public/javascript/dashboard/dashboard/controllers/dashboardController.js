@@ -12,6 +12,7 @@ dashboard.controller('DashboardController', [
     "DashboardCache",
     "DashboardViewChanges",
     "DashboardShowPlatformDetails",
+    "DashboardUpdateValuesOnDateChange",
     function (
         $scope,
         $anchorScroll,
@@ -25,7 +26,8 @@ dashboard.controller('DashboardController', [
         SelectedPlatformsChange,
         DashboardCache,
         DashboardViewChanges,
-        DashboardShowPlatformDetails
+        DashboardShowPlatformDetails,
+        DashboardUpdateValuesOnDateChange
         ) {
         
         /** Modes: 0 = chart ; 1 = numbers **/
@@ -61,6 +63,10 @@ dashboard.controller('DashboardController', [
         $scope.platforms = ApplicationStateService.selectedPlatforms;
         $scope.$on(SelectedPlatformsChange, function(event, args){
             $scope.platforms = ApplicationStateService.selectedPlatforms
+            $scope.updateKPIs();
+        });
+
+        $scope.$on(DashboardUpdateValuesOnDateChange, function(ev, args){
             $scope.updateKPIs();
         });
 
