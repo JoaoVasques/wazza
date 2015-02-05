@@ -35,11 +35,13 @@ import notifications._
 
 class BootstrapEnvironmentController extends Controller {
 
-  private lazy val LowerPrice = 1.99
-  private lazy val UpperPrice = 5.99
-  private lazy val NumberMobileUsers = 70
-  private lazy val NumberPurchases = 70
-  private lazy val NumberItems = 10
+  private var dates = List[Date]()
+  private var DEFAULT_DAYS = 7
+  private var NumberMobileUsers = 0
+  private val LowerPrice = 1.99
+  private val UpperPrice = 5.99
+  private val NumberPurchases = 70
+  private val NumberItems = 10
 
   private object ApplicationData {
     val appUrl = "www.example.com"
@@ -82,21 +84,14 @@ class BootstrapEnvironmentController extends Controller {
   }
 
   private def createSessions(companyName: String, applicationName: String, platforms: List[String]) = {
-    val end = new LocalDate()
-    val start = end.minusDays(7)
-    val days = Days.daysBetween(start, end).getDays()+1
-    println(s"START $start | END $end")
-    println(days)
-    val result = List.range(0, days) map {index =>
-      val currentDay = start.withFieldAdded(DurationFieldType.days(), index)
-      println(s"CURRENT DAY $currentDay")
+    dates map {currentDay =>
       (1 to NumberMobileUsers) map {userNumber =>
         val platform = if(Math.random() > 0.5) platforms.head else platforms.last
         val session = new MobileSession(
           (s"${currentDay.toString}-$userNumber"), //hash
           userNumber.toString,
           2,
-          currentDay.toDate,
+          currentDay,
           new DeviceInfo(platform, "name", "version", "model"),
           List[String]() //List of purchases id's
         )
@@ -121,15 +116,7 @@ class BootstrapEnvironmentController extends Controller {
 
     def willMakePurchases = if(Math.random() > 0.5) true else false
     val items = generateItems(NumberItems)
-    val end = new LocalDate()
-    val start = end.minusDays(7)
-    val days = Days.daysBetween(start, end).getDays()+1
-
-    println(s"START $start | END $end")
-    println(days)
-    val format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z")
-    val result = List.range(0, days) map {index =>
-      val currentDay = start.withFieldAdded(DurationFieldType.days(), index)
+    dates map {currentDay =>
       (1 to NumberMobileUsers) map {userNumber =>
         val makePurchases = willMakePurchases
         if(makePurchases) {
@@ -142,7 +129,7 @@ class BootstrapEnvironmentController extends Controller {
             userNumber.toString,
             item._1,
             item._2,
-            currentDay.toDate,
+            currentDay,
             new DeviceInfo(platform, "name", "version", "model"),
             None
           )
@@ -153,10 +140,16 @@ class BootstrapEnvironmentController extends Controller {
     }
   }
   
-  def execute(companyName: String, applicationName: String, platformsOption: Boolean = true) = Action.async {
+  def execute(companyName: String, applicationName: String, daysOpt: Option[Int], userOpt: Option[Int]) = Action.async {
     val platforms = List("iOS", "Android")
     println("company: " + companyName + " | app: " + applicationName + " | platforms: " + platforms)
-    //addUser(companyName)
+    val first = new LocalDate(new Date).withDayOfMonth(1)
+    val days = daysOpt.getOrElse(DEFAULT_DAYS)
+    dates = List.range(0, days) map {index =>
+      first.withFieldAdded(DurationFieldType.days(), index).toDate
+    }
+    NumberMobileUsers = userOpt.getOrElse(70)
+    addUser(companyName)
     addApplication(companyName, applicationName, "me@mail.com")
     createSessions(companyName, applicationName, platforms)
     createPurchases(companyName, applicationName, platforms)

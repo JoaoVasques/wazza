@@ -30,17 +30,16 @@ dashboard.controller('OverviewController',[
     var noImageUrl = "assets/images/default-user-icon-profile.png";
 
     fetchCompanyName = function(){
-        OverviewInitService
-          .getCompany()
-          .then(function(results){
-            var company = results.data.name;
-            ApplicationStateService.updateCompanyName(company);
-          });
+      OverviewInitService.getCompany()
+        .then(function(results){
+          var company = results.data.name;
+          ApplicationStateService.updateCompanyName(company);
+          fetchApplications();
+        });
     }
 
     fetchApplications = function(){
-      OverviewInitService
-      .getApplications()
+      OverviewInitService.getApplications()
       .then(function(results) {
         var names = [];
         _.each(results.data, function(appInfo) {
@@ -53,6 +52,7 @@ dashboard.controller('OverviewController',[
         });
         ApplicationStateService.updateApps(results.data);
         ApplicationStateService.updateApplicationsList(names);
+        fetchKPIs();
       })
     }
 
@@ -63,42 +63,28 @@ dashboard.controller('OverviewController',[
         var arpu = "arpu";
         var start = DateModel.formatDate(DateModel.startDate);
         var end = DateModel.formatDate(DateModel.endDate);
+        var defaultPlatforms = ["Android", "iOS"];
         
         _.each($scope.applications, function(app) {
           $q.all([
-            GetKPIService.getTotalKpiData(companyName, app.name, start, end, revenue),
-            GetKPIService.getTotalKpiData(companyName, app.name, start, end, ltv),
-            GetKPIService.getTotalKpiData(companyName, app.name, start, end, arpu)
+            GetKPIService.getTotalKpiData(companyName, app.name, start, end, revenue, defaultPlatforms),
+            GetKPIService.getTotalKpiData(companyName, app.name, start, end, ltv, defaultPlatforms),
+            GetKPIService.getTotalKpiData(companyName, app.name, start, end, arpu, defaultPlatforms)
           ])
           .then(function(res) {
             var extractValue = function(index) {
               return res[index].data.value;
             };
-            app.totalRevenue = numeral(extractValue(0)).format('0');
-            app.ltv = numeral(extractValue(1)).format('0')
-            app.arpu = numeral(extractValue(2)).format('0')
+            var DecimalPlaces = 2;
+            app.totalRevenue = parseFloat(extractValue(0).toFixed(DecimalPlaces));
+            app.ltv = parseFloat(extractValue(1).toFixed(DecimalPlaces));
+            app.arpu = parseFloat(extractValue(2).toFixed(DecimalPlaces));
           });
         });
 
         ApplicationStateService.updateApplicationsOverview($scope.applications);
       }
-
-    bootstrap = function(){
-      if(ApplicationStateService.getCompanyName() === "")
-        fetchCompanyName();
-
-      if(ApplicationStateService.getApplicationsList().length === 0)
-        fetchApplications();
-      else
-        $scope.applications = ApplicationStateService.getApplicationsOverview();
-
-      fetchKPIs();
-    }
-
-    $scope.$on(OverviewUpdateValuesOnDateChange, function(ev, args) {
-      fetchKPIs();
-    });
-
-    bootstrap();
+      
+    fetchCompanyName();
   }
 ]);
