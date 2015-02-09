@@ -18,7 +18,7 @@ dashboard.controller('OverviewController',[
     DateModel,
     ApplicationStateService,
     $q,
-    UserVoiceService sour,
+    UserVoiceService,
     OverviewUpdateValuesOnDateChange
   ) {
 

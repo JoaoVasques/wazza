@@ -35,6 +35,13 @@ application.controller('LoginController',[
         email: success.data.userId
       });
       ApplicationStateService.updateCompanyName(success.data.companyName);
+      mixpanel.identify({"company": success.data.companyName});
+      mixpanel.people.set({
+        "$email": success.data.userId,
+        "$name": success.data.userName,
+        "$last_login": new Date(),
+      });
+      mixpanel.track("Login");
       $state.go(success.data.url);
     };
 

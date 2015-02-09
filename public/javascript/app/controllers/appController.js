@@ -42,7 +42,6 @@ application.controller('AppController', [
     });
 
     //app related
-    //$scope.applicationName = "";
     $scope.applicationsList = [];
     $scope.$on("APPLICATIONS_LIST_UPDATED", function() {
       $scope.applicationsList = ApplicationStateService.applicationsList;
@@ -54,6 +53,8 @@ application.controller('AppController', [
       _.each(app.platforms, function(platform){
         ApplicationStateService.addPlatforms(platform);
       });
+      
+      mixpanel.register({"application": app});
 
       if($state.current.name === "analytics.dashboard" && oldName !== app.name){
         $state.transitionTo($state.current, $stateParams, {
