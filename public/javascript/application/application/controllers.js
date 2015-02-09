@@ -47,6 +47,7 @@ angular.module('ApplicationModule.controllers', ['ApplicationModule.services', '
             $scope.formErrors = {};
             //invalidate previous list of applications and force new fetch
             ApplicationStateService.updateApplicationsList("");
+            mixpanel.track("New application", {"name": formData.name});
             $state.go('analytics.overview');
             swal("New Application Created!", "Go to Overview to see them all.", "success")
           },

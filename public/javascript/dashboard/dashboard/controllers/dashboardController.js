@@ -109,6 +109,10 @@ dashboard.controller('DashboardController', [
         };
 
         $scope.switchDetailedView = function(state) {
+            var name = state.split(".");
+            mixpanel.track("Detailed View", {
+              "kpi": name[1]
+            });
             $state.go(state);
             $document.scrollTop(-50, 500); //hack
         };

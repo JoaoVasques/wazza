@@ -8,6 +8,11 @@ dashboard.directive('kpi', ['$state', function($state) {
       },
       controller: function($scope) {
         $scope.switchDetailedView = function(state) {
+          var name = state.split(".");
+          mixpanel.track("Detailed View", {
+            "kpi": name[1]
+          });
+          $state.go(state);
           $state.go(state);
         };
       },

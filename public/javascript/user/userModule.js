@@ -44,7 +44,14 @@ angular.module('UserModule', ['UserModule.services', 'UserModule.directives', 'S
 
   $scope.handleUserCreationSuccess = function(success) {
     cookiesManagerService.set('PLAY2AUTH_SESS_ID', success.data.authToken);
-    LoginLogoutService.login();
+    mixpanel.identify({"company": $scope.userForm.company});
+    mixpanel.people.set({
+      "$email": $scope.userForm.email,
+      "$name": $scope.userForm.name,
+      "$last_login": new Date(),
+    });
+    mixpanel.track("New Account");
+    mixpanel.track("Login");
     $state.go(success.data.url);
   };
 
