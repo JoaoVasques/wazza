@@ -5,13 +5,19 @@ wazzaCharts.factory('LineChartModel', function(){
   function LineChartModel(name) {
     this.options = {
       chart: {
-        type: 'cumulativeLineChart',
+        type: 'lineChart',
         height: 500,
         margin : {
           top: 20,
           right: 10,
           bottom: 60,
           left: 65
+        },
+        dispatch: {
+          stateChange: function(e){},
+          changeState: function(e){},
+          tooltipShow: function(e){},
+          tooltipHide: function(e){}
         },
         x: function(d){ return d[0]; },
         y: function(d){ return d[1]; },
@@ -25,9 +31,8 @@ wazzaCharts.factory('LineChartModel', function(){
             tickFormat: function(d) {
               return d3.time.format('%d/%m/%y')(new Date(d))
             },
-          showMaxMin: true,
-          staggerLabels: true
-          },
+          showMaxMin: true
+        },
 
         yAxis: {
           axisLabel: name,
