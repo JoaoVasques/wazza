@@ -23,7 +23,7 @@ dashboard
     var KpiId = "revenue";
 
     ApplicationStateService.setPath(title);
-
+    
     $scope.buildContext(new DetailedKpiModel(DateModel.startDate, DateModel.endDate, title));
 
     $scope.updateData($scope.context, KpiId, title);
@@ -37,7 +37,6 @@ dashboard
     $scope.$on(RevenuePlatformsChanged, function(ev, data) {
       $scope.updateData($scope.context, KpiId, title);
       if(!data.value) {
-        $scope.context.removeSerieFromChart(data.platform);
         $scope.updateChart(title, $scope.context);
       } else {
         $scope.updateChart(title, $scope.context);

@@ -86,10 +86,10 @@ wazzaCharts.factory('LineChartModel', function(){
                   index = (platform == "Android") ? androidIndex : iOSIndex;              
                 break;
             }
-            resultsArray[index].push(platformInfo.value);
+            resultsArray[index].push(Math.round(platformInfo.value * 100) / 100);
           };
           
-          isTotal ? resultsArray[0].push(data.value) : getPlatformValue(dataKey);
+          isTotal ? resultsArray[0].push(Math.round(data.value * 100) / 100) : getPlatformValue(dataKey);
           if(!_.contains(_this.series, dataKey)) {
             _this.series.push(dataKey);
           }
