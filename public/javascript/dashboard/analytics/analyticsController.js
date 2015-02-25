@@ -94,12 +94,6 @@ dashboard
 
     var kpiDataSuccessHandler = function(data, context, label) {
       context.updateChartData(data, ApplicationStateService.selectedPlatforms);
-      $scope.updateChart(label, context);
-    };
-
-    $scope.updateChart = function(name, context){
-      $scope.options = context.chart.options;
-      //$scope.data = context.chart.data;
     };
   }]);
 

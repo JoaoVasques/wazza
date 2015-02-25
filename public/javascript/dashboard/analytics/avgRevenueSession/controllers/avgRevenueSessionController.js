@@ -23,9 +23,8 @@ dashboard
     var KpiId = "avgRevenueSession";
 
     ApplicationStateService.setPath(title);
-    $scope.context = new DetailedKpiModel(DateModel.startDate, DateModel.endDate, title);
-
-    $scope.updateChart(title, $scope.context);
+    $scope.buildContext(new DetailedKpiModel(DateModel.startDate, DateModel.endDate, title));
+    
     $scope.updateData($scope.context, KpiId, title);
 
     $scope.$on(AvgRevenueSessionDateChanged, function(ev, data) {
@@ -36,12 +35,6 @@ dashboard
 
     $scope.$on(AvgRevenueSessionPlatformsChanged, function(ev, data) {
       $scope.updateData($scope.context, KpiId, title);
-      if(!data.value) {
-        $scope.context.removeSerieFromChart(data.platform);
-        $scope.updateChart(title, $scope.context);
-      } else {
-        $scope.updateChart(title, $scope.context);
-      }
     });
-
 }]);
+

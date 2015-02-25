@@ -36,11 +36,6 @@ dashboard
 
     $scope.$on(RevenuePlatformsChanged, function(ev, data) {
       $scope.updateData($scope.context, KpiId, title);
-      if(!data.value) {
-        $scope.updateChart(title, $scope.context);
-      } else {
-        $scope.updateChart(title, $scope.context);
-      }
     });
 }]);
 

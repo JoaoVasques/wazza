@@ -23,9 +23,8 @@ dashboard
     var KpiId = "ltv";
 
     ApplicationStateService.setPath(title);
-    $scope.context = new DetailedKpiModel(DateModel.startDate, DateModel.endDate, title);
+    $scope.buildContext(new DetailedKpiModel(DateModel.startDate, DateModel.endDate, title));
 
-    $scope.updateChart(title, $scope.context);
     $scope.updateData($scope.context, KpiId, title);
 
     $scope.$on(LtvDateChanged, function(ev, data) {
@@ -36,11 +35,6 @@ dashboard
 
     $scope.$on(LtvPlatformsChanged, function(ev, data) {
       $scope.updateData($scope.context, KpiId, title);
-      if(!data.value) {
-        $scope.context.removeSerieFromChart(data.platform);
-        $scope.updateChart(title, $scope.context);
-      } else {
-        $scope.updateChart(title, $scope.context);
-      }
     });
 }]);
+
