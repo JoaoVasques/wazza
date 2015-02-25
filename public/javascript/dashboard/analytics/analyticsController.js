@@ -46,6 +46,10 @@ dashboard
       $scope.$apply();
     };
 
+    $scope.buildContext = function(model) {
+      $scope.context = model;
+    };
+      
     $rootScope.$on('sidebar', function(ev, data) {
       $scope.toggle = !$scope.toggle;
       $cookieStore.put('toggle', $scope.toggle);
@@ -90,11 +94,12 @@ dashboard
 
     var kpiDataSuccessHandler = function(data, context, label) {
       context.updateChartData(data, ApplicationStateService.selectedPlatforms);
+      $scope.updateChart(label, context);
     };
 
     $scope.updateChart = function(name, context){
       $scope.options = context.chart.options;
-      $scope.data = context.chart.data;
+      //$scope.data = context.chart.data;
     };
- }]);
+  }]);
 

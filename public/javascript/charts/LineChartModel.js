@@ -3,109 +3,105 @@
 wazzaCharts.factory('LineChartModel', function(){
 
   function LineChartModel(name) {
-    this.options = {
-      chart: {
-        type: 'lineChart',
-        height: 500,
-        margin : {
-          top: 20,
-          right: 10,
-          bottom: 60,
-          left: 65
-        },
-        dispatch: {
-          stateChange: function(e){},
-          changeState: function(e){},
-          tooltipShow: function(e){},
-          tooltipHide: function(e){}
-        },
-        x: function(d){ return d[0]; },
-        y: function(d){ return d[1]; },
-        color: ["#DC7F11", "#23AE89", "#3498db"],//Colors: [Total, iOS, Android],
-        useInteractiveGuideline: true,
-        clipVoronoi: false,
-        showControls: false,
-          
-        xAxis: {
-          axisLabel: 'Days',
-            tickFormat: function(d) {
-              return d3.time.format('%d/%m/%y')(new Date(d))
-            },
-          showMaxMin: true
-        },
-
-        yAxis: {
-          axisLabel: name,
-          tickFormat: function(d){
-            return d3.format(',.2')(d);
-          },
-          axisLabelDistance: 20,
-            showMaxMin: false
-        },
-        forceY: [0, 1],
-        title: name
-      }
+    var totalColor = {
+      fillColor: 'rgba(211, 84, 0, 0.2)',
+      strokeColor: 'rgba(211, 84, 0,1.0)',
+      pointColor: 'rgba(211, 84, 0,1.0)',
+      pointStrokeColor: '#fff',
+      pointHighlightFill: '#fff',
+      pointHighlightStroke: 'rgba(211, 84, 0, 0.8)'
     };
-    this.data = [];
-  };
+      
+    var androidColor = {
+      fillColor: 'rgba(39, 174, 96, 0.2)',
+      strokeColor: 'rgba(39, 174, 96,1.0)',
+      pointColor: 'rgba(39, 174, 96,1.0)',
+      pointStrokeColor: '#fff',
+      pointHighlightFill: '#fff',
+      pointHighlightStroke: 'rgba(39, 174, 96, 0.8)'
+    };
 
-  var seriesExist = function(key, arr) {
-    if(_.isEmpty(arr)) {
-      return false;
-    } else {
-      var result = _.find(arr, function(el){
-        return el.key == key;
-      });
-      return result === undefined ? false : true;
+    var iOSColor = {
+      fillColor: 'rgba(41, 128, 185, 0.2)',
+      strokeColor: 'rgba(41, 128, 185,1.0)',
+      pointColor: 'rgba(41, 128, 185,1.0)',
+      pointStrokeColor: '#fff',
+      pointHighlightFill: '#fff',
+      pointHighlightStroke: 'rgba(41, 128, 185, 0.8)'
+    };
+      
+    this.name = name;
+    this.labels = [];
+    this.series = [];
+    this.data = [];
+    this.colours = [];
+    this.options = {
+      bezierCurve : false
+    },
+    this._colours = {
+      "Total": totalColor,
+      "Android": androidColor,
+      "iOS": iOSColor
     }
   };
-  
+
   LineChartModel.prototype = {
+    updateColours: function(colorID) {
+      if(!_.contains(this._colours, colorID)) {
+        this.colours.push(this._colours[colorID]);
+      }
+    },
     updateChartData: function(chartData, platforms) {
       var _this = this;
-      var maxValue = 0;
+      _this.data = [];
+      _this.series = [];
+      _this.labels = [];
+      _this.colours = [];
+        
+      /** Create array of arrays **/
+      var nrSeries = chartData.data[0].platforms.length + 1;
+      var resultsArray = [];
+      for(var i = 0; i < nrSeries; i++) {
+        resultsArray[i] = [];
+      }
+      
       var addDataToChart = function(data){
-        var day = data.day;
+        if(!_.contains(_this.labels, data.day)) {
+          var day = moment(data.day).format("Do MMM");
+          _this.labels.push(day);
+        }
         var updateEntry = function(dataKey, isTotal){
           var getPlatformValue = function(platform) {
             var platformInfo = _.find(data.platforms, function(p){
               return p.platform == platform;
             });
-            return platformInfo.value;
+            var index = -1;
+            switch(nrSeries) {
+              case 2: /** Only one platform **/
+                  index = 1;
+                break;
+              case 3:  /** Multiple platform **/
+                  var androidIndex = 1;
+                  var iOSIndex = 2;
+                  index = (platform == "Android") ? androidIndex : iOSIndex;              
+                break;
+            }
+            resultsArray[index].push(platformInfo.value);
           };
-          // If the series does not exist in D3 data, create it
-          if(!seriesExist(dataKey, _this.data)) {
-            var vals = [];
-            isTotal ? vals.push([day, data.value]) : vals.push([day, getPlatformValue(dataKey)]);
-            maxValue = (data.value > maxValue) ? data.value : maxValue; // update max value 
-            var obj = {
-              key: dataKey,
-              values: vals,
-            };
-            _this.data.push(obj); // update D3 chart data model
-          } else {
-            // find and update existing serie's values
-            var getDataValues = function(key) {
-              return _.find(_this.data, function(el){
-                  return el.key == key;
-              }).values;
-            };
-            isTotal ? getDataValues(dataKey).push([day, data.value]) : getDataValues(dataKey).push([day, getPlatformValue(dataKey)]);
-              maxValue = (data.value > maxValue) ? data.value : maxValue; // update max value
+          
+          isTotal ? resultsArray[0].push(data.value) : getPlatformValue(dataKey);
+          if(!_.contains(_this.series, dataKey)) {
+            _this.series.push(dataKey);
           }
+          _this.updateColours(dataKey);
         };
         updateEntry("Total", true);
         _.each(platforms, function(p) {
           updateEntry(p, false);
         });
       };
-
       _.each(chartData.data, addDataToChart);
-      // update options max Y value
-      if(maxValue > 0) {
-        var newYRange = [0, (maxValue + maxValue / 4)]
-        this.options.forceY = newYRange;
-      }
+      _this.data = resultsArray;
     },
     removeSeries: function(k) {
       if(seriesExist(k, this.data)) {

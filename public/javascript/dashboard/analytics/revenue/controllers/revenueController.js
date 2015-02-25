@@ -23,9 +23,9 @@ dashboard
     var KpiId = "revenue";
 
     ApplicationStateService.setPath(title);
-    $scope.context = new DetailedKpiModel(DateModel.startDate, DateModel.endDate, title);
 
-    $scope.updateChart(title, $scope.context);
+    $scope.buildContext(new DetailedKpiModel(DateModel.startDate, DateModel.endDate, title));
+
     $scope.updateData($scope.context, KpiId, title);
 
     $scope.$on(RevenueDateChanged, function(ev, data) {
