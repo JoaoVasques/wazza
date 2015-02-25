@@ -39,9 +39,12 @@
 <!-- Chart section -->
 <div class="panel panel-default">
   <div class="panel-heading">
-    <h3 class="panel-title">Results</h3>
+    <h3 class="panel-title">{{context.model.name}} Results</h3>
   </div>
 	<div class="panel-body">
-    <nvd3 options="options" data="data" api="api" config="{extended: true}"></nvd3>
+    <canvas id="line" class="chart chart-line" data="context.chart.data"
+            labels="context.chart.labels" legend="true" series="context.chart.series"
+            click="onClick" colours="context.chart.colours" options="context.chart.options">
+    </canvas>
   </div>
 </div>
