@@ -23,8 +23,7 @@
 <!-- Chart dependencies -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment.min.js"></script>
 <script src="@routes.Assets.at("javascript/vendors/Chart.min.js")"></script>
-<script src="@routes.Assets.at("javascript/vendors/angular-chart.min.js.map")"></script>
-<script src="@routes.Assets.at("javascript/vendors/angular-chart.min.js")"></script>
+<script defer src="@routes.WebJarAssets.at(WebJarAssets.locate("angular-chart.js"))"></script>
 
 <!-- Angular stuff -->
 <!-- app -->
