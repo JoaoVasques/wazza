@@ -35,6 +35,21 @@
               <td><b>SDK Token</b></td>
               <td>{{credentials.sdkToken}}</td>
               </tr>
+              <tr>
+              <td><b>Currency</b></td>
+              <td>
+                <span class="dropdown" dropdown on-toggle="toggled(open)">
+                  <a href class="dropdown-toggle" dropdown-toggle>
+                    {{currentCurrency}}
+                  </a>
+                  <ul class="dropdown-menu">
+                    <li ng-repeat="c in currencies">
+                      <a href="#" ng-click="changeCurrency(c.name)"><i ng-class="c.cssSymboll"></i>{{c.name}}</a>
+                    </li>
+                  </ul>
+                </span>
+              </td>
+              </tr>
             </table>
           </div>
         </div>

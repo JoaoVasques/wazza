@@ -11,6 +11,8 @@ dashboard.controller('SettingsController', [
     "DateModel",
     "KpiModel",
     "$q",
+    "CurrencyService",
+    "CurrencyChanges",
     function (
         $scope,
         $location,
@@ -23,7 +25,9 @@ dashboard.controller('SettingsController', [
         GetKPIService,
         DateModel,
         KpiModel,
-        $q
+        $q,
+        CurrencyService,
+      CurrencyChanges
         ) {
 
         var bootstrapSuccessCallback = function (data) {
@@ -52,4 +56,12 @@ dashboard.controller('SettingsController', [
             bootstrapSuccessCallback,
             bootstrapFailureCallback);
 
+        $scope.currencies = CurrencyService.getCurrencies();
+      $scope.currentCurrency = ApplicationStateService.currency.name;
+      $scope.changeCurrency = function(newCurrency) {
+        $scope.currentCurrency = newCurrency;
+        ApplicationStateService.changeCurrency(CurrencyService.getCurrency($scope.currentCurrency));
+      }
+      
 }]);
+

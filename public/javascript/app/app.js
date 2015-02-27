@@ -4,17 +4,18 @@
 // Declare app level module which depends on filters, and services
 angular.module('Wazza', [
     'ui.router',
-    'LocalStorageModule',
     'ngRoute',
+    'duScroll',
+    'chart.js',
+    'ngResource',
+    'LocalStorageModule',
     'Wazza.controllers',
     'ItemModule',
     'UserModule',
     'SecurityModule',
     'DashboardModule',
     'ChartModule',
-    'Wazza.broadcastEvents',
-    'duScroll',
-    'chart.js'
+    'Wazza.broadcastEvents'
 ]).
 
 config(function($stateProvider, $urlRouterProvider, $locationProvider, $httpProvider, localStorageServiceProvider){

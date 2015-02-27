@@ -32,3 +32,6 @@ broadcastEvents.value("DashboardShowPlatformDetails", 2);
 /** Update dates **/
 broadcastEvents.value("DashboardUpdateValuesOnDateChange", 3);
 broadcastEvents.value("OverviewUpdateValuesOnDateChange", 4);
+
+/** Currency Changes **/
+broadcastEvents.value("CurrencyChanges", "newCurrency");

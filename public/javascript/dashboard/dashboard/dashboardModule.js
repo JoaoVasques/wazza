@@ -9,7 +9,15 @@ var dashboard = angular.module('DashboardModule', [
     'SettingsServices'
 ]);
 
-dashboard.factory("KpiModel", ['HorizontalBarChartModel',function(HorizontalBarChartModel) {
+dashboard.factory("KpiModel", [
+  'HorizontalBarChartModel',
+  'CurrencyService',
+  'ApplicationStateService',
+  function(
+    HorizontalBarChartModel,
+    CurrencyService,
+    ApplicationStateService
+  ) {
   function KpiModel(name, link) {
     this.isCollapsed = true;
     this.name = name;
@@ -26,6 +34,13 @@ dashboard.factory("KpiModel", ['HorizontalBarChartModel',function(HorizontalBarC
   };
 
   KpiModel.prototype = {
+    currencyUpdate: function() {
+      var _this = this;
+      CurrencyService.getCurrencyExchange(ApplicationStateService.currency.globalID, function(res) {
+        var rate = res.rates[Object.keys(res.rates)[0]];
+        _this.value *= rate;
+      });
+    },
     updateChartData: function(chartData, platforms) {
       this.chart.updateChartData(chartData, platforms);
     },  
