@@ -1,7 +1,7 @@
 <!-- Table with total results and variations -->
 <div class="panel panel-default">
   <div class="panel-heading">
-    <h3 class="panel-title">Total Results</h3>
+    <div class="panel-title"><i class="fa fa-table" style="margin-right: 10px;"></i> Total Results</div>
   </div>
 	<div class="panel-body">
     <div class="table-responsive">
@@ -17,16 +17,16 @@
         <tbody>
           <tr ng-repeat="platform in context.model.platforms">
             <th scope="row">{{platform.platform}}</th>
-            <td class="kpiValue" style="font-weight: bold;">{{platform.value}}</td>
-            <td class="kpiValue" style="font-weight: bold;">{{platform.previous}}</td>
+            <td class="kpiValue" style="font-weight: bold;">{{platform.value|wzCurrencyFilter:context.model.name}}</td>
+            <td class="kpiValue" style="font-weight: bold;">{{platform.previous|wzCurrencyFilter:context.model.name}}</td>
             <td ng-class="{'kpi-delta-positive': platform.delta > 0, 'kpi-delta-negative': platform.delta < 0, 'kpi-delta': platform.delta == 0}">{{platform.delta}} %
               <i ng-class="{'fa fa-arrow-up': platform.delta > 0, 'fa fa-arrow-down': platform.delta < 0, 'fa fa-minus': platform.delta == 0}"></i>
             </td>
           </tr>
           <tr>
             <th scope="row">Total</th>
-            <td class="kpiValue" style="font-weight: bold;">{{context.model.value}}</td>
-            <td class="kpiValue" style="font-weight: bold;">{{context.model.previous}}</td>
+            <td class="kpiValue" style="font-weight: bold;">{{context.model.value|wzCurrencyFilter:context.model.name}}</td>
+            <td class="kpiValue" style="font-weight: bold;">{{context.model.previous|wzCurrencyFilter:context.model.name}}</td>
             <td ng-class="{'kpi-delta-positive': context.model.delta > 0, 'kpi-delta-negative': context.model.delta < 0, 'kpi-delta': context.model.delta == 0}">{{context.model.delta}} %
               <i ng-class="{'fa fa-arrow-up': context.model.delta > 0, 'fa fa-arrow-down': context.model.delta < 0, 'fa fa-minus': context.model.delta == 0}"></i>
             </td>
@@ -39,7 +39,7 @@
 <!-- Chart section -->
 <div class="panel panel-default">
   <div class="panel-heading">
-    <h3 class="panel-title">{{context.model.name}} Results</h3>
+    <div class="panel-title"><i class="fa fa-bar-chart-o" style="margin-right: 10px;"></i> {{context.model.name}} Results</div>
   </div>
 	<div class="panel-body">
     <canvas id="line" class="chart chart-line" data="context.chart.data"
