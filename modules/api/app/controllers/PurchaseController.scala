@@ -15,6 +15,7 @@ import user._
 import user.messages._
 import scala.collection.mutable.Stack
 import scala.util.{Try, Success, Failure}
+import models.user.{PurchaseInfo}
 
 class PurchaseController @Inject()(
   purchaseService: PurchaseService
@@ -23,16 +24,15 @@ class PurchaseController @Inject()(
   def handlePurchase() = ApiSecurityAction.async(parse.json) {implicit request =>
     val companyName = request.companyName
     val applicationName = request.applicationName
-    val content = Json.parse((request.body \ "content").as[String].replace("\\", ""))
 
-    purchaseService.create(content) match {
-      case Success(purchase) => {
-        val userProxy = UserProxy.getInstance()
-        val request = new PRSave(new Stack, companyName, applicationName, purchase)
-        userProxy ! request
-        Future.successful(Ok)
-      }
-      case Failure(_) => {
+    try {
+    val content = Json.parse((request.body \ "content").as[String].replace("\\", ""))
+      val userProxy = UserProxy.getInstance()
+      val req = new PRSave(new Stack, companyName, applicationName, content)
+      userProxy ! req
+      Future.successful(Ok)
+    } catch {
+      case _: Throwable => {
         Future.successful(BadRequest("Invalid purchase json description"))
       }
     }
