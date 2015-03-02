@@ -20,6 +20,7 @@ import user.messages._
 import models.user._
 import persistence.messages._
 import scala.collection.mutable.Stack
+import java.util.Date
 
 class SessionWorker(
   databaseProxy: ActorRef,
@@ -45,7 +46,17 @@ class SessionWorker(
   }
 
   private def addMobileUser(userId: String, companyName: String, applicationName: String) = {
-    userProxy ! new MUCreate(new Stack, companyName, applicationName, userId)
+    userProxy ! new MUCreate(false, companyName, applicationName, userId, new Stack)
+  }
+
+  private def updateSessionInfo(
+    userId: String,
+    companyName: String,
+    applicationName: String,
+    sessionId: String,
+    sessionStart: Date
+  ) = {
+    userProxy ! new MUAddSessionInfo(false, companyName, applicationName, userId, new Stack, sessionId, sessionStart)
   }
 
   private def persistenceReceive: Receive = {
@@ -57,6 +68,7 @@ class SessionWorker(
             saveSessionAux(req)
             addSessionToHashCollection(req)
             addMobileUser(req.session.userId, req.companyName, req.applicationName)
+            updateSessionInfo(req.session.userId, req.companyName, req.applicationName, req.session.id, req.session.startTime)
           }
           case _ => {
             //TODO error

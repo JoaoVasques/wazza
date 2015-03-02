@@ -30,16 +30,56 @@ class MobileUserWorker(
   databaseProxy: ActorRef
 ) extends Actor with Worker[MobileUserMessageRequest] with ActorLogging {
 
+  private def handleCreateRequest(req: MUCreate) = {
+    val user = new MobileUser(req.userId, List[SessionResume](), List[PurchaseResume](), List[DeviceInfo]())
+    val collection = MobileUser.getCollection(req.companyName, req.applicationName)
+    val insertReq = new Insert(new Stack, collection, user)
+    databaseProxy ! insertReq
+  }
+
+  private def handleAddSessionInfoRequest(req: MUAddSessionInfo) = {
+    val sessionResume = new SessionResume(req.sessionId, req.sessionStart)
+    val collection = MobileUser.getCollection(req.companyName, req.applicationName)
+    val request = new AddElementToArray[JsValue](
+      new Stack, collection, MobileUser.KeyId,
+      req.userId, MobileUser.SessionsKey, MobileUser.readJsonSessionResume(sessionResume)
+    )
+    databaseProxy ! request
+  }
+
+  private def handleAddPurchaseIdRequest(req: MUAddPurchaseId) = {
+    val purchaseResume = new PurchaseResume(req.purchaseId, req.purchaseDate)
+    val collection = MobileUser.getCollection(req.companyName, req.applicationName)
+    val request = new AddElementToArray[JsValue](
+      new Stack, collection, MobileUser.KeyId,
+      req.userId, MobileUser.PurchasesKey, MobileUser.readJsonPurchaseResume(purchaseResume)
+    )
+    databaseProxy ! request
+  }
+
   private def persistenceReceive: Receive = {
     case r: PRBooleanResponse => {
       if(!r.res) {
         localStorage.get(r.hash) match {
           case Some(or) => {
-            val req = or.originalRequest.asInstanceOf[MUCreate]
-            val user = new MobileUser(req.userId)
-            val collection = MobileUser.getCollection(req.companyName, req.applicationName)
-            val insertReq = new Insert(new Stack, collection, user)
-            databaseProxy ! insertReq
+            or.originalRequest match {
+              case m: MUCreate => handleCreateRequest(m)
+              case _ => {
+                //TODO cannot add session/purchase info if it is not created
+              }
+            }
+          }
+          case _ => {
+            //TODO error
+          }
+        }
+      } else {
+        localStorage.get(r.hash) match {
+          case Some(or) => {
+            or.originalRequest match {
+              case m: MUAddSessionInfo => handleAddSessionInfoRequest(m)
+              case m: MUAddPurchaseId => handleAddPurchaseIdRequest(m)
+            }
           }
           case _ => {
             //TODO error
@@ -50,12 +90,14 @@ class MobileUserWorker(
   }
 
   private def mobileUserReceive: Receive = {
-    case m: MUCreate => mobileUserExists(m)
+    case m: MUCreate => mobileUserExists[MUCreate](m)
+    case m: MUAddSessionInfo => mobileUserExists[MUAddSessionInfo](m)
+    case m: MUAddPurchaseId => mobileUserExists[MUAddPurchaseId](m)
   }
 
   def receive = mobileUserReceive orElse persistenceReceive
 
-  private def mobileUserExists(msg: MUCreate) = {
+  private def mobileUserExists[T <: MobileUserMessageRequest](msg: T) = {
     val hash = localStorage.store(self, msg)
     msg.sendersStack = msg.sendersStack.push(self)
     val collection = MobileUser.getCollection(msg.companyName, msg.applicationName)

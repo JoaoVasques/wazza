@@ -25,9 +25,11 @@ import java.math.BigInteger
 import scala.collection.mutable.Map
 import models.user.{CompanyData}
 import scala.collection.mutable.Stack
+import java.util.Date
 
 class PurchaseWorker(
-  databaseProxy: ActorRef
+  databaseProxy: ActorRef,
+  userProxy: ActorRef
 ) extends Actor with Worker[PurchaseMessageRequest] with ActorLogging {
 
   def storePurchase(msg: PRSave) = {
@@ -43,6 +45,25 @@ class PurchaseWorker(
     databaseProxy ! request
   }
 
+  private def updateMobileUserPurchaseInfo(
+    companyName: String,
+    applicationName: String,
+    purchaseId: String,
+    userId: String,
+    purchaseDate: Date
+  ) = {
+    val request = new MUAddPurchaseId(
+      false,
+      companyName,
+      applicationName,
+      userId,
+      new Stack,
+      purchaseId,
+      purchaseDate
+    )
+
+    userProxy ! request
+  }
 
   private def persistenceReceive: Receive = {
     case r: PRBooleanResponse => {
@@ -52,6 +73,13 @@ class PurchaseWorker(
             val req = or.originalRequest.asInstanceOf[PRSave]
             storePurchase(req)
             saveUserAsBuyer(req)
+            updateMobileUserPurchaseInfo(
+              req.companyName,
+              req.applicationName,
+              req.info.id,
+              req.info.userId,
+              req.info.time
+            )
           }
           case _ => {
             //TODO show error
@@ -80,5 +108,5 @@ class PurchaseWorker(
 
 object PurchaseWorker {
 
-  def props(databaseProxy: ActorRef): Props = Props(new PurchaseWorker(databaseProxy))
+  def props(databaseProxy: ActorRef, userProxy: ActorRef): Props = Props(new PurchaseWorker(databaseProxy, userProxy))
 }

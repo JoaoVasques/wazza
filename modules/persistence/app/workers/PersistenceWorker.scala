@@ -313,7 +313,9 @@ class PersistenceWorker extends Actor with Worker[PersistenceMessage]  {
   def addElementToArray[T <: Any](msg: AddElementToArray[T], sender: ActorRef) = {
     val query = MongoDBObject(msg.docIdKey -> msg.docIdValue)
     val m = msg.model match {
-      case j: JsObject => JSON.parse(j.toString).asInstanceOf[DBObject]
+      case j: JsObject => {
+        getDatabaseObject(j)
+      }
       case _ => msg.model
     }
     val update = $push(msg.arrayKey -> m)
