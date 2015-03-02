@@ -25,10 +25,46 @@ import java.math.BigInteger
 import scala.collection.mutable.Map
 import models.user.{CompanyData}
 import scala.collection.mutable.Stack
+import scala.concurrent.duration._
+
+case class MessageRetry(ttl: Int, msg: MobileUserMessageRequest)
+
+class MessageRetryPool {
+  private val DefaultTTL = 2
+
+  @volatile private var pool: List[MessageRetry] = List()
+
+  def addEntry(entry: MobileUserMessageRequest, ttl: Int = DefaultTTL) =  {
+    val msg = new MessageRetry(ttl, entry)
+    pool = pool :+ msg
+    msg
+  }
+
+  def removeEntry(entry: MobileUserMessageRequest) = pool = pool.filter{(m: MessageRetry) => !entry.equals(m.msg)}
+
+  def updateEntry(entry: MobileUserMessageRequest): MessageRetry = {
+    pool.find((m: MessageRetry) => entry.equals(m.msg)) match {
+      case Some(e) => {
+        removeEntry(e.msg)
+        if((e.ttl -1) > 0) {
+          addEntry(e.msg, e.ttl -1)  
+        } else null
+      }
+      case None => null
+    }
+  }
+
+  def exists(entry: MobileUserMessageRequest): Boolean = pool.contains(entry)
+
+  def get(entry: MobileUserMessageRequest) = pool.find((m: MessageRetry) => entry.equals(m.msg))
+}
 
 class MobileUserWorker(
   databaseProxy: ActorRef
 ) extends Actor with Worker[MobileUserMessageRequest] with ActorLogging {
+  import context._
+
+  private var retryMessagesPool = new MessageRetryPool
 
   private def handleCreateRequest(req: MUCreate) = {
     val user = new MobileUser(req.userId, List[SessionResume](), List[PurchaseResume](), List[DeviceInfo]())
@@ -64,8 +100,13 @@ class MobileUserWorker(
           case Some(or) => {
             or.originalRequest match {
               case m: MUCreate => handleCreateRequest(m)
-              case _ => {
-                //TODO cannot add session/purchase info if it is not created
+              case m: MUAddSessionInfo => {
+                val msg = if(!retryMessagesPool.exists(m)) {
+                  retryMessagesPool.addEntry(m)
+                } else {
+                  retryMessagesPool.get(m).get
+                }
+                system.scheduler.scheduleOnce(1000 millis, self, msg)
               }
             }
           }
@@ -89,13 +130,22 @@ class MobileUserWorker(
     }
   }
 
+  private def retryReceive: Receive = {
+    case m: MessageRetry => {
+      val updated = retryMessagesPool.updateEntry(m.msg)
+      if(updated != null) {
+        mobileUserExists[MUAddSessionInfo](updated.msg.asInstanceOf[MUAddSessionInfo])
+      }
+    }
+  }
+
   private def mobileUserReceive: Receive = {
     case m: MUCreate => mobileUserExists[MUCreate](m)
     case m: MUAddSessionInfo => mobileUserExists[MUAddSessionInfo](m)
     case m: MUAddPurchaseId => mobileUserExists[MUAddPurchaseId](m)
   }
 
-  def receive = mobileUserReceive orElse persistenceReceive
+  def receive = mobileUserReceive orElse persistenceReceive orElse retryReceive
 
   private def mobileUserExists[T <: MobileUserMessageRequest](msg: T) = {
     val hash = localStorage.store(self, msg)
