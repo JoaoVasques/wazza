@@ -50,7 +50,8 @@ class PurchaseWorker(
     applicationName: String,
     purchaseId: String,
     userId: String,
-    purchaseDate: Date
+    purchaseDate: Date,
+    platform: String
   ) = {
     val request = new MUAddPurchaseId(
       false,
@@ -59,7 +60,8 @@ class PurchaseWorker(
       userId,
       new Stack,
       purchaseId,
-      purchaseDate
+      purchaseDate,
+      platform
     )
 
     userProxy ! request
@@ -78,7 +80,8 @@ class PurchaseWorker(
               req.applicationName,
               req.info.id,
               req.info.userId,
-              req.info.time
+              req.info.time,
+              req.info.deviceInfo.osType
             )
           }
           case _ => {

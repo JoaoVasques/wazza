@@ -74,7 +74,7 @@ class MobileUserWorker(
   }
 
   private def handleAddSessionInfoRequest(req: MUAddSessionInfo) = {
-    val sessionResume = new SessionResume(req.sessionId, req.sessionStart)
+    val sessionResume = new SessionResume(req.sessionId, req.sessionStart, req.platform)
     val collection = MobileUser.getCollection(req.companyName, req.applicationName)
     val request = new AddElementToArray[JsValue](
       new Stack, collection, MobileUser.KeyId,
@@ -84,7 +84,7 @@ class MobileUserWorker(
   }
 
   private def handleAddPurchaseIdRequest(req: MUAddPurchaseId) = {
-    val purchaseResume = new PurchaseResume(req.purchaseId, req.purchaseDate)
+    val purchaseResume = new PurchaseResume(req.purchaseId, req.purchaseDate, req.platform)
     val collection = MobileUser.getCollection(req.companyName, req.applicationName)
     val request = new AddElementToArray[JsValue](
       new Stack, collection, MobileUser.KeyId,

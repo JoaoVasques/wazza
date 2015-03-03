@@ -6,8 +6,8 @@ import play.api.Play.current
 import play.api.libs.json._
 import java.util.Date
 
-case class SessionResume(id: String, startTime: Date)
-case class PurchaseResume(id: String, time: Date)
+case class SessionResume(id: String, startTime: Date, platform: String)
+case class PurchaseResume(id: String, time: Date, platform: String)
 case class MobileUser(
   userId: String,
   sessions: List[SessionResume],
@@ -44,25 +44,32 @@ object MobileUser {
   implicit def readJsonSessionResume(sessionResume: SessionResume): JsValue = {
     Json.obj(
       "id" -> sessionResume.id,
-      "startTime" -> sessionResume.startTime.getTime
+      "startTime" -> sessionResume.startTime.getTime,
+      "platform" -> sessionResume.platform
     )
   }
 
   implicit def buildSessionResumeFromJson(json: JsValue): SessionResume = {
     new SessionResume(
       (json \ "id").as[String],
-      new Date((json \ "startTime").as[Long])
+      new Date((json \ "startTime").as[Long]),
+      (json \ "platform").as[String]
     )
   }
 
   implicit def readJsonPurchaseResume(purchaseResume: PurchaseResume): JsValue = {
-    Json.obj("id" -> purchaseResume.id, "time" -> purchaseResume.time.getTime)
+    Json.obj(
+      "id" -> purchaseResume.id,
+      "time" -> purchaseResume.time.getTime,
+      "platform" -> purchaseResume.platform
+    )
   }
 
   implicit def buildPurchaseResumeFromJson(json: JsValue): PurchaseResume = {
     new PurchaseResume(
       (json \ "id").as[String],
-      new Date((json \ "time").as[Long])
+      new Date((json \ "time").as[Long]),
+      (json \ "platform").as[String]
     )
   }
 }

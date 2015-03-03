@@ -32,6 +32,7 @@ case class MUAddSessionInfo(
   var sendersStack: Stack[ActorRef],
   sessionId: String,
   sessionStart: Date,
+  platform: String,
   hash: String = null
 ) extends MobileUserMessageRequest
 
@@ -43,6 +44,7 @@ case class MUAddPurchaseId(
   var sendersStack: Stack[ActorRef],
   purchaseId: String,
   purchaseDate: Date,
+  platform: String,
   hash: String = null
 ) extends MobileUserMessageRequest
 
