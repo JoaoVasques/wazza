@@ -14,7 +14,7 @@ angular.module('Wazza', [
     'ChartModule',
     'Wazza.broadcastEvents',
     'duScroll',
-    'nvd3'
+    'chart.js'
 ]).
 
 config(function($stateProvider, $urlRouterProvider, $locationProvider, $httpProvider, localStorageServiceProvider){
