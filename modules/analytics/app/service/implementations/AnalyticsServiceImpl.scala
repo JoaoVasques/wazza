@@ -339,53 +339,108 @@ class AnalyticsServiceImpl extends AnalyticsService {
     calculateDetailedKPIAux(companyName, applicationName, start, end, platforms, getTotalLifeTimeValue)
   }
 
-  //TODO
-  def getTotalAverageTimeFirstPurchase(
-    companyName: String,
-    applicationName: String,
-    start: Date,
-    end: Date,
+  def getTotalNumberSessionsFirstPurchase(
+    companyName: String, 
+    applicationName: String, 
+    start: Date, 
+    end: Date, 
     platforms: List[String]
   ): Future[JsValue] = {
     val fields = ("lowerDate", "upperDate")
-    val collection = Metrics.averageTimeFirstPurchaseCollection(companyName, applicationName)
+    val collection = Metrics.sessionsFirstPurchase(companyName, applicationName)
     val request = new GetDocumentsWithinTimeRange(new Stack, collection, fields, start, end, true)
-    val futureAvgTimeFirstPurchase = (databaseProxy ? request).mapTo[PRJsArrayResponse]
+    val futureRes = (databaseProxy ? request).mapTo[PRJsArrayResponse]
 
-    futureAvgTimeFirstPurchase map {avgPurchasesUser =>
-      val res = avgPurchasesUser.res.value.foldLeft(0.0)((acc, el) => {
-        acc + (el \ "avgTimeFirstPurchase").as[Double]
+    futureRes map {result =>
+      val emptyRes = (0.0, platforms map{(_, 0.0)})
+      val res = result.res.value.foldLeft(emptyRes)((acc, current) => {
+        val sessions = acc._1 + (current \ "result").as[Double]
+        val pInfo = (current \ "platforms").as[JsArray].value.toList
+        val platformData = acc._2 map {p =>
+          pInfo.find(pp => (pp \ "platform").as[String] == p._1) match {
+            case Some(info) => (p._1, p._2 + (info \ "result").as[Double])
+            case None => (p._1, p._2)
+          }
+        }
+        (sessions, platformData)
       })
 
-      val days = DateUtils.getNumberDaysBetweenDates(start, end)
-      Json.obj("value" -> (if(days > 0) res / days else res))
+      def averagenizer(v: Double): Double = {
+        val days = DateUtils.getNumberDaysBetweenDates(start, end)
+        if(days > 0) v / days else v
+      }
+
+      Json.obj(
+        "value" -> averagenizer(res._1),
+        "platforms" -> (res._2 map {p =>
+          Json.obj(
+            "platform" -> p._1,
+            "value" -> averagenizer(p._2)
+          )
+        })
+      )
     }
   }
 
-  // TODO
-  def getAverageTimeFirstPurchase(
-    companyName: String,
-    applicationName: String,
-    start: Date,
-    end: Date,
+  def getNumberSessionsToFirstPurchase(
+    companyName: String, 
+    applicationName: String, 
+    start: Date, 
+    end: Date, 
     platforms: List[String]
   ): Future[JsArray] = {
-    calculateDetailedKPIAux(companyName, applicationName, start, end, platforms, getTotalAverageTimeFirstPurchase)
+    calculateDetailedKPIAux(companyName, applicationName, start, end, platforms, getTotalNumberSessionsFirstPurchase)
   }
 
-  def getTotalAverageTimeBetweenPurchases(
-    companyName: String,
-    applicationName: String,
-    start: Date,
-    end: Date,
+  def getTotalNumberSessionsBetweenPurchases(
+    companyName: String, 
+    applicationName: String, 
+    start: Date, 
+    end: Date, 
     platforms: List[String]
   ): Future[JsValue] = {
     val fields = ("lowerDate", "upperDate")
-    val collection = Metrics.averageTimeBetweenPurchasesCollection(companyName, applicationName)
+    val collection = Metrics.sessionsBetweenPurchasesCollection(companyName, applicationName)
     val request = new GetDocumentsWithinTimeRange(new Stack, collection, fields, start, end, true)
     val future = (databaseProxy ? request).mapTo[PRJsArrayResponse]
     future map {time =>
-      getAverageOfTotalResults(time.res.value, platforms, start, end)
+      /**
+        FORMAT: (sessions, users List(platform, result))
+      **/
+      val emptyResult = (0.0, 0.0, platforms map{ (_, 0.0)})
+      val result = time.res.value.foldLeft(emptyResult){(acc, current) => {
+        val currentElement = current
+        val sessions = (current \ "totalSessions").as[Double] + acc._1
+        val users = (current \ "numberUsers").as[Double] + acc._2
+        val pData = (current \ "platforms").as[JsArray].value.toList
+        val platformData = acc._3 map {platformElement =>
+          val platform = platformElement._1
+          pData.find(p => (p \ "platform").as[String] == platform) match {
+            case Some(info) => {
+              val res = (info \ "res").as[Double] + platformElement._2
+              (platform, res)
+            }
+            case None => {
+              (platform, platformElement._2)
+            }
+          }
+        }
+        (sessions, users, platformData)
+      }}
+      def averagenizer(v: Double): Double = {
+        val days = DateUtils.getNumberDaysBetweenDates(start, end)
+        if(days > 0) v / days else v
+      }
+      val finalTime = averagenizer(if(result._2 > 0) result._1 / result._2 else 0.0)
+      Json.obj(
+        "value" -> finalTime,
+        "platforms" -> (result._3 map {p =>
+          Json.obj(
+            "platform" -> p._1,
+            "value" -> averagenizer(p._2)
+          )
+        })
+      )
     }
   }
 
@@ -396,7 +451,7 @@ class AnalyticsServiceImpl extends AnalyticsService {
     end: Date,
     platforms: List[String]
   ): Future[JsArray] = {
-    calculateDetailedKPIAux(companyName, applicationName, start, end, platforms, getTotalAverageTimeBetweenPurchases)
+    calculateDetailedKPIAux(companyName, applicationName, start, end, platforms, getTotalNumberSessionsBetweenPurchases)
   }
 
   def getTotalNumberPayingCustomers(
