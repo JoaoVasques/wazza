@@ -62,19 +62,19 @@ object Metrics {
     applicationName: String
   ) = s"${companyName}_LifeTimeValue_${applicationName}"
 
-  def averageTimeBetweenPurchasesCollection(
+  def sessionsBetweenPurchasesCollection(
     companyName: String,
     applicationName: String
-  ) = s"${companyName}_AvgTimeBetweenPurchases_${applicationName}"
+  ) = s"${companyName}_NumberSessionsBetweenPurchases_${applicationName}"
 
   def averagePurchasePerSessionCollection(
     companyName: String,
     applicationName: String
   ) = s"${companyName}_PurchasesPerSession_${applicationName}"
 
-  def averageTimeFirstPurchaseCollection(
-    companyName: String,
+  def sessionsFirstPurchase(
+    companyName: String, 
     applicationName: String
-  ) = s"${companyName}_AvgTimeFirstPurchase_${applicationName}"
+  ) = s"${companyName}_NumberSessionsFirstPurchase_${applicationName}"
 }
 
