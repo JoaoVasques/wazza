@@ -1,6 +1,17 @@
-service.factory('ApplicationStateService', ['$rootScope', 'localStorageService', 'SelectedPlatformsChange',
-	function ($rootScope, localStorageService, SelectedPlatformsChange) {
-
+service.factory('ApplicationStateService', [
+  '$rootScope',
+  'localStorageService',
+  'SelectedPlatformsChange',
+  'CurrencyService',
+  'CurrencyChanges',
+	function (
+    $rootScope,
+    localStorageService,
+    SelectedPlatformsChange,
+    CurrencyService,
+    CurrencyChanges
+  ) {
+      
     function AppInfo(name, platforms) {
       this.name = name;
       this.platforms = platforms;
@@ -15,6 +26,7 @@ service.factory('ApplicationStateService', ['$rootScope', 'localStorageService',
 	  service.applicationOverview = "";
     service.selectedPlatforms = [];
     service.apps = [];
+    service.currency = CurrencyService.getDefaultCurrency();
 
 		//current view
 		service.getPath = function () {
@@ -117,6 +129,12 @@ service.factory('ApplicationStateService', ['$rootScope', 'localStorageService',
       $rootScope.$broadcast(SelectedPlatformsChange);
     };
 
+    service.changeCurrency = function(newCurrency) {
+      service.currency = newCurrency;
+      $rootScope.$broadcast(CurrencyChanges);
+    }
+      
 		return service;
 	}
 ]);
+

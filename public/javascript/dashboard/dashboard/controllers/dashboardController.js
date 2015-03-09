@@ -1,5 +1,6 @@
 dashboard.controller('DashboardController', [
     '$scope',
+    '$rootScope',
     "$anchorScroll",
     "$state",
     "$document",
@@ -13,8 +14,10 @@ dashboard.controller('DashboardController', [
     "DashboardViewChanges",
     "DashboardShowPlatformDetails",
     "DashboardUpdateValuesOnDateChange",
+    "CurrencyChanges",
     function (
         $scope,
+        $rootScope,
         $anchorScroll,
         $state,
         $document,
@@ -27,7 +30,8 @@ dashboard.controller('DashboardController', [
         DashboardCache,
         DashboardViewChanges,
         DashboardShowPlatformDetails,
-        DashboardUpdateValuesOnDateChange
+        DashboardUpdateValuesOnDateChange,
+        CurrencyChanges
         ) {
         
         /** Modes: 0 = chart ; 1 = numbers **/
@@ -49,6 +53,13 @@ dashboard.controller('DashboardController', [
         $scope.totalRevenue = new KpiModel("Total Revenue", "analytics.revenue");
         $scope.arpu = new KpiModel("Avg Revenue Per User", "analytics.arpu");
         $scope.avgRevSession = new KpiModel("Avg Revenue per Session", "analytics.avgRevenueSession");
+
+        /** Updates KPI revenue on currency change **/
+        $rootScope.$on(CurrencyChanges, function() {
+          $scope.totalRevenue.currencyUpdate();
+          $scope.arpu.currencyUpdate();
+          $scope.avgRevSession.currencyUpdate();
+        });
 
         /** User KPIs **/
         $scope.ltv = new KpiModel("Life Time Value", "analytics.ltv");
