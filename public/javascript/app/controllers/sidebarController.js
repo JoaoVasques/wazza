@@ -64,9 +64,9 @@ application.controller('SidebarController', [
 
     /** Sessions **/
     $scope.analyticsOptions.push(new SidebarOptions("Sessions", "analytics.dashboard", "childIcon fa fa-clock-o"));
-    $scope.analyticsOptions.push(new SidebarOptions("Purchases per Session", "analytics.purchasesPerSession", ""));
-    $scope.analyticsOptions.push(new SidebarOptions("Time 1st Purchase", "analytics.avgTime1stPurchase", ""));
-    $scope.analyticsOptions.push(new SidebarOptions("Time Bet. Purchases", "analytics.avgTimebetweenPurchase", ""));
+    $scope.analyticsOptions.push(new SidebarOptions("Purchases Per Session", "analytics.purchasesPerSession", ""));
+    $scope.analyticsOptions.push(new SidebarOptions("Sessions First Purchase", "analytics.sessionsFirstPurchase", ""));
+    $scope.analyticsOptions.push(new SidebarOptions("Sessions Bet. Purchases", "analytics.sessionsBetweenPurchase", ""));
       
     $scope.onDashboardClick = function(){
       $scope.showDashboardOptions = !$scope.showDashboardOptions;

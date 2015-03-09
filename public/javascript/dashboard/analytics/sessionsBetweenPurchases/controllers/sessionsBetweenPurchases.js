@@ -1,7 +1,7 @@
 'use strict';
 
 dashboard
-.controller('AverageTimeBetweenPurchaseController', [
+.controller('NumberSessionsBetweenPurchaseController', [
   '$scope',
   '$rootScope',
   'ApplicationStateService',
@@ -19,8 +19,8 @@ dashboard
     ATBPPlatformsChanged
   ) {
 
-    var title = "Average Time Between Purchases";
-    var KpiId = "avgTimeBetweenPurchases";
+    var title = "Number of Sessions Between Purchases";
+    var KpiId = "sessionsBetweenPurchases";
 
     ApplicationStateService.setPath(title);
     $scope.buildContext(new DetailedKpiModel(DateModel.startDate, DateModel.endDate, title));

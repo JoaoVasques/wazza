@@ -68,8 +68,8 @@ dashboard.controller('DashboardController', [
 
         /** Session KPIs **/
         $scope.purchasesPerSession = new KpiModel("Purchases per Session", "analytics.purchasesPerSession");
-        $scope.avgTimeFirstPurchase = new KpiModel("Avg Time 1st Purchase", "analytics.avgTime1stPurchase");
-        $scope.avgTimeBetweenPurchases = new KpiModel("Avg Time Bet. Purchases", "analytics.avgTimebetweenPurchase");
+        $scope.numberSessionsFirstPurchase = new KpiModel("Sessions to First Purchase", "analytics.sessionsFirstPurchase");
+        $scope.numberSessionsBetweenPurchases = new KpiModel("Sessions Between Purchases", "analytics.sessionsBetweenPurchase");
 
         $scope.platforms = ApplicationStateService.selectedPlatforms;
         $scope.$on(SelectedPlatformsChange, function(event, args){
@@ -109,10 +109,11 @@ dashboard.controller('DashboardController', [
           GetKPIService.getTotalKpiData(companyName, app, begin, end, "purchasesPerSession", $scope.platforms)
             .then(function(res) {$scope.purchasesPerSession.updateKpiValue(res.data);});
 
-          GetKPIService.getTotalKpiData(companyName, app, begin, end, "avgTimeBetweenPurchases", $scope.platforms)
-            .then(function(res) {$scope.avgTimeBetweenPurchases.updateKpiValue(res.data);});
+          GetKPIService.getTotalKpiData(companyName, app, begin, end, "sessionsBetweenPurchases", $scope.platforms)
+            .then(function(res) {$scope.numberSessionsBetweenPurchases.updateKpiValue(res.data);});
             
-          //   GetKPIService.getTotalKpiData(companyName, app, begin, end, "avgTime1stPurchase", $scope.platforms),  
+          GetKPIService.getTotalKpiData(companyName, app, begin, end, "sessionsFirstPurchase", $scope.platforms)
+            .then(function(res) {$scope.numberSessionsFirstPurchase.updateKpiValue(res.data);});
         };
         
         $scope.updateKPIs = function(){
