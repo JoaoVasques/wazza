@@ -140,18 +140,19 @@ class BootstrapEnvironmentController extends Controller {
     }
   }
   
-  def execute(companyName: String, applicationName: String, daysOpt: Option[Int], userOpt: Option[Int]) = Action.async {
+  def execute(companyName: String, applicationName: String) = Action.async {
     val platforms = List("iOS", "Android")
     println("company: " + companyName + " | app: " + applicationName + " | platforms: " + platforms)
     val first = new LocalDate(new Date).withDayOfMonth(1)
-    val days = daysOpt.getOrElse(DEFAULT_DAYS)
+    val days = DEFAULT_DAYS
     dates = List.range(0, days) map {index =>
       first.withFieldAdded(DurationFieldType.days(), index).toDate
     }
-    NumberMobileUsers = userOpt.getOrElse(70)
+    NumberMobileUsers = 10
     addUser(companyName)
     addApplication(companyName, applicationName, "me@mail.com")
     createSessions(companyName, applicationName, platforms)
+    Thread.sleep(8000);
     createPurchases(companyName, applicationName, platforms)
     Future.successful(Ok)
   }

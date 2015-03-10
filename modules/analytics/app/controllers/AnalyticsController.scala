@@ -331,10 +331,10 @@ class AnalyticsController @Inject()(
     }
   }
 
-  def getTotalAverageTimeFirstPurchase(
-    companyName: String,
-    applicationName: String,
-    startDateStr: String,
+  def getTotalNumberSessionsFirstPurchase(
+    companyName: String, 
+    applicationName: String, 
+    startDateStr: String, 
     endDateStr: String
   ) = Action.async {implicit request =>
     getPlatforms(request) match {
@@ -343,17 +343,17 @@ class AnalyticsController @Inject()(
         applicationName,
         startDateStr,
         endDateStr,
-        analyticsService.getTotalAverageTimeFirstPurchase,
+        analyticsService.getTotalNumberSessionsFirstPurchase,
         platforms,
         Total)
       case _ => Future.successful(BadRequest("Please select a platform"))
     }
   }
 
-  def getAverageTimeFirstPurchase(
-    companyName: String,
-    applicationName: String,
-    startDateStr: String,
+  def getNumberSessionsFirstPurchase(
+    companyName: String, 
+    applicationName: String, 
+    startDateStr: String, 
     endDateStr: String
   ) = Action.async {implicit request =>
     getPlatforms(request) match {
@@ -362,17 +362,17 @@ class AnalyticsController @Inject()(
         applicationName,
         startDateStr,
         endDateStr,
-        analyticsService.getAverageTimeFirstPurchase,
+        analyticsService.getNumberSessionsToFirstPurchase,
         platforms,
         Detailed)
       case _ => Future.successful(BadRequest("Please select a platform"))
     }
   }
 
-  def getTotalAverageTimeBetweenPurchases(
-    companyName: String,
-    applicationName: String,
-    startDateStr: String,
+  def getTotalNumberSessionsBetweenPurchases(
+    companyName: String, 
+    applicationName: String, 
+    startDateStr: String, 
     endDateStr: String
   ) = Action.async {implicit request =>
     getPlatforms(request) match {
@@ -381,17 +381,17 @@ class AnalyticsController @Inject()(
         applicationName,
         startDateStr,
         endDateStr,
-        analyticsService.getTotalAverageTimeBetweenPurchases,
+        analyticsService.getTotalNumberSessionsBetweenPurchases,
         platforms,
         Total)
       case _ => Future.successful(BadRequest("Please select a platform"))
     }
   }
 
-  def getAverageTimeBetweenPurchases(
-    companyName: String,
-    applicationName: String,
-    startDateStr: String,
+  def getNumberSessionsBetweenPurchases(
+    companyName: String, 
+    applicationName: String, 
+    startDateStr: String, 
     endDateStr: String
   ) = Action.async {implicit request =>
     getPlatforms(request) match {

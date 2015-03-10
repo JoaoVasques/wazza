@@ -1,7 +1,7 @@
 'use strict';
 
 dashboard
-.controller('AverageTimeFirstPurchaseController', [
+.controller('NumberSessionsFirstPurchaseController', [
   '$scope',
   '$rootScope',
   'ApplicationStateService',
@@ -19,8 +19,8 @@ dashboard
     AT1PPlatformsChanged
   ) {
 
-    var title = "Average Time to First Purchase";
-    var KpiId = "avgTime1stPurchase";
+    var title = "Number of Sessions to First Purchase";
+    var KpiId = "sessionsFirstPurchase";
 
     ApplicationStateService.setPath(title);
     $scope.buildContext(new DetailedKpiModel(DateModel.startDate, DateModel.endDate, title));

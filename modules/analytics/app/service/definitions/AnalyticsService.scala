@@ -88,27 +88,27 @@ trait AnalyticsService {
     platforms: List[String]
   ): Future[JsArray]
 
-  def getTotalAverageTimeFirstPurchase(
-    companyName: String,
-    applicationName: String,
-    start: Date,
-    end: Date,
+  def getTotalNumberSessionsFirstPurchase(
+    companyName: String, 
+    applicationName: String, 
+    start: Date, 
+    end: Date, 
     platforms: List[String]
   ): Future[JsValue]
 
-  def getAverageTimeFirstPurchase(
-    companyName: String,
-    applicationName: String,
-    start: Date,
-    end: Date,
+  def getNumberSessionsToFirstPurchase(
+    companyName: String, 
+    applicationName: String, 
+    start: Date, 
+    end: Date, 
     platforms: List[String]
   ): Future[JsArray]
 
-  def getTotalAverageTimeBetweenPurchases(
-    companyName: String,
-    applicationName: String,
-    start: Date,
-    end: Date,
+  def getTotalNumberSessionsBetweenPurchases(
+    companyName: String, 
+    applicationName: String, 
+    start: Date, 
+    end: Date, 
     platforms: List[String]
   ): Future[JsValue]
 

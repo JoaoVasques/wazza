@@ -101,16 +101,16 @@ config(function($stateProvider, $urlRouterProvider, $locationProvider, $httpProv
             controller: 'PurchasePerSessionController'
         })
 
-        .state('analytics.avgTime1stPurchase', {
+        .state('analytics.sessionsFirstPurchase', {
             url: "^/",
             templateUrl: '/dashboard/analytics',
-            controller: 'AverageTimeFirstPurchaseController'
+            controller: 'NumberSessionsFirstPurchaseController'
         })
 
-        .state('analytics.avgTimebetweenPurchase', {
+        .state('analytics.sessionsBetweenPurchase', {
             url: "^/",
             templateUrl: '/dashboard/analytics',
-            controller: 'AverageTimeBetweenPurchaseController'
+            controller: 'NumberSessionsBetweenPurchaseController'
         })
 
       //inventory

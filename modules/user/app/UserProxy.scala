@@ -18,7 +18,6 @@ import play.api.libs.concurrent.Akka
 import play.api.Play.current
 import persistence._
 
-
 class UserProxy (
   system: ActorSystem,
   databaseProxy: ActorRef
@@ -38,7 +37,7 @@ class UserProxy (
 
   private def purchasesWorkersRouter = {
     val routees = Vector.fill(NUMBER_WORKERS) {
-      val r = context.actorOf(PurchaseWorker.props(databaseProxy))
+      val r = context.actorOf(PurchaseWorker.props(databaseProxy, self))
       context watch r
       ActorRefRoutee(r)
     }
