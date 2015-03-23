@@ -43,23 +43,5 @@ object MobileSession {
       "purchases" -> session.purchases
     )
   }
-
-  // implicit val readJson = (
-  //   (__ \ "id").read[String] and
-  //   (__ \ "userId").read[String] and
-  //   (__ \ "sessionLength").read[Double] and
-  //   (__ \ "startTime").read[Date] and
-  //   (__ \ "deviceInfo").read[DeviceInfo] and
-  //   (__ \ "purchases").read[List[String]]
-  // )(MobileSession.apply _)
-
-  // implicit val buildFromJson = (
-  //   (__ \ "id").write[String] and
-  //   (__ \ "userId").write[String] and
-  //   (__ \ "sessionLength").write[Double] and
-  //   (__ \ "startTime").write[Date] and
-  //   (__ \ "deviceInfo").write[DeviceInfo] and
-  //   (__ \ "purchases").write[List[String]]
-  // )(unlift(MobileSession.unapply))
-
 }
+
