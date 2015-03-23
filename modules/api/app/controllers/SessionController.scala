@@ -1,6 +1,5 @@
 package controllers.api
 
-import com.google.inject._
 import models.user.MobileSession
 import org.joda.time.Seconds
 import play.api._
@@ -12,8 +11,6 @@ import play.api.mvc._
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.util.Failure
 import scala.util.Success
-import service.user.definitions.MobileUserService
-import service.user.definitions.MobileSessionService
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.Interval
 import scala.concurrent._
@@ -25,9 +22,7 @@ import user.messages._
 import scala.collection.mutable.Stack
 import scala.util.{Try, Success, Failure}
 
-class SessionController @Inject()(
-  sessionService: MobileSessionService
-) extends Controller {
+class SessionController extends Controller {
 
   private def createSession(
     content: JsValue,
@@ -37,21 +32,21 @@ class SessionController @Inject()(
     val start = DateUtils.buildJodaDateFromString((content \ "startTime").as[String])
     val end = DateUtils.buildJodaDateFromString((content \ "endTime").as[String])
 
-    sessionService.create(Json.obj(
-      "id" -> (content \ "hash").as[String],
-      "userId" -> (content \ "userId").as[String],
-      "sessionLength" -> (new Interval(start, end).toDurationMillis() / 1000),
-      "startTime" -> (content \ "startTime").as[String],
-      "deviceInfo" -> (content \ "deviceInfo"),
-      "purchases" -> (content \ "purchases").as[List[String]]
-    )) match {
-      case Success(session) => {
-        val userProxy = UserProxy.getInstance()
-        val request = new SRSave(new Stack, companyName, applicationName, session)
-        userProxy ! request
-        new Success
-      }
-      case _ => new Failure(new Exception)
+    try {
+      val session = MobileSession.buildFromJson(Json.obj(
+        "id" -> (content \ "hash").as[String],
+        "userId" -> (content \ "userId").as[String],
+        "length" -> (new Interval(start, end).toDurationMillis() / 1000.0),
+        "startTime" -> (content \ "startTime").as[String],
+        "deviceInfo" -> (content \ "deviceInfo"),
+        "purchases" -> (content \ "purchases").as[List[String]])
+      )
+      val userProxy = UserProxy.getInstance()
+      val request = new SRSave(new Stack, companyName, applicationName, session)
+      userProxy ! request
+      new Success
+    } catch {
+      case ex: Exception => new Failure(ex)
     }
   }
 
