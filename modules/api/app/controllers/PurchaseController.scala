@@ -17,9 +17,7 @@ import scala.collection.mutable.Stack
 import scala.util.{Try, Success, Failure}
 import models.user.{PurchaseInfo}
 
-class PurchaseController @Inject()(
-  purchaseService: PurchaseService
-)extends Controller {
+class PurchaseController extends Controller {
 
   def handlePurchase() = ApiSecurityAction.async(parse.json) {implicit request =>
     val companyName = request.companyName
