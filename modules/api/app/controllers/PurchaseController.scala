@@ -16,8 +16,11 @@ import user.messages._
 import scala.collection.mutable.Stack
 import scala.util.{Try, Success, Failure}
 import models.user.{PurchaseInfo}
+import payments.paypal._
 
-class PurchaseController extends Controller {
+class PurchaseController @Inject()(
+  paypalService: PayPalService
+) extends Controller {
 
   def handlePurchase() = ApiSecurityAction.async(parse.json) {implicit request =>
     val companyName = request.companyName
@@ -33,6 +36,25 @@ class PurchaseController extends Controller {
       case _: Throwable => {
         Future.successful(BadRequest("Invalid purchase json description"))
       }
+    }
+  }
+
+  def verifyPayment() = Action.async(parse.json) {implicit request =>
+    //TODO
+    println(request.body)
+    val paymentID = (request.body \ "responseID").as[String]
+    val amount = (request.body \ "price").as[Double]
+    val currency = (request.body \ "currencyCode").as[String]
+    val clientID = (request.body \ "apiClientId").as[String]
+    val secret = (request.body \ "apiSecret").as[String]
+
+    for {
+      token <- paypalService.getAccessToken(clientID, secret)
+      valid <- paypalService.verifyPayment(token, paymentID, amount, currency)
+    } yield valid
+
+    Future {
+      Ok(Json.obj("result" -> "OK"))
     }
   }
 }

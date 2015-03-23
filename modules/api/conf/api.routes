@@ -6,6 +6,7 @@
 
 # Purchases routes
 POST    /purchase/  @controllers.api.PurchaseController.handlePurchase()
+POST    /payment/verify/ @controllers.api.PurchaseController.verifyPayment()
 
 # Session routes
 POST    /session/new/   @controllers.api.SessionController.saveSession()

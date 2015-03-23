@@ -68,7 +68,7 @@ lazy val aws = Project("aws", file("modules/aws"))
 
 lazy val api = Project("api", file("modules/api"))
   .enablePlugins(play.PlayScala)
-  .dependsOn(security, aws, user, application)
+  .dependsOn(security, aws, user, application, payments)
   .settings(scalacOptions ++= mySettings, version := appVersion, libraryDependencies ++= dependencies)
 
 lazy val persistence = Project("persistence", file("modules/persistence"))
@@ -86,6 +86,11 @@ lazy val notifications = Project("notifications",file("modules/notifications"))
   .dependsOn(common)
   .settings(scalacOptions ++= mySettings, version := appVersion, libraryDependencies ++= dependencies)
 
+lazy val payments = Project("payments",file("modules/payments"))
+  .enablePlugins(play.PlayScala)
+  .dependsOn(common)
+  .settings(scalacOptions ++= mySettings, version := appVersion, libraryDependencies ++= dependencies)
+
 // Root
 lazy val home = Project(appName, file("."))
   .enablePlugins(play.PlayScala)
@@ -98,7 +103,8 @@ lazy val home = Project(appName, file("."))
     persistence,
     analytics,
     common,
-    notifications)
+    notifications,
+    payments)
   .dependsOn(dashboard,
     user,
     application,
@@ -108,7 +114,9 @@ lazy val home = Project(appName, file("."))
     persistence,
     analytics,
     common,
-    notifications)
+    notifications,
+    payments
+  )
   .settings(scalacOptions ++= mySettings, version := appVersion, libraryDependencies ++= dependencies)
 
 sources in doc in Compile := List()
