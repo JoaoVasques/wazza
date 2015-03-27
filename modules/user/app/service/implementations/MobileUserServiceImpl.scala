@@ -10,12 +10,12 @@ import scala.util.Try
 import service.user.definitions.MobileUserService
 import models.user.{MobileUser}
 import models.user.{MobileSession}
-import models.user.{DeviceInfo}
+import models.common.{DeviceInfo}
 import scala.language.implicitConversions
 import com.google.inject._
 import service.persistence.definitions.{DatabaseService}
 import play.api.libs.json.Json
-import models.user.PurchaseInfo
+import models.payments.PurchaseInfo
 import java.util.Date
 import scala.concurrent._
 import ExecutionContext.Implicits.global

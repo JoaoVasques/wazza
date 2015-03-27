@@ -26,6 +26,8 @@ import scala.collection.mutable.Map
 import models.user.{CompanyData}
 import scala.collection.mutable.Stack
 import scala.concurrent.duration._
+import models.payments._
+import models.common._
 
 case class MessageRetry(ttl: Int, msg: MobileUserMessageRequest)
 

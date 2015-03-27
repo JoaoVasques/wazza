@@ -6,7 +6,7 @@ import scala.collection.mutable.Stack
 import java.util.Date
 import play.api.libs.json.JsObject
 import play.api.libs.json.JsValue
-import models.user._
+import models.payments._
 
 trait PurchaseMessageRequest extends WazzaMessage {
   def direct: Boolean

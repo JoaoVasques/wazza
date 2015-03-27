@@ -40,9 +40,12 @@ class PayPalServiceImpl extends PayPalService {
       println("VERIFICATION")
       println(result.status)
       println(result.json)
+      if(result.status == Status.OK) {
+        true
+      } else {
+        false
+      }
     }
-
-    null
   }
 }
 

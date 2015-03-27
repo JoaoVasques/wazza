@@ -32,6 +32,8 @@ import scala.collection.mutable.Stack
 import akka.actor._
 import persistence._
 import notifications._
+import models.common._
+import models.payments._
 
 class BootstrapEnvironmentController extends Controller {
 
@@ -131,7 +133,8 @@ class BootstrapEnvironmentController extends Controller {
             item._2,
             currentDay,
             new DeviceInfo(platform, "name", "version", "model"),
-            None
+            None,
+            null //TODO
           )
           val request = new PRSave(new Stack, companyName, applicationName, purchaseInfo)
           userProxy ! request

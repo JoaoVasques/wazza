@@ -1,9 +1,10 @@
-package models.user
+package models.payments
 
 import scala.language.implicitConversions
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
 import java.util.Date
+import models.common._
 
 case class LocationInfo(
   latitude: Double,
@@ -33,7 +34,8 @@ case class PurchaseInfo(
   price: Double,
   time: Date,
   deviceInfo: DeviceInfo,
-  location: Option[LocationInfo]
+  location: Option[LocationInfo],
+  paymentType: String
 )
 
 object PurchaseInfo {
@@ -58,7 +60,8 @@ object PurchaseInfo {
       (json \ "price").as[Double],
       new Date((json \ "time").as[Long]),
       (json \ "device").validate[DeviceInfo].asOpt.get,
-      getLocation
+      getLocation,
+      null //TODO 
     )
   }
 

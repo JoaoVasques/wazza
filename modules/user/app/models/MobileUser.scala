@@ -5,6 +5,7 @@ import play.api.libs.functional.syntax._
 import play.api.Play.current
 import play.api.libs.json._
 import java.util.Date
+import models.common._
 
 case class SessionResume(id: String, startTime: Date, platform: String)
 case class PurchaseResume(id: String, time: Date, platform: String)

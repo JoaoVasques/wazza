@@ -15,7 +15,7 @@ import user._
 import user.messages._
 import scala.collection.mutable.Stack
 import scala.util.{Try, Success, Failure}
-import models.user.{PurchaseInfo}
+import models.payments.{PurchaseInfo}
 import payments.paypal._
 
 class PurchaseController @Inject()(
@@ -40,7 +40,6 @@ class PurchaseController @Inject()(
   }
 
   def verifyPayment() = Action.async(parse.json) {implicit request =>
-    //TODO
     println(request.body)
     val paymentID = (request.body \ "responseID").as[String]
     val amount = (request.body \ "price").as[Double]
@@ -51,11 +50,7 @@ class PurchaseController @Inject()(
     for {
       token <- paypalService.getAccessToken(clientID, secret)
       valid <- paypalService.verifyPayment(token, paymentID, amount, currency)
-    } yield valid
-
-    Future {
-      Ok(Json.obj("result" -> "OK"))
-    }
+    } yield Ok(Json.obj("result" -> valid))
   }
 }
 

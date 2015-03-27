@@ -2,7 +2,7 @@ package service.user.definitions
 
 import models.user.{MobileUser}
 import models.user.{MobileSession}
-import models.user.{PurchaseInfo}
+import models.payments.{PurchaseInfo}
 import play.api.libs.json.JsValue
 import scala.concurrent.Future
 import scala.util.Try

@@ -1,9 +1,9 @@
 package service.user.definitions
 
-import models.user.{PurchaseInfo}
 import play.api.libs.json.JsValue
 import scala.util.Try
 import scala.concurrent._
+import models.payments._
 
 trait PurchaseService {
 

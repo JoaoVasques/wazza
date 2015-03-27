@@ -26,6 +26,7 @@ import scala.collection.mutable.Map
 import models.user.{CompanyData}
 import scala.collection.mutable.Stack
 import java.util.Date
+import models.payments._
 
 class PurchaseWorker(
   databaseProxy: ActorRef,
