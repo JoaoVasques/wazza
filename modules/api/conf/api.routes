@@ -4,6 +4,9 @@
 #GET     /items/details/:companyName/:appName     @controllers.api.ItemsController.getItemsWithDetails(companyName: String, appName: String)
 #GET     /item/:companyName/:applicationName/:id  @controllers.api.ItemsController.getItemDetails(companyName: String, id: String, applicationName: String)
 
+# Authentication
+POST    /auth/      @controllers.api.AuthenticationController.authentication()
+  
 # Purchases routes
 POST    /purchase/  @controllers.api.PurchaseController.handlePurchase()
 POST    /payment/verify/ @controllers.api.PurchaseController.verifyPayment()
