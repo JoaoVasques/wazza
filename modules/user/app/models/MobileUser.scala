@@ -29,7 +29,7 @@ object MobileUser {
       "userId" -> mobileUser.userId,
       "sessions" -> mobileUser.sessions.map(readJsonSessionResume(_)),
       "purchases" -> mobileUser.purchases.map(readJsonPurchaseResume(_)),
-      "devices" -> List[DeviceInfo]() //TODO
+      "devices" -> mobileUser.devices.map(Json.toJson(_))
     )
   }
 
@@ -38,7 +38,7 @@ object MobileUser {
       (json \ "userId").as[String],
       (json \ "sessions").as[JsArray].value.toList.map(buildSessionResumeFromJson(_)),
       (json \ "purchases").as[JsArray].value.toList.map(buildPurchaseResumeFromJson(_)),
-      List() //TODO
+      (json \ "devices").as[JsArray].value.toList.map(_.validate[DeviceInfo].asOpt.get)
     )
   }
 

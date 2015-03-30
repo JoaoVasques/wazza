@@ -69,7 +69,7 @@ class MobileUserWorker(
   private var retryMessagesPool = new MessageRetryPool
 
   private def handleCreateRequest(req: MUCreate) = {
-    val user = new MobileUser(req.userId, List[SessionResume](), List[PurchaseResume](), List[DeviceInfo]())
+    val user = new MobileUser(req.userId, List[SessionResume](), List[PurchaseResume](), List(req.deviceInfo))
     val collection = MobileUser.getCollection(req.companyName, req.applicationName)
     val insertReq = new Insert(new Stack, collection, user)
     databaseProxy ! insertReq

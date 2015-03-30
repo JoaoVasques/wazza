@@ -6,6 +6,7 @@ import play.api.libs.json._
 import java.util.Date
 import models.common._
 import scala.util.{Try, Failure, Success}
+import java.text.{SimpleDateFormat}
 
 case class PayPalPayment(
   id: String,
@@ -77,7 +78,8 @@ object PayPalPayment {
         (json \ "userId").as[String],
         (json \ "itemId").as[String],
         (json \ "price").as[Double],
-        new Date((json \ "time").as[Long]),
+        (new SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z").parse((json \ "time").as[String])),
+        //new Date((json \ "time").as[Long]),
         (json \ "deviceInfo").validate[DeviceInfo].asOpt.get,
         PurchaseInfo.getLocation(json),
         (json \ "success").as[Boolean],
