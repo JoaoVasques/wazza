@@ -42,11 +42,11 @@ object PurchaseInfo {
   }
 
   implicit def buildFromJson(json: JsValue): PurchaseInfo = {
-    println("BUILD FROM JSON")
     val possibleResult = (json \ "paymentSystem").as[Int] match {
       case PayPalPayment.Type => PayPalPayment.fromJson(json)
       case InAppPurchasePayment.Type => InAppPurchasePayment.fromJson(json)
     }
+
     possibleResult match {
       case Success(result) => result
       case Failure(e) => {

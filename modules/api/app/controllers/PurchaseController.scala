@@ -25,14 +25,11 @@ class PurchaseController @Inject()(
   def handlePurchase() = ApiSecurityAction.async(parse.json) {implicit request =>
     val companyName = request.companyName
     val applicationName = request.applicationName
-    println(s"received request: ${companyName} | ${applicationName}")
     
     try {
       val content = request.body.as[JsValue]
-      println(s"CONTENT: ${content}")
       val userProxy = UserProxy.getInstance()
       val req = new PRSave(new Stack, companyName, applicationName, content)
-      println(s"ACTOR REQUEST: ${req}")
       userProxy ! req
       Future.successful(Ok)
     } catch {
@@ -42,8 +39,7 @@ class PurchaseController @Inject()(
     }
   }
 
-  def verifyPayment() = Action.async(parse.json) {implicit request =>
-    println(request.body)
+  def verifyPayment() = ApiSecurityAction.async(parse.json) {implicit request =>
     val paymentID = (request.body \ "responseID").as[String]
     val amount = (request.body \ "price").as[Double]
     val currency = (request.body \ "currencyCode").as[String]
