@@ -4,7 +4,7 @@ import com.google.inject._
 import play.api._
 import play.api.libs.json.JsError
 import play.api.libs.json.JsSuccess
-import play.api.libs.json.{JsArray, Json}
+import play.api.libs.json.{JsArray, Json, JsValue}
 import play.api.mvc._
 import service.security.definitions.TokenManagerService
 import service.user.definitions._
@@ -25,16 +25,19 @@ class PurchaseController @Inject()(
   def handlePurchase() = ApiSecurityAction.async(parse.json) {implicit request =>
     val companyName = request.companyName
     val applicationName = request.applicationName
-
+    println(s"received request: ${companyName} | ${applicationName}")
+    
     try {
-    val content = Json.parse((request.body \ "content").as[String].replace("\\", ""))
+      val content = request.body.as[JsValue]
+      println(s"CONTENT: ${content}")
       val userProxy = UserProxy.getInstance()
       val req = new PRSave(new Stack, companyName, applicationName, content)
+      println(s"ACTOR REQUEST: ${req}")
       userProxy ! req
       Future.successful(Ok)
     } catch {
       case _: Throwable => {
-        Future.successful(BadRequest("Invalid purchase json description"))
+        Future.successful(BadRequest(Json.obj("error" -> "Invalid purchase json description")))
       }
     }
   }

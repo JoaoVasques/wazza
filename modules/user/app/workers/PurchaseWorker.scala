@@ -35,7 +35,7 @@ class PurchaseWorker(
 
   def storePurchase(msg: PRSave) = {
     val collection = PurchaseInfo.getCollection(msg.companyName, msg.applicationName)
-    val request = new Insert(msg.sendersStack, collection, msg.info)
+    val request = new Insert(msg.sendersStack, collection, msg.info.toJson)
     databaseProxy ! request
   }
 
@@ -102,6 +102,7 @@ class PurchaseWorker(
   def receive = purchasesReceive orElse persistenceReceive
 
   private def purchaseExists(msg: PRSave) = {
+    println(s"RECEIVED PURCHASE MESSAGE: ${msg}")
     val hash = localStorage.store(self, msg)
     msg.sendersStack = msg.sendersStack.push(self)
     val collection = PurchaseInfo.getCollection(msg.companyName, msg.applicationName)

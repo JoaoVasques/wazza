@@ -7,16 +7,16 @@ import models.payments._
 
 trait PurchaseService {
 
-  def create(json: JsValue): Try[PurchaseInfo]
+  // def create(json: JsValue): Try[PurchaseInfo]
 
-  def save(companyName: String, applicationName: String, info: PurchaseInfo): Future[Unit]
+  // def save(companyName: String, applicationName: String, info: PurchaseInfo): Future[Unit]
 
-  def get(companyName: String, applicationName: String, id: String): Future[Option[PurchaseInfo]]
+  // def get(companyName: String, applicationName: String, id: String): Future[Option[PurchaseInfo]]
 
-  def getUserPurchases(companyName: String, applicationName: String, userId: String): Future[List[PurchaseInfo]]
+  // def getUserPurchases(companyName: String, applicationName: String, userId: String): Future[List[PurchaseInfo]]
 
-  def exist(companyName: String, applicationName: String, id: String): Future[Boolean]
+  // def exist(companyName: String, applicationName: String, id: String): Future[Boolean]
 
-  def delete(companyName: String, applicationName: String, info: PurchaseInfo): Future[Unit]
+  // def delete(companyName: String, applicationName: String, info: PurchaseInfo): Future[Unit]
 }
 

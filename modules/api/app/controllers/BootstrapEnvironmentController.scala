@@ -125,19 +125,19 @@ class BootstrapEnvironmentController extends Controller {
           val itemsAux = items
           val item = Random.shuffle(itemsAux).head
           val platform = if(Math.random() > 0.5) platforms.head else platforms.last
-          val purchaseInfo = new PurchaseInfo(
-            s"purchase-$userNumber-${currentDay.toString}",
-            (s"${currentDay.toString}-$userNumber"),
-            userNumber.toString,
-            item._1,
-            item._2,
-            currentDay,
-            new DeviceInfo(platform, "name", "version", "model"),
-            None,
-            null //TODO
-          )
-          val request = new PRSave(new Stack, companyName, applicationName, purchaseInfo)
-          userProxy ! request
+          // val purchaseInfo = new PurchaseInfo(
+          //   s"purchase-$userNumber-${currentDay.toString}",
+          //   (s"${currentDay.toString}-$userNumber"),
+          //   userNumber.toString,
+          //   item._1,
+          //   item._2,
+          //   currentDay,
+          //   new DeviceInfo(platform, "name", "version", "model"),
+          //   None,
+          //   null //TODO
+          // )
+          // val request = new PRSave(new Stack, companyName, applicationName, purchaseInfo)
+          // userProxy ! request
         }
       }
     }

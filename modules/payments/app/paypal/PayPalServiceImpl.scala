@@ -21,7 +21,6 @@ class PayPalServiceImpl extends PayPalService {
 
     futureResult map {response =>
       if(response.status == Status.OK) {
-        println(response.json)
         (response.json \ "access_token").as[String]
       } else {
         null
@@ -37,9 +36,6 @@ class PayPalServiceImpl extends PayPalService {
       .get
 
     futureResult map {result =>
-      println("VERIFICATION")
-      println(result.status)
-      println(result.json)
       if(result.status == Status.OK) {
         true
       } else {
