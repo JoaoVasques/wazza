@@ -28,6 +28,7 @@ import application.messages._
 import user._
 import user.messages._
 import scala.collection.mutable.Stack
+import payments.{PaymentTypes}
 
 class CRUDController @Inject()(
   secretGeneratorService: SecretGeneratorService,
@@ -93,6 +94,8 @@ class CRUDController @Inject()(
         "appId" -> ignored(secretGeneratorService.generateSecret(Id)),
         "sdkToken" -> ignored(secretGeneratorService.generateSecret(ApiKey))
       )(Credentials.apply)(Credentials.unapply),
+      "paypalCredentials" -> ignored(None.asInstanceOf[Option[PayPalCredentials]]),
+      "paymentSystems" -> ignored(List[Int](PaymentTypes.InAppPurchases)),
       "items" -> ignored(List[Item]()),
       "virtualCurrencies"-> ignored(List[VirtualCurrency]())
     )

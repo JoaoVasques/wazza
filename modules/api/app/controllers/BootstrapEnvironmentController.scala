@@ -34,6 +34,7 @@ import persistence._
 import notifications._
 import models.common._
 import models.payments._
+import payments.{PaymentTypes}
 
 class BootstrapEnvironmentController extends Controller {
 
@@ -77,6 +78,7 @@ class BootstrapEnvironmentController extends Controller {
       List(ApplicationData.appType),
       ApplicationData.credentials,
       None,
+      List(PaymentTypes.InAppPurchases),
       ApplicationData.items,
       ApplicationData.virtualCurrencies
     )
