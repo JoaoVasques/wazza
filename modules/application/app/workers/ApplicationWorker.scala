@@ -94,6 +94,7 @@ class ApplicationWorker(
     case m: ARExists => exists(m, sender)
     case m: ARFind => find(m, sender)
     case m: ARAddPayPalCredentials => addPayPalCredentials(m, sender)
+    case m: ARAddPaymentSystem => addPaymentSystem(m, sender)
   }
 
   def receive = applicationRequests orElse persistenceReceive
@@ -120,6 +121,14 @@ class ApplicationWorker(
     val email = s"Company ${msg.companyName} has created a new application ${msg.application.name} for ${msg.application.appType}"
     val mailRequest = new SendEmail(new Stack, List("support@wazza.io"), "New Application Created", email)
     notificationProxy ! mailRequest
+  }
+
+  private def addPaymentSystem(msg: ARAddPaymentSystem, sender: ActorRef) = {
+    val collection = WazzaApplication.getCollection(msg.companyName, msg.applicationName)
+    val request = new AddElementToArray[Int](
+      msg.sendersStack, collection, WazzaApplication.Key, msg.applicationName,
+      "paymentSystems", msg.paymentSystem, false, null)
+    databaseProxy ! request 
   }
 
   private def addPayPalCredentials(msg: ARAddPayPalCredentials, sender: ActorRef) = {

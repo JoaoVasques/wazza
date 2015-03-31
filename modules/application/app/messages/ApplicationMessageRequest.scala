@@ -31,6 +31,17 @@ case class ARAddPayPalCredentials(
   hash: String = null
 ) extends ApplicationMessageRequest
 
+case class ARAddPaymentSystem(
+  var sendersStack: Stack[ActorRef],
+  companyName: String,
+  applicationName: String,
+  paymentSystem: Int,
+  direct: Boolean = false,
+  hash: String = null
+) extends ApplicationMessageRequest
+
+
+
 case class ARDelete(
   var sendersStack: Stack[ActorRef],
   companyName: String,

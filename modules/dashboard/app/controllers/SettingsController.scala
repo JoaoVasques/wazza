@@ -18,7 +18,7 @@ import application._
 import application.messages._
 import scala.concurrent.duration._
 import scala.collection.mutable.Stack
-
+import payments.{PaymentTypes}
 
 class SettingsController  extends Controller {
 
@@ -74,6 +74,7 @@ class SettingsController  extends Controller {
           request.body.validate[PayPalCredentials] match {
             case credentials: JsSuccess[PayPalCredentials] => {
               appProxy ! new ARAddPayPalCredentials(new Stack, companyName, applicationName, credentials.get, true)
+              appProxy ! new ARAddPaymentSystem(new Stack, companyName, applicationName, PaymentTypes.PayPal)
             }
             case _: JsError => Future.successful(BadRequest)
           }

@@ -41,7 +41,8 @@ class OverviewController extends Controller {
                   Json.obj(
                     "name" -> application.name,
                     "url" -> application.imageName,
-                    "platforms" -> application.appType
+                    "platforms" -> application.appType,
+                    "paymentSystems" -> application.paymentSystems
                   )
                 }).get
               }
