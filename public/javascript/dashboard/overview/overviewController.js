@@ -46,7 +46,8 @@ dashboard.controller('OverviewController',[
           $scope.applications.push(new AppOverviewModel(
             appInfo.name,
             (appInfo.url == '') ? noImageUrl : appInfo.url,
-            appInfo.platforms
+            appInfo.platforms,
+            appInfo.paymentSystems
           ));
           names.push(appInfo.name);
         });
