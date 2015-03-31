@@ -76,6 +76,7 @@ class BootstrapEnvironmentController extends Controller {
       ApplicationData.packageName,
       List(ApplicationData.appType),
       ApplicationData.credentials,
+      None,
       ApplicationData.items,
       ApplicationData.virtualCurrencies
     )

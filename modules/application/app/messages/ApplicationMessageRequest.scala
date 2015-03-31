@@ -11,7 +11,6 @@ import models.application._
 
 //TODO app message request
 trait ApplicationMessageRequest extends WazzaMessage {
-
   def direct: Boolean
 }
 
@@ -19,6 +18,15 @@ case class ARInsert(
   var sendersStack: Stack[ActorRef],
   companyName: String,
   application: WazzaApplication,
+  direct: Boolean = false,
+  hash: String = null
+) extends ApplicationMessageRequest
+
+case class ARAddPayPalCredentials(
+  var sendersStack: Stack[ActorRef],
+  companyName: String,
+  applicationName: String,
+  paypalCredentials: PayPalCredentials,
   direct: Boolean = false,
   hash: String = null
 ) extends ApplicationMessageRequest

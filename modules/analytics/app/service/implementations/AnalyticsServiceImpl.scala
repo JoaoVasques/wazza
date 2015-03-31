@@ -2,7 +2,7 @@ package service.analytics.implementations
 
 import java.text.SimpleDateFormat
 import models.user.MobileSession
-import models.user.PurchaseInfo
+import models.payments.PurchaseInfo
 import org.bson.BSONObject
 import play.api.libs.json.JsObject
 import play.api.libs.json.JsValue
