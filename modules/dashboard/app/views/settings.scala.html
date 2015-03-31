@@ -24,9 +24,8 @@
               </tr>
             </table>
             <br>
-            <h4></h4>
+            <h4>Application Information</h4>
             <table class="table">
-              <h4>Application</h4>
               <tr>
                 <td><b>Name</b></td>
                 <td>{{appName}}</td>
@@ -51,6 +50,28 @@
               </td>
               </tr>
             </table>
+            <h4>Payments information</h4>
+            <form class="form-horizontal" ng-submit="savePaymentChanges()">
+              <!-- PayPal Logo -->
+              <img src="https://www.paypalobjects.com/webstatic/mktg/Logo/pp-logo-100px.png" border="0" alt="PayPal Logo" style="padding-bottom:1em;"><!-- PayPal Logo -->
+              <div class="form-group">
+                <label for="inputppClientId" class="col-sm-2 control-label">ID</label>
+                <div class="col-sm-10">
+                  <input class="form-control" id="inputppClientId" ng-model="payPalCredentials.clientId" placeholder="{{payPalCredentials.clientId}}" required>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="inputppSecret" class="col-sm-2 control-label">Secret</label>
+                <div class="col-sm-10">
+                  <input class="form-control" id="inputppSecret" ng-model="payPalCredentials.secret" placeholder="{{payPalCredentials.secret}}" required>
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                  <button type="submit" class="btn btn-primary">Save Changes</button>
+                </div>
+              </div>
+            </form>
           </div>
         </div>
       </div>
