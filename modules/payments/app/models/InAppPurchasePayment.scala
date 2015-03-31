@@ -25,16 +25,16 @@ case class InAppPurchasePayment(
     this.location match {
       case Some(_) => {
         Json.obj(
-        "id" -> this.id,
-        "sessionId" -> this.sessionId,
-        "userId" -> this.userId,
-        "itemId" -> this.itemId,
-        "price" -> this.price,
-        "time" -> this.time.getTime,
-        "device" -> Json.toJson(this.deviceInfo),
-        "location" -> Json.toJson(this.location),
-        "success" -> this.success,
-         "paymentSystem" -> this.paymentSystem
+          "id" -> this.id,
+          "sessionId" -> this.sessionId,
+          "userId" -> this.userId,
+          "itemId" -> this.itemId,
+          "price" -> this.price,
+          "time" -> this.time.getTime,
+          "device" -> Json.toJson(this.deviceInfo),
+          "location" -> Json.toJson(this.location),
+          "success" -> this.success,
+          "paymentSystem" -> this.paymentSystem
         )
       }
       case None => {
