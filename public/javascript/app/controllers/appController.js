@@ -48,11 +48,14 @@ application.controller('AppController', [
     });
 
     $scope.chooseApplication = function(app){
+      console.log(app);
       oldName = ApplicationStateService.getApplicationName();
       ApplicationStateService.updateApplicationName(app.name);
       _.each(app.platforms, function(platform){
         ApplicationStateService.addPlatforms(platform);
       });
+
+      ApplicationStateService.currentApplication = app;
       
       mixpanel.register({"application": app});
 

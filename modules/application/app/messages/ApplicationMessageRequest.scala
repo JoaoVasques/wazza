@@ -9,7 +9,6 @@ import play.api.libs.json.JsObject
 import play.api.libs.json.JsValue
 import models.application._
 
-//TODO app message request
 trait ApplicationMessageRequest extends WazzaMessage {
   def direct: Boolean
 }
@@ -39,8 +38,6 @@ case class ARAddPaymentSystem(
   direct: Boolean = false,
   hash: String = null
 ) extends ApplicationMessageRequest
-
-
 
 case class ARDelete(
   var sendersStack: Stack[ActorRef],

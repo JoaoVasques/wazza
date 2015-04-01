@@ -29,7 +29,7 @@ dashboard
     $scope.getWidth = function() {
         return window.innerWidth;
     };
-
+      
     $scope.$watch($scope.getWidth, function(newValue, oldValue) {
       if (newValue >= mobileView) {
         if (angular.isDefined($cookieStore.get('toggle'))) {

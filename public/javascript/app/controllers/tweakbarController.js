@@ -30,21 +30,18 @@ application.controller('TweakBarController',[
       'analytics.privacy'
     ];
 
+    $scope.paymentSystems = ApplicationStateService.currentApplication.paymentSystems;
+
     $rootScope.$on('$stateChangeSuccess', function(event, toState, toParams, fromState, fromParams) {
       $scope.showBar = _.find(hideShowBar, function(s) {return s == toState.name;}) == undefined ? true : false;
     });
 
-    $scope.showDashboardViewOptions = false;
-    $scope.viewText = "Numerical";
     $scope.showDetailsButton = true;
-    $scope.updateView = function(value) {
-      $scope.showDetailsButton = (value == 1) ? true: false;
-      $scope.viewText = (value == 1) ? "Numerical" : "Visual";
-      $rootScope.$broadcast(DashboardViewChanges, {newView: value});
-    };
     $scope.hideDetails = true;
+    $scope.showDetailsButtonText = ($scope.hideDetails) ? "Show Detailed View" : "Hide Detailed View";
     $scope.showDetails = function(){
       $scope.hideDetails = ! $scope.hideDetails;
+      $scope.showDetailsButtonText = ($scope.hideDetails) ? "Show Detailed View" : "Hide Detailed View";
       $rootScope.$broadcast(DashboardShowPlatformDetails, {value: $scope.hideDetails});
     };
 
