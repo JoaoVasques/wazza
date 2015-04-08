@@ -51,7 +51,6 @@ case class InAppPurchasePayment(
         )
       }
     }
-    null
   }
 }
 

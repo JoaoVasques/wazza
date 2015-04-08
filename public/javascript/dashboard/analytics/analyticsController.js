@@ -59,7 +59,7 @@ dashboard
       updateChartData(context, KpiId, label);
       updateTotalValues(context, KpiId);
     };
-
+;     
     var updateChartData = function(context, KpiId, label) {
       GetKPIService.getDetailedKPIData(
         ApplicationStateService.getCompanyName(),
@@ -67,7 +67,8 @@ dashboard
         DateModel.formatDate(context.beginDate),
         DateModel.formatDate(context.endDate),
         KpiId,
-        ApplicationStateService.selectedPlatforms
+        ApplicationStateService.selectedPlatforms,
+        ApplicationStateService.currentApplication.paymentSystems  
       ).then(function(results) {
         kpiDataSuccessHandler(results, context, label);
       },function(err) {console.log(err);}

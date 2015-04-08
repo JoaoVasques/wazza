@@ -34,6 +34,7 @@ import scala.collection.mutable.Stack
 class AnalyticsServiceImpl extends AnalyticsService {
 
   private lazy val ProfitMargin = 0.7
+  private lazy val PayPalProfitMargin = 0.029
   private val databaseProxy = PersistenceProxy.getInstance()
   private implicit val timeout = Timeout(8 seconds)
 
@@ -64,7 +65,8 @@ class AnalyticsServiceImpl extends AnalyticsService {
     start: Date,
     end: Date,
     platforms: List[String],
-    f:(String, String, Date, Date, List[String]) => Future[JsValue]
+    paymentSystems: List[Int],
+    f:(String, String, Date, Date, List[String], List[Int]) => Future[JsValue]
   ): Future[JsArray] = {
     val s = new LocalDate(start)
     val e = new LocalDate(end)
@@ -73,7 +75,7 @@ class AnalyticsServiceImpl extends AnalyticsService {
     val futureResult = Future.sequence(List.range(0, days) map {dayIndex =>
       val currentDay = s.withFieldAdded(DurationFieldType.days(), dayIndex)
       val previousDay = currentDay.minusDays(1)
-      f(companyName, applicationName, previousDay.toDate, currentDay.toDate, platforms) map {res: JsValue =>
+      f(companyName, applicationName, previousDay.toDate, currentDay.toDate, platforms, paymentSystems) map {res: JsValue =>
         Json.obj(
           "day" -> currentDay.toDate.getTime,
           "value" -> (res \ "value").as[Double],
@@ -176,9 +178,10 @@ class AnalyticsServiceImpl extends AnalyticsService {
     applicationName: String,
     start: Date,
     end: Date,
-    platforms: List[String]
+    platforms: List[String],
+    paymentSystems: List[Int]
   ): Future[JsArray] = {
-    calculateDetailedKPIAux(companyName, applicationName, start, end, platforms, getTotalARPU)
+    calculateDetailedKPIAux(companyName, applicationName, start, end, platforms, paymentSystems, getTotalARPU)
   }
 
   def getTotalARPU(
@@ -186,7 +189,8 @@ class AnalyticsServiceImpl extends AnalyticsService {
     applicationName: String,
     start: Date,
     end: Date,
-    platforms: List[String]
+    platforms: List[String],
+    paymentSystems: List[Int]
   ): Future[JsValue] = {
     val arpuCollection = Metrics.arpuCollection(companyName, applicationName)
     val fields = ("lowerDate", "upperDate")
@@ -203,9 +207,10 @@ class AnalyticsServiceImpl extends AnalyticsService {
     applicationName: String,
     start: Date,
     end: Date,
-    platforms: List[String]
+    platforms: List[String],
+    paymentSystems: List[Int]
   ): Future[JsArray] = {
-    calculateDetailedKPIAux(companyName, applicationName, start, end, platforms, getTotalAverageRevenuePerSession)
+    calculateDetailedKPIAux(companyName, applicationName, start, end, platforms, paymentSystems, getTotalAverageRevenuePerSession)
   }
 
   def getTotalAverageRevenuePerSession(
@@ -213,7 +218,8 @@ class AnalyticsServiceImpl extends AnalyticsService {
     applicationName: String,
     start: Date,
     end: Date,
-    platforms: List[String]
+    platforms: List[String],
+    paymentSystems: List[Int]
   ): Future[JsValue] = {
     val fields = ("lowerDate", "upperDate")
     val collection = Metrics.avgRevenueSessionCollection(companyName, applicationName)
@@ -245,7 +251,8 @@ class AnalyticsServiceImpl extends AnalyticsService {
     applicationName: String,
     start: Date,
     end: Date,
-    platforms: List[String]
+    platforms: List[String],
+    paymentSystems: List[Int]
   ): Future[JsValue] = {
     val fields = ("lowerDate", "upperDate")
     val collection = Metrics.totalRevenueCollection(companyName, applicationName)
@@ -259,9 +266,10 @@ class AnalyticsServiceImpl extends AnalyticsService {
     applicationName: String,
     start: Date,
     end: Date,
-    platforms: List[String]
+    platforms: List[String],
+    paymentSystems: List[Int]
   ): Future[JsArray] = {
-    calculateDetailedKPIAux(companyName, applicationName, start, end, platforms, getTotalRevenue)
+    calculateDetailedKPIAux(companyName, applicationName, start, end, platforms, paymentSystems, getTotalRevenue)
   }
 
   def getTotalAveragePurchasesUser(
@@ -269,7 +277,8 @@ class AnalyticsServiceImpl extends AnalyticsService {
     applicationName: String,
     start: Date,
     end: Date,
-    platforms: List[String]
+    platforms: List[String],
+    paymentSystems: List[Int]
   ): Future[JsValue] = {
     val fields = ("lowerDate", "upperDate")
     val collection = Metrics.avgPurchasesUserCollection(companyName, applicationName)
@@ -285,18 +294,19 @@ class AnalyticsServiceImpl extends AnalyticsService {
     applicationName: String,
     start: Date,
     end: Date,
-    platforms: List[String]
+    platforms: List[String],
+    paymentSystems: List[Int]
   ): Future[JsArray] = {
-    calculateDetailedKPIAux(companyName, applicationName, start, end, platforms, getTotalAveragePurchasesUser)
+    calculateDetailedKPIAux(companyName, applicationName, start, end, platforms, paymentSystems, getTotalAveragePurchasesUser)
   }
 
-  // TODO
   def getTotalAverageNumberSessionsPerUser(
     companyName: String,
     applicationName: String,
     start: Date,
     end: Date,
-    platforms: List[String]
+    platforms: List[String],
+    paymentSystems: List[Int]
   ): Future[JsValue] = {
     val fields = ("lowerDate", "upperDate")
     val collection = Metrics.avgSessionsPerUserCollection(companyName, applicationName)
@@ -318,7 +328,8 @@ class AnalyticsServiceImpl extends AnalyticsService {
     applicationName: String,
     start: Date,
     end: Date,
-    platforms: List[String]
+    platforms: List[String],
+    paymentSystems: List[Int]
   ): Future[JsValue] = {
     val fields = ("lowerDate", "upperDate")
     val collection = Metrics.lifeTimeValueCollection(companyName, applicationName)
@@ -334,9 +345,10 @@ class AnalyticsServiceImpl extends AnalyticsService {
     applicationName: String,
     start: Date,
     end: Date,
-    platforms: List[String]
+    platforms: List[String],
+    paymentSystems: List[Int]
   ): Future[JsArray] = {
-    calculateDetailedKPIAux(companyName, applicationName, start, end, platforms, getTotalLifeTimeValue)
+    calculateDetailedKPIAux(companyName, applicationName, start, end, platforms, paymentSystems, getTotalLifeTimeValue)
   }
 
   def getTotalNumberSessionsFirstPurchase(
@@ -344,7 +356,8 @@ class AnalyticsServiceImpl extends AnalyticsService {
     applicationName: String, 
     start: Date, 
     end: Date, 
-    platforms: List[String]
+    platforms: List[String],
+    paymentSystems: List[Int]
   ): Future[JsValue] = {
     val fields = ("lowerDate", "upperDate")
     val collection = Metrics.sessionsFirstPurchase(companyName, applicationName)
@@ -387,9 +400,10 @@ class AnalyticsServiceImpl extends AnalyticsService {
     applicationName: String, 
     start: Date, 
     end: Date, 
-    platforms: List[String]
+    platforms: List[String],
+    paymentSystems: List[Int]
   ): Future[JsArray] = {
-    calculateDetailedKPIAux(companyName, applicationName, start, end, platforms, getTotalNumberSessionsFirstPurchase)
+    calculateDetailedKPIAux(companyName, applicationName, start, end, platforms, paymentSystems, getTotalNumberSessionsFirstPurchase)
   }
 
   def getTotalNumberSessionsBetweenPurchases(
@@ -397,7 +411,8 @@ class AnalyticsServiceImpl extends AnalyticsService {
     applicationName: String, 
     start: Date, 
     end: Date, 
-    platforms: List[String]
+    platforms: List[String],
+    paymentSystems: List[Int]
   ): Future[JsValue] = {
     val fields = ("lowerDate", "upperDate")
     val collection = Metrics.sessionsBetweenPurchasesCollection(companyName, applicationName)
@@ -449,9 +464,10 @@ class AnalyticsServiceImpl extends AnalyticsService {
     applicationName: String,
     start: Date,
     end: Date,
-    platforms: List[String]
+    platforms: List[String],
+    paymentSystems: List[Int]
   ): Future[JsArray] = {
-    calculateDetailedKPIAux(companyName, applicationName, start, end, platforms, getTotalNumberSessionsBetweenPurchases)
+    calculateDetailedKPIAux(companyName, applicationName, start, end, platforms, paymentSystems, getTotalNumberSessionsBetweenPurchases)
   }
 
   def getTotalNumberPayingCustomers(
@@ -459,7 +475,8 @@ class AnalyticsServiceImpl extends AnalyticsService {
     applicationName: String,
     start: Date,
     end: Date,
-    platforms: List[String]
+    platforms: List[String],
+    paymentSystems: List[Int]
   ): Future[JsValue] = {
     val collection = Metrics.payingUsersCollection(companyName, applicationName)
     val request = new GetDocumentsWithinTimeRange(new Stack, collection, ("lowerDate", "upperDate"), start, end, true)
@@ -485,9 +502,10 @@ class AnalyticsServiceImpl extends AnalyticsService {
     applicationName: String,
     start: Date,
     end: Date,
-    platforms: List[String]
+    platforms: List[String],
+    paymentSystems: List[Int]
   ): Future[JsArray] = {
-    calculateDetailedKPIAux(companyName, applicationName, start, end, platforms, getTotalNumberPayingCustomers)
+    calculateDetailedKPIAux(companyName, applicationName, start, end, platforms, paymentSystems, getTotalNumberPayingCustomers)
   }
 
   def getTotalAveragePurchasePerSession(
@@ -495,7 +513,8 @@ class AnalyticsServiceImpl extends AnalyticsService {
     applicationName: String,
     start: Date,
     end: Date,
-    platforms: List[String]
+    platforms: List[String],
+    paymentSystems: List[Int]
   ): Future[JsValue] = {
     val fields = ("lowerDate", "upperDate")
     val collection = Metrics.averagePurchasePerSessionCollection(companyName, applicationName)
@@ -511,9 +530,10 @@ class AnalyticsServiceImpl extends AnalyticsService {
     applicationName: String,
     start: Date,
     end: Date,
-    platforms: List[String]
+    platforms: List[String],
+    paymentSystems: List[Int]
   ): Future[JsArray] = {
-    calculateDetailedKPIAux(companyName, applicationName, start, end, platforms, getTotalAveragePurchasePerSession)
+    calculateDetailedKPIAux(companyName, applicationName, start, end, platforms, paymentSystems, getTotalAveragePurchasePerSession)
   }
 }
 

@@ -22,9 +22,6 @@ dashboard
     var title = "Total Revenue";
     var KpiId = "revenue";
 
-    console.log("current app");
-    console.log(ApplicationStateService.currentApplication);
-
     ApplicationStateService.setPath(title);
     
     $scope.buildContext(new DetailedKpiModel(DateModel.startDate, DateModel.endDate, title));
