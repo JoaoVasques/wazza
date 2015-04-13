@@ -83,11 +83,31 @@ class AnalyticsController @Inject()(
         val platformCurrent = getPlatform(current)
         val platformPrevious = getPlatform(previous)
         val delta = calculateDeltaAux((platformCurrent \ "value").as[Double], (platformPrevious \ "value").as[Double])
+        val paymentSystemsResults = paymentSystems map {system =>
+          def getPaymentSystemResults(jsonArray: JsArray): Option[JsValue] = {
+            jsonArray.value.toList.find(p => (p \ "system").as[Int] == system)
+          }
+          val currentOpt = getPaymentSystemResults((platformCurrent \ "paymentSystems").as[JsArray])
+          val previousOpt = getPaymentSystemResults((platformPrevious \ "paymentSystems").as[JsArray])
+          (currentOpt, previousOpt) match {
+            case (Some(current), Some(previous)) => {
+              Json.obj("system" -> system,
+                "value" -> (current \ "value").as[Double],
+                "previous" -> (previous \ "value").as[Double],
+                "delta" -> calculateDeltaAux((current \ "value").as[Double], (previous \ "value").as[Double])
+              )
+            }
+            case _ => {
+              Json.obj("system" -> system, "value" -> 0.0, "previous" -> 0.0, "delta" -> 0.0)
+            }
+          }
+        }
         Json.obj(
           "platform" -> p,
           "value" -> (platformCurrent \ "value").as[Double],
           "delta" -> delta,
-          "previous" -> (platformPrevious \ "value").as[Double]
+          "previous" -> (platformPrevious \ "value").as[Double],
+          "paymentSystems" -> paymentSystemsResults
         )
       }
 

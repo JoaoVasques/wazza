@@ -38,7 +38,7 @@ class AnalyticsServiceImpl extends AnalyticsService {
   private val databaseProxy = PersistenceProxy.getInstance()
   private implicit val timeout = Timeout(8 seconds)
 
-  private def fillEmptyResult(start: Date, end: Date, platforms: List[String]): JsArray = {
+  private def fillEmptyResult(start: Date, end: Date, platforms: List[String], paymentSystems: List[Int]): JsArray = {
     val dates = new ListBuffer[String]()
     val s = new LocalDate(start)
     val e = new LocalDate(end)
@@ -48,7 +48,13 @@ class AnalyticsServiceImpl extends AnalyticsService {
       Json.obj(
         "day" -> s.withFieldAdded(DurationFieldType.days(), i).toDate.getTime,
         "value" -> 0.0,
-        "platforms" -> (platforms map {p => Json.obj("value" -> 0.0, "platform" -> p)})
+        "platforms" -> (platforms map {
+          p => Json.obj(
+            "value" -> 0.0,
+            "platform" -> p,
+            "paymentSystems" -> (paymentSystems map {s => Json.obj("system" -> s, "value" -> 0.0)})
+          )
+        })
       )
     }})
   }
@@ -83,7 +89,8 @@ class AnalyticsServiceImpl extends AnalyticsService {
             val platformInfo = getPlatform(res, p)
             Json.obj(
               "platform" -> ((platformInfo \ "platform").as[String]),
-              "value" -> ((platformInfo \ "value").as[Double])
+              "value" -> ((platformInfo \ "value").as[Double]),
+              "paymentSystems" -> ((platformInfo \ "paymentSystems").as[JsArray])
             )
           }})
         )
@@ -133,10 +140,29 @@ class AnalyticsServiceImpl extends AnalyticsService {
     (json \ "platforms").as[JsArray].value.find(e => (e \ "platform").as[String] == platform).get
   }
 
-  private def getDetailedResult(data: Seq[JsValue], platforms: List[String]): JsValue = {
+  def getPaymentSystemResult(jsonArray: JsArray, system: Int): Double = {
+    jsonArray.value.toList.find{s =>
+      (s \ "system").as[Int] == system.toString
+    } match {
+      case Some(data) => {
+        if(data.as[JsObject].keys.contains("res")) {
+          (data \ "res").as[Double]
+        } else {
+          (data \ "value").as[Double]
+        }
+      }
+      case None => 0.0
+    }
+  }
+
+  private def getDetailedResult(data: Seq[JsValue], platforms: List[String], paymentSystems: List[Int]): JsValue = {
     val emptyResult = Json.obj(
       "value" -> 0.0,
-      "platforms" -> (platforms map {p => Json.obj("platform" -> p, "value" -> 0.0)})
+      "platforms" -> (platforms map {p =>
+        Json.obj("platform" -> p, "value" -> 0.0, "paymentSystems" -> (paymentSystems map {s =>
+          Json.obj("system" -> s, "value" -> 0.0)
+        }))}
+      )
     )
     data.foldLeft(emptyResult)((res, current) => {
       val updateResult = (res \ "value").as[Double] + (current \ "result").as[Double]
@@ -144,7 +170,12 @@ class AnalyticsServiceImpl extends AnalyticsService {
         val resPlatform = getPlatform(res, platform)
         val currentPlatform = getPlatform(current, platform)
         val updatedValue = (resPlatform \ "value").as[Double] + (currentPlatform \ "res").as[Double]
-        Json.obj("platform" -> platform, "value" -> updatedValue)
+        val paymentSystemsResults = paymentSystems map {system =>
+          val current = getPaymentSystemResult((currentPlatform \ "paymentSystems").as[JsArray], system)
+          val res = getPaymentSystemResult((resPlatform \ "paymentSystems").as[JsArray], system)
+          Json.obj("system" -> system, "value" -> (current + res))
+        }
+        Json.obj("platform" -> platform, "value" -> updatedValue, "paymentSystems" -> paymentSystemsResults)
       }
       Json.obj("value" -> updateResult, "platforms" -> platformResults)
     })
@@ -153,6 +184,7 @@ class AnalyticsServiceImpl extends AnalyticsService {
   private def getAverageOfTotalResults(
     data: Seq[JsValue],
     platforms: List[String],
+    paymentSystems: List[Int],
     start: Date,
     end: Date
   ): JsValue = {
@@ -161,13 +193,23 @@ class AnalyticsServiceImpl extends AnalyticsService {
       if(days > 0) v / days else v
     }
 
-    val res = getDetailedResult(data, platforms)
+    def averagenizerPaymentSystems(jsonArray: JsArray, system: Int): Double = {
+      (jsonArray.value.toList.find(s => (s \ "system").as[Int] == system).get \ "value").as[Double]
+    }
+
+    val res = getDetailedResult(data, platforms, paymentSystems)
     Json.obj(
       "value" -> averagenizer((res \ "value").as[Double]),
       "platforms" -> ((res \ "platforms").as[JsArray].value map {p =>
         Json.obj(
           "platform" -> ((p \ "platform").as[String]),
-          "value" -> averagenizer((p \ "value").as[Double])
+          "value" -> averagenizer((p \ "value").as[Double]),
+          "paymentSystem" -> (paymentSystems map {system =>
+            Json.obj(
+              "system" -> system,
+              "value" -> averagenizer(averagenizerPaymentSystems((p \ "paymentSystems").as[JsArray], system))
+            )
+          })
         )
       })
     )
@@ -198,7 +240,7 @@ class AnalyticsServiceImpl extends AnalyticsService {
     val futureArpu = (databaseProxy ? request).mapTo[PRJsArrayResponse]
 
     futureArpu map {r =>
-      getAverageOfTotalResults(r.res.value, platforms, start, end)
+      getAverageOfTotalResults(r.res.value, platforms, paymentSystems, start, end)
     }
   }
 
@@ -233,7 +275,7 @@ class AnalyticsServiceImpl extends AnalyticsService {
     }
 
     futureAvgRevenueSession map {r =>
-      val res = getDetailedResult(r.res.value, platforms)
+      val res = getDetailedResult(r.res.value, platforms, paymentSystems)
       Json.obj(
         "value" -> averagenizer((res \ "value").as[Double]),
         "platforms" -> ((res \ "platforms").as[JsArray].value map {p =>
@@ -258,7 +300,7 @@ class AnalyticsServiceImpl extends AnalyticsService {
     val collection = Metrics.totalRevenueCollection(companyName, applicationName)
     val request = new GetDocumentsWithinTimeRange(new Stack, collection, fields, start, end, true)
     val futureRevenue = (databaseProxy ? request).mapTo[PRJsArrayResponse]
-    futureRevenue map {r => getDetailedResult(r.res.value, platforms)}
+    futureRevenue map {r => getDetailedResult(r.res.value, platforms, paymentSystems)}
   }
 
   def getRevenue(
@@ -285,7 +327,7 @@ class AnalyticsServiceImpl extends AnalyticsService {
     val request = new GetDocumentsWithinTimeRange(new Stack, collection, fields, start, end, true)
     val future = (databaseProxy ? request).mapTo[PRJsArrayResponse]
     future map {r =>
-      getAverageOfTotalResults(r.res.value, platforms, start, end)
+      getAverageOfTotalResults(r.res.value, platforms, paymentSystems, start, end)
     }
   }
 
@@ -336,7 +378,7 @@ class AnalyticsServiceImpl extends AnalyticsService {
     val request = new GetDocumentsWithinTimeRange(new Stack, collection, fields, start, end, true)
     val future = (databaseProxy ? request).mapTo[PRJsArrayResponse]
     future map {ltv =>
-      getAverageOfTotalResults(ltv.res.value, platforms, start, end)
+      getAverageOfTotalResults(ltv.res.value, platforms, paymentSystems, start, end)
     }
   }
 
@@ -521,7 +563,7 @@ class AnalyticsServiceImpl extends AnalyticsService {
     val request = new GetDocumentsWithinTimeRange(new Stack, collection, fields, start, end, true)
     val future = (databaseProxy ? request).mapTo[PRJsArrayResponse]
     future map {p =>
-      getAverageOfTotalResults(p.res.value, platforms, start, end)
+      getAverageOfTotalResults(p.res.value, platforms, paymentSystems, start, end)
     }
   }
 
