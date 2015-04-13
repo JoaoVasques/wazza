@@ -4,7 +4,7 @@
   <div class="panel panel-default main-view" ng-controller="TweakBarController" ng-show="showBar" style="margin-right: 1em;">
     <div class="panel-heading control-bar">
       <div class="row">
-        <div class="col-xs-4">
+        <div class="col-xs-5">
             <ul class="list-inline storeSelect">
               <li><h5>Platforms</h5></li>
               <li>
@@ -33,7 +33,6 @@
             </ul>
         </div><!-- col-xs-3 platforms section -->
         <div class="col-xs-2 results-toolbar">
-          <!-- put ng-class with expand + compress-->
           <button class="btn btn-default" ng-click="showDetails()" ng-show="showDetailsButton" style="width: 100%;"><i ng-class="{'fa fa-compress': !hideDetails, 'fa fa-expand': hideDetails}"></i> {{showDetailsButtonText}}</button>
         </div>
         <div class="col-xs-2">
@@ -44,7 +43,7 @@
             </span>
           </p>
         </div>
-        <div class="col-md-2">
+        <div class="col-xs-2">
           <p class="input-group">
             <input type="text" class="form-control" show-button-bar="false" datepicker-popup="{{format}}" ng-model="endDate" is-open="endDateOpened" min-date="endDateMin" max-date="maxDate" date-disabled="disabled(date, mode)" ng-required="true" close-text="Close" />
             <span class="input-group-btn">
@@ -52,7 +51,7 @@
             </span>
           </p>
         </div>
-        <div class="col-md-2">
+        <div class="col-xs-1">
           <button type="button" class="btn btn-success call-to-action" ng-click="updateKPIs()">Update</button>
         </div>
       </div><!-- row -->
