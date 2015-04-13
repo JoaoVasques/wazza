@@ -8,33 +8,37 @@
       <table class="table table-bordered">
         <thead>
           <tr>
-            <th>Type</th>
+            <th>Platforms</th>
             <th>Payment Systems</th>
             <th>{{context.model.name}}</th>
             <th>Previous result</th>
             <th>Compared to Previous</th>
           </tr>
         </thead>
-        <tbody>
-          <tr ng-repeat="platform in context.model.platforms">
-            <th scope="row" rowspan="2" class="text-center" style="vertical-align: middle;">{{platform.platform}}</th>
+        <tbody ng-repeat="platform in context.model.platforms">
+          <tr><th scope="row" rowspan="4" class="text-center" style="vertical-align: middle;">{{platform.platform}}</th>
             <!-- Payment Systems Info-->
-            <td>PayPal</td>
-            <td class="kpiValue" style="font-weight: bold;">{{platform.value|wzCurrencyFilter:context.model.name}}</td>
-            <td class="kpiValue" style="font-weight: bold;">{{platform.previous|wzCurrencyFilter:context.model.name}}</td>
-            <td ng-class="{'kpi-delta-positive': platform.delta > 0, 'kpi-delta-negative': platform.delta < 0, 'kpi-delta': platform.delta == 0}">{{platform.delta}} %
-              <i ng-class="{'fa fa-arrow-up': platform.delta > 0, 'fa fa-arrow-down': platform.delta < 0, 'fa fa-minus': platform.delta == 0}"></i>
-            </td>
+            <tr ng-repeat="paymentSystem in platform.paymentSystems">
+              <td>{{paymentSystem.system|wzPaymentSystemFilter}}</td>
+              <td class="kpiValue" style="font-weight: bold;">{{paymentSystem.value|wzCurrencyFilter:context.model.name}}</td>
+              <td class="kpiValue" style="font-weight: bold;">{{paymentSystem.previous|wzCurrencyFilter:context.model.name}}</td>
+              <td ng-class="{'kpi-delta-positive': paymentSystem.delta > 0, 'kpi-delta-negative': paymentSystem.delta < 0, 'kpi-delta': paymentSystem.delta == 0}">{{paymentSystem.delta}} %
+                <i ng-class="{'fa fa-arrow-up': paymentSystem.delta > 0, 'fa fa-arrow-down': paymentSystem.delta < 0, 'fa fa-minus': paymentSystem.delta == 0}"></i>
+              </td>
+            </tr>
+
             <!-- Platform Total results-->
             <tr scope="row">
               <td>Total</td>
-              <td class="kpiValue" style="font-weight: bold;">0</td><!-- <td class="kpiValue" style="font-weight: bold;">{{platform.value|wzCurrencyFilter:context.model.name}}</td> -->
-              <td class="kpiValue" style="font-weight: bold;">0<!-- {{platform.previous|wzCurrencyFilter:context.model.name}} --></td>
-              <td ng-class="{'kpi-delta-positive': platform.delta > 0, 'kpi-delta-negative': platform.delta < 0, 'kpi-delta': platform.delta == 0}">0 %<!-- {{platform.delta}} % -->
+              <td class="kpiValue" style="font-weight: bold;">{{platform.value|wzCurrencyFilter:context.model.name}}</td>
+              <td class="kpiValue" style="font-weight: bold;">{{platform.previous|wzCurrencyFilter:context.model.name}}</td>
+              <td ng-class="{'kpi-delta-positive': platform.delta > 0, 'kpi-delta-negative': platform.delta < 0, 'kpi-delta': platform.delta == 0}">{{platform.delta}} %
                 <i ng-class="{'fa fa-arrow-up': platform.delta > 0, 'fa fa-arrow-down': platform.delta < 0, 'fa fa-minus': platform.delta == 0}"></i>
               </td>
             </tr>
           </tr>
+        </tbody>
+        <tbody>
           <tr>
             <th scope="row" colspan="2" class="text-center">Total</th>
             <td class="kpiValue" style="font-weight: bold;">{{context.model.value|wzCurrencyFilter:context.model.name}}</td>

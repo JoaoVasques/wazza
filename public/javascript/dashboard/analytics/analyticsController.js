@@ -82,7 +82,8 @@ dashboard
         DateModel.formatDate(context.beginDate),
         DateModel.formatDate(context.endDate),
         KpiId,
-        ApplicationStateService.selectedPlatforms
+        ApplicationStateService.selectedPlatforms,
+        ApplicationStateService.currentApplication.paymentSystems
       ).then(function(results) {
         totalValueHandler(context, results);
       },function(err) {console.log(err);}

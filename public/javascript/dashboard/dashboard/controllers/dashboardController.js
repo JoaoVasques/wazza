@@ -88,31 +88,31 @@ dashboard.controller('DashboardController', [
           var end = DateModel.formatDate(DateModel.endDate);
 
           
-          GetKPIService.getTotalKpiData(companyName, app, begin, end, "revenue", $scope.platforms)
+          GetKPIService.getTotalKpiData(companyName, app, begin, end, "revenue", $scope.platforms, ApplicationStateService.currentApplication.paymentSystems)
             .then(function(res) {$scope.totalRevenue.updateKpiValue(res.data);});
 
-          GetKPIService.getTotalKpiData(companyName, app, begin, end, "arpu", $scope.platforms)
+          GetKPIService.getTotalKpiData(companyName, app, begin, end, "arpu", $scope.platforms, ApplicationStateService.currentApplication.paymentSystems)
             .then(function(res) {$scope.arpu.updateKpiValue(res.data);});
 
-          GetKPIService.getTotalKpiData(companyName, app, begin, end, "avgRevenueSession", $scope.platforms)
+          GetKPIService.getTotalKpiData(companyName, app, begin, end, "avgRevenueSession", $scope.platforms, ApplicationStateService.currentApplication.paymentSystems)
             .then(function(res) {$scope.avgRevSession.updateKpiValue(res.data);});
 
-          GetKPIService.getTotalKpiData(companyName, app, begin, end, "ltv", $scope.platforms)
+          GetKPIService.getTotalKpiData(companyName, app, begin, end, "ltv", $scope.platforms, ApplicationStateService.currentApplication.paymentSystems)
             .then(function(res) {$scope.ltv.updateKpiValue(res.data);});
 
-          GetKPIService.getTotalKpiData(companyName, app, begin, end, "payingUsers", $scope.platforms)
+          GetKPIService.getTotalKpiData(companyName, app, begin, end, "payingUsers", $scope.platforms, ApplicationStateService.currentApplication.paymentSystems)
             .then(function(res) {$scope.payingUsers.updateKpiValue(res.data);});
             
-          GetKPIService.getTotalKpiData(companyName, app, begin, end, "avgPurchasesUser", $scope.platforms)
+          GetKPIService.getTotalKpiData(companyName, app, begin, end, "avgPurchasesUser", $scope.platforms, ApplicationStateService.currentApplication.paymentSystems)
             .then(function(res) {$scope.avgPurchasesUser.updateKpiValue(res.data);});
 
-          GetKPIService.getTotalKpiData(companyName, app, begin, end, "purchasesPerSession", $scope.platforms)
+          GetKPIService.getTotalKpiData(companyName, app, begin, end, "purchasesPerSession", $scope.platforms, ApplicationStateService.currentApplication.paymentSystems)
             .then(function(res) {$scope.purchasesPerSession.updateKpiValue(res.data);});
 
-          GetKPIService.getTotalKpiData(companyName, app, begin, end, "sessionsBetweenPurchases", $scope.platforms)
+          GetKPIService.getTotalKpiData(companyName, app, begin, end, "sessionsBetweenPurchases", $scope.platforms, ApplicationStateService.currentApplication.paymentSystems)
             .then(function(res) {$scope.numberSessionsBetweenPurchases.updateKpiValue(res.data);});
             
-          GetKPIService.getTotalKpiData(companyName, app, begin, end, "sessionsFirstPurchase", $scope.platforms)
+          GetKPIService.getTotalKpiData(companyName, app, begin, end, "sessionsFirstPurchase", $scope.platforms, ApplicationStateService.currentApplication.paymentSystems)
             .then(function(res) {$scope.numberSessionsFirstPurchase.updateKpiValue(res.data);});
         };
         
