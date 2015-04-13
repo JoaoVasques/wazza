@@ -11,12 +11,13 @@ dashboardServices.factory('GetKPIService', ['$http', '$q',
         return url;
       };
 
-      this.getTotalKpiData = function(companyName, applicationName, start, end, kpiName, platforms) {
+      this.getTotalKpiData = function(companyName, applicationName, start, end, kpiName, platforms, paymentSystems) {
         var request = $http({
           url: buildUrl(companyName, applicationName, kpiName, "total", start, end),
           method: 'GET',
           headers: {
-            "X-Platforms": platforms
+            "X-Platforms": platforms,
+            "X-PaymentSystems": paymentSystems
           }
         });
 

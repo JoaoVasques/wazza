@@ -11,8 +11,9 @@ wazzaCharts.factory('LineChartModel', function(){
       pointHighlightFill: '#fff',
       pointHighlightStroke: 'rgba(211, 84, 0, 0.8)'
     };
-      
-    var androidColor = {
+
+    /** ANDROID COLORS **/
+    var androidIAPColor = {
       fillColor: 'rgba(39, 174, 96, 0.2)',
       strokeColor: 'rgba(39, 174, 96,1.0)',
       pointColor: 'rgba(39, 174, 96,1.0)',
@@ -20,16 +21,48 @@ wazzaCharts.factory('LineChartModel', function(){
       pointHighlightFill: '#fff',
       pointHighlightStroke: 'rgba(39, 174, 96, 0.8)'
     };
-
-    var iOSColor = {
-      fillColor: 'rgba(41, 128, 185, 0.2)',
-      strokeColor: 'rgba(41, 128, 185,1.0)',
-      pointColor: 'rgba(41, 128, 185,1.0)',
+    
+    var androidPayPalColor = {
+      fillColor: 'rgba(24, 104, 57, 0.2)',
+      strokeColor: 'rgba(24, 104, 57, 1.0)',
+      pointColor: 'rgba(24, 104, 57, 1.0)',
       pointStrokeColor: '#fff',
       pointHighlightFill: '#fff',
-      pointHighlightStroke: 'rgba(41, 128, 185, 0.8)'
+      pointHighlightStroke: 'rgba(24, 104, 57, 0.8)'
     };
+
+    var androidColors = {
+      1: androidIAPColor,
+      2: androidPayPalColor
+    };
+
+    /** IOS COLORS **/
       
+    /** In-App Purchase Color **/
+    var iOSIAPColor = {
+      fillColor: 'rgba(79, 162, 216, 0.2)',
+      strokeColor: 'rgba(79, 162, 216, 1.0)',
+      pointColor: 'rgba(79, 162, 216, 1.0)',
+      pointStrokeColor: '#fff',
+      pointHighlightFill: '#fff',
+      pointHighlightStroke: 'rgba(79, 162, 216, 0.8)'
+    };
+
+    /** PayPal Color **/
+    var iOSPayPalColor = {
+      fillColor: 'rgba(10, 81, 127, 0.2)',
+      strokeColor: 'rgba(10, 81, 127, 1.0)',
+      pointColor: 'rgba(10, 81, 127, 1.0)',
+      pointStrokeColor: '#fff',
+      pointHighlightFill: '#fff',
+      pointHighlightStroke: 'rgba(10, 81, 127, 0.8)'
+    };
+
+    var iOSColors = {
+      1: iOSIAPColor,
+      2: iOSPayPalColor
+    };
+            
     this.name = name;
     this.labels = [];
     this.series = [];
@@ -40,26 +73,44 @@ wazzaCharts.factory('LineChartModel', function(){
     },
     this._colours = {
       "Total": totalColor,
-      "Android": androidColor,
-      "iOS": iOSColor
-    }
+      "Android": androidColors,
+      "iOS": iOSColors
+    };
+
+    this._paymentSystems = {
+        1: "In-App Purchases",
+        2: "PayPal"
+    };
   };
 
   LineChartModel.prototype = {
-    updateColours: function(colorID) {
-      if(!_.contains(this._colours, colorID)) {
-        this.colours.push(this._colours[colorID]);
+    updateColours: function(platform, paymentSystem) {
+      if(paymentSystem == null) {
+          // total color
+        if(!_.contains(this.colours, platform)) {
+          this.colours.push(this._colours[platform]);
+        }
+      } else {
+        // a platform's payment system
+        var key = "[" + platform + "] " + this._paymentSystems[paymentSystem];
+        if(!_.contains(this.colours, key)) {
+          this.colours.push(this._colours[platform][paymentSystem]);
+        }
       }
     },
     updateChartData: function(chartData, platforms) {
+      //console.log(chartData);
+      //console.log(platforms);
       var _this = this;
       _this.data = [];
       _this.series = [];
       _this.labels = [];
       _this.colours = [];
-        
+
       /** Create array of arrays **/
-      var nrSeries = chartData.data[0].platforms.length + 1;
+      var nrPaymentSystems = chartData.data[0].platforms[0].paymentSystems.length;
+      var nrPlatforms = chartData.data[0].platforms.length;
+      var nrSeries = (nrPlatforms * nrPaymentSystems) + 1;
       var resultsArray = [];
       for(var i = 0; i < nrSeries; i++) {
         resultsArray[i] = [];
@@ -76,24 +127,32 @@ wazzaCharts.factory('LineChartModel', function(){
               return p.platform == platform;
             });
             var index = -1;
-            switch(nrSeries) {
-              case 2: /** Only one platform **/
+            switch(nrPlatforms) {
+              case 1: /** Only one platform **/
                   index = 1;
                 break;
-              case 3:  /** Multiple platform **/
+              case 2:  /** Multiple platform **/
                   var androidIndex = 1;
-                  var iOSIndex = 2;
+                  var iOSIndex = androidIndex + nrPaymentSystems;
                   index = (platform == "Android") ? androidIndex : iOSIndex;              
                 break;
             }
-            resultsArray[index].push(Math.round(platformInfo.value * 100) / 100);
+            /** Payment Systems values **/
+            _.find(platformInfo.paymentSystems, function(systemsInfo) {
+                resultsArray[index+systemsInfo.system-1].push(Math.round(platformInfo.value * 100) / 100);
+                var key = "[" + dataKey + "] " + _this._paymentSystems[systemsInfo.system];
+                if(!_.contains(_this.series, key)) {
+                    _this.series.push(key);
+                }
+              _this.updateColours(platform, systemsInfo.system)
+            });
           };
           
           isTotal ? resultsArray[0].push(Math.round(data.value * 100) / 100) : getPlatformValue(dataKey);
-          if(!_.contains(_this.series, dataKey)) {
+          if(!_.contains(_this.series, dataKey) && isTotal) {
             _this.series.push(dataKey);
+            _this.updateColours(dataKey, null)
           }
-          _this.updateColours(dataKey);
         };
         updateEntry("Total", true);
         _.each(platforms, function(p) {

@@ -38,10 +38,10 @@ application.controller('TweakBarController',[
 
     $scope.showDetailsButton = true;
     $scope.hideDetails = true;
-    $scope.showDetailsButtonText = ($scope.hideDetails) ? "Show Detailed View" : "Hide Detailed View";
+    $scope.showDetailsButtonText = ($scope.hideDetails) ? "Show Details" : "Hide Details";
     $scope.showDetails = function(){
       $scope.hideDetails = ! $scope.hideDetails;
-      $scope.showDetailsButtonText = ($scope.hideDetails) ? "Show Detailed View" : "Hide Detailed View";
+      $scope.showDetailsButtonText = ($scope.hideDetails) ? "Show Details" : "Hide Details";
       $rootScope.$broadcast(DashboardShowPlatformDetails, {value: $scope.hideDetails});
     };
 
