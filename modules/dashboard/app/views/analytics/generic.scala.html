@@ -16,7 +16,8 @@
           </tr>
         </thead>
         <tbody ng-repeat="platform in context.model.platforms">
-          <tr><th scope="row" rowspan="4" class="text-center" style="vertical-align: middle;">{{platform.platform}}</th>
+          <tr>
+            <th scope="row" rowspan="4" class="text-center" style="vertical-align: middle;">{{platform.platform}}</th>
             <!-- Payment Systems Info-->
             <tr ng-repeat="paymentSystem in platform.paymentSystems">
               <td>{{paymentSystem.system|wzPaymentSystemFilter}}</td>
@@ -28,7 +29,7 @@
             </tr>
 
             <!-- Platform Total results-->
-            <tr scope="row">
+            <tr scope="row" ng-show="{{platform.paymentSystems.length > 1}}">
               <td>Total</td>
               <td class="kpiValue" style="font-weight: bold;">{{platform.value|wzCurrencyFilter:context.model.name}}</td>
               <td class="kpiValue" style="font-weight: bold;">{{platform.previous|wzCurrencyFilter:context.model.name}}</td>
@@ -38,7 +39,8 @@
             </tr>
           </tr>
         </tbody>
-        <tbody>
+        <!-- Only show accum results if there's more than one platform -->
+        <tbody ng-show="{{context.model.platforms.length > 1}}">
           <tr>
             <th scope="row" colspan="2" class="text-center">Total</th>
             <td class="kpiValue" style="font-weight: bold;">{{context.model.value|wzCurrencyFilter:context.model.name}}</td>
