@@ -86,12 +86,22 @@ class AnalyticsServiceImpl extends AnalyticsService {
           "day" -> currentDay.toDate.getTime,
           "value" -> (res \ "value").as[Double],
           "platforms" -> (platforms map {p => {
-            val platformInfo = getPlatform(res, p)
-            Json.obj(
-              "platform" -> ((platformInfo \ "platform").as[String]),
-              "value" -> ((platformInfo \ "value").as[Double]),
-              "paymentSystems" -> ((platformInfo \ "paymentSystems").as[JsArray])
-            )
+            getPlatform(res, p) match {
+              case Some(platformInfo) => {
+                Json.obj(
+                  "platform" -> ((platformInfo \ "platform").as[String]),
+                  "value" -> ((platformInfo \ "value").as[Double]),
+                  "paymentSystems" -> ((platformInfo \ "paymentSystems").as[JsArray])
+                )
+              }
+              case None => {
+                Json.obj(
+                  "platform" -> p,
+                  "value" -> 0.0,
+                  "paymentSystems" -> (paymentSystems map {s => Json.obj("system" -> s, "value" -> 0.0)})
+                )
+              }
+            }
           }})
         )
       }
@@ -102,47 +112,14 @@ class AnalyticsServiceImpl extends AnalyticsService {
     }
   }
 
-  private def calculateNumberPayingCustomers(
-    companyName: String,
-    applicationName: String,
-    fields: Tuple2[String, String],
-    s: Date,
-    e: Date,
-    platform: Option[String] = None
-  ): Future[Float] = {
-    val collection = Metrics.payingUsersCollection(companyName, applicationName)
-    val request = new GetDocumentsWithinTimeRange(new Stack, collection, fields, s, e, true)
-    val payingUsersFuture = (databaseProxy ? request).mapTo[PRJsArrayResponse]
-
-    platform match {
-      case Some(platform) => {
-        null
-      }
-      case None => {
-        payingUsersFuture map {payingUsers =>
-          if(payingUsers.res.value.isEmpty) {
-            0
-          } else {
-            var users = List[String]()
-            for(el <- payingUsers.res.value) {
-              val userId = (el \ "userId").as[String]
-              users = (userId :: users).distinct
-            }
-            users.size
-          }
-        }
-      }
-    }
-  }
-
   // Gets list of platforms from JSON retrived from database
-  private def getPlatform(json: JsValue, platform: String): JsValue = {
-    (json \ "platforms").as[JsArray].value.find(e => (e \ "platform").as[String] == platform).get
+  private def getPlatform(json: JsValue, platform: String): Option[JsValue] = {
+    (json \ "platforms").as[JsArray].value.find(e => (e \ "platform").as[String] == platform)
   }
 
   def getPaymentSystemResult(jsonArray: JsArray, system: Int): Double = {
     jsonArray.value.toList.find{s =>
-      (s \ "system").as[Int] == system.toString
+      (s \ "system").as[Int] == system
     } match {
       case Some(data) => {
         if(data.as[JsObject].keys.contains("res")) {
@@ -167,15 +144,20 @@ class AnalyticsServiceImpl extends AnalyticsService {
     data.foldLeft(emptyResult)((res, current) => {
       val updateResult = (res \ "value").as[Double] + (current \ "result").as[Double]
       val platformResults = platforms map {platform =>
-        val resPlatform = getPlatform(res, platform)
-        val currentPlatform = getPlatform(current, platform)
-        val updatedValue = (resPlatform \ "value").as[Double] + (currentPlatform \ "res").as[Double]
-        val paymentSystemsResults = paymentSystems map {system =>
-          val current = getPaymentSystemResult((currentPlatform \ "paymentSystems").as[JsArray], system)
-          val res = getPaymentSystemResult((resPlatform \ "paymentSystems").as[JsArray], system)
-          Json.obj("system" -> system, "value" -> (current + res))
+        val resPlatform = getPlatform(res, platform).get
+        val currentPlatformOpt = getPlatform(current, platform)
+        currentPlatformOpt match {
+          case Some(currentPlatform) => {
+            val updatedValue = (resPlatform \ "value").as[Double] + (currentPlatform \ "res").as[Double]
+            val paymentSystemsResults = paymentSystems map {system =>
+              val current = getPaymentSystemResult((currentPlatform \ "paymentSystems").as[JsArray], system)
+              val res = getPaymentSystemResult((resPlatform \ "paymentSystems").as[JsArray], system)
+              Json.obj("system" -> system, "value" -> (current + res))
+            }
+            Json.obj("platform" -> platform, "value" -> updatedValue, "paymentSystems" -> paymentSystemsResults)
+          }
+          case _ => resPlatform
         }
-        Json.obj("platform" -> platform, "value" -> updatedValue, "paymentSystems" -> paymentSystemsResults)
       }
       Json.obj("value" -> updateResult, "platforms" -> platformResults)
     })
@@ -204,7 +186,7 @@ class AnalyticsServiceImpl extends AnalyticsService {
         Json.obj(
           "platform" -> ((p \ "platform").as[String]),
           "value" -> averagenizer((p \ "value").as[Double]),
-          "paymentSystem" -> (paymentSystems map {system =>
+          "paymentSystems" -> (paymentSystems map {system =>
             Json.obj(
               "system" -> system,
               "value" -> averagenizer(averagenizerPaymentSystems((p \ "paymentSystems").as[JsArray], system))
@@ -274,6 +256,10 @@ class AnalyticsServiceImpl extends AnalyticsService {
       if(days > 0) v / days else v
     }
 
+    def averagenizerPaymentSystems(jsonArray: JsArray, system: Int): Double = {
+      (jsonArray.value.toList.find(s => (s \ "system").as[Int] == system).get \ "value").as[Double]
+    }
+
     futureAvgRevenueSession map {r =>
       val res = getDetailedResult(r.res.value, platforms, paymentSystems)
       Json.obj(
@@ -281,7 +267,13 @@ class AnalyticsServiceImpl extends AnalyticsService {
         "platforms" -> ((res \ "platforms").as[JsArray].value map {p =>
           Json.obj(
             "platform" -> ((p \ "platform").as[String]),
-            "value" -> averagenizer((p \ "value").as[Double])
+            "value" -> averagenizer((p \ "value").as[Double]),
+            "paymentSystems" -> (paymentSystems map {system =>
+              Json.obj(
+                "system" -> system,
+                "value" -> averagenizer(averagenizerPaymentSystems((p \ "paymentSystems").as[JsArray], system))
+              )
+            })
           )
         })
       )
@@ -407,14 +399,26 @@ class AnalyticsServiceImpl extends AnalyticsService {
     val futureRes = (databaseProxy ? request).mapTo[PRJsArrayResponse]
 
     futureRes map {result =>
-      val emptyRes = (0.0, platforms map{(_, 0.0)})
+      val emptyRes = (0.0, platforms map{(_, 0.0, paymentSystems map {(_, 0.0)})})
       val res = result.res.value.foldLeft(emptyRes)((acc, current) => {
         val sessions = acc._1 + (current \ "result").as[Double]
         val pInfo = (current \ "platforms").as[JsArray].value.toList
         val platformData = acc._2 map {p =>
           pInfo.find(pp => (pp \ "platform").as[String] == p._1) match {
-            case Some(info) => (p._1, p._2 + (info \ "result").as[Double])
-            case None => (p._1, p._2)
+            case Some(info) => {
+              val systemsData = (info \ "paymentSystems").as[JsArray].value.toList
+              val paymentSystemsResults = paymentSystems map {s =>
+                val current = systemsData.find(e => (e \ "system").as[Int] == s)
+                  .map(e => (e \ "result").as[Double])
+                  .getOrElse(0.0)
+                val accum = p._3.find(_._1 == s)
+                  .map(_._2)
+                  .getOrElse(0.0)
+                (s, current + accum)
+              }
+              (p._1, p._2 + (info \ "result").as[Double], paymentSystemsResults)
+            }
+            case None => (p._1, p._2, p._3)
           }
         }
         (sessions, platformData)
@@ -430,7 +434,10 @@ class AnalyticsServiceImpl extends AnalyticsService {
         "platforms" -> (res._2 map {p =>
           Json.obj(
             "platform" -> p._1,
-            "value" -> averagenizer(p._2)
+            "value" -> averagenizer(p._2),
+            "paymentSystems" -> (p._3 map {s =>
+              Json.obj("system" -> s._1, "value" -> averagenizer(s._2))
+            })
           )
         })
       )
@@ -459,42 +466,48 @@ class AnalyticsServiceImpl extends AnalyticsService {
     val fields = ("lowerDate", "upperDate")
     val collection = Metrics.sessionsBetweenPurchasesCollection(companyName, applicationName)
     val request = new GetDocumentsWithinTimeRange(new Stack, collection, fields, start, end, true)
-    val future = (databaseProxy ? request).mapTo[PRJsArrayResponse]
-    future map {time =>
-      /**
-        FORMAT: (sessions, users List(platform, result))
-      **/
-      val emptyResult = (0.0, 0.0, platforms map{ (_, 0.0)})
-      val result = time.res.value.foldLeft(emptyResult){(acc, current) => {
-        val currentElement = current
-        val sessions = (current \ "totalSessions").as[Double] + acc._1
-        val users = (current \ "numberUsers").as[Double] + acc._2
-        val pData = (current \ "platforms").as[JsArray].value.toList
-        val platformData = acc._3 map {platformElement =>
-          val platform = platformElement._1
-          pData.find(p => (p \ "platform").as[String] == platform) match {
+    val futureRes = (databaseProxy ? request).mapTo[PRJsArrayResponse]
+
+    futureRes map {result =>
+      val emptyRes = (0.0, platforms map{(_, 0.0, paymentSystems map {(_, 0.0)})})
+      val res = result.res.value.foldLeft(emptyRes)((acc, current) => {
+        val sessions = acc._1 + (current \ "result").as[Double]
+        val pInfo = (current \ "platforms").as[JsArray].value.toList
+        val platformData = acc._2 map {p =>
+          pInfo.find(pp => (pp \ "platform").as[String] == p._1) match {
             case Some(info) => {
-              val res = (info \ "res").as[Double] + platformElement._2
-              (platform, res)
+              val systemsData = (info \ "paymentSystems").as[JsArray].value.toList
+              val paymentSystemsResults = paymentSystems map {s =>
+                val current = systemsData.find(e => (e \ "system").as[Int] == s)
+                  .map(e => (e \ "res").as[Double])
+                  .getOrElse(0.0)
+                val accum = p._3.find(_._1 == s)
+                  .map(_._2)
+                  .getOrElse(0.0)
+                (s, current + accum)
+              }
+              (p._1, p._2 + (info \ "res").as[Double], paymentSystemsResults)
             }
-            case None => {
-              (platform, platformElement._2)
-            }
+            case None => (p._1, p._2, p._3)
           }
         }
-        (sessions, users, platformData)
-      }}
+        (sessions, platformData)
+      })
+
       def averagenizer(v: Double): Double = {
         val days = DateUtils.getNumberDaysBetweenDates(start, end)
         if(days > 0) v / days else v
       }
-      val finalTime = averagenizer(if(result._2 > 0) result._1 / result._2 else 0.0)
+
       Json.obj(
-        "value" -> finalTime,
-        "platforms" -> (result._3 map {p =>
+        "value" -> averagenizer(res._1),
+        "platforms" -> (res._2 map {p =>
           Json.obj(
             "platform" -> p._1,
-            "value" -> averagenizer(p._2)
+            "value" -> averagenizer(p._2),
+            "paymentSystems" -> (p._3 map {s =>
+              Json.obj("system" -> s._1, "value" -> averagenizer(s._2))
+            })
           )
         })
       )
@@ -522,7 +535,15 @@ class AnalyticsServiceImpl extends AnalyticsService {
   ): Future[JsValue] = {
     val collection = Metrics.payingUsersCollection(companyName, applicationName)
     val request = new GetDocumentsWithinTimeRange(new Stack, collection, ("lowerDate", "upperDate"), start, end, true)
-    val empty = Json.obj("value" -> 0, "platforms" -> (platforms map {p => Json.obj("platform" -> p, "value" -> 0)}))
+    val empty = Json.obj(
+      "value" -> 0,
+      "platforms" -> (platforms map {p =>
+        Json.obj("platform" -> p,
+          "value" -> 0,
+          "paymentSystems" -> (paymentSystems map {s => Json.obj("system" -> s, "value" -> 0)})
+        )
+      })
+    )
     (databaseProxy ? request).mapTo[PRJsArrayResponse] map {r =>
       if(r.res.value.isEmpty) {
         empty
@@ -531,7 +552,29 @@ class AnalyticsServiceImpl extends AnalyticsService {
           val totalUpdated = (res \ "value").as[Int] + 1
           val updatedPlatforms = platforms map {platform =>
             val pInfo = (res \ "platforms").as[JsArray].value.find(p => (p \ "platform").as[String] == platform).get
-            Json.obj("platform" -> platform, "value" -> ((pInfo \ "value").as[Int] + 1))
+            val optPlatform =  (current \ "purchasesPerPlatform").as[JsArray].value.find(p =>
+              (p \ "platform").as[String] == platform
+            )
+            val newValue = optPlatform match {
+              case Some(p) => (pInfo \ "value").as[Int] + 1
+              case None => (pInfo \ "value").as[Int]
+            }
+            val paymentSystemInfo = paymentSystems map {system =>
+              // To sum one: check if platform exists, then check if payment system exists
+              optPlatform match {
+                case Some(p) => {
+                  (p \ "purchases").as[JsArray].value.toList.find(s => (s \ "paymentSystem").as[Int] == system) match {
+                    case Some(paymentSystemInfo) => {
+                      val value = (pInfo \ "paymentSystems").as[JsArray].value.toList.find(s => (s \ "system").as[Int] == system).get
+                      Json.obj("system" -> system, "value" -> ( (value \ "value").as[Int] + 1))
+                    }
+                    case None => (pInfo \ "paymentSystems").as[JsArray].value.toList.find(s => (s \ "system").as[Int] == system).get
+                  }
+                }
+                case None => (pInfo \ "paymentSystems").as[JsArray].value.toList.find(s => (s \ "system").as[Int] == system).get
+              }
+            }
+            Json.obj("platform" -> platform, "value" -> newValue, "paymentSystems" -> paymentSystemInfo)
           }
           Json.obj("value" -> totalUpdated, "platforms" -> updatedPlatforms)
         }}

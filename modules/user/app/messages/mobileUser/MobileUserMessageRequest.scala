@@ -47,6 +47,7 @@ case class MUAddPurchaseId(
   purchaseId: String,
   purchaseDate: Date,
   platform: String,
+  paymentSystem: Int,
   hash: String = null
 ) extends MobileUserMessageRequest
 

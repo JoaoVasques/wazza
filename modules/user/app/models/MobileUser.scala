@@ -8,7 +8,7 @@ import java.util.Date
 import models.common._
 
 case class SessionResume(id: String, startTime: Date, platform: String)
-case class PurchaseResume(id: String, time: Date, platform: String)
+case class PurchaseResume(id: String, time: Date, platform: String, paymentSystem: Int)
 case class MobileUser(
   userId: String,
   sessions: List[SessionResume],
@@ -62,7 +62,8 @@ object MobileUser {
     Json.obj(
       "id" -> purchaseResume.id,
       "time" -> purchaseResume.time.getTime,
-      "platform" -> purchaseResume.platform
+      "platform" -> purchaseResume.platform,
+      "paymentSystem" -> purchaseResume.paymentSystem
     )
   }
 
@@ -70,7 +71,8 @@ object MobileUser {
     new PurchaseResume(
       (json \ "id").as[String],
       new Date((json \ "time").as[Long]),
-      (json \ "platform").as[String]
+      (json \ "platform").as[String],
+      (json \ "paymentSystem").as[Int]
     )
   }
 }

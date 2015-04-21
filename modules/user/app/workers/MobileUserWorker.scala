@@ -86,7 +86,7 @@ class MobileUserWorker(
   }
 
   private def handleAddPurchaseIdRequest(req: MUAddPurchaseId) = {
-    val purchaseResume = new PurchaseResume(req.purchaseId, req.purchaseDate, req.platform)
+    val purchaseResume = new PurchaseResume(req.purchaseId, req.purchaseDate, req.platform, req.paymentSystem)
     val collection = MobileUser.getCollection(req.companyName, req.applicationName)
     val request = new AddElementToArray[JsValue](
       new Stack, collection, MobileUser.KeyId,
