@@ -99,8 +99,6 @@ wazzaCharts.factory('LineChartModel', function(){
       }
     },
     updateChartData: function(chartData, platforms) {
-      //console.log(chartData);
-      //console.log(platforms);
       var _this = this;
       _this.data = [];
       _this.series = [];
@@ -139,7 +137,7 @@ wazzaCharts.factory('LineChartModel', function(){
             }
             /** Payment Systems values **/
             _.find(platformInfo.paymentSystems, function(systemsInfo) {
-                resultsArray[index+systemsInfo.system-1].push(Math.round(platformInfo.value * 100) / 100);
+                resultsArray[index+systemsInfo.system-1].push(Math.round(systemsInfo.value * 100) / 100);
                 var key = "[" + dataKey + "] " + _this._paymentSystems[systemsInfo.system];
                 if(!_.contains(_this.series, key)) {
                     _this.series.push(key);

@@ -21,8 +21,8 @@
             <!-- Payment Systems Info-->
             <tr ng-repeat="paymentSystem in platform.paymentSystems">
               <td>{{paymentSystem.system|wzPaymentSystemFilter}}</td>
-              <td class="kpiValue" style="font-weight: bold;">{{paymentSystem.value|wzCurrencyFilter:context.model.name}}</td>
-              <td class="kpiValue" style="font-weight: bold;">{{paymentSystem.previous|wzCurrencyFilter:context.model.name}}</td>
+              <td class="kpiValue" style="font-weight: bold;">{{paymentSystem.value|number:3|wzCurrencyFilter:context.model.name}}</td>
+              <td class="kpiValue" style="font-weight: bold;">{{paymentSystem.previous|number:3|wzCurrencyFilter:context.model.name}}</td>
               <td ng-class="{'kpi-delta-positive': paymentSystem.delta > 0, 'kpi-delta-negative': paymentSystem.delta < 0, 'kpi-delta': paymentSystem.delta == 0}">{{paymentSystem.delta}} %
                 <i ng-class="{'fa fa-arrow-up': paymentSystem.delta > 0, 'fa fa-arrow-down': paymentSystem.delta < 0, 'fa fa-minus': paymentSystem.delta == 0}"></i>
               </td>
@@ -31,8 +31,8 @@
             <!-- Platform Total results-->
             <tr scope="row" ng-show="{{platform.paymentSystems.length > 1}}">
               <td>Total</td>
-              <td class="kpiValue" style="font-weight: bold;">{{platform.value|wzCurrencyFilter:context.model.name}}</td>
-              <td class="kpiValue" style="font-weight: bold;">{{platform.previous|wzCurrencyFilter:context.model.name}}</td>
+              <td class="kpiValue" style="font-weight: bold;">{{platform.value|number:3|wzCurrencyFilter:context.model.name}}</td>
+              <td class="kpiValue" style="font-weight: bold;">{{platform.previous|number:3|wzCurrencyFilter:context.model.name}}</td>
               <td ng-class="{'kpi-delta-positive': platform.delta > 0, 'kpi-delta-negative': platform.delta < 0, 'kpi-delta': platform.delta == 0}">{{platform.delta}} %
                 <i ng-class="{'fa fa-arrow-up': platform.delta > 0, 'fa fa-arrow-down': platform.delta < 0, 'fa fa-minus': platform.delta == 0}"></i>
               </td>
@@ -43,8 +43,8 @@
         <tbody ng-show="{{context.model.platforms.length > 1}}">
           <tr>
             <th scope="row" colspan="2" class="text-center">Total</th>
-            <td class="kpiValue" style="font-weight: bold;">{{context.model.value|wzCurrencyFilter:context.model.name}}</td>
-            <td class="kpiValue" style="font-weight: bold;">{{context.model.previous|wzCurrencyFilter:context.model.name}}</td>
+            <td class="kpiValue" style="font-weight: bold;">{{context.model.value|number:3|wzCurrencyFilter:context.model.name}}</td>
+            <td class="kpiValue" style="font-weight: bold;">{{context.model.previous|number:3|wzCurrencyFilter:context.model.name}}</td>
             <td ng-class="{'kpi-delta-positive': context.model.delta > 0, 'kpi-delta-negative': context.model.delta < 0, 'kpi-delta': context.model.delta == 0}">{{context.model.delta}} %
               <i ng-class="{'fa fa-arrow-up': context.model.delta > 0, 'fa fa-arrow-down': context.model.delta < 0, 'fa fa-minus': context.model.delta == 0}"></i>
             </td>
