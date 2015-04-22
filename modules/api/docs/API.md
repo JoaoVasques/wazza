@@ -1,7 +1,45 @@
 <h1>API Documentation<H1>
 
+This document contains the documentation of the API that is consumed by the mobile SDKs. 
 
-TODO: description bla bla bla
+<h2>Authentication functionalities</h2>
+
+This section describes the authentication functionalities of Wazza's mobile API.
+
+**Authentication**
+----
+  Performs token based authentication. 
+  Additionally, an optional header can be sent if the user exists or not. It is up to the sender to store that information, which can be done analysing the result of API call. The goal of this is to reduce the number of database requests for user existence. A boolean result is sent if a mobile user was created or not.
+
+* **URL**
+
+  `/api/auth/`
+
+* **Method:**
+
+  `POST`
+   
+*  **Headers**
+    
+    `SDK-TOKEN`
+
+    `X-UserExists` *optional*
+
+* **Success Response:**
+
+  * **Code:** 200 <br />
+    **Content:**
+  ```json
+    {
+      "result": "[boolean]"
+    }
+  ```
+
+* **Error Response:**
+
+  * **Code:** 404 NOT FOUND <br />
+    **Content:** `{}`
+
 
 <h2>Sessions</h2>
 
@@ -13,19 +51,11 @@ TODO: description bla bla bla
 
 * **URL**
 
-  /api/session/new/:companyName/:applicationName
+  /api/session/new/
 
 * **Method:**
 
   `POST`
-
-*  **URL Params**
-
-   **Required:**
-
-   `companyName=[string]`
-
-   `applicationName=[string]`
    
 *  **Headers**
     
@@ -114,7 +144,10 @@ Depending on the payment system, the json structure will change. However there's
     }
   ```
   
-  If the payment was made via PayPal, the following attributes are added to common structure:
+ + PayPal payment
+  
+ 
+    If the payment was made via PayPal, the following attributes are added to common structure:
   
     ```json
     {
@@ -129,7 +162,10 @@ Depending on the payment system, the json structure will change. However there's
     }
   ```
   
-  In-app Purchase payments have no extra attributes.
+  + In-app Purchase payment
+  
+
+    In-app Purchase payments have no extra attributes.
 
 * **Success Response:**
 
@@ -149,7 +185,7 @@ Depending on the payment system, the json structure will change. However there's
 
   **PayPal payment verification**
 ----
-  Sends a PayPal payment 
+  Sends a PayPal payment for verification.
 
 * **URL**
 
@@ -167,19 +203,9 @@ Depending on the payment system, the json structure will change. However there's
 
   ```json
     {
-      "paymentSystem": "[int]",
-      "id": "[string]",
-      "itemId": "[string]",
-      "userId": "[string]",
+      "responseID": "[string]",
       "price": "[double]",
-      "time": "[Date]",
-      "deviceInfo": {
-        "osName": "[string]",
-        "osVersion": "[string]",
-        "deviceModel": "[string]"
-      },
-      "sessionId": "[string]",
-      "success": "[boolean]"
+      "currencyCode": "[string]"
     }
   ```
 
