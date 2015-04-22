@@ -22,13 +22,9 @@
               <li>
                 <h5>Payment Systems</h5>
               </li>
-              <li>
-                <i class="fa fa-credit-card fa-2x"
-                   style="color: #95a5a6; margin-left: 2px;"></i>  
-              </li>
-              <li>
-                <i class="fa fa-cc-paypal fa-2x"
-                   style="color: #95a5a6; margin-left: 2px;"></i>  
+              <li ng-repeat="system in paymentSystems">
+                <i ng-class="{'fa fa-credit-card fa-2x': system == 1, 'fa fa-cc-paypal fa-2x': system == 2}"
+                   style="color: #34495E; margin-left: 2px;"></i>
               </li>
             </ul>
         </div><!-- col-xs-3 platforms section -->

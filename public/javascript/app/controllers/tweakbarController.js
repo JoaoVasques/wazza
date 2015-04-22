@@ -10,6 +10,7 @@ application.controller('TweakBarController',[
   'DashboardShowPlatformDetails',
   'DashboardUpdateValuesOnDateChange',
   'OverviewUpdateValuesOnDateChange',
+  'CurrentAppChanges',
   function (
     $scope,
     DateModel,
@@ -21,16 +22,21 @@ application.controller('TweakBarController',[
     DashboardViewChanges,
     DashboardShowPlatformDetails,
     DashboardUpdateValuesOnDateChange,
-    OverviewUpdateValuesOnDateChange
+    OverviewUpdateValuesOnDateChange,
+    CurrentAppChanges
     ) {
 
     var hideShowBar = [
       'analytics.newapp', 'analytics.settings',
       'analytics.overview', 'analytics.terms',
       'analytics.privacy'
-    ];
+    ];      
 
-    $scope.paymentSystems = ApplicationStateService.currentApplication.paymentSystems;
+    var handleAppChange = function() {
+      $scope.paymentSystems = ApplicationStateService.currentApplication.paymentSystems;
+    };
+
+    $rootScope.$on(CurrentAppChanges, handleAppChange);
 
     $rootScope.$on('$stateChangeSuccess', function(event, toState, toParams, fromState, fromParams) {
       $scope.showBar = _.find(hideShowBar, function(s) {return s == toState.name;}) == undefined ? true : false;

@@ -4,12 +4,14 @@ service.factory('ApplicationStateService', [
   'SelectedPlatformsChange',
   'CurrencyService',
   'CurrencyChanges',
+  'CurrentAppChanges',
 	function (
     $rootScope,
     localStorageService,
     SelectedPlatformsChange,
     CurrencyService,
-    CurrencyChanges
+    CurrencyChanges,
+    CurrentAppChanges
   ) {
       
     function AppInfo(name, platforms, paymentSystems) {
@@ -133,7 +135,12 @@ service.factory('ApplicationStateService', [
     this.changeCurrency = function(newCurrency) {
       this.currency = newCurrency;
       $rootScope.$broadcast(CurrencyChanges);
-    }
+    };
+
+    this.updateCurrentApplication = function(app) {
+      this.currentApplication = app;
+      $rootScope.$broadcast(CurrentAppChanges);
+    };
       
 		return this;
 	}
