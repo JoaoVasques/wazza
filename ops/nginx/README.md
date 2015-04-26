@@ -14,7 +14,7 @@ Download *nginx* and [naxsi](https://github.com/nbs-system/naxsi)
 Compile and install *nginx* with *naxsi* as a module
 
     cd nginx-1.8.0
-    ./configure --add-module=../naxsi-master/naxsi_src/
+    ./configure --add-module=../naxsi-master/naxsi_src/ --with-http_ssl_module
     make
     make install
 
