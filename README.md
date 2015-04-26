@@ -32,5 +32,10 @@ Inside the *ops* directory there is a folder called *deployment*. This folder co
     
     cd deployment
     python deploy.sh ${WAZZA_VERSION} # example: python deploy.py alpha
+
+
+To run on production mode run:
+
+    sudo nohup ./wazza/bin/wazza -Dconfig.file=/${PATH_TO_CONF}/application.conf -Dhttp.port=disabled -Dhttps.port=9443
     
 
