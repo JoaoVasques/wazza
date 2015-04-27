@@ -25,8 +25,18 @@ import scala.concurrent.duration._
 import notifications._
 import notifications.messages._
 import payments._
+import play.filters.headers.SecurityHeadersFilter
 
-object Global extends GlobalSettings {
+/** Security Headers Filter **/
+object CustomSecurityHeadersFilter extends Filter {
+  lazy val shf = SecurityHeadersFilter(play.api.Play.current.configuration)
+  def apply(nextFilter: (RequestHeader) => Future[Result])
+    (rh: RequestHeader): Future[Result] = {
+    shf(nextFilter)(rh)
+  }
+}
+
+object Global extends WithFilters(CustomSecurityHeadersFilter) with GlobalSettings {
 
   private var modulesProxies = List[ActorRef]()
 
