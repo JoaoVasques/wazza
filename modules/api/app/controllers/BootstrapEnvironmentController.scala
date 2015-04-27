@@ -32,6 +32,9 @@ import scala.collection.mutable.Stack
 import akka.actor._
 import persistence._
 import notifications._
+import models.common._
+import models.payments._
+import payments.{PaymentTypes}
 
 class BootstrapEnvironmentController extends Controller {
 
@@ -74,6 +77,8 @@ class BootstrapEnvironmentController extends Controller {
       ApplicationData.packageName,
       List(ApplicationData.appType),
       ApplicationData.credentials,
+      None,
+      List(PaymentTypes.InAppPurchases),
       ApplicationData.items,
       ApplicationData.virtualCurrencies
     )
@@ -114,26 +119,47 @@ class BootstrapEnvironmentController extends Controller {
         }.toList
     }
 
-    def willMakePurchases = if(Math.random() > 0.5) true else false
+    def randomLuck = if(Math.random() > 0.5) true else false
     val items = generateItems(NumberItems)
     dates map {currentDay =>
       (1 to NumberMobileUsers) map {userNumber =>
-        val makePurchases = willMakePurchases
+        val makePurchases = randomLuck
         if(makePurchases) {
           val itemsAux = items
           val item = Random.shuffle(itemsAux).head
           val platform = if(Math.random() > 0.5) platforms.head else platforms.last
-          val purchaseInfo = new PurchaseInfo(
-            s"purchase-$userNumber-${currentDay.toString}",
-            (s"${currentDay.toString}-$userNumber"),
-            userNumber.toString,
-            item._1,
-            item._2,
-            currentDay,
-            new DeviceInfo(platform, "name", "version", "model"),
-            None
-          )
-          val request = new PRSave(new Stack, companyName, applicationName, purchaseInfo)
+          val payment = if(randomLuck) {
+            //Create PayPal Payment
+            new  PayPalPayment(
+              s"purchase-$userNumber-${currentDay.toString}-paypal",
+              (s"${currentDay.toString}-$userNumber"),
+              userNumber.toString,
+              item._1,
+              item._2,
+              currentDay,
+              new DeviceInfo(platform, "name", "version", "model"),
+              None,
+              true,
+              PayPalPayment.Type,
+              1,
+              "EUR",
+              "payPalResponseId",
+              "responseType")
+          } else {
+            //Create IAP Payment
+            new InAppPurchasePayment(
+              s"purchase-$userNumber-${currentDay.toString}-IAP",
+              (s"${currentDay.toString}-$userNumber"),
+              userNumber.toString,
+              item._1,
+              item._2,
+              currentDay,
+              new DeviceInfo(platform, "name", "version", "model"),
+              None,
+              true
+            )
+          }
+          val request = new PRSave(new Stack, companyName, applicationName, payment)
           userProxy ! request
         }
       }
@@ -142,7 +168,6 @@ class BootstrapEnvironmentController extends Controller {
   
   def execute(companyName: String, applicationName: String) = Action.async {
     val platforms = List("iOS", "Android")
-    println("company: " + companyName + " | app: " + applicationName + " | platforms: " + platforms)
     val first = new LocalDate(new Date).withDayOfMonth(1)
     val days = DEFAULT_DAYS
     dates = List.range(0, days) map {index =>

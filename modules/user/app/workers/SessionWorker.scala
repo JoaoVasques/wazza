@@ -21,6 +21,7 @@ import models.user._
 import persistence.messages._
 import scala.collection.mutable.Stack
 import java.util.Date
+import models.common._
 
 class SessionWorker(
   databaseProxy: ActorRef,
@@ -45,8 +46,8 @@ class SessionWorker(
     databaseProxy ! request
   }
 
-  private def addMobileUser(userId: String, companyName: String, applicationName: String) = {
-    userProxy ! new MUCreate(false, companyName, applicationName, userId, new Stack)
+  private def addMobileUser(userId: String, companyName: String, applicationName: String, device: DeviceInfo) = {
+    userProxy ! new MUCreate(false, companyName, applicationName, userId, device, new Stack)
   }
 
   private def updateSessionInfo(
@@ -72,7 +73,7 @@ class SessionWorker(
             val req = or.originalRequest.asInstanceOf[SRSave]
             saveSessionAux(req)
             addSessionToHashCollection(req)
-            addMobileUser(req.session.userId, req.companyName, req.applicationName)
+            addMobileUser(req.session.userId, req.companyName, req.applicationName, req.session.deviceInfo )
             updateSessionInfo(
               req.session.userId, req.companyName, req.applicationName,
               req.session.id, req.session.startTime, req.session.deviceInfo.osType)

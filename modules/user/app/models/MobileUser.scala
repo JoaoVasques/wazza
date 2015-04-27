@@ -5,9 +5,10 @@ import play.api.libs.functional.syntax._
 import play.api.Play.current
 import play.api.libs.json._
 import java.util.Date
+import models.common._
 
 case class SessionResume(id: String, startTime: Date, platform: String)
-case class PurchaseResume(id: String, time: Date, platform: String)
+case class PurchaseResume(id: String, time: Date, platform: String, paymentSystem: Int)
 case class MobileUser(
   userId: String,
   sessions: List[SessionResume],
@@ -28,7 +29,7 @@ object MobileUser {
       "userId" -> mobileUser.userId,
       "sessions" -> mobileUser.sessions.map(readJsonSessionResume(_)),
       "purchases" -> mobileUser.purchases.map(readJsonPurchaseResume(_)),
-      "devices" -> List[DeviceInfo]() //TODO
+      "devices" -> mobileUser.devices.map(Json.toJson(_))
     )
   }
 
@@ -37,7 +38,7 @@ object MobileUser {
       (json \ "userId").as[String],
       (json \ "sessions").as[JsArray].value.toList.map(buildSessionResumeFromJson(_)),
       (json \ "purchases").as[JsArray].value.toList.map(buildPurchaseResumeFromJson(_)),
-      List() //TODO
+      (json \ "devices").as[JsArray].value.toList.map(_.validate[DeviceInfo].asOpt.get)
     )
   }
 
@@ -61,7 +62,8 @@ object MobileUser {
     Json.obj(
       "id" -> purchaseResume.id,
       "time" -> purchaseResume.time.getTime,
-      "platform" -> purchaseResume.platform
+      "platform" -> purchaseResume.platform,
+      "paymentSystem" -> purchaseResume.paymentSystem
     )
   }
 
@@ -69,7 +71,8 @@ object MobileUser {
     new PurchaseResume(
       (json \ "id").as[String],
       new Date((json \ "time").as[Long]),
-      (json \ "platform").as[String]
+      (json \ "platform").as[String],
+      (json \ "paymentSystem").as[Int]
     )
   }
 }

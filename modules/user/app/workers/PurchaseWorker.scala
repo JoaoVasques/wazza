@@ -26,6 +26,7 @@ import scala.collection.mutable.Map
 import models.user.{CompanyData}
 import scala.collection.mutable.Stack
 import java.util.Date
+import models.payments._
 
 class PurchaseWorker(
   databaseProxy: ActorRef,
@@ -34,14 +35,14 @@ class PurchaseWorker(
 
   def storePurchase(msg: PRSave) = {
     val collection = PurchaseInfo.getCollection(msg.companyName, msg.applicationName)
-    val request = new Insert(msg.sendersStack, collection, msg.info)
+    val request = new Insert(new Stack, collection, msg.info.toJson)
     databaseProxy ! request
   }
 
   def saveUserAsBuyer(msg: PRSave) = {
     val collection = Buyer.getCollection(msg.companyName, msg.applicationName)
     val model = Json.obj("userId" -> msg.info.userId)
-    val request = new Insert(msg.sendersStack, collection, model)
+    val request = new Insert(new Stack, collection, model)
     databaseProxy ! request
   }
 
@@ -51,7 +52,8 @@ class PurchaseWorker(
     purchaseId: String,
     userId: String,
     purchaseDate: Date,
-    platform: String
+    platform: String,
+    paymentSystem: Int
   ) = {
     val request = new MUAddPurchaseId(
       false,
@@ -61,7 +63,8 @@ class PurchaseWorker(
       new Stack,
       purchaseId,
       purchaseDate,
-      platform
+      platform,
+      paymentSystem
     )
 
     userProxy ! request
@@ -81,7 +84,8 @@ class PurchaseWorker(
               req.info.id,
               req.info.userId,
               req.info.time,
-              req.info.deviceInfo.osType
+              req.info.deviceInfo.osType,
+              req.info.paymentSystem
             )
           }
           case _ => {

@@ -7,6 +7,7 @@ import java.util.Date
 import play.api.libs.json.JsObject
 import play.api.libs.json.JsValue
 import models.user._
+import models.common._
 
 abstract class MobileUserMessageRequest extends WazzaMessage {
   val direct: Boolean 
@@ -20,6 +21,7 @@ case class MUCreate(
   companyName: String,
   applicationName: String,
   userId: String,
+  deviceInfo: DeviceInfo,
   var sendersStack: Stack[ActorRef],
   hash: String = null
 ) extends MobileUserMessageRequest
@@ -45,6 +47,7 @@ case class MUAddPurchaseId(
   purchaseId: String,
   purchaseDate: Date,
   platform: String,
+  paymentSystem: Int,
   hash: String = null
 ) extends MobileUserMessageRequest
 

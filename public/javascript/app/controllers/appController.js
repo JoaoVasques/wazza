@@ -53,6 +53,8 @@ application.controller('AppController', [
       _.each(app.platforms, function(platform){
         ApplicationStateService.addPlatforms(platform);
       });
+
+      ApplicationStateService.updateCurrentApplication(app);
       
       mixpanel.register({"application": app});
 

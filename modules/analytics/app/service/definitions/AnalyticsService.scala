@@ -13,7 +13,8 @@ trait AnalyticsService {
     applicationName: String,
     start: Date,
     end: Date,
-    platforms: List[String]
+    platforms: List[String],
+    paymentSystems: List[Int]
   ): Future[JsArray]
 
   def getTotalARPU(
@@ -21,7 +22,8 @@ trait AnalyticsService {
     applicationName: String,
     start: Date,
     end: Date,
-    platforms: List[String]
+    platforms: List[String],
+    paymentSystems: List[Int]
   ): Future[JsValue]
 
   def getAverageRevenuePerSession(
@@ -29,7 +31,8 @@ trait AnalyticsService {
     applicationName: String,
     start: Date,
     end: Date,
-    platforms: List[String]
+    platforms: List[String],
+    paymentSystems: List[Int]
   ): Future[JsValue]
 
   def getTotalAverageRevenuePerSession(
@@ -37,7 +40,8 @@ trait AnalyticsService {
     applicationName: String,
     start: Date,
     end: Date,
-    platforms: List[String]
+    platforms: List[String],
+    paymentSystems: List[Int]
   ): Future[JsValue]
 
   def getTotalRevenue(
@@ -45,7 +49,8 @@ trait AnalyticsService {
     applicationName: String,
     start: Date,
     end: Date,
-    platforms: List[String]
+    platforms: List[String],
+    paymentSystems: List[Int]
   ): Future[JsValue]
 
   def getTotalAveragePurchasesUser(
@@ -53,7 +58,8 @@ trait AnalyticsService {
     applicationName: String,
     start: Date,
     end: Date,
-    platforms: List[String]
+    platforms: List[String],
+    paymentSystems: List[Int]
   ): Future[JsValue]
 
   def getAveragePurchasesUser(
@@ -61,7 +67,8 @@ trait AnalyticsService {
     applicationName: String,
     start: Date,
     end: Date,
-    platforms: List[String]
+    platforms: List[String],
+    paymentSystems: List[Int]
   ): Future[JsArray]
 
   def getRevenue(
@@ -69,7 +76,8 @@ trait AnalyticsService {
     applicationName: String,
     start: Date,
     end: Date,
-    platforms: List[String]
+    platforms: List[String],
+    paymentSystems: List[Int]
   ): Future[JsArray]
 
   def getTotalLifeTimeValue(
@@ -77,7 +85,8 @@ trait AnalyticsService {
     applicationName: String,
     start: Date,
     end: Date,
-    platforms: List[String]
+    platforms: List[String],
+    paymentSystems: List[Int]
   ): Future[JsValue]
 
   def getLifeTimeValue(
@@ -85,7 +94,8 @@ trait AnalyticsService {
     applicationName: String,
     start: Date,
     end: Date,
-    platforms: List[String]
+    platforms: List[String],
+    paymentSystems: List[Int]
   ): Future[JsArray]
 
   def getTotalNumberSessionsFirstPurchase(
@@ -93,7 +103,8 @@ trait AnalyticsService {
     applicationName: String, 
     start: Date, 
     end: Date, 
-    platforms: List[String]
+    platforms: List[String],
+    paymentSystems: List[Int]
   ): Future[JsValue]
 
   def getNumberSessionsToFirstPurchase(
@@ -101,7 +112,8 @@ trait AnalyticsService {
     applicationName: String, 
     start: Date, 
     end: Date, 
-    platforms: List[String]
+    platforms: List[String],
+    paymentSystems: List[Int]
   ): Future[JsArray]
 
   def getTotalNumberSessionsBetweenPurchases(
@@ -109,7 +121,8 @@ trait AnalyticsService {
     applicationName: String, 
     start: Date, 
     end: Date, 
-    platforms: List[String]
+    platforms: List[String],
+    paymentSystems: List[Int]
   ): Future[JsValue]
 
   def getAverageTimeBetweenPurchases(
@@ -117,7 +130,8 @@ trait AnalyticsService {
     applicationName: String,
     start: Date,
     end: Date,
-    platforms: List[String]
+    platforms: List[String],
+    paymentSystems: List[Int]
   ): Future[JsArray]
 
   def getTotalNumberPayingCustomers(
@@ -125,7 +139,8 @@ trait AnalyticsService {
     applicationName: String,
     start: Date,
     end: Date,
-    platforms: List[String]
+    platforms: List[String],
+    paymentSystems: List[Int]
   ): Future[JsValue]
 
   def getNumberPayingCustomers(
@@ -133,7 +148,8 @@ trait AnalyticsService {
     applicationName: String,
     start: Date,
     end: Date,
-    platforms: List[String]
+    platforms: List[String],
+    paymentSystems: List[Int]
   ): Future[JsArray]
 
   def getTotalAveragePurchasePerSession(
@@ -141,7 +157,8 @@ trait AnalyticsService {
     applicationName: String,
     start: Date,
     end: Date,
-    platforms: List[String]
+    platforms: List[String],
+    paymentSystems: List[Int]
   ): Future[JsValue]
 
   def getAveragePurchasePerSession(
@@ -149,7 +166,8 @@ trait AnalyticsService {
     applicationName: String,
     start: Date,
     end: Date,
-    platforms: List[String]
+    platforms: List[String],
+    paymentSystems: List[Int]
   ): Future[JsArray]
 }
 

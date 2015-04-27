@@ -49,7 +49,7 @@ lazy val dashboard = Project("dashboard", file("modules/dashboard"))
 
 lazy val user = Project("user", file("modules/user"))
   .enablePlugins(play.PlayScala)
-  .dependsOn(security, persistence, common)
+  .dependsOn(security, persistence, common, payments)
   .settings(scalacOptions ++= mySettings, version := appVersion, libraryDependencies ++= dependencies)
 
 lazy val application = Project("application", file("modules/application"))
@@ -68,7 +68,7 @@ lazy val aws = Project("aws", file("modules/aws"))
 
 lazy val api = Project("api", file("modules/api"))
   .enablePlugins(play.PlayScala)
-  .dependsOn(security, aws, user, application)
+  .dependsOn(security, aws, user, application, payments, common)
   .settings(scalacOptions ++= mySettings, version := appVersion, libraryDependencies ++= dependencies)
 
 lazy val persistence = Project("persistence", file("modules/persistence"))
@@ -78,10 +78,15 @@ lazy val persistence = Project("persistence", file("modules/persistence"))
 
 lazy val analytics = Project("analytics",file("modules/analytics"))
   .enablePlugins(play.PlayScala)
-  .dependsOn(user, application, persistence, security)
+  .dependsOn(user, application, persistence, security, payments)
   .settings(scalacOptions ++= mySettings, version := appVersion, libraryDependencies ++= dependencies)
 
 lazy val notifications = Project("notifications",file("modules/notifications"))
+  .enablePlugins(play.PlayScala)
+  .dependsOn(common)
+  .settings(scalacOptions ++= mySettings, version := appVersion, libraryDependencies ++= dependencies)
+
+lazy val payments = Project("payments",file("modules/payments"))
   .enablePlugins(play.PlayScala)
   .dependsOn(common)
   .settings(scalacOptions ++= mySettings, version := appVersion, libraryDependencies ++= dependencies)
@@ -98,7 +103,8 @@ lazy val home = Project(appName, file("."))
     persistence,
     analytics,
     common,
-    notifications)
+    notifications,
+    payments)
   .dependsOn(dashboard,
     user,
     application,
@@ -108,7 +114,9 @@ lazy val home = Project(appName, file("."))
     persistence,
     analytics,
     common,
-    notifications)
+    notifications,
+    payments
+  )
   .settings(scalacOptions ++= mySettings, version := appVersion, libraryDependencies ++= dependencies)
 
 sources in doc in Compile := List()

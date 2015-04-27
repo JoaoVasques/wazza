@@ -1,33 +1,12 @@
 <div id="page-wrapper" ng-class="{'open': toggle}" ng-cloak>
   @views.html.sidebar.render()
   @views.html.navigationBar.render()
-  <div class="panel panel-default main-view" ng-controller="TweakBarController" ng-show="showBar">
+  <div class="panel panel-default main-view" ng-controller="TweakBarController" ng-show="showBar" style="margin-right: 1em;">
     <div class="panel-heading control-bar">
       <div class="row">
-        <div class="col-xs-4 results-toolbar">
-          <ul class="list-inline">
-            <li><h5>{{viewText}}</h5></li>
-            <li>
-              <div class="btn-group" role="group" data-toggle="buttons">
-                <label class="btn btn" ng-click="updateView(0)">
-                  <input type="radio"><i class="fa fa-bar-chart-o"></i>
-                </label>
-                <label class="btn btn" ng-click="updateView(1)">
-                  <input type="radio"><i class="fa fa-table"></i>
-                </label>
-              </div>
-            </li>
-            <li>
-              <button class="btn btn-success call-to-action" ng-click="showDetails()" ng-show="showDetailsButton">Show details</button>
-            </li>
-          </ul>
-        </div>
-        <div class="col-xs-3">
-          <div class="col-xs-4">
-            <h5>Platforms</h5>
-          </div>
-          <div class="col-xs-8">
+        <div class="col-xs-5">
             <ul class="list-inline storeSelect">
+              <li><h5>Platforms</h5></li>
               <li>
                 <div class="iOSstoreSelect">
                   <input type="checkbox" id="iOSPlatformSelect" ng-model="platforms.iOS">
@@ -40,9 +19,18 @@
                   <label for="AndroidPlatformSelect"></label>
                 </div>
               </li>
+              <li>
+                <h5>Payment Systems</h5>
+              </li>
+              <li ng-repeat="system in paymentSystems">
+                <i ng-class="{'fa fa-credit-card fa-2x': system == 1, 'fa fa-cc-paypal fa-2x': system == 2}"
+                   style="color: #34495E; margin-left: 2px;"></i>
+              </li>
             </ul>
-          </div>
         </div><!-- col-xs-3 platforms section -->
+        <div class="col-xs-2 results-toolbar">
+          <button class="btn btn-default" ng-click="showDetails()" ng-show="showDetailsButton" style="width: 100%;"><i ng-class="{'fa fa-compress': !hideDetails, 'fa fa-expand': hideDetails}"></i> {{showDetailsButtonText}}</button>
+        </div>
         <div class="col-xs-2">
           <p class="input-group">
             <input type="text" class="form-control" ng-change="updateEndDateMin()" show-button-bar="false" datepicker-popup="{{format}}" ng-model="beginDate" is-open="beginDateOpened" min-date="minDate" max-date="maxDate" date-disabled="disabled(date, mode)" ng-required="true" close-text="Close" />
@@ -51,7 +39,7 @@
             </span>
           </p>
         </div>
-        <div class="col-md-2">
+        <div class="col-xs-2">
           <p class="input-group">
             <input type="text" class="form-control" show-button-bar="false" datepicker-popup="{{format}}" ng-model="endDate" is-open="endDateOpened" min-date="endDateMin" max-date="maxDate" date-disabled="disabled(date, mode)" ng-required="true" close-text="Close" />
             <span class="input-group-btn">
@@ -59,10 +47,10 @@
             </span>
           </p>
         </div>
-        <div class="col-md-1">
+        <div class="col-xs-1">
           <button type="button" class="btn btn-success call-to-action" ng-click="updateKPIs()">Update</button>
         </div>
-      </div>
+      </div><!-- row -->
     </div> <!-- panel heading -->
   </div> <!-- panel-default -->
   <div class="main-view" ui-view>

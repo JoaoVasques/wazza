@@ -4,137 +4,145 @@ service.factory('ApplicationStateService', [
   'SelectedPlatformsChange',
   'CurrencyService',
   'CurrencyChanges',
+  'CurrentAppChanges',
 	function (
     $rootScope,
     localStorageService,
     SelectedPlatformsChange,
     CurrencyService,
-    CurrencyChanges
+    CurrencyChanges,
+    CurrentAppChanges
   ) {
       
-    function AppInfo(name, platforms) {
+    function AppInfo(name, platforms, paymentSystems) {
       this.name = name;
       this.platforms = platforms;
+      this.paymentSystems = paymentSystems;
     };
-          
-		var service = {};
-		service.applicationName = "";
-		service.companyName = "";
-		service.applicationsList = [];
-		service.userInfo = {};
-		service.path = "";
-	  service.applicationOverview = "";
-    service.selectedPlatforms = [];
-    service.apps = [];
-    service.currency = CurrencyService.getDefaultCurrency();
+
+    this.currentApplication = {};
+		this.applicationName = "";
+		this.companyName = "";
+		this.applicationsList = [];
+    this.userInfo = {};
+		this.path = "";
+	  this.applicationOverview = "";
+    this.selectedPlatforms = [];
+    this.apps = [];
+    this.currency = CurrencyService.getDefaultCurrency();
 
 		//current view
-		service.getPath = function () {
-			return service.path;
+		this.getPath = function () {
+			return this.path;
 		};
 
-		service.setPath = function(value) {
-			service.path = value;
+		this.setPath = function(value) {
+			this.path = value;
 			$rootScope.page = value;
 			$rootScope.$broadcast("PAGE_UPDATED");
 		};
 
 		//current selected app
-		service.getApplicationName = function () {
-			return service.applicationName;
+		this.getApplicationName = function () {
+			return this.applicationName;
 		}
 
-		service.updateApplicationName = function (newName) {
-			service.applicationName = newName;
+		this.updateApplicationName = function (newName) {
+			this.applicationName = newName;
 			$rootScope.applicationName = newName;
 			$rootScope.$broadcast("APPLICATION_NAME_UPDATED"); 
 		};
 
-    service.updateApps = function(apps) {
-      service.apps = [];
+    this.updateApps = function(apps) {
+      var _apps = [];
       _.each(apps, function(appInfo) {
-        service.apps.push(new AppInfo(appInfo.name, appInfo.platforms));
+        _apps.push(new AppInfo(appInfo.name, appInfo.platforms, appInfo.paymentSystems));
       });
+      this.apps = _apps;
     }
 
 		//currently logged company
-		service.getCompanyName = function(newName) {
-			return service.companyName;
+		this.getCompanyName = function(newName) {
+			return this.companyName;
 		};
 
-		service.updateCompanyName = function(newName) {
-			service.companyName = newName;
+		this.updateCompanyName = function(newName) {
+			this.companyName = newName;
 			$rootScope.$broadcast("COMPANY_NAME_UPDATED");
 		};
 
 		//applications of logged user
-		service.getApplicationsList = function (newList) {
-			return service.applicationsList;
+		this.getApplicationsList = function (newList) {
+			return this.applicationsList;
 		};
 
-		service.updateApplicationsList = function (newList) {
-			service.applicationsList = newList.slice(0);
+		this.updateApplicationsList = function (newList) {
+			this.applicationsList = newList.slice(0);
 			$rootScope.$broadcast("APPLICATIONS_LIST_UPDATED");
 		};
 
 		//applications information (overview view)
-		service.getApplicationsOverview = function () {
-			return service.applicationOverview;
+		this.getApplicationsOverview = function () {
+			return this.applicationOverview;
 		}
 
-		service.updateApplicationsOverview = function (apps) {
-			service.applicationOverview = apps;
+		this.updateApplicationsOverview = function (apps) {
+			this.applicationOverview = apps;
 		};
 
 		//user info: name & mail
-		service.getUserInfo = function () {
-			service.userInfo = localStorageService.get("userInfo");
-			return service.userInfo;
+		this.getUserInfo = function () {
+			this.userInfo = localStorageService.get("userInfo");
+			return this.userInfo;
 		};
 
-		service.updateUserInfo = function (newInfo) {
-			service.userInfo = newInfo;
+		this.updateUserInfo = function (newInfo) {
+			this.userInfo = newInfo;
 			localStorageService.set("userInfo", newInfo);
 			$rootScope.$broadcast("USER_INFO_UPDATED");
 		};
 
 		//hack to mantain initial clean state
-		service.cleanup = function () {
-			service.applicationName = "";
-			service.companyName = "";
-			service.applicationsList = [];
-			service.userInfo = {
+		this.cleanup = function () {
+			this.applicationName = "";
+			this.companyName = "";
+			this.applicationsList = [];
+			this.userInfo = {
 				name: "",
 				email: ""
 			};
-			service.path = "";
-			service.applicationOverview = "";
+			this.path = "";
+			this.applicationOverview = "";
 		};
 
     // Platform operations: add and remove platforms that are presented
-
-    service.resetPlatforms = function() {
-      service.selectedPlatforms = [];
+    this.resetPlatforms = function() {
+      this.selectedPlatforms = [];
     };
 
-    service.addPlatforms = function(platform) {
-      if(!_.contains(service.selectedPlatforms, platform)) {
-        service.selectedPlatforms.push(platform);
+    this.addPlatforms = function(platform) {
+      if(!_.contains(this.selectedPlatforms, platform)) {
+        this.selectedPlatforms.push(platform);
       }
       $rootScope.$broadcast(SelectedPlatformsChange);
     };
 
-    service.removePlatform = function(platform) {
-      service.selectedPlatforms = _.without(service.selectedPlatforms, platform);
+    this.removePlatform = function(platform) {
+      this.selectedPlatforms = _.without(this.selectedPlatforms, platform);
       $rootScope.$broadcast(SelectedPlatformsChange);
     };
 
-    service.changeCurrency = function(newCurrency) {
-      service.currency = newCurrency;
+    this.changeCurrency = function(newCurrency) {
+      this.currency = newCurrency;
       $rootScope.$broadcast(CurrencyChanges);
-    }
+    };
+
+    this.updateCurrentApplication = function(app) {
+      this.currentApplication = app;
+      $rootScope.$broadcast(CurrentAppChanges);
+    };
       
-		return service;
+		return this;
 	}
 ]);
 

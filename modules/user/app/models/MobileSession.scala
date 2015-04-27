@@ -5,6 +5,7 @@ import play.api.libs.functional.syntax._
 import play.api.Play.current
 import play.api.libs.json._
 import java.util.Date
+import models.common._
 
 case class MobileSession(
   id: String, //hash

@@ -25,6 +25,9 @@ broadcastEvents.value('LtvPlatformsChanged','analytics.ltv-platformChange');
 broadcastEvents.value('PayingUsersPlatformsChanged','analytics.payingUsers-platformChange');
 broadcastEvents.value('PurchaseDatePlatformsChanged','analytics.purchasesPerSession-platformChange');
 
+/** Current application changes **/
+broadcastEvents.value('CurrentAppChanges', 'appchange');
+
 /** Dashboard view changes **/
 broadcastEvents.value("DashboardViewChanges", 1);
 broadcastEvents.value("DashboardShowPlatformDetails", 2);

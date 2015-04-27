@@ -1,4 +1,4 @@
-package models.user
+package models.common
 
 import scala.language.implicitConversions
 import play.api.libs.functional.syntax._

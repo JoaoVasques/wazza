@@ -318,7 +318,7 @@ class PersistenceWorker extends Actor with Worker[PersistenceMessage]  {
       }
       case _ => msg.model
     }
-    val update = $push(msg.arrayKey -> m)
+    val update = $addToSet(msg.arrayKey -> m)
     Future {
       collection(msg.collectionName).update(query, update)
     }

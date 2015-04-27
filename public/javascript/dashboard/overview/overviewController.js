@@ -46,7 +46,8 @@ dashboard.controller('OverviewController',[
           $scope.applications.push(new AppOverviewModel(
             appInfo.name,
             (appInfo.url == '') ? noImageUrl : appInfo.url,
-            appInfo.platforms
+            appInfo.platforms,
+            appInfo.paymentSystems
           ));
           names.push(appInfo.name);
         });
@@ -64,12 +65,13 @@ dashboard.controller('OverviewController',[
         var start = DateModel.formatDate(DateModel.startDate);
         var end = DateModel.formatDate(DateModel.endDate);
         var defaultPlatforms = ["Android", "iOS"];
+        var defaultPaymentSystems = [1, 2];
         
         _.each($scope.applications, function(app) {
           $q.all([
-            GetKPIService.getTotalKpiData(companyName, app.name, start, end, revenue, defaultPlatforms),
-            GetKPIService.getTotalKpiData(companyName, app.name, start, end, ltv, defaultPlatforms),
-            GetKPIService.getTotalKpiData(companyName, app.name, start, end, arpu, defaultPlatforms)
+            GetKPIService.getTotalKpiData(companyName, app.name, start, end, revenue, defaultPlatforms, defaultPaymentSystems),
+            GetKPIService.getTotalKpiData(companyName, app.name, start, end, ltv, defaultPlatforms, defaultPaymentSystems),
+            GetKPIService.getTotalKpiData(companyName, app.name, start, end, arpu, defaultPlatforms, defaultPaymentSystems)
           ])
           .then(function(res) {
             var extractValue = function(index) {

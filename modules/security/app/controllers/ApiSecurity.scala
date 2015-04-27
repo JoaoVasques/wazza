@@ -80,14 +80,14 @@ private[security] case class ApiAction[A](action: Action[A]) extends Action[A] {
             }
             case _ => {
               Logger.info("HTTP Request error: SDK token does not exist")
-              Future.successful(Forbidden("SDK token does not exist"))
+              Future.successful(Forbidden(Json.obj("error" -> "SDK token does not exist")))
             }
           }
         }
       }
       case None => {
         Logger.info("HTTP Request error: Token not found in header")
-        Future.successful(Forbidden("Token not found in header"))
+        Future.successful(Forbidden(Json.obj("error" -> "Token not found in header")))
       }
     }
   }
@@ -100,7 +100,7 @@ object ApiSecurityAction extends ActionBuilder[ApiRequest] {
   def invokeBlock[A](request: Request[A], block: (ApiRequest[A] => Future[Result])) = {
     request match {
       case req: ApiRequest[A] => block(req)
-      case _ => Future.successful(BadRequest("Invalid Request"))
+      case _ => Future.successful(BadRequest(Json.obj("error" -> "Invalid Request")))
     }
   }
 

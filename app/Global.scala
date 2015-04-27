@@ -24,6 +24,7 @@ import scala.concurrent._
 import scala.concurrent.duration._
 import notifications._
 import notifications.messages._
+import payments._
 
 object Global extends GlobalSettings {
 
@@ -69,7 +70,8 @@ object Global extends GlobalSettings {
       new SecurityModule,
       new AWSModule,
       new PersistenceModule,
-      new AnalyticsModule
+      new AnalyticsModule,
+      new PaymentsModule
     )
   }
 

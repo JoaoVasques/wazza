@@ -1,7 +1,5 @@
 dashboardServices.factory('GetKPIService', ['$http', '$q',
     function($http, $q) {
-      var service = {};
-
       var buildUrl = function(companyName, applicationName, urlType, subType, startDate, endDate) {
         var url = ('/analytics/' +
          urlType + '/' +
@@ -13,12 +11,13 @@ dashboardServices.factory('GetKPIService', ['$http', '$q',
         return url;
       };
 
-      service.getTotalKpiData = function(companyName, applicationName, start, end, kpiName, platforms) {
+      this.getTotalKpiData = function(companyName, applicationName, start, end, kpiName, platforms, paymentSystems) {
         var request = $http({
           url: buildUrl(companyName, applicationName, kpiName, "total", start, end),
           method: 'GET',
           headers: {
-            "X-Platforms": platforms
+            "X-Platforms": platforms,
+            "X-PaymentSystems": paymentSystems
           }
         });
 
@@ -27,12 +26,13 @@ dashboardServices.factory('GetKPIService', ['$http', '$q',
         return deferred.promise;
       };
 
-      service.getDetailedKPIData = function(companyName, applicationName, start, end, kpiName, platforms) {
+      this.getDetailedKPIData = function(companyName, applicationName, start, end, kpiName, platforms, paymentSystems) {
         var request = $http({
           url: buildUrl(companyName, applicationName, kpiName, "detail", start, end),
           method: 'GET',
           headers: {
-            "X-Platforms": platforms
+            "X-Platforms": platforms,
+            "X-PaymentSystems": paymentSystems
           }
         });
 
@@ -41,5 +41,5 @@ dashboardServices.factory('GetKPIService', ['$http', '$q',
         return deferred.promise;
       };
 
-      return service;
+      return this;
 }])

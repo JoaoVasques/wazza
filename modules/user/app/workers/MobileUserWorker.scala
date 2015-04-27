@@ -26,6 +26,8 @@ import scala.collection.mutable.Map
 import models.user.{CompanyData}
 import scala.collection.mutable.Stack
 import scala.concurrent.duration._
+import models.payments._
+import models.common._
 
 case class MessageRetry(ttl: Int, msg: MobileUserMessageRequest)
 
@@ -67,7 +69,7 @@ class MobileUserWorker(
   private var retryMessagesPool = new MessageRetryPool
 
   private def handleCreateRequest(req: MUCreate) = {
-    val user = new MobileUser(req.userId, List[SessionResume](), List[PurchaseResume](), List[DeviceInfo]())
+    val user = new MobileUser(req.userId, List[SessionResume](), List[PurchaseResume](), List(req.deviceInfo))
     val collection = MobileUser.getCollection(req.companyName, req.applicationName)
     val insertReq = new Insert(new Stack, collection, user)
     databaseProxy ! insertReq
@@ -84,7 +86,7 @@ class MobileUserWorker(
   }
 
   private def handleAddPurchaseIdRequest(req: MUAddPurchaseId) = {
-    val purchaseResume = new PurchaseResume(req.purchaseId, req.purchaseDate, req.platform)
+    val purchaseResume = new PurchaseResume(req.purchaseId, req.purchaseDate, req.platform, req.paymentSystem)
     val collection = MobileUser.getCollection(req.companyName, req.applicationName)
     val request = new AddElementToArray[JsValue](
       new Stack, collection, MobileUser.KeyId,
