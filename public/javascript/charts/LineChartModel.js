@@ -38,7 +38,6 @@ wazzaCharts.factory('LineChartModel', function(){
 
     /** IOS COLORS **/
       
-    /** In-App Purchase Color **/
     var iOSIAPColor = {
       fillColor: 'rgba(79, 162, 216, 0.2)',
       strokeColor: 'rgba(79, 162, 216, 1.0)',
@@ -48,7 +47,6 @@ wazzaCharts.factory('LineChartModel', function(){
       pointHighlightStroke: 'rgba(79, 162, 216, 0.8)'
     };
 
-    /** PayPal Color **/
     var iOSPayPalColor = {
       fillColor: 'rgba(10, 81, 127, 0.2)',
       strokeColor: 'rgba(10, 81, 127, 1.0)',
