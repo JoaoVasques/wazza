@@ -25,7 +25,7 @@ class AuthenticationController  extends Controller {
     val result = request.headers.get(UserExistsHeader) match {
       case Some(_) => {
         //Do nothing..
-        false
+        true
       }
       case None => {
         //creates mobile user
@@ -38,7 +38,7 @@ class AuthenticationController  extends Controller {
           new Stack
         )
         UserProxy.getInstance() ! req
-        true
+        false
       }
     }
     Future.successful(Ok(Json.obj("result" -> result)))
