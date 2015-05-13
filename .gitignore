@@ -19,4 +19,4 @@ conf/*.conf
 .ensime*
 .vagrant/
 ops/deployment/*.pyc  
-  
+conf/newrelic/*.yml
