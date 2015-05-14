@@ -2,7 +2,7 @@ lazy val appName = "Wazza"
 
 lazy val appVersion = "alpha"
 
-scalaVersion := "2.10.4"
+scalaVersion := "2.10.5"
 
 lazy val dependencies = Seq(
   anorm,
