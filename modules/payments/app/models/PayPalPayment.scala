@@ -80,7 +80,7 @@ object PayPalPayment {
         (json \ "price").as[Double],
         (new SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z").parse((json \ "time").as[String])),
         //new Date((json \ "time").as[Long]),
-        (json \ "deviceInfo").validate[DeviceInfo].asOpt.get,
+        (json \ "device").validate[DeviceInfo].asOpt.get,
         PurchaseInfo.getLocation(json),
         (json \ "success").as[Boolean],
         PayPalPayment.Type,

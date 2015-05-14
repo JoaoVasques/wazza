@@ -38,7 +38,7 @@ class SessionController extends Controller {
         "userId" -> (content \ "userId").as[String],
         "length" -> (new Interval(start, end).toDurationMillis() / 1000.0),
         "startTime" -> (content \ "startTime").as[String],
-        "deviceInfo" -> (content \ "deviceInfo"),
+        "device" -> (content \ "deviceInfo"),
         "purchases" -> (content \ "purchases").as[List[String]])
       )
       val userProxy = UserProxy.getInstance()
