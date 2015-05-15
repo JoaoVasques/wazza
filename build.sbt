@@ -2,35 +2,35 @@ lazy val appName = "Wazza"
 
 lazy val appVersion = "alpha"
 
-scalaVersion := "2.10.4"
+scalaVersion := "2.10.5"
 
 lazy val dependencies = Seq(
   anorm,
   cache,
   ws,
-  "com.amazonaws" % "aws-java-sdk" % "1.9.17",
-  "com.github.nscala-time" %% "nscala-time" % "1.6.0",
-  "com.google.inject" % "guice" % "3.0",
+  "com.amazonaws" % "aws-java-sdk" % "1.9.34",
+  "com.github.nscala-time" %% "nscala-time" % "2.0.0",
+  "com.google.inject" % "guice" % "4.0",
   "com.typesafe.akka" %% "akka-actor" % "2.3.9",
   "com.typesafe.akka" %% "akka-slf4j" % "2.3.9",
   "com.tzavellas" %% "sse-guice" % "0.7.2",
   "commons-codec" % "commons-codec" % "1.10",
-  "commons-validator" % "commons-validator" % "1.4.0",
+  "commons-validator" % "commons-validator" % "1.4.1",
   "org.mindrot" % "jbcrypt" % "0.3m",
   "org.mongodb" % "casbah-commons_2.10" % "2.7.5",
   "org.mongodb" % "casbah_2.10" % "2.7.5",
   "org.webjars" % "angular-local-storage" % "0.1.5",
-  "org.webjars" % "angular-ui-bootstrap" % "0.12.0",
-  "org.webjars" % "angular-ui-router" % "0.2.13",
-  "org.webjars" % "angularjs" % "1.2.28",
-  "org.webjars" % "bootstrap" % "3.3.2",
-  "org.webjars" % "jquery" % "1.11.2",
-  "org.webjars" % "momentjs" % "2.9.0",
+  "org.webjars" % "angular-ui-bootstrap" % "0.13.0",
+  "org.webjars" % "angular-ui-router" % "0.2.14",
+  "org.webjars" % "angularjs" % "1.3.15",
+  "org.webjars" % "bootstrap" % "3.3.4",
+  "org.webjars" % "jquery" % "1.11.3",
+  "org.webjars" % "momentjs" % "2.10.2",
   "org.webjars" % "numeral-js" % "1.5.3-1",
-  "org.webjars" % "underscorejs" % "1.7.0-1",
-  "org.webjars" % "webjars-play_2.10" % "2.3.0-2",
-  "org.webjars" % "angular-chart.js" % "0.5.1",
-  "org.webjars" % "chartjs" % "1.0.1"
+  "org.webjars" % "underscorejs" % "1.8.3",
+  "org.webjars" % "webjars-play_2.10" % "2.3.0-3",
+  "org.webjars" % "angular-chart.js" % "0.5.3",
+  "org.webjars" % "chartjs" % "1.0.2"
 )
 
 

@@ -189,7 +189,7 @@ config(function($stateProvider, $urlRouterProvider, $locationProvider, $httpProv
             templateUrl: '/privacy'
         })
 
-    $httpProvider.responseInterceptors.push('SecurityHttpInterceptor');
+    $httpProvider.interceptors.push('SecurityHttpInterceptor');
 
     //local storage
     localStorageServiceProvider.setPrefix('wazza');
