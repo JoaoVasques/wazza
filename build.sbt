@@ -31,7 +31,7 @@ lazy val dependencies = Seq(
   "org.webjars" % "underscorejs" % "1.8.3",
   "org.webjars" % "webjars-play_2.10" % "2.3.0-3",
   "org.webjars" % "angular-chart.js" % "0.5.3",
-  "org.webjars" % "chartjs" % "1.0.2"
+  "org.webjars" % "chartjs" % "1.0.2",
   "org.webjars" % "font-awesome" % "4.3.0-1"
 )
 
