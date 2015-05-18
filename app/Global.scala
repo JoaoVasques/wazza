@@ -27,16 +27,7 @@ import notifications.messages._
 import payments._
 import play.filters.headers.SecurityHeadersFilter
 
-/** Security Headers Filter **/
-object CustomSecurityHeadersFilter extends Filter {
-  lazy val shf = SecurityHeadersFilter(play.api.Play.current.configuration)
-  def apply(nextFilter: (RequestHeader) => Future[Result])
-    (rh: RequestHeader): Future[Result] = {
-    shf(nextFilter)(rh)
-  }
-}
-
-object Global extends WithFilters(CustomSecurityHeadersFilter) with GlobalSettings {
+object Global extends WithFilters(SecurityHeadersFilter()) with GlobalSettings {
 
   private var modulesProxies = List[ActorRef]()
 
