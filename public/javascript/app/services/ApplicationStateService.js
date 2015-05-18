@@ -21,12 +21,15 @@ service.factory('ApplicationStateService', [
     };
 
     this.currentApplication = {};
-		this.applicationName = "";
-		this.companyName = "";
-		this.applicationsList = [];
-    this.userInfo = {};
-		this.path = "";
-	  this.applicationOverview = "";
+	this.applicationName = "";
+	this.companyName = "";
+	this.applicationsList = [];
+    this.userInfo = {
+		name: "",
+		email: ""
+	};
+	this.path = "";
+	this.applicationOverview = "";
     this.selectedPlatforms = [];
     this.apps = [];
     this.currency = CurrencyService.getDefaultCurrency();
@@ -53,13 +56,13 @@ service.factory('ApplicationStateService', [
 			$rootScope.$broadcast("APPLICATION_NAME_UPDATED"); 
 		};
 
-    this.updateApps = function(apps) {
-      var _apps = [];
-      _.each(apps, function(appInfo) {
-        _apps.push(new AppInfo(appInfo.name, appInfo.platforms, appInfo.paymentSystems));
-      });
-      this.apps = _apps;
-    }
+	    this.updateApps = function(apps) {
+	      var _apps = [];
+	      _.each(apps, function(appInfo) {
+	        _apps.push(new AppInfo(appInfo.name, appInfo.platforms, appInfo.paymentSystems));
+	      });
+	      this.apps = _apps;
+	    }
 
 		//currently logged company
 		this.getCompanyName = function(newName) {

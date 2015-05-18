@@ -10,13 +10,15 @@ angular.module('UserModule', ['UserModule.services', 'UserModule.directives', 'S
   'cookiesManagerService',
   '$rootScope',
   'LoginLogoutService',
+  'ApplicationStateService',
   function (
     $scope,
     $state,
     createNewUserAccountService,
     cookiesManagerService,
     $rootScope,
-    LoginLogoutService
+    LoginLogoutService,
+    ApplicationStateService
   ) {
   
   $scope.bootstrapModule = function(){
@@ -52,6 +54,11 @@ angular.module('UserModule', ['UserModule.services', 'UserModule.directives', 'S
     });
     mixpanel.track("New Account");
     mixpanel.track("Login");
+    ApplicationStateService.updateUserInfo({
+        name: $scope.userForm.name,
+        email: $scope.userForm.email
+      });
+    ApplicationStateService.updateCompanyName($scope.userForm.company);
     $state.go(success.data.url);
   };
 
