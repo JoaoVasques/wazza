@@ -16,7 +16,8 @@ dashboard.filter('wzCurrencyFilter', [
     if(_.contains(kpis, kpiName)) {
       switch(ApplicationStateService.currency.name) {
         case 'Euro':
-            out = input + " " + CurrencyService.getCurrency('Euro').symbol;
+            out = CurrencyService.getCurrency('Euro').symbol + " " + input;
+          //out = input + " " + CurrencyService.getCurrency('Euro').symbol;
           break;
         case 'Dollar':
             out = CurrencyService.getCurrency('Dollar').symbol + " " + input;

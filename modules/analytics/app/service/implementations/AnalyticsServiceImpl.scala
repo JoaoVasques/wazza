@@ -563,15 +563,15 @@ class AnalyticsServiceImpl extends AnalyticsService {
               // To sum one: check if platform exists, then check if payment system exists
               optPlatform match {
                 case Some(p) => {
-                  (p \ "purchases").as[JsArray].value.toList.find(s => (s \ "paymentSystem").as[Int] == system) match {
+                  (p \ "purchases").as[JsArray].value.toList.find(s => (s \ "paymentSystem").as[Double].toInt == system) match {
                     case Some(paymentSystemInfo) => {
-                      val value = (pInfo \ "paymentSystems").as[JsArray].value.toList.find(s => (s \ "system").as[Int] == system).get
+                      val value = (pInfo \ "paymentSystems").as[JsArray].value.toList.find(s => (s \ "system").as[Double].toInt == system).get
                       Json.obj("system" -> system, "value" -> ( (value \ "value").as[Int] + 1))
                     }
-                    case None => (pInfo \ "paymentSystems").as[JsArray].value.toList.find(s => (s \ "system").as[Int] == system).get
+                    case None => (pInfo \ "paymentSystems").as[JsArray].value.toList.find(s => (s \ "system").as[Double].toInt == system).get
                   }
                 }
-                case None => (pInfo \ "paymentSystems").as[JsArray].value.toList.find(s => (s \ "system").as[Int] == system).get
+                case None => (pInfo \ "paymentSystems").as[JsArray].value.toList.find(s => (s \ "system").as[Double].toInt == system).get
               }
             }
             Json.obj("platform" -> platform, "value" -> newValue, "paymentSystems" -> paymentSystemInfo)
