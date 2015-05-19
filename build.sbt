@@ -7,6 +7,7 @@ scalaVersion := "2.10.5"
 lazy val dependencies = Seq(
   anorm,
   cache,
+  filters,
   ws,
   "com.amazonaws" % "aws-java-sdk" % "1.9.34",
   "com.github.nscala-time" %% "nscala-time" % "2.0.0",
@@ -30,7 +31,8 @@ lazy val dependencies = Seq(
   "org.webjars" % "underscorejs" % "1.8.3",
   "org.webjars" % "webjars-play_2.10" % "2.3.0-3",
   "org.webjars" % "angular-chart.js" % "0.5.3",
-  "org.webjars" % "chartjs" % "1.0.2"
+  "org.webjars" % "chartjs" % "1.0.2",
+  "org.webjars" % "font-awesome" % "4.3.0-1"
 )
 
 
