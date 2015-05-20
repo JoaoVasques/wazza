@@ -42,7 +42,6 @@ application.controller('TweakBarController',[
       $scope.showBar = _.find(hideShowBar, function(s) {return s == toState.name;}) == undefined ? true : false;
     });
 
-    $scope.showDetailsButton = true;
     $scope.hideDetails = true;
     $scope.showDetailsButtonText = ($scope.hideDetails) ? "Show Details" : "Hide Details";
     $scope.showDetails = function(){
