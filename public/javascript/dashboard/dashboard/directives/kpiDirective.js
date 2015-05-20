@@ -13,7 +13,6 @@ dashboard.directive('kpi', ['$state', function($state) {
             "kpi": name[1]
           });
           $state.go(state);
-          $state.go(state);
         };
       },
       templateUrl: '/dashboard/kpi'
