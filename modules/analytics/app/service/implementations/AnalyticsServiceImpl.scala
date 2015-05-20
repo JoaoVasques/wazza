@@ -141,8 +141,6 @@ class AnalyticsServiceImpl extends AnalyticsService {
         }))}
       )
     )
-    println("DETAILED RESULT")
-    println(data)
     data.foldLeft(emptyResult)((res, current) => {
       val updateResult = (res \ "value").as[Double] + (current \ "result").as[Double]
       val platformResults = platforms map {platform =>
