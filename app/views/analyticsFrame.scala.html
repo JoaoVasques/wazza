@@ -29,7 +29,7 @@
             </ul>
         </div><!-- col-xs-3 platforms section -->
         <div class="col-xs-2 results-toolbar">
-          <button class="btn btn-default" ng-click="showDetails()" ng-show="showDetailsButton" style="width: 100%;"><i ng-class="{'fa fa-compress': !hideDetails, 'fa fa-expand': hideDetails}"></i> {{showDetailsButtonText}}</button>
+          <button class="btn btn-default" ng-click="showDetails()" ng-show="'analytics.dashboard' | isState" style="width: 100%;"><i ng-class="{'fa fa-compress': !hideDetails, 'fa fa-expand': hideDetails}"></i> {{showDetailsButtonText}}</button>
         </div>
         <div class="col-xs-2">
           <p class="input-group">
