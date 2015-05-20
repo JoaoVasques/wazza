@@ -19,7 +19,7 @@ dashboard
     AT1PPlatformsChanged
   ) {
 
-    var title = "Number of Sessions to First Purchase";
+    var title = "Number of Sessions to first Purchase";
     var KpiId = "sessionsFirstPurchase";
 
     ApplicationStateService.setPath(title);
