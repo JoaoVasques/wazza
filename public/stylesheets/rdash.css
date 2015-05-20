@@ -65,7 +65,7 @@
 }
 .row.header .meta .page {
   font-size: 17px;
-  padding-top: 11px;
+  padding-top: 16px;
 }
 .row.header .meta .breadcrumb-links {
   font-size: 10px;
@@ -506,7 +506,7 @@ ul.sidebar .sidebar-list .menu-icon {
 
 .main-view {
    margin-left: 15px;
-   margin-right: 25px;
+   margin-right: 15px;
 }
 
 .control-bar {
@@ -514,3 +514,7 @@ ul.sidebar .sidebar-list .menu-icon {
    padding-top: 13px !important;
 }
 
+.align-dash {
+  margin-right: -5px;
+  margin-left: -25px;
+}

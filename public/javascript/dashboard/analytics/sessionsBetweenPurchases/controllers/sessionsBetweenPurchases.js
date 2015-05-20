@@ -19,7 +19,7 @@ dashboard
     ATBPPlatformsChanged
   ) {
 
-    var title = "Number of Sessions Between Purchases";
+    var title = "Number of Sessions between Purchases";
     var KpiId = "sessionsBetweenPurchases";
 
     ApplicationStateService.setPath(title);

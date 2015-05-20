@@ -19,7 +19,7 @@ dashboard
     ArpuPlatformsChanged
   ) {
 
-    var title = "Average Revenue Per User";
+    var title = "Average Revenue per User";
     var KpiId = "arpu";
 
     ApplicationStateService.setPath(title);

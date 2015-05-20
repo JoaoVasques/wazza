@@ -19,7 +19,7 @@ dashboard
     PurchasesPerUserPlatformsChanged
   ) {
 
-    var title = "Avg Purchases Per User";
+    var title = "Average Purchases per User";
     var KpiId = "avgPurchasesUser";
 
     ApplicationStateService.setPath(title);

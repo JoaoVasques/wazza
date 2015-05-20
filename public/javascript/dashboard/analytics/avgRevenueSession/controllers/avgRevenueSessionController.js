@@ -19,7 +19,7 @@ dashboard
     AvgRevenueSessionPlatformsChanged
   ) {
 
-    var title = "Average Revenue Per Session";
+    var title = "Average Revenue per Session";
     var KpiId = "avgRevenueSession";
 
     ApplicationStateService.setPath(title);
