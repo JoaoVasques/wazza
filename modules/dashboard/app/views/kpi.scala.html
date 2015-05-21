@@ -23,7 +23,7 @@
           </div>
           <div class="col-md-3">
             <div ng-class="{'kpi-delta-positive': kpi.delta > 0, 'kpi-delta-negative': kpi.delta < 0, 'kpi-delta': kpi.delta == 0}">
-              <h3><i ng-class="{'fa fa-arrow-up': kpi.delta > 0, 'fa fa-arrow-down': kpi.delta < 0, 'fa fa-minus': kpi.delta == 0}"></i> {{kpi.delta}}%
+              <h3 class="text-center"><i ng-class="{'fa fa-arrow-up': kpi.delta > 0, 'fa fa-arrow-down': kpi.delta < 0, 'fa fa-minus': kpi.delta == 0}"></i> {{kpi.delta}}%
               </h3>
             </div>
           </div> <!-- col-md-3 -->
@@ -32,7 +32,7 @@
 	      <div collapse="showPlatforms">
           <hr>
           <h5 class="text-center">Platform Details</h5>
-          <table class="table table-striped">
+          <table class="text-center table table-striped">
             <thead>
               <tr>
                 <th>Platform</th>
