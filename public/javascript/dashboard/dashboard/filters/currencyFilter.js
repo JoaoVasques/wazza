@@ -11,12 +11,12 @@ dashboard.filter('wzCurrencyFilter', [
     var out = "";
     var kpis = [
       'Total Revenue', 'Avg Revenue Per User', 'Avg Revenue per Session',
-      'Average Revenue Per User', 'Average Revenue Per Session'
+      'Average Revenue Per User', 'Average Revenue Per Session', 'Life Time Value'
     ];
     if(_.contains(kpis, kpiName)) {
       switch(ApplicationStateService.currency.name) {
         case 'Euro':
-            out = input + " " + CurrencyService.getCurrency('Euro').symbol;
+            out = CurrencyService.getCurrency('Euro').symbol + " " + input;
           break;
         case 'Dollar':
             out = CurrencyService.getCurrency('Dollar').symbol + " " + input;
