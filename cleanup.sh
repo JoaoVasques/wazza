@@ -1,6 +1,6 @@
 #!/bin/sh
 
-~/Downloads/activator-1.3.2-minimal/activator clean
+activator clean
 rm -rf target
 rm -rf project/target
 rm -rf project/project
