@@ -35,10 +35,16 @@ lazy val dependencies = Seq(
   "org.webjars" % "font-awesome" % "4.3.0-1"
 )
 
+resolvers ++= Seq[Resolver](
+    DefaultMavenRepository,
+    Classpaths.typesafeReleases,
+    "Typesafe repository" at "http://repo.typesafe.com/typesafe/releases/",
+    Classpaths.sbtPluginReleases,
+    "Eclipse repositories" at "https://repo.eclipse.org/service/local/repositories/egit-releases/content/",
+    "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
+  )
 
-resolvers += "Sonatype releases" at "https://oss.sonatype.org/content/repositories/releases"
-
-lazy val mySettings = Seq("-unchecked", "-deprecation", "-feature", "-language:reflectiveCalls", "-language:postfixOps", "-optimize")
+lazy val mySettings = Seq("-unchecked", "-deprecation", "-feature", "-language:reflectiveCalls", "-language:postfixOps", "-optimize" )//, "-Ywarn-adapted-args", "-Xlint", "-Xfatal-warnings")
 
 lazy val common = Project("common", file("modules/common"))
   .enablePlugins(play.PlayScala)
