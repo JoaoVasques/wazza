@@ -4,19 +4,6 @@
       <h2 class="panel-title text-center">{{kpi.name}}</h2>
     </div>
     <div class="panel-body">
-      <div ng-show="v == 0">
-        <nvd3 options="kpi.chart.options" data="kpi.chart.data"></nvd3>
-        <table class="table table-bordered">
-          <thead>
-            <tr>
-              <th>Compared to Previous</th>
-              <th class="kpiValue">{{kpi.delta}} %</th>
-            </tr>
-          </thead>
-        </table>
-      </div>
-
-      <div ng-show="v == 1">
         <div class="row">
           <div class="col-md-9 text-center">
             <h1 class="kpiValue" style="font-size: 50px;">{{kpi.value|wzCurrencyFilter:kpi.name}}</h1>
@@ -28,7 +15,6 @@
             </div>
           </div> <!-- col-md-3 -->
         </div> <!-- row -->
-      </div>
 	      <div collapse="showPlatforms">
           <hr>
           <table class="text-center table table-striped">
