@@ -10,7 +10,7 @@ settingsServices.factory('BootstrapSettingsService', [
     var service = {};
     service.execute = function () {
       var request = $http({
-        url: '/dashboard/settings/bootstrap/' + ApplicationStateService.applicationName,
+        url: '/dashboard/settings/bootstrap/' + ApplicationStateService.getApplicationName(),
         method: 'GET'
       });
 

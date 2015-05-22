@@ -5,15 +5,17 @@ settingsServices.factory('UpdatePaymentCredentialsService', [
     $resource,
     ApplicationStateService
   ) {
-    this.execute = function (paymentCredentials, successCallback, errorCallback) {
+    this.execute = function (paymentCredentials, appName, successCallback, errorCallback) {
       var UpdatePaymentsCredentials = $resource("/dashboard/settings/updatePaymentsCredentials/:c/:a",
-        {c: ApplicationStateService.companyName, a: "PayPalDemo"/**ApplicationStateService.applicationName**/}
+        {c: ApplicationStateService.companyName, a: appName}
       );
       console.log(ApplicationStateService);
       return UpdatePaymentsCredentials.save(
         paymentCredentials,
         function(res) {successCallback(res)},
-        function(err) {errorCallback(err)}
+        function(err) {
+          errorCallback(err)
+        }
       )
     };
       
