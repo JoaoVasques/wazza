@@ -3,6 +3,7 @@ package controllers.analytics
 import com.google.inject._
 import java.text.ParseException
 import java.text.SimpleDateFormat
+import java.util.TimeZone
 import java.util.Date
 import play.api._
 import play.api.libs.json.JsValue
@@ -21,6 +22,8 @@ import org.joda.time.Days
 import play.api.libs.json.Json
 import play.api.libs.json.JsValue
 import play.api.libs.json.JsArray
+import java.time._
+import java.time.format.DateTimeFormatter
 
 class AnalyticsController @Inject()(
   analyticsService: AnalyticsService
@@ -30,6 +33,10 @@ class AnalyticsController @Inject()(
   private lazy val Detailed = 1
 
   private def validateDate(dateStr: String): Try[Date] = {
+    println("DATE STR: " + dateStr)
+    var formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy")
+    val d = LocalDate.parse(dateStr, formatter).atStartOfDay().atZone(ZoneId.of("Etc/GMT-0"))
+    println("D: " + d)
     val df = new SimpleDateFormat("dd-MM-yyyy")
     try {
       val date = df.parse(dateStr)
@@ -148,6 +155,7 @@ class AnalyticsController @Inject()(
 
     val start = validateDate(startDateStr)
     val end = validateDate(endDateStr)
+    println("VALIDATE: " + start + " " + end)
 
     (start, end) match {
       case (Success(s), Success(e)) => {

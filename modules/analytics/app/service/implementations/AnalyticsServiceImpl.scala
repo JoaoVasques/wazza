@@ -78,6 +78,9 @@ class AnalyticsServiceImpl extends AnalyticsService {
     val e = new LocalDate(end)
     val days = Days.daysBetween(s, e).getDays() + 1
 
+    println("START: " + start + " S: " + s)
+    println("END: " + end + " E: " + e)
+
     val futureResult = Future.sequence(List.range(0, days) map {dayIndex =>
       val currentDay = s.withFieldAdded(DurationFieldType.days(), dayIndex)
       val previousDay = currentDay.minusDays(1)
@@ -292,7 +295,9 @@ class AnalyticsServiceImpl extends AnalyticsService {
     val collection = Metrics.totalRevenueCollection(companyName, applicationName)
     val request = new GetDocumentsWithinTimeRange(new Stack, collection, fields, start, end, true)
     val futureRevenue = (databaseProxy ? request).mapTo[PRJsArrayResponse]
-    futureRevenue map {r => getDetailedResult(r.res.value, platforms, paymentSystems)}
+    futureRevenue map {r =>
+      getDetailedResult(r.res.value, platforms, paymentSystems)
+    }
   }
 
   def getRevenue(
