@@ -27,6 +27,9 @@ application.controller('NavBarController', [
 
     $scope.changeApp = function(app) {
       oldName = ApplicationStateService.getApplicationName();
+      if(oldName == app)
+        return;
+
       ApplicationStateService.updateApplicationName(app);
       var appInfo = _.find(ApplicationStateService.apps, function(a) {
         return app == a.name;
