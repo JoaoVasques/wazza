@@ -19,7 +19,6 @@ import play.api.http.Status
 import java.io.FileInputStream
 import java.security.MessageDigest
 import javax.xml.bind.annotation.adapters.HexBinaryAdapter
-import com.github.nscala_time.time.Imports._
 
 trait PhotosData {
 

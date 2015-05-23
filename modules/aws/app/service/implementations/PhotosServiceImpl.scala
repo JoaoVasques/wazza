@@ -17,7 +17,8 @@ import play.api.http.Status
 import java.io.FileInputStream
 import java.security.MessageDigest
 import javax.xml.bind.annotation.adapters.HexBinaryAdapter
-import com.github.nscala_time.time.Imports._
+import java.time._
+import java.util.Date
 
 class PhotosServiceImpl extends PhotosService {
 
@@ -26,12 +27,13 @@ class PhotosServiceImpl extends PhotosService {
   }
 
   private def generateS3ObjectURL(bucketName: String, fileName: String, s3Client: AmazonS3Client): String = {
-    val expirationDate = (new DateTime).withYear(ExpirationDate.Year)
-        .withMonthOfYear(ExpirationDate.Month)
-        .withDayOfMonth(ExpirationDate.Day)
+    val expirationDate = LocalDateTime.ofInstant(new Date().toInstant(), ZoneId.systemDefault())
+      .withYear(ExpirationDate.Year)
+      .withMonth(ExpirationDate.Month)
+      .withDayOfMonth(ExpirationDate.Day)
 
     val request = new GeneratePresignedUrlRequest(bucketName, fileName, HttpMethod.GET)
-    request.setExpiration(expirationDate.toDate)
+    request.setExpiration(Date.from(expirationDate.atZone(ZoneId.systemDefault()).toInstant()))
     s3Client.generatePresignedUrl(request).toString
   }
 
