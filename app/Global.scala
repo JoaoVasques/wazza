@@ -26,6 +26,8 @@ import notifications._
 import notifications.messages._
 import payments._
 import play.filters.headers.SecurityHeadersFilter
+import java.util.TimeZone
+import play.api.Logger
 
 object Global extends WithFilters(SecurityHeadersFilter()) with GlobalSettings {
 
@@ -35,6 +37,7 @@ object Global extends WithFilters(SecurityHeadersFilter()) with GlobalSettings {
     Creates modules system's and proxies
   **/
   override def onStart(app: Application) = {
+    Logger.info("Running on Timezone: " + TimeZone.getDefault())
     val databaseProxy = PersistenceProxy.getInstance()
     val userProxy = UserProxy.getInstance()
     val applicationProxy = ApplicationProxy.getInstance()
