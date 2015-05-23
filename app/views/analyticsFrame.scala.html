@@ -4,6 +4,7 @@
   <div class="panel panel-default main-view" ng-controller="TweakBarController" ng-show="showBar" style="margin-right: 1em;">
     <div class="panel-heading control-bar">
       <div class="row">
+      <div ng-hide="hideDetails">
         <div class="col-xs-1">
           <h5>Platforms</h5>
         </div>
@@ -25,6 +26,8 @@
               <i ng-class="{'fa fa-credit-card fa-2x': system == 1, 'fa fa-cc-paypal fa-2x': system == 2}" style="color: #34495E; margin-right: 10px; padding-top: 3px;"></i>
           </div>
         </div>
+      </div>
+      <div class="col-xs-5" ng-show="hideDetails"></div>
       <div class="col-xs-2 results-toolbar">
         <button class="btn btn-default" ng-click="showDetails()" ng-show="'analytics.dashboard' | isState" style="width: 100%;"><i ng-class="{'fa fa-compress': !hideDetails, 'fa fa-expand': hideDetails}"></i> {{showDetailsButtonText}}</button>
       </div>

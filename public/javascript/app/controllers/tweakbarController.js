@@ -30,7 +30,15 @@ application.controller('TweakBarController',[
       'analytics.newapp', 'analytics.settings',
       'analytics.overview', 'analytics.terms',
       'analytics.privacy'
-    ];      
+    ];
+
+    var showDetailsAnalytics = [
+      'analytics.revenue', 'analytics.arpu',
+      'analytics.avgRevenueSession', 'analytics.payingUsers',
+      'analytics.ltv', 'analytics.avgPurchasesUser',
+      'analytics.purchasesPerSession', 'analytics.sessionsFirstPurchase',
+      'analytics.sessionsBetweenPurchase'
+    ];
 
     var handleAppChange = function() {
       $scope.paymentSystems = ApplicationStateService.currentApplication.paymentSystems;
@@ -40,6 +48,7 @@ application.controller('TweakBarController',[
 
     $rootScope.$on('$stateChangeSuccess', function(event, toState, toParams, fromState, fromParams) {
       $scope.showBar = _.find(hideShowBar, function(s) {return s == toState.name;}) == undefined ? true : false;
+      $scope.hideDetails = _.find(showDetailsAnalytics, function(s) {return s == toState.name;}) == undefined ? true : false;
     });
 
     $scope.hideDetails = true;
