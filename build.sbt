@@ -35,6 +35,8 @@ lazy val dependencies = Seq(
   "org.webjars" % "font-awesome" % "4.3.0-1"
 )
 
+javacOptions ++= Seq("-source", "1.8", "-target", "1.8", "-Xlint")
+
 resolvers ++= Seq[Resolver](
     DefaultMavenRepository,
     Classpaths.typesafeReleases,
