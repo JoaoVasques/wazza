@@ -19,10 +19,6 @@ import play.api.Play
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import utils.analytics.Metrics
 import com.google.inject._
-import org.joda.time.Days
-import org.joda.time.LocalDate
-import org.joda.time.DurationFieldType
-import org.joda.time.DateTime
 import persistence.utils.{DateUtils}
 import persistence._
 import persistence.messages._
@@ -30,6 +26,7 @@ import akka.pattern.ask
 import scala.concurrent.duration._
 import akka.util.{Timeout}
 import scala.collection.mutable.Stack
+import java.time._
 
 class AnalyticsServiceImpl extends AnalyticsService {
 
@@ -40,13 +37,14 @@ class AnalyticsServiceImpl extends AnalyticsService {
 
   private def fillEmptyResult(start: Date, end: Date, platforms: List[String], paymentSystems: List[Int]): JsArray = {
     val dates = new ListBuffer[String]()
-    val s = new LocalDate(start)
-    val e = new LocalDate(end)
-    val days = Days.daysBetween(s, e).getDays() + 1
+    val s = LocalDateTime.ofInstant(Instant.ofEpochMilli(start.getTime()), ZoneId.systemDefault())
+    val e = LocalDateTime.ofInstant(Instant.ofEpochMilli(end.getTime()), ZoneId.systemDefault())
+
+    val days = Period.between(s.toLocalDate(), e.toLocalDate()).getDays() +1
 
     new JsArray(List.range(0, days) map {i =>{
       Json.obj(
-        "day" -> s.withFieldAdded(DurationFieldType.days(), i).toDate.getTime,
+        "day" -> Date.from(s.plusDays(1).atZone(ZoneId.systemDefault).toInstant()),
         "value" -> 0.0,
         "platforms" -> (platforms map {
           p => Json.obj(
@@ -74,16 +72,19 @@ class AnalyticsServiceImpl extends AnalyticsService {
     paymentSystems: List[Int],
     f:(String, String, Date, Date, List[String], List[Int]) => Future[JsValue]
   ): Future[JsArray] = {
-    val s = new LocalDate(start)
-    val e = new LocalDate(end)
-    val days = Days.daysBetween(s, e).getDays() + 1
+    val s = LocalDateTime.ofInstant(Instant.ofEpochMilli(start.getTime()), ZoneId.systemDefault())
+    val e = LocalDateTime.ofInstant(Instant.ofEpochMilli(end.getTime()), ZoneId.systemDefault())
+    val days = Period.between(s.toLocalDate(), e.toLocalDate()).getDays() + 1
 
     val futureResult = Future.sequence(List.range(0, days) map {dayIndex =>
-      val currentDay = s.withFieldAdded(DurationFieldType.days(), dayIndex)
-      val previousDay = currentDay.minusDays(1)
-      f(companyName, applicationName, previousDay.toDate, currentDay.toDate, platforms, paymentSystems) map {res: JsValue =>
+      val currentDayLocalDateTime = s.plusDays(dayIndex)
+      val previousDayLocalDateTime = currentDayLocalDateTime.minusDays(1)
+      val currentDay = Date.from(currentDayLocalDateTime.atZone(ZoneId.systemDefault).toInstant())
+      val upperLimit = Date.from(currentDayLocalDateTime.plusDays(1).atZone(ZoneId.systemDefault).toInstant())
+      val previousDay = Date.from(previousDayLocalDateTime.atZone(ZoneId.systemDefault).toInstant())
+      f(companyName, applicationName, previousDay, upperLimit, platforms, paymentSystems) map {res: JsValue =>
         Json.obj(
-          "day" -> currentDay.toDate.getTime,
+          "day" -> currentDay.getTime,
           "value" -> (res \ "value").as[Double],
           "platforms" -> (platforms map {p => {
             getPlatform(res, p) match {

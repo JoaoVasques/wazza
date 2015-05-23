@@ -3,6 +3,7 @@ package controllers.analytics
 import com.google.inject._
 import java.text.ParseException
 import java.text.SimpleDateFormat
+import java.util.TimeZone
 import java.util.Date
 import play.api._
 import play.api.libs.json.JsValue
@@ -15,12 +16,11 @@ import scala.util.Failure
 import scala.util.Success
 import scala.util.Try
 import service.analytics.definitions.AnalyticsService
-import org.joda.time.format.DateTimeFormat
-import org.joda.time.Interval
-import org.joda.time.Days
 import play.api.libs.json.Json
 import play.api.libs.json.JsValue
 import play.api.libs.json.JsArray
+import java.time._
+import java.time.format.DateTimeFormatter
 
 class AnalyticsController @Inject()(
   analyticsService: AnalyticsService
@@ -29,11 +29,19 @@ class AnalyticsController @Inject()(
   private lazy val Total = 0
   private lazy val Detailed = 1
 
-  private def validateDate(dateStr: String): Try[Date] = {
-    val df = new SimpleDateFormat("dd-MM-yyyy")
+  private def getLocalDate(dateStr: String, endDate: Boolean = false) = {
+    val formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy")
+    if(!endDate){
+      LocalDate.parse(dateStr, formatter).atStartOfDay().atZone(ZoneId.systemDefault)
+    } else {
+      LocalDate.parse(dateStr, formatter).atStartOfDay().atZone(ZoneId.systemDefault).plusDays(1)
+    }
+  }
+
+  private def validateDate(dateStr: String, endDate: Boolean = false): Try[Date] = {
     try {
-      val date = df.parse(dateStr)
-      new Success(date)
+      val ld = getLocalDate(dateStr, endDate)
+      new Success(Date.from(ld.toInstant()))
     } catch {
       case ex: ParseException => {
         new Failure(ex)
@@ -51,11 +59,10 @@ class AnalyticsController @Inject()(
   }
 
   private def getPreviousDates(startStr: String, endStr: String): (Date, Date) = {
-    val formatter = DateTimeFormat.forPattern("dd-MM-yyyy")
-    val start = formatter.parseDateTime(startStr)
-    val end = formatter.parseDateTime(endStr)
-    val difference = Days.daysBetween(start, end).getDays()
-    (start.minusDays(difference).toDate, end.minusDays(difference).toDate)
+    val start = getLocalDate(startStr)
+    val end =  getLocalDate(endStr, true)
+    val difference = Period.between(start.toLocalDate(), end.toLocalDate()).getDays()
+    (Date.from(start.minusDays(difference).toInstant()), Date.from(end.minusDays(difference).toInstant()))
   }
 
   private def executeRequest[T <: JsValue](
@@ -147,7 +154,7 @@ class AnalyticsController @Inject()(
     }
 
     val start = validateDate(startDateStr)
-    val end = validateDate(endDateStr)
+    val end = validateDate(endDateStr, true)
 
     (start, end) match {
       case (Success(s), Success(e)) => {
