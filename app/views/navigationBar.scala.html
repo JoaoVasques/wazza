@@ -9,7 +9,7 @@
         </button>
         <ul class="dropdown-menu dropdown-menu-right" role="menu">
           <li ng-repeat="application in applicationsList">
-            <a href="" ng-disabled="{{application == applicationName}}" ng-click="changeApp(application)">{{application}}</a>
+            <a href="" ng-hide="application == appName" ng-click="changeApp(application)">{{application}}</a>
           </li>
           <li class="divider"></li>
           <li>
