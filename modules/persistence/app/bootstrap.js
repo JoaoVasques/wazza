@@ -59,11 +59,7 @@ function generateUsers() {
   for(var u = 0; u < NumberUsers; u++) {
       var newUser = new User(u, new Device("iOS", "8", "iPhone 6"));
       printjson("Inserting user: " + u);
-<<<<<<< Updated upstream
-      db.Wazza_mUsers_PayPalDemo.insert(newUser);
-=======
       db.Wazza_mUsers_Demo.insert(newUser);
->>>>>>> Stashed changes
   }
 }
 
@@ -74,13 +70,8 @@ function generateSessions() {
       var _id = "session-" + u + "-" + s;
       printjson("Creating sessions: " + s + " of user: " + u);
       var session = new Session(_id, u, new Device("iOS", "8", "iPhone 6"), 3)
-<<<<<<< Updated upstream
-      db.Wazza_mobileSessions_PayPalDemo.insert(session);
-      db.Wazza_mUsers_PayPalDemo.update({"userId": u}, {$push: {"sessions": getSessionResume(session)}});
-=======
       db.Wazza_mobileSessions_Demo.insert(session);
       db.Wazza_mUsers_Demo.update({"userId": u}, {$push: {"sessions": getSessionResume(session)}});
->>>>>>> Stashed changes
     }
   } 
 }
@@ -94,13 +85,8 @@ function generatePurchases() {
       printjson("Creating purchases: " + p + " of user: " + u);
       var price = Math.floor(Math.random() * 6);
       var purchase = new Purchase(_id, sessionId, u, "itemId", price, new Device("iOS", "8", "iPhone 6"));
-<<<<<<< Updated upstream
-      db.Wazza_purchases_PayPalDemo.insert(purchase);
-      db.Wazza_mUsers_PayPalDemo.update({"userId": u}, {$push: {"purchases": getPurchaseResume(purchase)}});
-=======
       db.Wazza_purchases_Demo.insert(purchase);
       db.Wazza_mUsers_Demo.update({"userId": u}, {$push: {"purchases": getPurchaseResume(purchase)}});
->>>>>>> Stashed changes
     }
   }
 }
