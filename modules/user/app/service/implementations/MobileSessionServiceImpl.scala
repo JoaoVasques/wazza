@@ -12,7 +12,6 @@
 // import com.google.inject._
 // import service.persistence.definitions.DatabaseService
 // import models.user.MobileSessionInfo
-// import com.github.nscala_time.time.Imports._
 // import scala.concurrent._
 // import ExecutionContext.Implicits.global
 // import persistence.utils._
