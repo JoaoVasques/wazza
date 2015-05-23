@@ -29,7 +29,7 @@ class NotificationsProxy(
     Router(RoundRobinRoutingLogic(), routees)
   }
 
-  override def killRouter = {}
+  override def killRouter() = {}
 
   protected def execute[MailRequest](request: MailRequest) = {
     if(Play.isProd) {

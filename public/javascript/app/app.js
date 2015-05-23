@@ -1,6 +1,5 @@
 'use strict';
 
-
 // Declare app level module which depends on filters, and services
 angular.module('Wazza', [
     'ui.router',
@@ -40,6 +39,53 @@ config(function($stateProvider, $urlRouterProvider, $locationProvider, $httpProv
             templateUrl: '/home'
         })
 
+      //not available yet
+        .state('home.notavailableyet', {
+            url: "^/",
+            templateUrl : '/notavailableyet',
+            controller: 'NotAvailableYetController'
+        })
+
+      //users
+        .state('home.user', {
+            url: "^/",
+            templateUrl : '/user',
+            controller : ''
+        })
+
+        .state('newuser', {
+            url: "^/",
+            templateUrl: '/user/register',
+            controller: 'UserRegistrationController'
+        })
+
+      //items
+        // .state('home.newitem', {
+        //     url: "^/",
+        //     templateUrl: '/app/item/new/',
+        //     controller: 'NewItemController'
+        // })
+
+      //inventory
+        // .state('home.inventory', {
+        //     url: "^/",
+        //     templateUrl: '/dashboard/inventory',
+        //     controller: 'InventoryController'
+        // })
+
+        // .state('home.inventory.crud', {
+        //     url: "^/",
+        //     templateUrl: '/dashboard/inventory/crud',
+        //     controller: 'InventoryController'
+        // })
+
+        // .state('home.inventory.virtualCurrencies', {
+        //     url: "^/",
+        //     templateUrl: '/dashboard/inventory/virtualCurrencies',
+        //     controller: 'InventoryController'
+        // })
+
+      //analytics
         .state('analytics', {
             templateUrl: '/analyticsframe',
             controller: 'AnalyticsController',
@@ -58,7 +104,7 @@ config(function($stateProvider, $urlRouterProvider, $locationProvider, $httpProv
             controller: 'DashboardController'
         })
 
-      //analytics
+      //analytics - metrics
         .state('analytics.revenue', {
             url: "^/",
             templateUrl: '/dashboard/analytics',
@@ -113,45 +159,6 @@ config(function($stateProvider, $urlRouterProvider, $locationProvider, $httpProv
             controller: 'NumberSessionsBetweenPurchaseController'
         })
 
-      //inventory
-        // .state('home.inventory', {
-        //     url: "^/",
-        //     templateUrl: '/dashboard/inventory',
-        //     controller: 'InventoryController'
-        // })
-
-        // .state('home.inventory.crud', {
-        //     url: "^/",
-        //     templateUrl: '/dashboard/inventory/crud',
-        //     controller: 'InventoryController'
-        // })
-
-        // .state('home.inventory.virtualCurrencies', {
-        //     url: "^/",
-        //     templateUrl: '/dashboard/inventory/virtualCurrencies',
-        //     controller: 'InventoryController'
-        // })
-
-      //users
-        .state('home.user', {
-            url: "^/",
-            templateUrl : '/user',
-            controller : ''
-        })
-
-        .state('newuser', {
-            url: "^/",
-            templateUrl: '/user/register',
-            controller: 'UserRegistrationController'
-        })
-
-      //items
-        // .state('home.newitem', {
-        //     url: "^/",
-        //     templateUrl: '/app/item/new/',
-        //     controller: 'NewItemController'
-        // })
-
       //applications
         .state('analytics.newapp', {
             url: "^/",
@@ -164,13 +171,6 @@ config(function($stateProvider, $urlRouterProvider, $locationProvider, $httpProv
             url: "^/",
             templateUrl: '/dashboard/settings',
             controller: 'SettingsController'
-        })
-
-      //not available yet
-        .state('home.notavailableyet', {
-            url: "^/",
-            templateUrl : '/notavailableyet',
-            controller: 'NotAvailableYetController'
         })
 
       //random

@@ -11,7 +11,7 @@ import scala.reflect.{ClassTag}
 trait Master[M <: WazzaMessage, W <: Worker[_]] {
   this:  Actor =>
 
-  protected def killRouter
+  protected def killRouter()
 
   protected def workersRouter: Router
 

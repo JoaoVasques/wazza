@@ -17,6 +17,15 @@ Clone the repository and add the configuration files to the *conf* folder. After
 
 This will run using the *conf/application.conf* configuration
 
+## Test
+
+Create an account in the app with company name "Wazza" and an application called "Demo"
+
+Launch mongod and run on another sh:
+
+	mongo localhost:27017/dev modules/analytics/app/bootstrapAnalytics.js
+
+
 ## Deployment operations
 
 The folder *ops* contains scripts related to running Wazza locally (using a generated executable instead of *activator*)  and all the deployment tasks. All scripts must be executed on the *ops* directory.

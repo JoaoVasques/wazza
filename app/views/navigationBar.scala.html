@@ -2,44 +2,25 @@
 <div class="row header" ng-controller="NavBarController">
   <div class="col-xs-12">
     <div class="user pull-right" style="padding-right:15px">
-      <div class="btn-group" dropdown is-open="status.isopen" style="margin-top:1em;" ng-show="applicationName != ''">
+      <div class="btn-group" style="margin-top:1em; margin-right: 15px;" ng-hide="applicationName != ''"></div>
+      <div class="btn-group" dropdown is-open="status.isopen" style="margin-top:1em; margin-right: 15px;" ng-show="applicationName != ''">
         <button href type="button" class="btn btn-success dropdown-toggle" dropdown-toggle >
           {{applicationName}} <span class="caret" style="margin-left:5px"></span>
         </button>
         <ul class="dropdown-menu dropdown-menu-right" role="menu">
           <li ng-repeat="application in applicationsList">
-            <a href="" ng-disabled="{{application == appName}}" ng-click="changeApp(application)">{{application}}</a>
+            <a href="" ng-click="changeApp(application)">{{application}}</a>
           </li>
           <li class="divider"></li>
           <li>
             <a href="" ng-click="newApp()">
-              <i class="fa fa-plus-circle fa-2x icon-green"></i>Add Application
+              Add Application<i class="fa fa-plus-circle icon-green" style="padding-left:10px"></i>
             </a>
           </li>
         </ul>
       </div>
-
-      <div class="item dropdown" dropdown>
-        <a href class="dropdown-toggle" dropdown-toggle style="padding-top:5px">
-          <i class="fa fa-user"></i><span class="caret" style="margin-left:5px; margin-bottom:5px"></span>
-        </a>
-        <ul class="dropdown-menu dropdown-menu-right">
-          <li class="dropdown-header">
-            {{userName}}
-          </li>
-          <li class="divider"></li>
-          <li class="link">
-            <a href="#">
-              Documentation
-            </a>
-          </li>
-          <li class="divider"></li>
-          <li class="link">
-            <a href="" ng-click="logoutClick()">
-              Logout
-            </a>
-          </li>
-        </ul>
+      <div class="btn-group" style="margin-top:1em; margin-right: 30px;">
+        <button type="button" class="btn btn-success call-to-action" ng-click="logoutClick()">Logout</button>
       </div>
     </div>
     <div class="meta">

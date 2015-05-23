@@ -34,14 +34,7 @@ dashboard.controller('DashboardController', [
         CurrencyChanges
         ) {
         
-        /** Modes: 0 = chart ; 1 = numbers **/
-        $scope.viewMode = 1;
         $scope.showDetails = true;
-
-        var updateView = function(ev, data) {
-          $scope.viewMode = data.newView;
-        };
-        $scope.$on(DashboardViewChanges, updateView);
         
         var showHidePlatformDetails = function(ev, data) {
           $scope.showDetails = data.value;
