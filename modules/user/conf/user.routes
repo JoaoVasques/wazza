@@ -3,7 +3,6 @@
 # ~~~~
 
 # Home page
-GET   /                     @controllers.user.ApplicationUser.index
 GET   /register             @controllers.user.RegistrationController.registerUser
 POST  /register             @controllers.user.RegistrationController.submitUser
 
