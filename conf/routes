@@ -24,5 +24,8 @@ GET		/error					@controllers.Application.httpError
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /robots.txt             controllers.Assets.at(path="/public", file="robots.txt")
+GET     /favicon.ico            controllers.Assets.at(path="/public", file="/images/favicon.ico")
+GET     /favicon.png            controllers.Assets.at(path="/public", file="/images/favicon.png")
+#GET     /sitemap.xml            controllers.Application.sitemap
 GET		/assets/*file			controllers.Assets.at(path="/public", file)
 GET		/webjars/*file			controllers.WebJarAssets.at(file)
