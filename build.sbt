@@ -46,7 +46,7 @@ resolvers ++= Seq[Resolver](
     "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
   )
 
-lazy val mySettings = Seq("-unchecked", "-deprecation", "-feature", "-language:reflectiveCalls", "-language:postfixOps", "-optimize" )//, "-Ywarn-adapted-args", "-Xlint", "-Xfatal-warnings")
+lazy val mySettings = Seq("-unchecked", "-deprecation", "-feature", "-language:reflectiveCalls", "-language:postfixOps", "-optimize", "-Xlint", "-Ywarn-adapted-args" )//, "-Xfatal-warnings")
 
 lazy val common = Project("common", file("modules/common"))
   .enablePlugins(play.PlayScala)

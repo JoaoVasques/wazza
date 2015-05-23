@@ -167,7 +167,7 @@ class ApplicationWorker(
 
 
     val application = WazzaApplicationImplicits.buildFromJson(response.res)
-    def addApplication = {
+    def addApplication() = {
       val addApplicationRequest = new AddElementToArray[String](
         request.sendersStack,
         CompanyData.Collection,

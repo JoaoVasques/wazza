@@ -62,7 +62,7 @@ class UserProxy (
     Router(ROUTING_LOGIC, routees)
   }
 
-  override def killRouter = {}
+  override def killRouter() = {}
 
   protected def execute[WazzaMessage](request: WazzaMessage) = {
     request match {

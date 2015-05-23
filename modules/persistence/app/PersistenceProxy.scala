@@ -30,9 +30,7 @@ class PersistenceProxy (
     Router(RoundRobinRoutingLogic(), routees)
   }
 
-  override def killRouter = {
-
-  }
+  override def killRouter() = {}
 
   override def preStart() = {
     super.preStart()

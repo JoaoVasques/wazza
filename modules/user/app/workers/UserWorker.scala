@@ -170,7 +170,7 @@ class UserWorker(
   def receive = userRequests orElse persistenceResponses
 
   private def insert(msg: URInsert) = {
-    def insertUserAux = {
+    def insertUserAux() = {
       val hash = localStorage.store(sender, msg)
       val collection = User.getCollection
       msg.sendersStack = msg.sendersStack.push(self)
@@ -180,7 +180,7 @@ class UserWorker(
       databaseProxy ! request
     }
 
-    def addUserToCompanyData = {
+    def addUserToCompanyData() = {
       val companyData = new CompanyData(msg.user.company, List[String]())
       val request = new Insert(new Stack, CompanyData.Collection, Json.toJson(companyData))
       databaseProxy ! request
