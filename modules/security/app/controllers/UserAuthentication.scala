@@ -2,13 +2,11 @@ package controllers.security
 
 import play.api._
 import play.api.mvc._
-
 import play.api.cache._
 import play.api.libs.json._
 import play.api.data._
 import play.api.mvc.Results._
 import play.api.mvc.BodyParsers.parse
-import com.github.nscala_time.time.Imports._
 import java.security.SecureRandom
 import scala.annotation.tailrec
 import com.google.inject._
@@ -27,7 +25,7 @@ private[security] case class UserAction[A](action: Action[A]) extends Action[A] 
     .getInstance(classOf[TokenManagerService])
 
   implicit val app: play.api.Application = play.api.Play.current
-  private lazy val DefaultCacheExpiration = 7.days.seconds
+  private lazy val DefaultCacheExpiration = 7 * 24 * 3600 //7 days (in seconds)
   lazy val CacheExpiration = app.configuration.getInt("cache.expiration").getOrElse(DefaultCacheExpiration)
 
   private val AuthTokenHeader = UserAuthenticationAction.AuthTokenHeader//"X-XSRF-TOKEN"

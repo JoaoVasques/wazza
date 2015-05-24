@@ -10,7 +10,7 @@ lazy val dependencies = Seq(
   filters,
   ws,
   "com.amazonaws" % "aws-java-sdk" % "1.9.37",
-  "com.google.inject" % "guice" % "4.0",
+  "com.google.inject" % "guice" % "3.0",
   "com.typesafe.akka" %% "akka-actor" % "2.3.11",
   "com.typesafe.akka" %% "akka-slf4j" % "2.3.11",
   "com.tzavellas" %% "sse-guice" % "0.7.2",
